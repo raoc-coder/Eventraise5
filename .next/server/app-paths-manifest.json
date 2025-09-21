@@ -1,11 +1,11 @@
 {
   "/_not-found": "app/_not-found.js",
-  "/events/create/page": "app/events/create/page.js",
-  "/auth/register/page": "app/auth/register/page.js",
-  "/page": "app/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
+  "/api/create-payment-intent/route": "app/api/create-payment-intent/route.js",
   "/auth/login/page": "app/auth/login/page.js",
+  "/events/create/page": "app/events/create/page.js",
   "/events/page": "app/events/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/auth/register/page": "app/auth/register/page.js",
   "/volunteers/page": "app/volunteers/page.js",
-  "/api/create-payment-intent/route": "app/api/create-payment-intent/route.js"
+  "/page": "app/page.js"
 }
