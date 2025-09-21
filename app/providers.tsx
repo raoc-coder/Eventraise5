@@ -28,29 +28,51 @@ export const useAuth = () => {
 export function Providers({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient()
+  const [supabase, setSupabase] = useState<any>(null)
 
   useEffect(() => {
+    // Only initialize Supabase client on the client side
+    if (typeof window !== 'undefined') {
+      try {
+        const client = createClientComponentClient()
+        setSupabase(client)
+      } catch (error) {
+        console.error('Failed to initialize Supabase client:', error)
+        setLoading(false)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!supabase) return
+
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      setLoading(false)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+        setLoading(false)
+      } catch (error) {
+        console.error('Failed to get user:', error)
+        setLoading(false)
+      }
     }
 
     getUser()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event: any, session: any) => {
         setUser(session?.user ?? null)
         setLoading(false)
       }
     )
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [supabase])
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
   }
 
   return (
