@@ -34,10 +34,17 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx"
+  ],
+  "types": [
+    "jest",
+    "@testing-library/jest-dom"
   ],
   "exclude": [
     "cypress/**/*",
-    "node_modules"
+    "node_modules",
+    "__tests__/**/*"
   ]
 }
