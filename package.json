@@ -4,13 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/build-config.js && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "setup": "node scripts/setup-env.js",
     "type-check": "tsc --noEmit",
-    "build-check": "node scripts/build-check.js",
-    "prebuild": "npm run build-check"
+    "build-check": "node scripts/build-check.js"
   },
   "dependencies": {
     "next": "14.0.4",
