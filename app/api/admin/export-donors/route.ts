@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { createClient } from '@supabase/supabase-js'
 
+<<<<<<< HEAD
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic'
 
+=======
+>>>>>>> bf7868b7bc7790b853acde2d3fea5d9970c824f4
 // Security: Admin-only endpoint for data export
 export async function GET(request: NextRequest) {
   try {
