@@ -25,13 +25,24 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
     
-    /* Custom EventRaise Design Tokens */
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --gradient-warm: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.3);
+    /* EventRaise Professional Design System */
+    --primary-blue: #2563EB;
+    --primary-green: #10B981;
+    --warm-orange: #F59E0B;
+    --soft-purple: #8B5CF6;
+    --charcoal: #1F2937;
+    --medium-gray: #6B7280;
+    
+    /* Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    --gradient-warm: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    --gradient-purple: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+    
+    /* Professional Shadows */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.15);
+    --shadow-button: 0 2px 4px rgba(37, 99, 235, 0.2);
   }
 
   .dark {
@@ -64,6 +75,39 @@
   body {
     @apply bg-white text-gray-900;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* Typography Hierarchy */
+  h1 { 
+    font-size: 2.5rem; 
+    font-weight: 700; 
+    line-height: 1.2; 
+    color: var(--charcoal);
+  }
+  h2 { 
+    font-size: 2rem; 
+    font-weight: 600; 
+    line-height: 1.3; 
+    color: var(--charcoal);
+  }
+  h3 { 
+    font-size: 1.5rem; 
+    font-weight: 600; 
+    line-height: 1.4; 
+    color: var(--charcoal);
+  }
+  h4 { 
+    font-size: 1.25rem; 
+    font-weight: 500; 
+    line-height: 1.4; 
+    color: var(--charcoal);
+  }
+  
+  .caption { 
+    font-size: 0.875rem; 
+    font-weight: 400; 
+    line-height: 1.5; 
+    color: var(--medium-gray);
   }
 }
 
@@ -104,13 +148,9 @@
     @apply flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   
-  /* Fun Design Components */
+  /* Professional Design Components */
   .gradient-bg-primary {
     background: var(--gradient-primary);
-  }
-  
-  .gradient-bg-secondary {
-    background: var(--gradient-secondary);
   }
   
   .gradient-bg-success {
@@ -121,26 +161,103 @@
     background: var(--gradient-warm);
   }
   
+  .gradient-bg-purple {
+    background: var(--gradient-purple);
+  }
+  
   .card-soft {
     box-shadow: var(--shadow-soft);
-    border-radius: 1rem;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
   }
   
-  .card-glow {
-    box-shadow: var(--shadow-glow);
-    border-radius: 1rem;
+  .card-elevated {
+    box-shadow: var(--shadow-elevated);
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
   }
   
-  .btn-fun-primary {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  .btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-button);
+    border: none;
+    cursor: pointer;
   }
   
-  .btn-fun-secondary {
-    @apply bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
   }
   
-  .btn-fun-success {
-    @apply bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  .btn-secondary {
+    background: white;
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .btn-secondary:hover {
+    background: var(--primary-blue);
+    color: white;
+  }
+  
+  .btn-success {
+    background: var(--gradient-success);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+  }
+  
+  .btn-disabled {
+    background: #E5E7EB;
+    color: #9CA3AF;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: not-allowed;
+  }
+  
+  /* Professional Alert Styles */
+  .alert-success {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    border: 1px solid var(--primary-green);
+    border-radius: 8px;
+    padding: 16px;
+    color: #065F46;
+  }
+  
+  .celebration-callout {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    border: 1px solid var(--warm-orange);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: #92400E;
+  }
+  
+  .progress-card {
+    background: var(--gradient-success);
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
   }
   
   .floating-animation {

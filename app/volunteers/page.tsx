@@ -197,56 +197,44 @@ export default function VolunteersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative overflow-hidden">
-      {/* Fun Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl floating-animation"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-pink-400/10 to-orange-400/10 rounded-full blur-3xl floating-animation" style={{animationDelay: '2s'}}></div>
-      </div>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-lg border-b border-white/20 relative z-10">
+      <nav className="bg-white shadow-sm border-b relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <div className="relative">
-                <Heart className="h-8 w-8 text-pink-500 bounce-animation" />
-                <Sparkles className="h-4 w-4 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
-              </div>
-              <span className="ml-2 text-xl font-bold text-gradient">EventRaise</span>
+              <Heart className="h-8 w-8 text-blue-600" />
+              <span className="ml-2 text-xl font-bold text-gray-900">EventRaise</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/dashboard">
-                <Button variant="ghost" className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50">Dashboard</Button>
+                <Button variant="ghost" className="text-gray-700 hover:text-blue-600">Dashboard</Button>
               </Link>
               <Link href="/events">
-                <Button variant="ghost" className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50">Events</Button>
+                <Button variant="ghost" className="text-gray-700 hover:text-blue-600">Events</Button>
               </Link>
             </div>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <div className="flex items-center mb-4">
-              <h1 className="text-3xl font-bold text-gradient">Volunteer Management 👥</h1>
-              <Star className="h-6 w-6 text-yellow-400 ml-2 bounce-animation" />
-            </div>
-            <p className="text-gray-600">Manage volunteer opportunities and sign-ups ✨</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Volunteer Management</h1>
+            <p className="text-gray-600">Manage volunteer opportunities and sign-ups</p>
           </div>
-          <Button onClick={() => setShowCreateForm(true)} className="btn-fun-primary">
+          <Button onClick={() => setShowCreateForm(true)} className="btn-primary">
             <Plus className="h-4 w-4 mr-2" />
-            Create Opportunity 🎯
+            Create Opportunity
           </Button>
         </div>
 
         {/* Create Opportunity Form */}
         {showCreateForm && (
-          <Card className="mb-8 card-soft hover:card-glow transition-all duration-300">
+          <Card className="mb-8 card-soft hover:card-elevated transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-gradient">Create Volunteer Opportunity 🎉</CardTitle>
+              <CardTitle className="text-gray-900">Create Volunteer Opportunity</CardTitle>
               <CardDescription>Add a new volunteer position for your event</CardDescription>
             </CardHeader>
             <CardContent>
@@ -338,10 +326,10 @@ export default function VolunteersPage() {
                 </div>
 
                 <div className="flex justify-end space-x-4">
-                  <Button type="button" variant="outline" onClick={() => setShowCreateForm(false)} className="hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 transition-all duration-300">
-                    Cancel
-                  </Button>
-                  <Button type="submit" className="btn-fun-primary">Create Opportunity 🚀</Button>
+                        <Button type="button" variant="outline" onClick={() => setShowCreateForm(false)} className="btn-secondary">
+                          Cancel
+                        </Button>
+                        <Button type="submit" className="btn-primary">Create Opportunity</Button>
                 </div>
               </form>
             </CardContent>
@@ -351,15 +339,15 @@ export default function VolunteersPage() {
         {/* Volunteer Opportunities */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {opportunities.map((opportunity) => (
-            <Card key={opportunity.id} className="card-soft hover:card-glow transition-all duration-300 hover:scale-105 decorative-dots">
+            <Card key={opportunity.id} className="card-soft hover:card-elevated transition-all duration-300">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-lg text-gradient">{opportunity.title}</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">{opportunity.title}</CardTitle>
                     <p className="text-sm text-gray-600 mt-1">{opportunity.event_title}</p>
                   </div>
-                  <span className="px-2 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-xs rounded-full font-semibold">
-                    {opportunity.current_volunteers}/{opportunity.max_volunteers} volunteers 👥
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
+                    {opportunity.current_volunteers}/{opportunity.max_volunteers} volunteers
                   </span>
                 </div>
                 <CardDescription>{opportunity.description}</CardDescription>
@@ -368,22 +356,22 @@ export default function VolunteersPage() {
                 <div className="space-y-3">
                   <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-blue-50 transition-colors">
                     <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                    <span className="font-medium">{formatDate(opportunity.start_time)} - {formatDate(opportunity.end_time)} 📅</span>
+                    <span className="font-medium">{formatDate(opportunity.start_time)} - {formatDate(opportunity.end_time)}</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-green-50 transition-colors">
                     <MapPin className="h-4 w-4 mr-2 text-green-500" />
-                    <span className="font-medium">{opportunity.location} 📍</span>
+                    <span className="font-medium">{opportunity.location}</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-purple-50 transition-colors">
                     <Clock className="h-4 w-4 mr-2 text-purple-500" />
-                    <span className="font-medium">{opportunity.time_commitment} ⏰</span>
+                    <span className="font-medium">{opportunity.time_commitment}</span>
                   </div>
                   {opportunity.required_skills.length > 0 && (
                     <div>
-                      <p className="text-sm font-medium text-gradient-success mb-1">Required Skills: 🎯</p>
+                      <p className="text-sm font-medium text-green-600 mb-1">Required Skills:</p>
                       <div className="flex flex-wrap gap-1">
                         {opportunity.required_skills.map((skill, index) => (
-                          <span key={index} className="px-2 py-1 bg-gradient-to-r from-green-100 to-teal-100 text-green-700 text-xs rounded font-semibold">
+                          <span key={index} className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded font-semibold">
                             {skill}
                           </span>
                         ))}
@@ -391,11 +379,11 @@ export default function VolunteersPage() {
                     </div>
                   )}
                   <div className="flex gap-2 pt-2">
-                    <Button size="sm" className="flex-1 btn-fun-primary">
-                      View Details 🔍
+                    <Button size="sm" className="flex-1 btn-primary">
+                      View Details
                     </Button>
-                    <Button variant="outline" size="sm" className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300">
-                      Manage ⚙️
+                    <Button variant="outline" size="sm" className="btn-secondary">
+                      Manage
                     </Button>
                   </div>
                 </div>
@@ -405,37 +393,37 @@ export default function VolunteersPage() {
         </div>
 
         {/* Volunteer Signups */}
-        <Card className="card-soft hover:card-glow transition-all duration-300">
+        <Card className="card-soft hover:card-elevated transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-gradient-warm">Recent Volunteer Signups 👥</CardTitle>
+            <CardTitle className="text-gray-900">Recent Volunteer Signups</CardTitle>
             <CardDescription>Manage volunteer applications and confirmations</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {signups.map((signup) => (
-                <div key={signup.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300">
+                <div key={signup.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-blue-50 transition-all duration-300">
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
                       <div>
-                        <p className="font-medium text-gradient">{signup.user_name} 👤</p>
+                        <p className="font-medium text-gray-900">{signup.user_name}</p>
                         <p className="text-sm text-gray-600">{signup.user_email}</p>
                         {signup.notes && (
                           <p className="text-sm text-gray-500 mt-1">{signup.notes}</p>
                         )}
                       </div>
                       <span className={`px-2 py-1 text-xs rounded-full font-semibold ${getStatusColor(signup.status)}`}>
-                        {signup.status} {signup.status === 'confirmed' ? '✅' : signup.status === 'pending' ? '⏳' : '❌'}
+                        {signup.status}
                       </span>
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" className="hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-300">
-                      <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
-                      Confirm ✅
+                    <Button size="sm" variant="outline" className="text-green-600 hover:bg-green-50">
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Confirm
                     </Button>
-                    <Button size="sm" variant="outline" className="hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 transition-all duration-300">
-                      <XCircle className="h-4 w-4 mr-1 text-red-500" />
-                      Decline ❌
+                    <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50">
+                      <XCircle className="h-4 w-4 mr-1" />
+                      Decline
                     </Button>
                   </div>
                 </div>
