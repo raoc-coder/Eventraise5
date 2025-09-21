@@ -66,7 +66,8 @@ export default function RegisterPage() {
           data: {
             full_name: formData.fullName,
             organization_name: formData.organizationName,
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/auth/confirm`
         }
       })
 
