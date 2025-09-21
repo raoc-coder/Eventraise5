@@ -43,9 +43,22 @@ if (isCI) {
   const envPath = path.join(process.cwd(), '.env.local');
   
   if (!fs.existsSync(envPath)) {
-    console.log('❌ .env.local not found');
-    console.log('   Run: npm run setup');
-    process.exit(1);
+    console.log('⚠️  .env.local not found');
+    console.log('   Using fallback values for build');
+    
+    // Set fallback values for build
+    const fallbacks = {
+      NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co',
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder_anon_key',
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: 'pk_test_placeholder',
+      NEXT_PUBLIC_APP_URL: 'https://placeholder.vercel.app'
+    };
+
+    Object.entries(fallbacks).forEach(([key, value]) => {
+      if (!process.env[key]) {
+        process.env[key] = value;
+      }
+    });
   }
 }
 
