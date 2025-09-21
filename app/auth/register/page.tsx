@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Heart, Sparkles } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { getAuthRedirectUrl } from '@/lib/auth-config'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -67,7 +68,7 @@ export default function RegisterPage() {
             full_name: formData.fullName,
             organization_name: formData.organizationName,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`
+          emailRedirectTo: getAuthRedirectUrl()
         }
       })
 
