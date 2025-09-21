@@ -60,13 +60,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Fun Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-2xl floating-animation"></div>
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-2xl floating-animation" style={{animationDelay: '2s'}}></div>
+      </div>
+      
+      <Card className="w-full max-w-md card-soft relative z-10">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Heart className="h-8 w-8 text-primary-600" />
+          <div className="flex justify-center mb-4 relative">
+            <Heart className="h-8 w-8 text-pink-500 bounce-animation" />
+            <Sparkles className="h-4 w-4 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
           </div>
-          <CardTitle className="text-2xl">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl text-gradient">Welcome Back! 👋</CardTitle>
           <CardDescription>
             Sign in to your EventRaise account
           </CardDescription>
@@ -95,15 +102,15 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign In'}
+            <Button type="submit" className="w-full btn-fun-primary" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign In 🚀'}
             </Button>
           </form>
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don&apos;t have an account?{' '}
-              <Link href="/auth/register" className="text-primary-600 hover:underline">
-                Sign up
+              <Link href="/auth/register" className="text-gradient hover:underline transition-all duration-300">
+                Sign up ✨
               </Link>
             </p>
           </div>

@@ -80,13 +80,20 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Fun Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-2xl floating-animation"></div>
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-2xl floating-animation" style={{animationDelay: '2s'}}></div>
+      </div>
+      
+      <Card className="w-full max-w-md card-soft relative z-10">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Heart className="h-8 w-8 text-primary-600" />
+          <div className="flex justify-center mb-4 relative">
+            <Heart className="h-8 w-8 text-pink-500 bounce-animation" />
+            <Sparkles className="h-4 w-4 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
           </div>
-          <CardTitle className="text-2xl">Create Account</CardTitle>
+          <CardTitle className="text-2xl text-gradient">Create Account 🎉</CardTitle>
           <CardDescription>
             Start your fundraising journey today
           </CardDescription>
@@ -148,15 +155,15 @@ export default function RegisterPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating account...' : 'Create Account'}
+            <Button type="submit" className="w-full btn-fun-primary" disabled={loading}>
+              {loading ? 'Creating account...' : 'Create Account 🚀'}
             </Button>
           </form>
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link href="/auth/login" className="text-primary-600 hover:underline">
-                Sign in
+              <Link href="/auth/login" className="text-gradient hover:underline transition-all duration-300">
+                Sign in ✨
               </Link>
             </p>
           </div>
