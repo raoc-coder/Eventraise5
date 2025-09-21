@@ -3,6 +3,8 @@ import { stripe } from '@/lib/stripe'
 import { supabase } from '@/lib/supabase'
 import { headers } from 'next/headers'
 import Stripe from 'stripe'
+import { trackDonationCompleted } from '@/lib/analytics'
+import { MonitoringService } from '@/lib/monitoring'
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -19,11 +21,15 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event
 
   try {
+    // Security: Verify webhook signature to prevent unauthorized requests
     event = stripe.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     )
+    
+    // Security: Log webhook events for audit trail
+    console.log(`Received verified webhook: ${event.type} (${event.id})`)
   } catch (err) {
     console.error('Webhook signature verification failed:', err)
     return NextResponse.json(
@@ -122,6 +128,15 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       throw updateError
     }
 
+    // Track successful donation completion
+    trackDonationCompleted(campaignId, amount, donorEmail)
+
+    // Track business metrics
+    MonitoringService.trackBusinessMetric('donation_completed', amount, {
+      campaign_id: campaignId,
+      donor_email: donorEmail ? 'provided' : 'anonymous',
+    })
+
     console.log('Successfully processed donation:', {
       donationId: donation.id,
       campaignId,
@@ -131,6 +146,17 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   } catch (error) {
     console.error('Error in handleCheckoutCompleted:', error)
+    
+    // Monitor critical payment processing errors
+    MonitoringService.trackCriticalError(
+      error instanceof Error ? error : new Error('Unknown checkout error'),
+      {
+        campaign_id: campaignId,
+        amount,
+        session_id: session.id,
+      }
+    )
+    
     throw error
   }
 }

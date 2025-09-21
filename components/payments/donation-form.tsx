@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Heart, DollarSign, Gift, Sparkles } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { trackDonationStarted, trackDonationFailed } from '@/lib/analytics'
+import { MonitoringService } from '@/lib/monitoring'
 
 interface DonationFormProps {
   campaignId: string
@@ -60,6 +62,9 @@ export function DonationForm({
 
     setIsLoading(true)
 
+    // Track donation started
+    trackDonationStarted(campaignId, parseFloat(amount))
+
     try {
       const response = await fetch('/api/create-checkout', {
         method: 'POST',
@@ -87,6 +92,20 @@ export function DonationForm({
 
     } catch (error) {
       console.error('Donation error:', error)
+      
+      // Track donation failure
+      trackDonationFailed(campaignId, parseFloat(amount), error instanceof Error ? error.message : 'Unknown error')
+      
+      // Monitor critical payment errors
+      MonitoringService.trackPaymentError(
+        error instanceof Error ? error : new Error('Unknown donation error'),
+        {
+          campaignId,
+          amount: parseFloat(amount),
+          donorEmail,
+        }
+      )
+      
       toast.error(error instanceof Error ? error.message : 'Failed to process donation')
     } finally {
       setIsLoading(false)
