@@ -1,11 +1,11 @@
 {
   "/_not-found": "app/_not-found.js",
   "/auth/login/page": "app/auth/login/page.js",
-  "/api/create-payment-intent/route": "app/api/create-payment-intent/route.js",
   "/auth/register/page": "app/auth/register/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/events/create/page": "app/events/create/page.js",
   "/events/page": "app/events/page.js",
   "/page": "app/page.js",
-  "/volunteers/page": "app/volunteers/page.js"
+  "/volunteers/page": "app/volunteers/page.js",
+  "/api/create-payment-intent/route": "app/api/create-payment-intent/route.js"
 }
