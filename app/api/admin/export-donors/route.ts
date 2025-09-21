@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
         donor_email,
         status,
         created_at,
-        campaigns!inner(title, organizer_id)
+        campaigns(title, organizer_id)
       `)
       .eq('status', 'completed')
 
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
         donation.amount,
         donation.donor_name || 'Anonymous',
         donation.donor_email || '',
-        donation.campaigns?.title || '',
+        (donation.campaigns as any)?.title || '',
         donation.status,
         new Date(donation.created_at).toISOString()
       ]) || []

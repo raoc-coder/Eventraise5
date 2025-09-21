@@ -31,7 +31,7 @@ export default function TermsOfServicePage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-300 leading-relaxed">
-                By accessing and using Event Raise ("the Platform"), you agree to be bound by these Terms of Service. 
+                By accessing and using Event Raise (&quot;the Platform&quot;), you agree to be bound by these Terms of Service. 
                 If you do not agree to these terms, please do not use our platform. These terms apply to all users, 
                 including campaign creators, donors, and event participants.
               </p>
