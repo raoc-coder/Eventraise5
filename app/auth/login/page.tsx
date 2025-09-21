@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
@@ -16,10 +16,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const [supabase, setSupabase] = useState<any>(null)
+
+  useEffect(() => {
+    // Only initialize Supabase client on the client side
+    if (typeof window !== 'undefined') {
+      try {
+        const client = createClientComponentClient()
+        setSupabase(client)
+      } catch (error) {
+        console.error('Failed to initialize Supabase client:', error)
+      }
+    }
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!supabase) {
+      toast.error('Authentication service is not available. Please try again.')
+      return
+    }
+    
     setLoading(true)
 
     try {
