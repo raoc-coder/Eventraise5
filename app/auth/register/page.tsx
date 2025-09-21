@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -27,7 +27,15 @@ export default function RegisterPage() {
     // Only initialize Supabase client on the client side
     if (typeof window !== 'undefined') {
       try {
-        const client = createClientComponentClient()
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        
+        if (!supabaseUrl || !supabaseAnonKey) {
+          console.error('Missing Supabase environment variables')
+          return
+        }
+
+        const client = createClient(supabaseUrl, supabaseAnonKey)
         setSupabase(client)
       } catch (error) {
         console.error('Failed to initialize Supabase client:', error)

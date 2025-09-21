@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@supabase/supabase-js'
 import { User } from '@supabase/supabase-js'
 import { Toaster } from 'react-hot-toast'
 
@@ -34,7 +34,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // Only initialize Supabase client on the client side
     if (typeof window !== 'undefined') {
       try {
-        const client = createClientComponentClient()
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        
+        if (!supabaseUrl || !supabaseAnonKey) {
+          console.error('Missing Supabase environment variables')
+          setLoading(false)
+          return
+        }
+
+        const client = createClient(supabaseUrl, supabaseAnonKey)
         setSupabase(client)
       } catch (error) {
         console.error('Failed to initialize Supabase client:', error)
