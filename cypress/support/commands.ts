@@ -1,28 +1,5 @@
 /// <reference types="cypress" />
 
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      login(email?: string, password?: string): Chainable<void>
-      logout(): Chainable<void>
-      createCampaign(campaign: any): Chainable<void>
-      createEvent(event: any): Chainable<void>
-      mockStripe(): Chainable<void>
-      mockSupabase(): Chainable<void>
-    }
-  }
-}
-
 // Custom command for login
 Cypress.Commands.add('login', (email = 'test@example.com', password = 'password123') => {
   cy.session([email, password], () => {
@@ -68,40 +45,3 @@ Cypress.Commands.add('createEvent', (event) => {
   cy.url().should('include', '/events/')
 })
 
-// Custom command for mocking Stripe
-Cypress.Commands.add('mockStripe', () => {
-  cy.window().then((win) => {
-    win.Stripe = () => ({
-      redirectToCheckout: cy.stub().resolves(),
-      elements: () => ({
-        create: cy.stub().returns({
-          mount: cy.stub(),
-          on: cy.stub(),
-          confirmPayment: cy.stub().resolves(),
-        }),
-      }),
-    })
-  })
-})
-
-// Custom command for mocking Supabase
-Cypress.Commands.add('mockSupabase', () => {
-  cy.intercept('POST', 'https://test.supabase.co/auth/v1/token', {
-    statusCode: 200,
-    body: {
-      access_token: 'mock-token',
-      user: {
-        id: 'test-user-id',
-        email: 'test@example.com',
-        user_metadata: {
-          full_name: 'Test User',
-        },
-      },
-    },
-  }).as('supabaseAuth')
-
-  cy.intercept('GET', 'https://test.supabase.co/rest/v1/campaigns*', {
-    statusCode: 200,
-    body: [],
-  }).as('supabaseCampaigns')
-})

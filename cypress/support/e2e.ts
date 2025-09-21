@@ -34,6 +34,44 @@ Cypress.on('window:before:load', (win) => {
   })
 })
 
+// Custom command for mocking Stripe
+Cypress.Commands.add('mockStripe', () => {
+  cy.window().then((win) => {
+    win.Stripe = () => ({
+      redirectToCheckout: cy.stub().resolves(),
+      elements: () => ({
+        create: cy.stub().returns({
+          mount: cy.stub(),
+          on: cy.stub(),
+          confirmPayment: cy.stub().resolves(),
+        }),
+      }),
+    })
+  })
+})
+
+// Custom command for mocking Supabase
+Cypress.Commands.add('mockSupabase', () => {
+  cy.intercept('POST', 'https://test.supabase.co/auth/v1/token', {
+    statusCode: 200,
+    body: {
+      access_token: 'mock-token',
+      user: {
+        id: 'test-user-id',
+        email: 'test@example.com',
+        user_metadata: {
+          full_name: 'Test User',
+        },
+      },
+    },
+  }).as('supabaseAuth')
+
+  cy.intercept('GET', 'https://test.supabase.co/rest/v1/campaigns*', {
+    statusCode: 200,
+    body: [],
+  }).as('supabaseCampaigns')
+})
+
 // Global test configuration
 beforeEach(() => {
   // Intercept API calls
