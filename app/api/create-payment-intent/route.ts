@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getAppUrl } from '@/lib/config'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
       currency,
       payment_method: paymentMethodId,
       confirm: true,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/events/${eventId}`,
+      return_url: `${getAppUrl()}/events/${eventId}`,
       metadata: {
         eventId,
         donorName: donorInfo.name,
