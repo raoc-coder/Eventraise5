@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -148,53 +149,54 @@ export default function HomePage() {
           <Link href="/auth/register">
             <Button size="lg" variant="secondary">
               Start Your First Campaign
-            </Link>
-          </div>
-        </section>
+            </Button>
+          </Link>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="bg-gray-900 text-white py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div>
-                <div className="flex items-center mb-4">
-                  <Heart className="h-6 w-6 text-primary-400" />
-                  <span className="ml-2 text-lg font-bold">EventRaise</span>
-                </div>
-                <p className="text-gray-400">
-                  Empowering organizations to raise more and impact more.
-                </p>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <Heart className="h-6 w-6 text-primary-400" />
+                <span className="ml-2 text-lg font-bold">EventRaise</span>
               </div>
-              <div>
-                <h3 className="font-semibold mb-4">Product</h3>
-                <ul className="space-y-2 text-gray-400">
-                  <li><Link href="/features">Features</Link></li>
-                  <li><Link href="/pricing">Pricing</Link></li>
-                  <li><Link href="/integrations">Integrations</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">Support</h3>
-                <ul className="space-y-2 text-gray-400">
-                  <li><Link href="/help">Help Center</Link></li>
-                  <li><Link href="/contact">Contact</Link></li>
-                  <li><Link href="/status">Status</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">Company</h3>
-                <ul className="space-y-2 text-gray-400">
-                  <li><Link href="/about">About</Link></li>
-                  <li><Link href="/blog">Blog</Link></li>
-                  <li><Link href="/careers">Careers</Link></li>
-                </ul>
-              </div>
+              <p className="text-gray-400">
+                Empowering organizations to raise more and impact more.
+              </p>
             </div>
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-              <p>&copy; 2024 EventRaise. All rights reserved.</p>
+            <div>
+              <h3 className="font-semibold mb-4">Product</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/features">Features</Link></li>
+                <li><Link href="/pricing">Pricing</Link></li>
+                <li><Link href="/integrations">Integrations</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/help">Help Center</Link></li>
+                <li><Link href="/contact">Contact</Link></li>
+                <li><Link href="/status">Status</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/about">About</Link></li>
+                <li><Link href="/blog">Blog</Link></li>
+                <li><Link href="/careers">Careers</Link></li>
+              </ul>
             </div>
           </div>
-        </footer>
-      </div>
-    )
-  }
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 EventRaise. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
