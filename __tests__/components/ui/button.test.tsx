@@ -7,12 +7,12 @@ describe('Button Component', () => {
     render(<Button>Click me</Button>)
     const button = screen.getByRole('button', { name: /click me/i })
     expect(button).toBeInTheDocument()
-    expect(button).toHaveClass('bg-gradient-to-r', 'from-blue-600', 'to-blue-700')
+    expect(button).toHaveClass('bg-gradient-to-r', 'from-blue-700', 'to-blue-800')
   })
 
   it('renders with different variants', () => {
     const { rerender } = render(<Button variant="secondary">Secondary</Button>)
-    expect(screen.getByRole('button')).toHaveClass('bg-gradient-to-r', 'from-orange-500', 'to-orange-600')
+    expect(screen.getByRole('button')).toHaveClass('bg-gradient-to-r', 'from-orange-600', 'to-orange-700')
 
     rerender(<Button variant="outline">Outline</Button>)
     expect(screen.getByRole('button')).toHaveClass('border', 'border-blue-500/50')
