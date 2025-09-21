@@ -17,13 +17,13 @@ describe('Card Components', () => {
 
     it('applies correct classes', () => {
       render(<Card>Card content</Card>)
-      const card = screen.getByText('Card content').parentElement
+      const card = screen.getByText('Card content')
       expect(card).toHaveClass('rounded-xl', 'border-gray-200', 'bg-white', 'text-gray-900')
     })
 
     it('applies custom className', () => {
       render(<Card className="custom-class">Card content</Card>)
-      const card = screen.getByText('Card content').parentElement
+      const card = screen.getByText('Card content')
       expect(card).toHaveClass('custom-class')
     })
   })

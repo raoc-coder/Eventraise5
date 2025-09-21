@@ -129,3 +129,23 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 })
+
+// Mock MSW for tests that don't need it
+jest.mock('msw', () => ({
+  http: {
+    get: jest.fn(),
+    post: jest.fn(),
+  },
+  HttpResponse: {
+    json: jest.fn(),
+  },
+}))
+
+// Mock MSW server
+jest.mock('msw/node', () => ({
+  setupServer: jest.fn(() => ({
+    listen: jest.fn(),
+    close: jest.fn(),
+    resetHandlers: jest.fn(),
+  })),
+}))
