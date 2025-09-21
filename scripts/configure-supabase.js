@@ -20,9 +20,9 @@ async function configureSupabase() {
   console.log('This script will help you configure your Supabase connection.\n');
   
   console.log('📋 You need to get your Supabase keys from:');
-  console.log('   https://supabase.com/dashboard/project/supabase-indigo-door/settings/api\n');
+  console.log('   https://supabase.com/dashboard/project/supabase-indigo-lamp/settings/api\n');
   
-  const supabaseUrl = await question('Enter your Supabase URL (https://supabase-indigo-door.supabase.co): ');
+  const supabaseUrl = await question('Enter your Supabase URL (https://supabase-indigo-lamp.supabase.co): ');
   const supabaseAnonKey = await question('Enter your Supabase Anon Key: ');
   const supabaseServiceKey = await question('Enter your Supabase Service Role Key: ');
   

@@ -23,7 +23,7 @@ fi
 
 # Link to your Supabase project
 echo "🔗 Linking to Supabase project..."
-supabase link --project-ref supabase-indigo-door
+supabase link --project-ref supabase-indigo-lamp
 
 # Deploy the database schema
 echo "📊 Deploying database schema..."

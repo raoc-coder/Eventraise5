@@ -6,7 +6,7 @@ You're getting "Authentication server not available" because your `.env.local` f
 ## ✅ Quick Fix
 
 ### Step 1: Get Your Supabase Keys
-1. Go to: https://supabase.com/dashboard/project/supabase-indigo-door/settings/api
+1. Go to: https://supabase.com/dashboard/project/supabase-indigo-lamp/settings/api
 2. Copy your **anon/public** key (starts with `eyJ...`)
 3. Copy your **service_role** key (starts with `eyJ...`)
 
@@ -15,7 +15,7 @@ Replace the placeholder values in `.env.local`:
 
 ```bash
 # Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://supabase-indigo-door.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://supabase-indigo-lamp.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_anon_key_here
 SUPABASE_SERVICE_ROLE_KEY=your_actual_service_role_key_here
 
