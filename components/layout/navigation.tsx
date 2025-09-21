@@ -23,7 +23,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 <Heart className="h-5 w-5 text-white" />
               </div>
               <span className="text-xl font-bold text-gray-900">
-                Event Raise
+                EventraiseHUB
               </span>
             </Link>
           </div>

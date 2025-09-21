@@ -27,13 +27,14 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
     
-    /* Event Raise Design System */
-    --event-blue: #2563EB;
-    --success-green: #10B981;
-    --warm-orange: #F59E0B;
-    --community-purple: #8B5CF6;
+    /* EventraiseHUB Design System */
+    --hub-blue: #1D4ED8;
+    --success-green: #059669;
+    --energy-orange: #EA580C;
+    --hub-purple: #7C3AED;
+    --hub-gold: #F59E0B;
     --charcoal: #1F2937;
-    --slate: #64748B;
+    --slate: #475569;
     
     /* Font Families */
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -41,10 +42,11 @@
     --font-accent: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-    --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
-    --gradient-warm: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-    --gradient-community: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+    --gradient-hub: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+    --gradient-success: linear-gradient(135deg, #059669 0%, #047857 100%);
+    --gradient-energy: linear-gradient(135deg, #EA580C 0%, #DC2626 100%);
+    --gradient-purple: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+    --gradient-gold: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
     
     /* Shadows */
     --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -90,30 +92,40 @@
   }
   
   /* Typography Hierarchy */
+  .display {
+    font-size: 3.5rem;
+    line-height: 4rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    letter-spacing: -0.02em;
+    font-family: var(--font-heading);
+  }
+  
   h1 { 
-    font-size: 2.5rem; 
-    font-weight: 600; 
+    font-size: 2.75rem; 
+    font-weight: 700; 
     line-height: 1.2; 
     color: var(--charcoal);
     font-family: var(--font-heading);
+    letter-spacing: -0.01em;
   }
   h2 { 
-    font-size: 2rem; 
+    font-size: 2.25rem; 
     font-weight: 600; 
     line-height: 1.3; 
     color: var(--charcoal);
     font-family: var(--font-heading);
   }
   h3 { 
-    font-size: 1.5rem; 
+    font-size: 1.75rem; 
     font-weight: 600; 
     line-height: 1.4; 
     color: var(--charcoal);
     font-family: var(--font-heading);
   }
   h4 { 
-    font-size: 1.25rem; 
-    font-weight: 500; 
+    font-size: 1.375rem; 
+    font-weight: 600; 
     line-height: 1.4; 
     color: var(--charcoal);
     font-family: var(--font-heading);
@@ -133,7 +145,7 @@
   }
   
   .btn-primary {
-    background: var(--gradient-primary);
+    background: var(--gradient-hub);
     color: white;
     padding: 12px 24px;
     border-radius: 8px;
@@ -141,27 +153,27 @@
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: var(--shadow-button);
+    box-shadow: 0 2px 4px rgba(29, 78, 216, 0.2);
   }
   
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 8px rgba(29, 78, 216, 0.3);
   }
   
   .btn-secondary {
     background: white;
-    color: var(--event-blue);
+    color: var(--hub-blue);
     padding: 12px 24px;
     border-radius: 8px;
     font-weight: 600;
-    border: 2px solid var(--event-blue);
+    border: 2px solid var(--hub-blue);
     cursor: pointer;
     transition: all 0.2s ease;
   }
   
   .btn-secondary:hover {
-    background: var(--event-blue);
+    background: var(--hub-blue);
     color: white;
   }
   

@@ -7,13 +7,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-500 hover:to-blue-600 shadow-lg shadow-blue-500/25 hover:shadow-blue-400/40 hover:scale-105",
+        default: "bg-gradient-to-r from-blue-700 to-blue-800 text-white hover:from-blue-600 hover:to-blue-700 shadow-lg shadow-blue-600/25 hover:shadow-blue-500/40 hover:scale-105",
         destructive:
           "bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-400 hover:to-red-500 shadow-lg shadow-red-500/25 hover:shadow-red-400/40",
         outline:
           "border border-blue-500/50 bg-transparent text-blue-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-700",
         secondary:
-          "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-400 hover:to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-orange-400/40",
+          "bg-gradient-to-r from-orange-600 to-orange-700 text-white hover:from-orange-500 hover:to-orange-600 shadow-lg shadow-orange-600/25 hover:shadow-orange-500/40",
         ghost: "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
         link: "text-blue-600 underline-offset-4 hover:underline hover:text-blue-700",
       },

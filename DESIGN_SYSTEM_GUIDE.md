@@ -1,62 +1,66 @@
-# 🎨 Event Raise Design System
+# 🚀 EventraiseHUB Design System
 
 ## Brand Overview
-Event Raise is a platform that empowers schools and parents to manage and fundraise for events. Our design system reflects our values of community, growth, and celebration.
+EventraiseHUB is the ultimate platform for schools and parents to manage and fundraise for events. Our design system reflects our values of community, growth, celebration, and energy with bold, impactful visuals that make fundraising fun and engaging.
 
 ---
 
 ## 1. Color Palette
 
 ### Primary Colors
-- **Event Blue**: `#2563EB` - Primary actions, navigation, key CTAs
-- **Success Green**: `#10B981` - Success states, progress indicators, positive feedback
+- **Hub Blue**: `#1D4ED8` - Primary actions, navigation, key CTAs (deeper, more impactful)
+- **Success Green**: `#059669` - Success states, progress indicators, positive feedback (more vibrant)
+- **Energy Orange**: `#EA580C` - Call-to-action, energy, enthusiasm (more vibrant)
+- **Hub Purple**: `#7C3AED` - Community, creativity, innovation (richer, more dynamic)
 
 ### Secondary Colors  
-- **Warm Orange**: `#F59E0B` - Accent elements, highlights, energy
-- **Community Purple**: `#8B5CF6` - Secondary actions, special features
-
-### Neutral Colors
-- **Charcoal**: `#1F2937` - Primary text, headers
-- **Slate**: `#64748B` - Secondary text, descriptions
+- **Hub Gold**: `#F59E0B` - Accent color for highlights and achievements
+- **Charcoal**: `#1F2937` - Primary text, headers (darker for better contrast)
+- **Slate**: `#475569` - Secondary text, descriptions (more defined)
 
 ### Usage Context
-- **Event Blue**: Buttons, links, navigation, primary branding
+- **Hub Blue**: Primary buttons, links, navigation, brand elements
 - **Success Green**: Progress bars, success messages, completion states
-- **Warm Orange**: Highlights, energy, celebration elements
-- **Community Purple**: Secondary buttons, special features, community elements
+- **Energy Orange**: CTAs, highlights, urgent actions, fundraising goals
+- **Hub Purple**: Community features, creative elements, events
+- **Hub Gold**: Achievements, milestones, special highlights
 - **Charcoal**: Headlines, important text, high contrast
 - **Slate**: Body text, captions, supporting information
 
 ### CSS Variables
 ```css
 :root {
-  --event-blue: #2563EB;
-  --success-green: #10B981;
-  --warm-orange: #F59E0B;
-  --community-purple: #8B5CF6;
+  --hub-blue: #1D4ED8;
+  --success-green: #059669;
+  --energy-orange: #EA580C;
+  --hub-purple: #7C3AED;
+  --hub-gold: #F59E0B;
   --charcoal: #1F2937;
-  --slate: #64748B;
+  --slate: #475569;
 }
 ```
 
 ### Tailwind Classes
 ```css
 /* Primary Colors */
-.text-event-blue { color: #2563EB; }
-.bg-event-blue { background-color: #2563EB; }
-.border-event-blue { border-color: #2563EB; }
+.text-hub-blue { color: #1D4ED8; }
+.bg-hub-blue { background-color: #1D4ED8; }
+.border-hub-blue { border-color: #1D4ED8; }
 
-.text-success-green { color: #10B981; }
-.bg-success-green { background-color: #10B981; }
+.text-success-green { color: #059669; }
+.bg-success-green { background-color: #059669; }
 
-.text-warm-orange { color: #F59E0B; }
-.bg-warm-orange { background-color: #F59E0B; }
+.text-energy-orange { color: #EA580C; }
+.bg-energy-orange { background-color: #EA580C; }
 
-.text-community-purple { color: #8B5CF6; }
-.bg-community-purple { background-color: #8B5CF6; }
+.text-hub-purple { color: #7C3AED; }
+.bg-hub-purple { background-color: #7C3AED; }
+
+.text-hub-gold { color: #F59E0B; }
+.bg-hub-gold { background-color: #F59E0B; }
 
 .text-charcoal { color: #1F2937; }
-.text-slate { color: #64748B; }
+.text-slate { color: #475569; }
 ```
 
 ---
@@ -64,15 +68,17 @@ Event Raise is a platform that empowers schools and parents to manage and fundra
 ## 2. Typography
 
 ### Font Stack
-- **Headings**: Inter (clean, modern, highly readable)
-- **Body**: Inter (consistent with headings)
-- **Accent**: Poppins (for special elements, celebrations)
+- **Headings**: Inter (clean, modern, highly readable, bold for impact)
+- **Body**: Inter (consistent with headings, excellent readability)
+- **Accent**: Poppins (for special elements, celebrations, energy)
+- **Display**: Inter (for large display text with maximum impact)
 
 ### Hierarchy
-- **H1**: `2.5rem / 3rem` (40px/48px) - Page titles
-- **H2**: `2rem / 2.5rem` (32px/40px) - Section headers
-- **H3**: `1.5rem / 2rem` (24px/32px) - Subsection headers
-- **H4**: `1.25rem / 1.75rem` (20px/28px) - Card titles
+- **Display**: `3.5rem / 4rem` (56px/64px) - Hero titles, maximum impact
+- **H1**: `2.75rem / 3.25rem` (44px/52px) - Page titles, bold and impactful
+- **H2**: `2.25rem / 2.75rem` (36px/44px) - Section headers, strong presence
+- **H3**: `1.75rem / 2.25rem` (28px/36px) - Subsection headers
+- **H4**: `1.375rem / 1.875rem` (22px/30px) - Card titles
 - **Body**: `1rem / 1.5rem` (16px/24px) - Regular text
 - **Caption**: `0.875rem / 1.25rem` (14px/20px) - Small text
 
@@ -106,16 +112,18 @@ body {
 ## 3. Logo & Icon Direction
 
 ### Wordmark Concept
-**"Event Raise"** - Clean, modern sans-serif with subtle upward motion
-- Primary: Inter Bold
-- Accent: Slight upward tilt on "Raise" (2-3 degrees)
-- Color: Event Blue (#2563EB)
+**"EventraiseHUB"** - Bold, energetic sans-serif with dynamic motion
+- Primary: Inter Bold (700 weight for maximum impact)
+- Accent: "HUB" in Energy Orange (#EA580C) for emphasis
+- Motion: Subtle upward tilt on "Raise" (3-4 degrees)
+- Color: Hub Blue (#1D4ED8) with Energy Orange accent
 
 ### Symbol Ideas
+- **Hub Icon**: Central connection point with radiating energy
 - **Rising Balloon**: Represents celebration and upward movement
-- **Community Hands**: Multiple hands coming together
-- **Growth Arrow**: Upward trending line with heart
-- **Event Ticket**: Stylized ticket with upward sweep
+- **Community Hands**: Multiple hands coming together in unity
+- **Growth Arrow**: Upward trending line with heart and energy
+- **Event Ticket**: Stylized ticket with upward sweep and Hub branding
 
 ### Sample Icons (SVG)
 
