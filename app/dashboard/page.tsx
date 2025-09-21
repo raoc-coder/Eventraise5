@@ -34,14 +34,14 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
         <div className="text-center">
           <div className="relative">
-            <Heart className="h-16 w-16 text-pink-500 bounce-animation mx-auto mb-4" />
-            <Sparkles className="h-6 w-6 text-yellow-400 absolute -top-2 -right-2 animate-pulse" />
+            <Heart className="h-16 w-16 text-cyan-400 bounce-animation mx-auto mb-4" />
+            <Sparkles className="h-6 w-6 text-orange-400 absolute -top-2 -right-2 animate-pulse" />
           </div>
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gradient font-semibold">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400 mx-auto"></div>
+          <p className="mt-4 text-white font-semibold">Loading your dashboard...</p>
         </div>
       </div>
     )

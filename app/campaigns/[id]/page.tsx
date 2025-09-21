@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Navigation } from '@/components/layout/navigation'
 import { 
   Heart, 
   Share2, 
@@ -132,31 +133,7 @@ export default function CampaignDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
-      {/* Navigation */}
-      <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
-                  <Heart className="h-5 w-5 text-white" />
-                </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
-                  EventraiseHub
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/events">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Browse Campaigns</Button>
-              </Link>
-              <Link href="/auth/login">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Login</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
