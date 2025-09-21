@@ -3,9 +3,9 @@
   "/api/create-payment-intent/route": "app/api/create-payment-intent/route.js",
   "/auth/login/page": "app/auth/login/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/events/create/page": "app/events/create/page.js",
-  "/volunteers/page": "app/volunteers/page.js",
   "/events/page": "app/events/page.js",
+  "/events/create/page": "app/events/create/page.js",
   "/auth/register/page": "app/auth/register/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/volunteers/page": "app/volunteers/page.js"
 }

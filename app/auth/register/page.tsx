@@ -80,14 +80,21 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4">
       <Card className="w-full max-w-md card-soft">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Heart className="h-8 w-8 text-blue-600" />
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                <Heart className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+                EventraiseHub
+              </span>
+            </div>
           </div>
-          <CardTitle className="text-2xl text-gray-900">Create Account</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl text-white">Create Account</CardTitle>
+          <CardDescription className="text-gray-300">
             Start your fundraising journey today
           </CardDescription>
         </CardHeader>
@@ -153,9 +160,9 @@ export default function RegisterPage() {
             </Button>
           </form>
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-300">
               Already have an account?{' '}
-              <Link href="/auth/login" className="text-blue-600 hover:underline">
+              <Link href="/auth/login" className="text-cyan-400 hover:underline">
                 Sign in
               </Link>
             </p>

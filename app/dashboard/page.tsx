@@ -52,18 +52,24 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b relative z-10">
+      <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Heart className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">EventRaise</span>
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+                  EventraiseHub
+                </span>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">Welcome, {user.user_metadata?.full_name || user.email}</span>
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-blue-600">Profile</Button>
+              <span className="text-sm text-gray-300">Welcome, {user.user_metadata?.full_name || user.email}</span>
+              <Button variant="ghost" size="sm" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Profile</Button>
             </div>
           </div>
         </div>
@@ -71,8 +77,8 @@ export default function DashboardPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Manage your fundraising campaigns and events</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
+          <p className="text-gray-300">Manage your fundraising campaigns and events</p>
         </div>
 
         {/* Stats Overview */}
