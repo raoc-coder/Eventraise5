@@ -1,4 +1,54 @@
 import '@testing-library/jest-dom'
+import { TextEncoder, TextDecoder } from 'util'
+
+// Polyfill for TextEncoder/TextDecoder for Jest environment
+if (typeof global.TextEncoder === 'undefined') {
+  global.TextEncoder = TextEncoder
+}
+if (typeof global.TextDecoder === 'undefined') {
+  global.TextDecoder = TextDecoder
+}
+
+// Polyfill for Response and other Web APIs
+if (typeof global.Response === 'undefined') {
+  global.Response = class Response {
+    constructor(body, init) {
+      this.body = body
+      this.status = init?.status || 200
+      this.statusText = init?.statusText || 'OK'
+      this.headers = new Headers(init?.headers)
+    }
+  }
+}
+if (typeof global.Request === 'undefined') {
+  global.Request = class Request {
+    constructor(input, init) {
+      this.url = input
+      this.method = init?.method || 'GET'
+      this.headers = new Headers(init?.headers)
+    }
+  }
+}
+if (typeof global.Headers === 'undefined') {
+  global.Headers = class Headers {
+    constructor(init) {
+      this.map = new Map()
+      if (init) {
+        if (Array.isArray(init)) {
+          init.forEach(([key, value]) => this.map.set(key, value))
+        } else if (typeof init === 'object') {
+          Object.entries(init).forEach(([key, value]) => this.map.set(key, value))
+        }
+      }
+    }
+    get(name) {
+      return this.map.get(name.toLowerCase())
+    }
+    set(name, value) {
+      this.map.set(name.toLowerCase(), value)
+    }
+  }
+}
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -129,23 +179,3 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 })
-
-// Mock MSW for tests that don't need it
-jest.mock('msw', () => ({
-  http: {
-    get: jest.fn(),
-    post: jest.fn(),
-  },
-  HttpResponse: {
-    json: jest.fn(),
-  },
-}))
-
-// Mock MSW server
-jest.mock('msw/node', () => ({
-  setupServer: jest.fn(() => ({
-    listen: jest.fn(),
-    close: jest.fn(),
-    resetHandlers: jest.fn(),
-  })),
-}))

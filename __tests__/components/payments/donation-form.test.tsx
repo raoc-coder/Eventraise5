@@ -1,6 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import { DonationForm } from '@/components/payments/donation-form'
-import { mockCampaign } from '../../utils/test-utils'
+
+const mockCampaign = {
+  id: 'test-campaign-id',
+  title: 'Test Campaign',
+  goal_amount: 10000,
+  current_amount: 5000,
+}
 
 // Mock fetch
 global.fetch = jest.fn()
@@ -42,15 +48,20 @@ describe('DonationForm Component', () => {
     expect(screen.getByRole('button', { name: '$500' })).toBeInTheDocument()
   })
 
-  it('renders custom amount input', () => {
+  it('renders form fields correctly', () => {
     render(<DonationForm {...defaultProps} />)
     
     expect(screen.getByPlaceholderText('Enter custom amount')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Enter your full name')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /donate/i })).toBeInTheDocument()
   })
 
-  it('renders donate button', () => {
+  it('allows custom amount input', () => {
     render(<DonationForm {...defaultProps} />)
     
-    expect(screen.getByRole('button', { name: /donate/i })).toBeInTheDocument()
+    const customInput = screen.getByPlaceholderText('Enter custom amount')
+    expect(customInput).toBeInTheDocument()
+    expect(customInput).toHaveAttribute('type', 'text')
   })
 })

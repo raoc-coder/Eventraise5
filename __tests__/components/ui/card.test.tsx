@@ -18,7 +18,7 @@ describe('Card Components', () => {
     it('applies correct classes', () => {
       render(<Card>Card content</Card>)
       const card = screen.getByText('Card content')
-      expect(card).toHaveClass('rounded-xl', 'border-gray-200', 'bg-white', 'text-gray-900')
+      expect(card).toHaveClass('rounded-xl', 'border', 'border-gray-200', 'bg-white', 'text-gray-900', 'shadow-sm')
     })
 
     it('applies custom className', () => {
