@@ -26,6 +26,13 @@ export function getAuthRedirectUrl() {
   return `${appUrl}/auth/callback`;
 }
 
+// Alternative: Force production URL for email confirmations
+export function getEmailRedirectUrl() {
+  // Always use production URL for email confirmations
+  // This ensures consistency with Supabase dashboard settings
+  return 'https://eventraise2.vercel.app/auth/callback';
+}
+
 export function getConfirmRedirectUrl() {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;

@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Heart, Sparkles } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getAuthRedirectUrl } from '@/lib/auth-config'
+import { getAuthRedirectUrl, getEmailRedirectUrl } from '@/lib/auth-config'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -68,8 +68,14 @@ export default function RegisterPage() {
             full_name: formData.fullName,
             organization_name: formData.organizationName,
           },
-          emailRedirectTo: getAuthRedirectUrl()
+          emailRedirectTo: getEmailRedirectUrl()
         }
+      })
+
+      console.log('Registration attempt:', {
+        email: formData.email,
+        redirectUrl: getEmailRedirectUrl(),
+        currentOrigin: typeof window !== 'undefined' ? window.location.origin : 'server'
       })
 
       if (error) {
