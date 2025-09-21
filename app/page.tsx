@@ -16,39 +16,34 @@ import {
   Zap,
   Gift,
   Target,
-  Award
+  Award,
+  ArrowRight,
+  CheckCircle
 } from 'lucide-react'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
-      {/* Neon Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-cyan-400/10 to-orange-400/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-      </div>
-
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
+      <nav className="bg-white border-b border-gray-200 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
-                    <Heart className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
-                  EventraiseHub
-                </span>
+              <span className="text-xl font-bold text-gray-900">
+                Event Raise
+              </span>
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <Link href="/events">
+                <Button variant="ghost" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50">Events</Button>
+              </Link>
               <Link href="/auth/login">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Login</Button>
+                <Button variant="ghost" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50">Login</Button>
               </Link>
               <Link href="/auth/register">
                 <Button className="btn-primary">Get Started</Button>
@@ -59,144 +54,302 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-orange-500 bg-clip-text text-transparent">
-              Raise More. Stress Less. Celebrate Together.
-            </span>
-          </h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Create powerful fundraising events, manage volunteers, and track progress in real-time. 
-            Everything you need to make your cause successful.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register">
-              <Button size="lg" className="btn-primary w-full sm:w-auto">
-                Start Your Campaign
-              </Button>
-            </Link>
-            <Link href="/events">
-              <Button variant="outline" size="lg" className="btn-secondary w-full sm:w-auto">
-                Browse Events
-              </Button>
-            </Link>
+      <section className="relative py-20 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              Raise More. Stress Less.{' '}
+              <span className="text-gradient">Celebrate Together.</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              The all-in-one platform for schools and parents to manage fundraising events, 
+              track progress, and build stronger communities.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/auth/register">
+                <Button className="btn-primary text-lg px-8 py-4">
+                  Start Your First Campaign
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/events">
+                <Button variant="secondary" className="text-lg px-8 py-4">
+                  Browse Events
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-black/50 backdrop-blur-sm relative">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
-                Everything You Need to Succeed
-              </span>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Everything You Need to Fundraise Successfully
             </h2>
-            <p className="text-lg text-gray-300">
-              Powerful tools designed for modern fundraising
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              From event planning to payment processing, we&apos;ve got you covered.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="card-soft hover:card-elevated transition-all duration-300">
+            <Card className="event-card">
               <CardHeader>
-                <Calendar className="h-8 w-8 text-cyan-400 mb-4" />
-                <CardTitle className="text-white">Event Management</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Create walk-a-thons, auctions, product sales, direct donations, and raffles
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
+                  <Calendar className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-gray-900">Event Management</CardTitle>
+                <CardDescription className="text-gray-600">
+                  Create and manage fundraising events with ease
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Walk-a-thons & Fun Runs
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Silent Auctions
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Product Sales
+                  </li>
+                </ul>
+              </CardContent>
             </Card>
 
-            <Card className="card-soft hover:card-elevated transition-all duration-300">
+            <Card className="event-card">
               <CardHeader>
-                <Users className="h-8 w-8 text-orange-400 mb-4" />
-                <CardTitle className="text-white">Volunteer Management</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Sign-up sheets, automated reminders, and shift scheduling
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
+                  <DollarSign className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-charcoal">Payment Processing</CardTitle>
+                <CardDescription className="text-slate">
+                  Secure, fast, and reliable payment collection
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Credit Card & ACH
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Mobile Wallets
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Tax Receipts
+                  </li>
+                </ul>
+              </CardContent>
             </Card>
 
-            <Card className="card-soft hover:card-elevated transition-all duration-300">
+            <Card className="event-card">
               <CardHeader>
-                <DollarSign className="h-8 w-8 text-cyan-400 mb-4" />
-                <CardTitle className="text-white">Payment Processing</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Credit cards, ACH, mobile wallets with Stripe integration
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-charcoal">Volunteer Management</CardTitle>
+                <CardDescription className="text-slate">
+                  Organize volunteers and track participation
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Sign-up Sheets
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Shift Scheduling
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Automated Reminders
+                  </li>
+                </ul>
+              </CardContent>
             </Card>
 
-            <Card className="card-soft hover:card-elevated transition-all duration-300">
+            <Card className="event-card">
               <CardHeader>
-                <TrendingUp className="h-8 w-8 text-orange-400 mb-4" />
-                <CardTitle className="text-white">Real-time Tracking</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Live leaderboards, progress goals, and donor recognition
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-4">
+                  <BarChart3 className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-charcoal">Real-time Tracking</CardTitle>
+                <CardDescription className="text-slate">
+                  Monitor progress and celebrate milestones
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Progress Dashboards
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Leaderboards
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Goal Tracking
+                  </li>
+                </ul>
+              </CardContent>
             </Card>
 
-            <Card className="card-soft hover:card-elevated transition-all duration-300">
+            <Card className="event-card">
               <CardHeader>
-                <Smartphone className="h-8 w-8 text-cyan-400 mb-4" />
-                <CardTitle className="text-white">Promotion Tools</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Email, SMS, and social media integrations
+                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center mb-4">
+                  <Smartphone className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-charcoal">Mobile Optimized</CardTitle>
+                <CardDescription className="text-slate">
+                  Access everything from any device, anywhere
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Responsive Design
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Mobile Payments
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Push Notifications
+                  </li>
+                </ul>
+              </CardContent>
             </Card>
 
-            <Card className="card-soft hover:card-elevated transition-all duration-300">
+            <Card className="event-card">
               <CardHeader>
-                <BarChart3 className="h-8 w-8 text-orange-400 mb-4" />
-                <CardTitle className="text-white">Reports & Analytics</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Financial summaries, tax receipts, and compliance-ready reports
+                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
+                  <Shield className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-charcoal">Secure & Compliant</CardTitle>
+                <CardDescription className="text-slate">
+                  Bank-level security with full compliance
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    PCI DSS Compliant
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Data Encryption
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    Audit Reports
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Trusted by Schools Nationwide
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              See how schools are raising more with Event Raise
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="event-card text-center">
+              <CardContent className="pt-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">$2.5M+</h3>
+                <p className="text-gray-600">Raised by our community</p>
+              </CardContent>
+            </Card>
+
+            <Card className="event-card text-center">
+              <CardContent className="pt-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">500+</h3>
+                <p className="text-gray-600">Schools using Event Raise</p>
+              </CardContent>
+            </Card>
+
+            <Card className="event-card text-center">
+              <CardContent className="pt-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">4.9/5</h3>
+                <p className="text-gray-600">Average user rating</p>
+              </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-cyan-500/20 to-orange-500/20 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Make a Difference?
+      <section className="py-20 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Ready to Raise More for Your School?
           </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Join thousands of organizations already using EventraiseHub
+          <p className="text-lg text-gray-600 mb-8">
+            Join thousands of schools already using Event Raise to create amazing fundraising experiences.
           </p>
-          <Link href="/auth/register">
-            <Button size="lg" className="btn-primary">
-              Start Your First Campaign
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/auth/register">
+              <Button className="btn-primary text-lg px-8 py-4">
+                Start Your First Campaign
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/events">
+              <Button variant="secondary" className="text-lg px-8 py-4">
+                See Examples
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-12 border-t border-cyan-500/20">
+      <footer className="bg-charcoal text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center mb-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-cyan-400 to-blue-500 rounded flex items-center justify-center">
-                    <Heart className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
-                    EventraiseHub
-                  </span>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-white" />
                 </div>
+                <span className="text-lg font-bold">Event Raise</span>
               </div>
               <p className="text-gray-400">
-                Empowering organizations to raise more and impact more.
+                Empowering schools to raise more and build stronger communities.
               </p>
             </div>
             <div>
@@ -224,8 +377,8 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 EventRaise. All rights reserved.</p>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 Event Raise. All rights reserved.</p>
           </div>
         </div>
       </footer>

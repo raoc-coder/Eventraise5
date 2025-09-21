@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,26 +27,30 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
     
-    /* EventraiseHub Neon Design System */
-    --neon-blue: #00BFFF;
-    --neon-orange: #FF6B35;
-    --dark-bg: #0A0A0A;
-    --dark-surface: #1A1A1A;
-    --text-light: #FFFFFF;
-    --text-muted: #B0B0B0;
+    /* Event Raise Design System */
+    --event-blue: #2563EB;
+    --success-green: #10B981;
+    --warm-orange: #F59E0B;
+    --community-purple: #8B5CF6;
+    --charcoal: #1F2937;
+    --slate: #64748B;
     
-    /* Neon Gradients */
-    --gradient-primary: linear-gradient(135deg, #00BFFF 0%, #0099CC 100%);
-    --gradient-accent: linear-gradient(135deg, #FF6B35 0%, #FF4500 100%);
-    --gradient-neon: linear-gradient(135deg, #00BFFF 0%, #FF6B35 100%);
-    --gradient-dark: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+    /* Font Families */
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-accent: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     
-    /* Neon Shadows and Effects */
-    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
-    --shadow-neon-blue: 0 0 20px rgba(0, 191, 255, 0.3);
-    --shadow-neon-orange: 0 0 20px rgba(255, 107, 53, 0.3);
-    --shadow-button: 0 0 10px rgba(0, 191, 255, 0.4);
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    --gradient-warm: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    --gradient-community: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+    
+    /* Shadows */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-button: 0 2px 4px rgba(37, 99, 235, 0.2);
+    --shadow-success: 0 4px 12px rgba(16, 185, 129, 0.3);
   }
 
   .dark {
@@ -74,59 +80,89 @@
   * {
     @apply border-gray-200;
   }
+  
   body {
-    background: var(--gradient-dark);
-    color: var(--text-light);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: white;
+    color: var(--charcoal);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.5;
   }
   
   /* Typography Hierarchy */
   h1 { 
     font-size: 2.5rem; 
-    font-weight: 700; 
+    font-weight: 600; 
     line-height: 1.2; 
-    color: var(--text-light);
-    text-shadow: var(--shadow-neon-blue);
+    color: var(--charcoal);
+    font-family: var(--font-heading);
   }
   h2 { 
     font-size: 2rem; 
     font-weight: 600; 
     line-height: 1.3; 
-    color: var(--text-light);
-    text-shadow: var(--shadow-neon-blue);
+    color: var(--charcoal);
+    font-family: var(--font-heading);
   }
   h3 { 
     font-size: 1.5rem; 
     font-weight: 600; 
     line-height: 1.4; 
-    color: var(--text-light);
+    color: var(--charcoal);
+    font-family: var(--font-heading);
   }
   h4 { 
     font-size: 1.25rem; 
     font-weight: 500; 
     line-height: 1.4; 
-    color: var(--text-light);
+    color: var(--charcoal);
+    font-family: var(--font-heading);
   }
   
   .caption { 
     font-size: 0.875rem; 
     font-weight: 400; 
     line-height: 1.5; 
-    color: var(--text-muted);
+    color: var(--slate);
   }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
   }
   
   .btn-primary {
-    @apply bg-blue-600 text-white hover:bg-blue-700;
+    background: var(--gradient-primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-button);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
   }
   
   .btn-secondary {
-    @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
+    background: white;
+    color: var(--event-blue);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 2px solid var(--event-blue);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background: var(--event-blue);
+    color: white;
   }
   
   .btn-outline {
@@ -138,22 +174,28 @@
   }
   
   .btn-sm {
-    @apply h-9 px-3 rounded-md;
+    @apply h-9 px-3 rounded-lg;
   }
   
   .btn-lg {
-    @apply h-11 px-8 rounded-md;
+    @apply h-11 px-8 rounded-lg;
   }
   
   .card {
-    @apply rounded-lg border border-gray-200 bg-white text-gray-900 shadow-sm;
+    @apply rounded-xl border border-gray-200 bg-white text-gray-900 shadow-sm;
+    transition: all 0.2s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
   }
   
   .input {
-    @apply flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   
-  /* Professional Design Components */
+  /* Event Raise Design Components */
   .gradient-bg-primary {
     background: var(--gradient-primary);
   }
@@ -166,93 +208,30 @@
     background: var(--gradient-warm);
   }
   
-  .gradient-bg-purple {
-    background: var(--gradient-purple);
+  .gradient-bg-community {
+    background: var(--gradient-community);
   }
   
-  .card-soft {
-    background: var(--dark-surface);
+  .event-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
     box-shadow: var(--shadow-soft);
-    border-radius: 12px;
-    border: 1px solid rgba(0, 191, 255, 0.2);
-    color: var(--text-light);
+    border: 1px solid #E5E7EB;
+    transition: all 0.2s ease;
   }
   
-  .card-elevated {
-    background: var(--dark-surface);
+  .event-card:hover {
+    transform: translateY(-2px);
     box-shadow: var(--shadow-elevated);
+  }
+  
+  .success-card {
+    background: var(--gradient-success);
+    color: white;
     border-radius: 12px;
-    border: 1px solid var(--neon-blue);
-    color: var(--text-light);
-  }
-  
-  .btn-primary {
-    background: var(--gradient-primary);
-    color: var(--text-light);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-neon-blue);
-    border: 1px solid var(--neon-blue);
-    cursor: pointer;
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-neon-blue), 0 8px 16px rgba(0, 191, 255, 0.4);
-    background: var(--gradient-neon);
-  }
-  
-  .btn-secondary {
-    background: transparent;
-    color: var(--neon-orange);
-    border: 2px solid var(--neon-orange);
-    padding: 10px 22px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .btn-secondary:hover {
-    background: var(--gradient-accent);
-    color: var(--text-light);
-    box-shadow: var(--shadow-neon-orange);
-  }
-  
-  .btn-success {
-    background: var(--gradient-accent);
-    color: var(--text-light);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: 1px solid var(--neon-orange);
-    cursor: pointer;
-    box-shadow: var(--shadow-neon-orange);
-  }
-  
-  .btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-neon-orange), 0 8px 16px rgba(255, 107, 53, 0.4);
-  }
-  
-  .btn-disabled {
-    background: #E5E7EB;
-    color: #9CA3AF;
-    padding: 12px 24px;
-    border-radius: 8px;
-    cursor: not-allowed;
-  }
-  
-  /* Professional Alert Styles */
-  .alert-success {
-    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
-    border: 1px solid var(--primary-green);
-    border-radius: 8px;
-    padding: 16px;
-    color: #065F46;
+    padding: 24px;
+    box-shadow: var(--shadow-success);
   }
   
   .celebration-callout {
@@ -264,14 +243,22 @@
     color: #92400E;
   }
   
-  .progress-card {
-    background: var(--gradient-success);
-    color: white;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
+  .alert-success {
+    background: #ECFDF5;
+    border: 1px solid var(--success-green);
+    border-radius: 8px;
+    padding: 16px;
+    color: #065F46;
   }
   
+  .alert-success::before {
+    content: "✓";
+    color: var(--success-green);
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  
+  /* Animations */
   .floating-animation {
     animation: float 6s ease-in-out infinite;
   }
@@ -289,43 +276,11 @@
   }
   
   .text-gradient-warm {
-    @apply bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-orange-500 to-green-500 bg-clip-text text-transparent;
   }
   
   .text-gradient-success {
-    @apply bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent;
-  }
-  
-  .decorative-dots {
-    position: relative;
-  }
-  
-  .decorative-dots::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    background-image: radial-gradient(circle, rgba(102, 126, 234, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    border-radius: inherit;
-    z-index: -1;
-  }
-  
-  .heart-float {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .heart-float::before {
-    content: '💖';
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: heart-float 3s ease-in-out infinite;
-    font-size: 1.5rem;
+    @apply bg-gradient-to-r from-green-500 to-blue-600 bg-clip-text text-transparent;
   }
 }
 
