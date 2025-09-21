@@ -46,9 +46,21 @@ export default function EmailConfirmPage() {
     const handleEmailConfirmation = async () => {
       const token_hash = searchParams.get('token_hash')
       const type = searchParams.get('type')
+      const access_token = searchParams.get('access_token')
+      const refresh_token = searchParams.get('refresh_token')
       const next = searchParams.get('next') ?? '/dashboard'
 
+      console.log('Email confirmation params:', {
+        token_hash,
+        type,
+        access_token,
+        refresh_token,
+        allParams: Object.fromEntries(searchParams.entries())
+      })
+
+      // Handle different types of confirmation links
       if (token_hash && type) {
+        // OTP-based confirmation
         try {
           const { error } = await supabase.auth.verifyOtp({
             token_hash,
@@ -73,9 +85,36 @@ export default function EmailConfirmPage() {
           setStatus('error')
           setMessage('An unexpected error occurred during email confirmation.')
         }
+      } else if (access_token && refresh_token) {
+        // Token-based confirmation
+        try {
+          const { error } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          })
+
+          if (error) {
+            console.error('Session error:', error)
+            setStatus('error')
+            setMessage(error.message || 'Failed to confirm email address.')
+          } else {
+            setStatus('success')
+            setMessage('Email confirmed successfully! You can now sign in.')
+            
+            // Redirect to dashboard after a short delay
+            setTimeout(() => {
+              router.push(next)
+            }, 2000)
+          }
+        } catch (error) {
+          console.error('Session exception:', error)
+          setStatus('error')
+          setMessage('An unexpected error occurred during email confirmation.')
+        }
       } else {
         setStatus('error')
         setMessage('Invalid confirmation link. Please try again.')
+        console.error('Missing required parameters:', { token_hash, type, access_token, refresh_token })
       }
     }
 
