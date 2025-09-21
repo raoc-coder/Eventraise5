@@ -19,11 +19,15 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event
 
   try {
+    // Security: Verify webhook signature to prevent unauthorized requests
     event = stripe.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     )
+    
+    // Security: Log webhook events for audit trail
+    console.log(`Received verified webhook: ${event.type} (${event.id})`)
   } catch (err) {
     console.error('Webhook signature verification failed:', err)
     return NextResponse.json(
