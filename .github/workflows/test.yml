@@ -25,6 +25,14 @@ jobs:
     - name: Run unit tests
       run: npm run test:unit
     
+    - name: Upload unit test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: unit-test-results
+        path: coverage/
+        if-no-files-found: ignore
+    
     - name: Upload coverage reports
       uses: codecov/codecov-action@v3
       with:
@@ -56,6 +64,7 @@ jobs:
       with:
         name: integration-test-results
         path: test-results/
+        if-no-files-found: ignore
 
   e2e-tests:
     runs-on: ubuntu-latest
@@ -81,7 +90,9 @@ jobs:
       run: npm run build
     
     - name: Start application
-      run: npm start &
+      run: |
+        npm start &
+        echo "Application started in background"
       env:
         NODE_ENV: test
         NEXT_PUBLIC_SUPABASE_URL: https://test.supabase.co
@@ -90,7 +101,8 @@ jobs:
         NEXT_PUBLIC_APP_URL: http://localhost:3000
     
     - name: Wait for application to start
-      run: npx wait-on http://localhost:3000 || echo "Application start timeout, continuing..."
+      run: |
+        timeout 30 bash -c 'until curl -f http://localhost:3000; do sleep 1; done' || echo "Application start timeout, continuing..."
     
     - name: Run E2E tests
       run: npm run test:e2e || echo "E2E tests skipped due to environment issues"
@@ -102,6 +114,7 @@ jobs:
       with:
         name: e2e-test-results
         path: cypress/screenshots
+        if-no-files-found: ignore
       
     - name: Upload E2E videos
       uses: actions/upload-artifact@v3
@@ -109,6 +122,7 @@ jobs:
       with:
         name: e2e-test-videos
         path: cypress/videos
+        if-no-files-found: ignore
 
   test-summary:
     runs-on: ubuntu-latest
@@ -122,6 +136,7 @@ jobs:
       with:
         name: unit-test-results
         path: ./unit-results/
+        if-no-files-found: ignore
     
     - name: Download integration test results
       uses: actions/download-artifact@v3
@@ -129,6 +144,7 @@ jobs:
       with:
         name: integration-test-results
         path: ./integration-results/
+        if-no-files-found: ignore
     
     - name: Download E2E test results
       uses: actions/download-artifact@v3
@@ -136,6 +152,7 @@ jobs:
       with:
         name: e2e-test-results
         path: ./e2e-results/
+        if-no-files-found: ignore
     
     - name: Generate test summary
       run: |
