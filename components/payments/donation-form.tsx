@@ -60,6 +60,13 @@ export function DonationForm({
       return
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(donorEmail.trim())) {
+      toast.error('Please enter a valid email address')
+      return
+    }
+
     setIsLoading(true)
 
     // Track donation started
@@ -87,7 +94,8 @@ export function DonationForm({
         throw new Error(data.error || 'Failed to create checkout session')
       }
 
-      // Redirect to Stripe Checkout
+      // Show loading state and redirect to Stripe Checkout
+      toast.loading('Redirecting to secure payment...', { duration: 2000 })
       window.location.href = data.sessionUrl
 
     } catch (error) {

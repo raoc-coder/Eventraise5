@@ -5,6 +5,7 @@ import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { trackDonationCompleted } from '@/lib/analytics'
 import { MonitoringService } from '@/lib/monitoring'
+import { SendGridService } from '@/lib/sendgrid'
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -136,6 +137,61 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       campaign_id: campaignId,
       donor_email: donorEmail ? 'provided' : 'anonymous',
     })
+
+    // Send confirmation and receipt emails
+    if (donorEmail) {
+      try {
+        // Get campaign details for email
+        const { data: campaign } = await supabase
+          .from('campaigns')
+          .select('title, description, goal_amount, current_amount')
+          .eq('id', campaignId)
+          .single()
+
+        if (campaign) {
+          const donationDate = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
+
+          const progressPercentage = campaign.goal_amount > 0 
+            ? (campaign.current_amount / campaign.goal_amount) * 100 
+            : 0
+
+          // Send confirmation email
+          await SendGridService.sendDonationConfirmation({
+            donorName,
+            donorEmail,
+            amount,
+            campaignTitle: campaign.title,
+            campaignDescription: campaign.description,
+            donationId: donation.id,
+            transactionId: session.payment_intent as string,
+            donationDate,
+            progressPercentage,
+            goalAmount: campaign.goal_amount,
+            currentAmount: campaign.current_amount,
+          })
+
+          // Send receipt email
+          await SendGridService.sendDonationReceipt({
+            donorName,
+            donorEmail,
+            amount,
+            campaignTitle: campaign.title,
+            campaignDescription: campaign.description,
+            donationId: donation.id,
+            transactionId: session.payment_intent as string,
+            donationDate,
+            taxDeductible: true, // Assuming donations are tax deductible
+          })
+        }
+      } catch (emailError) {
+        console.error('Error sending emails:', emailError)
+        // Don't fail the webhook if email sending fails
+      }
+    }
 
     console.log('Successfully processed donation:', {
       donationId: donation.id,
