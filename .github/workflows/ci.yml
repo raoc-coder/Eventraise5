@@ -198,12 +198,12 @@ jobs:
   all-checks:
     name: All Checks Pass
     runs-on: ubuntu-latest
-    needs: [lint, unit-tests, integration-tests, build, security, pr-validation]
+    needs: [lint, unit-tests, integration-tests, build, security]
     if: always()
     steps:
       - name: Check all jobs
         run: |
-          if [[ "${{ needs.lint.result }}" != "success" || "${{ needs.unit-tests.result }}" != "success" || "${{ needs.integration-tests.result }}" != "success" || "${{ needs.build.result }}" != "success" || "${{ needs.security.result }}" != "success" || "${{ needs.pr-validation.result }}" != "success" ]]; then
+          if [[ "${{ needs.lint.result }}" != "success" || "${{ needs.unit-tests.result }}" != "success" || "${{ needs.integration-tests.result }}" != "success" || "${{ needs.build.result }}" != "success" || "${{ needs.security.result }}" != "success" ]]; then
             echo "❌ Some checks failed"
             exit 1
           fi

@@ -356,7 +356,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import posthog from 'posthog-js'
 &nbsp;
 // Initialize PostHog
-export const <span class="cstat-no" title="statement not covered" >initAnalytics </span>= <span class="fstat-no" title="function not covered" >() =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >initAnalytics = <span class="fstat-no" title="function not covered" >(</span>) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  if (typeof window !== 'undefined' &amp;&amp; process.env.NEXT_PUBLIC_POSTHOG_KEY) {</span>
 <span class="cstat-no" title="statement not covered" >    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {</span>
       api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
@@ -368,7 +368,7 @@ export const <span class="cstat-no" title="statement not covered" >initAnalytics
 }
 &nbsp;
 // Analytics event tracking
-export const <span class="cstat-no" title="statement not covered" >trackEvent </span>= <span class="fstat-no" title="function not covered" >(e</span>ventName: string, properties?: Record&lt;string, any&gt;) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackEvent = <span class="fstat-no" title="function not covered" >(</span>e</span>ventName: string, properties?: Record&lt;string, any&gt;) =&gt; {
 <span class="cstat-no" title="statement not covered" >  if (typeof window !== 'undefined' &amp;&amp; posthog) {</span>
 <span class="cstat-no" title="statement not covered" >    posthog.capture(eventName, {</span>
       ...properties,
@@ -378,14 +378,14 @@ export const <span class="cstat-no" title="statement not covered" >trackEvent </
 }
 &nbsp;
 // User identification
-export const <span class="cstat-no" title="statement not covered" >identifyUser </span>= <span class="fstat-no" title="function not covered" >(u</span>serId: string, properties?: Record&lt;string, any&gt;) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >identifyUser = <span class="fstat-no" title="function not covered" >(</span>u</span>serId: string, properties?: Record&lt;string, any&gt;) =&gt; {
 <span class="cstat-no" title="statement not covered" >  if (typeof window !== 'undefined' &amp;&amp; posthog) {</span>
 <span class="cstat-no" title="statement not covered" >    posthog.identify(userId, properties)</span>
   }
 }
 &nbsp;
 // Page view tracking
-export const <span class="cstat-no" title="statement not covered" >trackPageView </span>= <span class="fstat-no" title="function not covered" >(p</span>ath: string, properties?: Record&lt;string, any&gt;) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackPageView = <span class="fstat-no" title="function not covered" >(</span>p</span>ath: string, properties?: Record&lt;string, any&gt;) =&gt; {
 <span class="cstat-no" title="statement not covered" >  if (typeof window !== 'undefined' &amp;&amp; posthog) {</span>
 <span class="cstat-no" title="statement not covered" >    posthog.capture('$pageview', {</span>
       $current_url: path,
@@ -395,7 +395,7 @@ export const <span class="cstat-no" title="statement not covered" >trackPageView
 }
 &nbsp;
 // Campaign-specific events
-export const <span class="cstat-no" title="statement not covered" >trackDonationStarted </span>= <span class="fstat-no" title="function not covered" >(c</span>ampaignId: string, amount: number) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackDonationStarted = <span class="fstat-no" title="function not covered" >(</span>c</span>ampaignId: string, amount: number) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('donation_started', {</span>
     campaign_id: campaignId,
     amount,
@@ -403,7 +403,7 @@ export const <span class="cstat-no" title="statement not covered" >trackDonation
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackDonationCompleted </span>= <span class="fstat-no" title="function not covered" >(c</span>ampaignId: string, amount: number, donorEmail?: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackDonationCompleted = <span class="fstat-no" title="function not covered" >(</span>c</span>ampaignId: string, amount: number, donorEmail?: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('donation_completed', {</span>
     campaign_id: campaignId,
     amount,
@@ -412,7 +412,7 @@ export const <span class="cstat-no" title="statement not covered" >trackDonation
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackDonationFailed </span>= <span class="fstat-no" title="function not covered" >(c</span>ampaignId: string, amount: number, error: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackDonationFailed = <span class="fstat-no" title="function not covered" >(</span>c</span>ampaignId: string, amount: number, error: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('donation_failed', {</span>
     campaign_id: campaignId,
     amount,
@@ -421,7 +421,7 @@ export const <span class="cstat-no" title="statement not covered" >trackDonation
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackEventRegistration </span>= <span class="fstat-no" title="function not covered" >(e</span>ventId: string, eventTitle: string, amount: number, participantEmail: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackEventRegistration = <span class="fstat-no" title="function not covered" >(</span>e</span>ventId: string, eventTitle: string, amount: number, participantEmail: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('event_registration_started', {</span>
     event_id: eventId,
     event_title: eventTitle,
@@ -430,7 +430,7 @@ export const <span class="cstat-no" title="statement not covered" >trackEventReg
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackEventRegistrationCompleted </span>= <span class="fstat-no" title="function not covered" >(e</span>ventId: string, eventTitle: string, amount: number, participantEmail: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackEventRegistrationCompleted = <span class="fstat-no" title="function not covered" >(</span>e</span>ventId: string, eventTitle: string, amount: number, participantEmail: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('event_registration_completed', {</span>
     event_id: eventId,
     event_title: eventTitle,
@@ -439,7 +439,7 @@ export const <span class="cstat-no" title="statement not covered" >trackEventReg
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackEventRegistrationFailed </span>= <span class="fstat-no" title="function not covered" >(e</span>ventId: string, eventTitle: string, amount: number, error: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackEventRegistrationFailed = <span class="fstat-no" title="function not covered" >(</span>e</span>ventId: string, eventTitle: string, amount: number, error: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('event_registration_failed', {</span>
     event_id: eventId,
     event_title: eventTitle,
@@ -449,7 +449,7 @@ export const <span class="cstat-no" title="statement not covered" >trackEventReg
 }
 &nbsp;
 // Volunteer signup tracking
-export const <span class="cstat-no" title="statement not covered" >trackVolunteerSignup </span>= <span class="fstat-no" title="function not covered" >(e</span>ventId: string, eventTitle: string, shiftId: string, volunteerEmail: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackVolunteerSignup = <span class="fstat-no" title="function not covered" >(</span>e</span>ventId: string, eventTitle: string, shiftId: string, volunteerEmail: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('volunteer_signup_started', {</span>
     event_id: eventId,
     event_title: eventTitle,
@@ -458,7 +458,7 @@ export const <span class="cstat-no" title="statement not covered" >trackVoluntee
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackVolunteerSignupCompleted </span>= <span class="fstat-no" title="function not covered" >(e</span>ventId: string, eventTitle: string, shiftId: string, volunteerEmail: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackVolunteerSignupCompleted = <span class="fstat-no" title="function not covered" >(</span>e</span>ventId: string, eventTitle: string, shiftId: string, volunteerEmail: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('volunteer_signup_completed', {</span>
     event_id: eventId,
     event_title: eventTitle,
@@ -467,7 +467,7 @@ export const <span class="cstat-no" title="statement not covered" >trackVoluntee
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackVolunteerSignupFailed </span>= <span class="fstat-no" title="function not covered" >(e</span>ventId: string, eventTitle: string, shiftId: string, error: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackVolunteerSignupFailed = <span class="fstat-no" title="function not covered" >(</span>e</span>ventId: string, eventTitle: string, shiftId: string, error: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('volunteer_signup_failed', {</span>
     event_id: eventId,
     event_title: eventTitle,
@@ -476,7 +476,7 @@ export const <span class="cstat-no" title="statement not covered" >trackVoluntee
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackCampaignCreated </span>= <span class="fstat-no" title="function not covered" >(c</span>ampaignId: string, title: string, goal: number) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackCampaignCreated = <span class="fstat-no" title="function not covered" >(</span>c</span>ampaignId: string, title: string, goal: number) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('campaign_created', {</span>
     campaign_id: campaignId,
     title,
@@ -485,14 +485,14 @@ export const <span class="cstat-no" title="statement not covered" >trackCampaign
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackUserRegistration </span>= <span class="fstat-no" title="function not covered" >(u</span>serId: string, method: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackUserRegistration = <span class="fstat-no" title="function not covered" >(</span>u</span>serId: string, method: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('user_registration', {</span>
     user_id: userId,
     registration_method: method,
   })
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >trackUserLogin </span>= <span class="fstat-no" title="function not covered" >(u</span>serId: string, method: string) =&gt; {
+export const <span class="cstat-no" title="statement not covered" >trackUserLogin = <span class="fstat-no" title="function not covered" >(</span>u</span>serId: string, method: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >  trackEvent('user_login', {</span>
     user_id: userId,
     login_method: method,
@@ -505,7 +505,7 @@ export const <span class="cstat-no" title="statement not covered" >trackUserLogi
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T01:52:52.396Z
+                at 2025-09-22T01:58:24.797Z
             </div>
         <script src="../prettify.js"></script>
         <script>

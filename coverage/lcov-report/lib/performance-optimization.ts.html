@@ -912,7 +912,7 @@ import React from <span class="cstat-no" title="statement not covered" >'react'<
 import { AnalyticsService, PerformanceAnalytics } from <span class="cstat-no" title="statement not covered" >'./analytics-enhanced'</span>
 &nbsp;
 // Image optimization
-export class <span class="cstat-no" title="statement not covered" >ImageOptimization </span>{
+export class <span class="cstat-no" title="statement not covered" >ImageOptimization {</span>
 <span class="fstat-no" title="function not covered" >  static g</span>etOptimizedImageUrl(
     src: string,
     width?: number,
@@ -956,7 +956,7 @@ export class <span class="cstat-no" title="statement not covered" >ImageOptimiza
 }
 &nbsp;
 // Bundle optimization
-export class <span class="cstat-no" title="statement not covered" >BundleOptimization </span>{
+export class <span class="cstat-no" title="statement not covered" >BundleOptimization {</span>
 <span class="fstat-no" title="function not covered" >  static g</span>etChunkName(module: string): string {
     // Generate predictable chunk names for better caching
     const hash = <span class="cstat-no" title="statement not covered" >module.split('/').pop()?.replace(/\.(js|ts|tsx|jsx)$/, '') || 'unknown'</span>
@@ -1007,7 +1007,7 @@ export class <span class="cstat-no" title="statement not covered" >BundleOptimiz
 }
 &nbsp;
 // Caching strategies
-export class <span class="cstat-no" title="statement not covered" >CachingStrategy </span>{
+export class <span class="cstat-no" title="statement not covered" >CachingStrategy {</span>
 <span class="fstat-no" title="function not covered" >  static g</span>etCacheHeaders(
     maxAge: number = <span class="branch-0 cbranch-no" title="branch not covered" >3600,</span>
     staleWhileRevalidate: number = <span class="branch-0 cbranch-no" title="branch not covered" >86400</span>
@@ -1048,7 +1048,7 @@ export class <span class="cstat-no" title="statement not covered" >CachingStrate
 }
 &nbsp;
 // Performance monitoring
-export class <span class="cstat-no" title="statement not covered" >PerformanceMonitor </span>{
+export class <span class="cstat-no" title="statement not covered" >PerformanceMonitor {</span>
   private static <span class="cstat-no" title="statement not covered" >metrics: Map&lt;string, number[]&gt; = new Map()</span>
 &nbsp;
 <span class="fstat-no" title="function not covered" >  static t</span>rackMetric(name: string, value: number) {
@@ -1122,7 +1122,7 @@ export class <span class="cstat-no" title="statement not covered" >PerformanceMo
 }
 &nbsp;
 // Resource optimization
-export class <span class="cstat-no" title="statement not covered" >ResourceOptimization </span>{
+export class <span class="cstat-no" title="statement not covered" >ResourceOptimization {</span>
 <span class="fstat-no" title="function not covered" >  static p</span>reloadCriticalResources() {
 <span class="cstat-no" title="statement not covered" >    if (typeof window === 'undefined') <span class="cstat-no" title="statement not covered" >return</span></span>
     
@@ -1195,7 +1195,7 @@ export class <span class="cstat-no" title="statement not covered" >ResourceOptim
 }
 &nbsp;
 // Database optimization
-export class <span class="cstat-no" title="statement not covered" >DatabaseOptimization </span>{
+export class <span class="cstat-no" title="statement not covered" >DatabaseOptimization {</span>
 <span class="fstat-no" title="function not covered" >  static g</span>etOptimizedQuery(query: string, params: any[] = <span class="branch-0 cbranch-no" title="branch not covered" >[])</span>: string {
     // Add query optimization hints
     const optimizedQuery = <span class="cstat-no" title="statement not covered" >query</span>
@@ -1228,7 +1228,7 @@ export class <span class="cstat-no" title="statement not covered" >DatabaseOptim
 }
 &nbsp;
 // CDN optimization
-export class <span class="cstat-no" title="statement not covered" >CDNOptimization </span>{
+export class <span class="cstat-no" title="statement not covered" >CDNOptimization {</span>
 <span class="fstat-no" title="function not covered" >  static g</span>etCDNUrl(path: string): string {
     const cdnUrl = <span class="cstat-no" title="statement not covered" >process.env.NEXT_PUBLIC_CDN_URL || 'https://cdn.eventraisehub.com'</span>
 <span class="cstat-no" title="statement not covered" >    return `${cdnUrl}${path}`</span>
@@ -1258,7 +1258,7 @@ export class <span class="cstat-no" title="statement not covered" >CDNOptimizati
 }
 &nbsp;
 // Memory optimization
-export class <span class="cstat-no" title="statement not covered" >MemoryOptimization </span>{
+export class <span class="cstat-no" title="statement not covered" >MemoryOptimization {</span>
   private static <span class="cstat-no" title="statement not covered" >cleanupFunctions: (() =&gt; void)[] = []</span>
 &nbsp;
 <span class="fstat-no" title="function not covered" >  static a</span>ddCleanupFunction(cleanup: () =&gt; void) {
@@ -1336,7 +1336,7 @@ export class <span class="cstat-no" title="statement not covered" >MemoryOptimiz
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T01:52:52.396Z
+                at 2025-09-22T01:58:24.797Z
             </div>
         <script src="../prettify.js"></script>
         <script>

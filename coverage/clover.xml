@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1758505972447" clover="3.2.0">
-  <project timestamp="1758505972447" name="All files">
-    <metrics statements="2279" coveredstatements="213" conditionals="1225" coveredconditionals="74" methods="541" coveredmethods="24" elements="4045" coveredelements="311" complexity="0" loc="2279" ncloc="2279" packages="40" files="64" classes="64"/>
+<coverage generated="1758506304842" clover="3.2.0">
+  <project timestamp="1758506304842" name="All files">
+    <metrics statements="2290" coveredstatements="213" conditionals="1225" coveredconditionals="74" methods="541" coveredmethods="24" elements="4056" coveredelements="311" complexity="0" loc="2290" ncloc="2290" packages="40" files="64" classes="64"/>
     <package name="app">
       <metrics statements="71" coveredstatements="0" conditionals="16" coveredconditionals="0" methods="16" coveredmethods="0"/>
       <file name="analytics-provider.tsx" path="/Users/raoc/Documents/GitHub/Eventraise/app/analytics-provider.tsx">
@@ -101,9 +101,10 @@
       </file>
     </package>
     <package name="app.api.admin.export-donors">
-      <metrics statements="44" coveredstatements="0" conditionals="36" coveredconditionals="0" methods="4" coveredmethods="0"/>
+      <metrics statements="45" coveredstatements="0" conditionals="36" coveredconditionals="0" methods="4" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/admin/export-donors/route.ts">
-        <metrics statements="44" coveredstatements="0" conditionals="36" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <metrics statements="45" coveredstatements="0" conditionals="36" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
@@ -151,9 +152,10 @@
       </file>
     </package>
     <package name="app.api.admin.reports">
-      <metrics statements="120" coveredstatements="0" conditionals="102" coveredconditionals="0" methods="15" coveredmethods="0"/>
+      <metrics statements="121" coveredstatements="0" conditionals="102" coveredconditionals="0" methods="15" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/admin/reports/route.ts">
-        <metrics statements="120" coveredstatements="0" conditionals="102" coveredconditionals="0" methods="15" coveredmethods="0"/>
+        <metrics statements="121" coveredstatements="0" conditionals="102" coveredconditionals="0" methods="15" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
@@ -277,9 +279,10 @@
       </file>
     </package>
     <package name="app.api.create-checkout">
-      <metrics statements="18" coveredstatements="0" conditionals="25" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="19" coveredstatements="0" conditionals="25" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/create-checkout/route.ts">
-        <metrics statements="18" coveredstatements="0" conditionals="25" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="19" coveredstatements="0" conditionals="25" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
@@ -301,9 +304,10 @@
       </file>
     </package>
     <package name="app.api.create-payment-intent">
-      <metrics statements="10" coveredstatements="0" conditionals="11" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="11" coveredstatements="0" conditionals="11" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/create-payment-intent/route.ts">
-        <metrics statements="10" coveredstatements="0" conditionals="11" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="11" coveredstatements="0" conditionals="11" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
@@ -317,9 +321,10 @@
       </file>
     </package>
     <package name="app.api.events.[id].volunteer-shifts">
-      <metrics statements="13" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="14" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/events/[id]/volunteer-shifts/route.ts">
-        <metrics statements="13" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="14" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
         <line num="8" count="0" type="stmt"/>
@@ -336,9 +341,10 @@
       </file>
     </package>
     <package name="app.api.events.register">
-      <metrics statements="27" coveredstatements="0" conditionals="24" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="28" coveredstatements="0" conditionals="24" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/events/register/route.ts">
-        <metrics statements="27" coveredstatements="0" conditionals="24" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="28" coveredstatements="0" conditionals="24" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
@@ -369,9 +375,10 @@
       </file>
     </package>
     <package name="app.api.events.volunteer-signup">
-      <metrics statements="29" coveredstatements="0" conditionals="21" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="30" coveredstatements="0" conditionals="21" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/events/volunteer-signup/route.ts">
-        <metrics statements="29" coveredstatements="0" conditionals="21" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="30" coveredstatements="0" conditionals="21" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
@@ -404,9 +411,10 @@
       </file>
     </package>
     <package name="app.api.health">
-      <metrics statements="7" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="8" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/health/route.ts">
-        <metrics statements="7" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="8" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
@@ -417,9 +425,10 @@
       </file>
     </package>
     <package name="app.api.health.advanced">
-      <metrics statements="28" coveredstatements="0" conditionals="14" coveredconditionals="0" methods="5" coveredmethods="0"/>
+      <metrics statements="29" coveredstatements="0" conditionals="14" coveredconditionals="0" methods="5" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/health/advanced/route.ts">
-        <metrics statements="28" coveredstatements="0" conditionals="14" coveredconditionals="0" methods="5" coveredmethods="0"/>
+        <metrics statements="29" coveredstatements="0" conditionals="14" coveredconditionals="0" methods="5" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
         <line num="7" count="0" type="stmt"/>
@@ -451,9 +460,10 @@
       </file>
     </package>
     <package name="app.api.webhooks.stripe">
-      <metrics statements="82" coveredstatements="0" conditionals="42" coveredconditionals="0" methods="4" coveredmethods="0"/>
+      <metrics statements="83" coveredstatements="0" conditionals="42" coveredconditionals="0" methods="4" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/webhooks/stripe/route.ts">
-        <metrics statements="82" coveredstatements="0" conditionals="42" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <metrics statements="83" coveredstatements="0" conditionals="42" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
@@ -539,10 +549,11 @@
       </file>
     </package>
     <package name="app.auth.callback">
-      <metrics statements="39" coveredstatements="0" conditionals="22" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <metrics statements="40" coveredstatements="0" conditionals="22" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/auth/callback/route.ts">
-        <metrics statements="39" coveredstatements="0" conditionals="22" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="40" coveredstatements="0" conditionals="22" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="stmt"/>
+        <line num="2" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>

@@ -734,7 +734,7 @@ export interface AccessibleButtonProps extends AccessibilityProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleButton(</span></span>{
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleButton({</span></span>
   children,
   onClick,
   disabled = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
@@ -788,7 +788,7 @@ export interface AccessibleInputProps extends AccessibilityProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleInput(</span></span>{
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleInput({</span></span>
   label,
   type = <span class="branch-0 cbranch-no" title="branch not covered" >'text',</span>
   placeholder,
@@ -838,7 +838,7 @@ export interface AccessibleCardProps extends AccessibilityProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleCard(</span></span>{
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleCard({</span></span>
   children,
   title,
   description,
@@ -879,7 +879,7 @@ export interface AccessibleLoadingProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleLoading(</span></span>{
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleLoading({</span></span>
   text = <span class="branch-0 cbranch-no" title="branch not covered" >'Loading...',</span>
   size = <span class="branch-0 cbranch-no" title="branch not covered" >'md',</span>
   className = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span>
@@ -909,7 +909,7 @@ export interface AccessibleProgressProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleProgress(</span></span>{
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleProgress({</span></span>
   value,
   max = <span class="branch-0 cbranch-no" title="branch not covered" >100,</span>
   label,
@@ -945,7 +945,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
 }
 &nbsp;
 // Skip link for keyboard navigation
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >SkipLink(</span></span>{ href, children }: { href: string; children: React.ReactNode }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >SkipLink({</span></span> href, children }: { href: string; children: React.ReactNode }) {
   return (
     &lt;a
       href={href}
@@ -957,12 +957,12 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
 }
 &nbsp;
 // Screen reader only text
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >ScreenReaderOnly(</span></span>{ children }: { children: React.ReactNode }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >ScreenReaderOnly({</span></span> children }: { children: React.ReactNode }) {
   return &lt;span className="sr-only"&gt;{children}&lt;/span&gt;
 }
 &nbsp;
 // Focus trap for modals
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >FocusTrap(</span></span>{ children, active }: { children: React.ReactNode; active: boolean }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >FocusTrap({</span></span> children, active }: { children: React.ReactNode; active: boolean }) {
   const trapRef = <span class="cstat-no" title="statement not covered" >React.useRef&lt;HTMLDivElement&gt;(null)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  React.useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
@@ -1006,7 +1006,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
 }
 &nbsp;
 // Announcement for screen readers
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >Announcement(</span></span>{ message, priority = <span class="branch-0 cbranch-no" title="branch not covered" >'polite' </span>}: { message: string; priority?: 'polite' | 'assertive' }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >Announcement({</span></span> message, priority = <span class="branch-0 cbranch-no" title="branch not covered" >'polite' </span>}: { message: string; priority?: 'polite' | 'assertive' }) {
   return (
     &lt;div
       className="sr-only"
@@ -1024,7 +1024,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T01:52:52.396Z
+                at 2025-09-22T01:58:24.797Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
