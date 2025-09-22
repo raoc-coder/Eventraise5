@@ -103,14 +103,14 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
         <div className="text-center">
           <div className="relative">
-            <Heart className="h-16 w-16 text-pink-500 bounce-animation mx-auto mb-4" />
-            <Sparkles className="h-6 w-6 text-yellow-400 absolute -top-2 -right-2 animate-pulse" />
+            <Heart className="h-16 w-16 text-cyan-400 bounce-animation mx-auto mb-4" />
+            <Sparkles className="h-6 w-6 text-orange-400 absolute -top-2 -right-2 animate-pulse" />
           </div>
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gradient font-semibold">Loading amazing events...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400 mx-auto"></div>
+          <p className="mt-4 text-white font-semibold">Loading amazing events...</p>
         </div>
       </div>
     )
@@ -143,7 +143,7 @@ export default function EventsPage() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="px-3 py-2 border border-gray-700 bg-black/40 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Types</option>
               <option value="walkathon">Walk-a-thon</option>
@@ -231,8 +231,8 @@ export default function EventsPage() {
         {filteredEvents.length === 0 && (
           <div className="text-center py-12">
             <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+            <h3 className="text-lg font-medium text-white mb-2">No events found</h3>
+            <p className="text-gray-400">Try adjusting your search or filter criteria</p>
           </div>
         )}
       </div>
