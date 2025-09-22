@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 type Donor = {
   id: string
@@ -17,7 +17,7 @@ export function DonorWall() {
   const [from, setFrom] = useState<string>('')
   const [to, setTo] = useState<string>('')
 
-  const fetchDonors = async () => {
+  const fetchDonors = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams()
@@ -33,7 +33,7 @@ export function DonorWall() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [limit, from, to])
 
   useEffect(() => {
     const run = async () => {
@@ -44,7 +44,7 @@ export function DonorWall() {
       }
     }
     run()
-  }, [])
+  }, [fetchDonors])
 
   if (loading) return <p className="text-gray-300 text-sm">Loading donor wall...</p>
   if (error) return <p className="text-red-400 text-sm">{error}</p>

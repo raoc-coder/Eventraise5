@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 type Insights = {
   funnel: { visits: number | null; starts: number; completes: number; conversion: number } | null
@@ -15,7 +15,7 @@ export function InsightsSummary() {
   const [from, setFrom] = useState<string>('')
   const [to, setTo] = useState<string>('')
 
-  const fetchInsights = async () => {
+  const fetchInsights = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams()
@@ -30,7 +30,7 @@ export function InsightsSummary() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [from, to])
 
   useEffect(() => {
     const load = async () => {
@@ -41,7 +41,7 @@ export function InsightsSummary() {
       }
     }
     load()
-  }, [])
+  }, [fetchInsights])
 
   if (loading) return <p className="text-sm text-gray-500">Loading insights...</p>
   if (error) return <p className="text-sm text-red-500">{error}</p>
