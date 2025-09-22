@@ -12,6 +12,7 @@ jobs:
   analyze:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
+    # Skip on private repos without GHAS by allowing failures without blocking CI
     permissions:
       actions: read
       contents: read
@@ -32,6 +33,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+          queries: security-and-quality
 
       # For JavaScript/TypeScript, CodeQL autobuild is sufficient and avoids
       # framework-specific build failures (e.g., Next.js env requirements).
@@ -42,3 +44,4 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
+        continue-on-error: true
