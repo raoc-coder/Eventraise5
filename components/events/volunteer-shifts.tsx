@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -67,11 +67,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
   const [emergencyContactPhone, setEmergencyContactPhone] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  useEffect(() => {
-    fetchVolunteerShifts()
-  }, [eventId])
-
-  const fetchVolunteerShifts = async () => {
+  const fetchVolunteerShifts = useCallback(async () => {
     try {
       const response = await fetch(`/api/events/${eventId}/volunteer-shifts`)
       if (response.ok) {
@@ -83,7 +79,11 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    fetchVolunteerShifts()
+  }, [fetchVolunteerShifts])
 
   const handleShiftSignup = (shift: VolunteerShift) => {
     setSelectedShift(shift)
@@ -227,7 +227,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
             
             <div className="text-center">
               <p className="text-sm text-green-700 mb-4">
-                You'll receive a confirmation email with all the details. Thank you for making a difference!
+                You&apos;ll receive a confirmation email with all the details. Thank you for making a difference!
               </p>
               <Button
                 onClick={() => {

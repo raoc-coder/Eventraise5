@@ -26,6 +26,7 @@ import {
 import toast from 'react-hot-toast'
 import { trackEventRegistration } from '@/lib/analytics'
 import { MonitoringService } from '@/lib/monitoring'
+import { DonationConfirmation } from '@/components/payments/donation-confirmation'
 
 interface EventRegistrationProps {
   event: {
