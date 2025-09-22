@@ -1,6 +1,14 @@
 // Enhanced analytics service for EventraiseHUB
 import { MonitoringService } from './monitoring-enhanced'
 
+// Extend Window interface for Google Analytics
+declare global {
+  interface Window {
+    dataLayer: any[]
+    gtag: (...args: any[]) => void
+  }
+}
+
 // Analytics configuration
 export const ANALYTICS_CONFIG = {
   // PostHog configuration
@@ -370,7 +378,7 @@ export class PerformanceAnalytics {
         loadTime: navigation.loadEventEnd - navigation.loadEventStart,
         domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
         firstByte: navigation.responseStart - navigation.requestStart,
-        domInteractive: navigation.domInteractive - navigation.navigationStart
+        domInteractive: navigation.domInteractive - navigation.fetchStart
       }
 
       // Track in analytics
@@ -405,9 +413,10 @@ export class PerformanceAnalytics {
     new PerformanceObserver((list) => {
       const entries = list.getEntries()
       entries.forEach((entry) => {
+        const fidEntry = entry as PerformanceEventTiming
         AnalyticsService.track('core_web_vital', {
           metric: 'FID',
-          value: entry.processingStart - entry.startTime,
+          value: fidEntry.processingStart - fidEntry.startTime,
           page: window.location.pathname
         })
       })
@@ -418,8 +427,9 @@ export class PerformanceAnalytics {
     new PerformanceObserver((list) => {
       const entries = list.getEntries()
       entries.forEach((entry) => {
-        if (!entry.hadRecentInput) {
-          clsValue += entry.value
+        const clsEntry = entry as PerformanceEntry & { hadRecentInput?: boolean; value?: number }
+        if (!clsEntry.hadRecentInput && clsEntry.value) {
+          clsValue += clsEntry.value
         }
       })
       AnalyticsService.track('core_web_vital', {

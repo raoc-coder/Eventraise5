@@ -63,16 +63,10 @@ Sentry.init({
   integrations: [
     Sentry.replayIntegration({
       maskAllText: false,
-      blockAllMedia: false,
-      maskAllInputs: true,
       blockAllMedia: true,
+      maskAllInputs: true,
     }),
-    Sentry.browserTracingIntegration({
-      routingInstrumentation: Sentry.nextjsRouterInstrumentation({
-        instrumentNavigation: true,
-        instrumentPageLoad: true,
-      }),
-    }),
+    Sentry.browserTracingIntegration(),
   ],
   
   // Custom performance monitoring

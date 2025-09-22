@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 // Mobile responsiveness utilities and components for EventraiseHUB
 
@@ -329,6 +330,8 @@ export interface MobileImageProps {
   alt: string
   className?: string
   responsive?: boolean
+  width?: number
+  height?: number
 }
 
 export function MobileImage({
@@ -336,17 +339,21 @@ export function MobileImage({
   alt,
   className = '',
   responsive = true,
+  width,
+  height,
 }: MobileImageProps) {
   const responsiveClasses = responsive 
     ? 'w-full h-auto max-w-full' 
     : ''
 
   return (
-    <img
+    <Image
       src={src}
       alt={alt}
       className={`${responsiveClasses} ${className}`}
       loading="lazy"
+      width={width || 800}
+      height={height || 600}
     />
   )
 }

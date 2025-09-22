@@ -1,4 +1,5 @@
 // Performance optimization utilities for EventraiseHUB
+import React from 'react'
 import { AnalyticsService, PerformanceAnalytics } from './analytics-enhanced'
 
 // Image optimization
@@ -125,7 +126,7 @@ export class CachingStrategy {
     }
   }
 
-  static getAPI CacheHeaders(
+  static getAPICacheHeaders(
     maxAge: number = 300,
     staleWhileRevalidate: number = 3600
   ): Record<string, string> {
