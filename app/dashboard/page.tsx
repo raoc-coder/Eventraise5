@@ -153,6 +153,24 @@ export default function DashboardPage() {
                   Manage Volunteers
                 </Button>
               </Link>
+              <Button
+                variant="outline"
+                className="w-full justify-start btn-secondary"
+                onClick={async () => {
+                  try {
+                    const res = await fetch('/api/connect/onboard', { method: 'POST' })
+                    const data = await res.json()
+                    if (data?.url) {
+                      window.location.href = data.url
+                    }
+                  } catch (e) {
+                    console.error('Onboarding redirect failed:', e)
+                  }
+                }}
+              >
+                <DollarSign className="mr-2 h-4 w-4" />
+                Connect Payouts (Stripe)
+              </Button>
               <Link href="/reports">
                 <Button variant="outline" className="w-full justify-start btn-secondary">
                   <TrendingUp className="mr-2 h-4 w-4" />
