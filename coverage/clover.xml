@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1758539983246" clover="3.2.0">
-  <project timestamp="1758539983246" name="All files">
-    <metrics statements="1841" coveredstatements="175" conditionals="889" coveredconditionals="69" methods="463" coveredmethods="22" elements="3193" coveredelements="266" complexity="0" loc="1841" ncloc="1841" packages="33" files="54" classes="54"/>
+<coverage generated="1758540351248" clover="3.2.0">
+  <project timestamp="1758540351248" name="All files">
+    <metrics statements="1865" coveredstatements="175" conditionals="895" coveredconditionals="69" methods="471" coveredmethods="22" elements="3231" coveredelements="266" complexity="0" loc="1865" ncloc="1865" packages="39" files="60" classes="60"/>
     <package name="app">
       <metrics statements="71" coveredstatements="0" conditionals="16" coveredconditionals="0" methods="16" coveredmethods="0"/>
       <file name="analytics-provider.tsx" path="/Users/raoc/Documents/GitHub/Eventraise/app/analytics-provider.tsx">
@@ -188,6 +188,26 @@
         <line num="222" count="0" type="stmt"/>
       </file>
     </package>
+    <package name="app.api.ai.suggestions">
+      <metrics statements="5" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="2" coveredmethods="0"/>
+      <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/ai/suggestions/route.ts">
+        <metrics statements="5" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.api.donor-wall">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/donor-wall/route.ts">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+      </file>
+    </package>
     <package name="app.api.events.[id].volunteer-shifts">
       <metrics statements="14" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/events/[id]/volunteer-shifts/route.ts">
@@ -334,6 +354,46 @@
         <line num="1" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.api.insights">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/insights/route.ts">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.api.leaderboard">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/leaderboard/route.ts">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.api.templates">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/templates/route.ts">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.api.verification">
+      <metrics statements="7" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+      <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/verification/route.ts">
+        <metrics statements="7" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
       </file>
     </package>
     <package name="app.api.webhooks.stripe">
