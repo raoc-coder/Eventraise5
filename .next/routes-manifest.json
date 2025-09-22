@@ -98,6 +98,18 @@
       "namedRegex": "^/events/create(?:/)?$"
     },
     {
+      "page": "/leaderboard",
+      "regex": "^/leaderboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/leaderboard(?:/)?$"
+    },
+    {
+      "page": "/marketplace",
+      "regex": "^/marketplace(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/marketplace(?:/)?$"
+    },
+    {
       "page": "/payment/cancel",
       "regex": "^/payment/cancel(?:/)?$",
       "routeKeys": {},

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1758540351248" clover="3.2.0">
-  <project timestamp="1758540351248" name="All files">
-    <metrics statements="1865" coveredstatements="175" conditionals="895" coveredconditionals="69" methods="471" coveredmethods="22" elements="3231" coveredelements="266" complexity="0" loc="1865" ncloc="1865" packages="39" files="60" classes="60"/>
+<coverage generated="1758540627526" clover="3.2.0">
+  <project timestamp="1758540627526" name="All files">
+    <metrics statements="1869" coveredstatements="175" conditionals="895" coveredconditionals="69" methods="474" coveredmethods="22" elements="3238" coveredelements="266" complexity="0" loc="1869" ncloc="1869" packages="41" files="62" classes="62"/>
     <package name="app">
       <metrics statements="71" coveredstatements="0" conditionals="16" coveredconditionals="0" methods="16" coveredmethods="0"/>
       <file name="analytics-provider.tsx" path="/Users/raoc/Documents/GitHub/Eventraise/app/analytics-provider.tsx">
@@ -884,6 +884,22 @@
         <line num="198" count="0" type="stmt"/>
         <line num="208" count="0" type="stmt"/>
         <line num="218" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.leaderboard">
+      <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="page.tsx" path="/Users/raoc/Documents/GitHub/Eventraise/app/leaderboard/page.tsx">
+        <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="3" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.marketplace">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+      <file name="page.tsx" path="/Users/raoc/Documents/GitHub/Eventraise/app/marketplace/page.tsx">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="3" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
       </file>
     </package>
     <package name="app.payment.cancel">

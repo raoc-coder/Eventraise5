@@ -22,6 +22,8 @@
   "/dashboard/page": "/dashboard",
   "/events/[id]/page": "/events/[id]",
   "/events/create/page": "/events/create",
+  "/leaderboard/page": "/leaderboard",
+  "/marketplace/page": "/marketplace",
   "/events/page": "/events",
   "/page": "/",
   "/payment/cancel/page": "/payment/cancel",
