@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/app/providers'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { 
@@ -27,12 +27,29 @@ import { InsightsSummary } from '@/components/analytics/InsightsSummary'
 export default function DashboardPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const [connectStatus, setConnectStatus] = useState<string>('')
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/auth/login')
     }
   }, [user, loading, router])
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const accountId = (user as any)?.user_metadata?.stripe_account_id
+        if (!accountId) return
+        const res = await fetch(`/api/connect/status?account_id=${accountId}`, { cache: 'no-store' })
+        if (!res.ok) return
+        const data = await res.json()
+        setConnectStatus(data.payouts_enabled ? 'connected' : (data.details_submitted ? 'pending' : 'not started'))
+      } catch (e) {
+        // ignore
+      }
+    }
+    run()
+  }, [user])
 
   if (loading) {
     return (
@@ -96,6 +113,9 @@ export default function DashboardPage() {
             <CardContent>
               <div className="text-2xl font-bold text-green-600">$12,345</div>
               <p className="text-xs text-gray-500">+20.1% from last month</p>
+              {connectStatus && (
+                <p className="text-xs mt-2 text-gray-400">Payouts: {connectStatus}</p>
+              )}
             </CardContent>
           </Card>
 
@@ -170,6 +190,28 @@ export default function DashboardPage() {
               >
                 <DollarSign className="mr-2 h-4 w-4" />
                 Connect Payouts (Stripe)
+              </Button>
+
+              <Button
+                variant="outline"
+                className="w-full justify-start btn-secondary"
+                onClick={async () => {
+                  try {
+                    const organizerId = (user as any)?.id
+                    if (!organizerId) return
+                    await fetch('/api/verification', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ organizer_id: organizerId }),
+                    })
+                    // naive refresh of requests indicator later; noop for now
+                  } catch (e) {
+                    console.error('Verification request failed:', e)
+                  }
+                }}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Request Organizer Verification
               </Button>
               <Link href="/reports">
                 <Button variant="outline" className="w-full justify-start btn-secondary">
