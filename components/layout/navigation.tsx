@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Heart } from 'lucide-react'
 import { useAuth } from '@/app/providers'
+import { isFeatureEnabled } from '@/lib/config'
 
 interface NavigationProps {
   showAuth?: boolean
@@ -34,11 +35,20 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 Events
               </Button>
             </Link>
-            <Link href="/campaigns">
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-                Campaigns
-              </Button>
-            </Link>
+            {isFeatureEnabled('marketplace') && (
+              <Link href="/marketplace">
+                <Button variant="ghost" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50">
+                  Marketplace
+                </Button>
+              </Link>
+            )}
+            {isFeatureEnabled('engagementDonationExperience') && (
+              <Link href="/leaderboard">
+                <Button variant="ghost" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50">
+                  Leaderboard
+                </Button>
+              </Link>
+            )}
             
             {showAuth && (
               <>

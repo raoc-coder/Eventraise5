@@ -76,9 +76,12 @@ export default function DashboardPage() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-300">Manage your fundraising campaigns and events</p>
+          <div className="flex items-center gap-3">
+            <a href="/marketplace" className="text-sm text-cyan-400 hover:underline">Fundraising Hub</a>
+            <a href="/leaderboard" className="text-sm text-orange-400 hover:underline">Leaderboards</a>
+          </div>
         </div>
 
         {/* Stats Overview */}
