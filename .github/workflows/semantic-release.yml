@@ -41,34 +41,3 @@ jobs:
           npx semantic-release@latest
         continue-on-error: true
 
-  # Update changelog
-  update-changelog:
-    name: Update Changelog
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Generate changelog
-        run: |
-          # Create or update CHANGELOG.md
-          if [ ! -f CHANGELOG.md ]; then
-            echo "# Changelog" > CHANGELOG.md
-            echo "" >> CHANGELOG.md
-            echo "All notable changes to this project will be documented in this file." >> CHANGELOG.md
-            echo "" >> CHANGELOG.md
-            echo "The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)," >> CHANGELOG.md
-            echo "and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)." >> CHANGELOG.md
-            echo "" >> CHANGELOG.md
-          fi
-
-      - name: Commit changelog
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add CHANGELOG.md
-          git diff --staged --quiet || git commit -m "docs: update changelog"
-          git push
