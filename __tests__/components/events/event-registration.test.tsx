@@ -77,13 +77,23 @@ describe('EventRegistration Component', () => {
   })
 
   it('validates required fields', async () => {
-    const user = userEvent.setup()
     render(<EventRegistration event={mockEvent} />)
     
-    const submitButton = screen.getByRole('button', { name: /continue to payment/i })
-    await user.click(submitButton)
+    // Find the form element by its onSubmit handler
+    const form = screen.getByRole('button', { name: /continue to payment/i }).closest('form')
+    if (form) {
+      fireEvent.submit(form)
+    } else {
+      // Fallback to button click
+      const submitButton = screen.getByRole('button', { name: /continue to payment/i })
+      fireEvent.click(submitButton)
+    }
     
-    expect(screen.getByText('Please enter your name')).toBeInTheDocument()
+    // Wait for the validation to complete
+    await waitFor(() => {
+      const toast = require('react-hot-toast')
+      expect(toast.default.error).toHaveBeenCalledWith('Please enter your name')
+    })
   })
 
   it('validates email format', async () => {
@@ -92,15 +102,25 @@ describe('EventRegistration Component', () => {
     
     const nameInput = screen.getByLabelText(/full name/i)
     const emailInput = screen.getByLabelText(/email address/i)
-    const submitButton = screen.getByRole('button', { name: /continue to payment/i })
     
     await user.type(nameInput, 'John Doe')
     await user.type(emailInput, 'invalid-email')
-    await user.click(submitButton)
     
-    // Check that toast.error was called with the validation message
-    const toast = require('react-hot-toast')
-    expect(toast.default.error).toHaveBeenCalledWith('Please enter a valid email address')
+    // Find the form element by its onSubmit handler
+    const form = screen.getByRole('button', { name: /continue to payment/i }).closest('form')
+    if (form) {
+      fireEvent.submit(form)
+    } else {
+      // Fallback to button click
+      const submitButton = screen.getByRole('button', { name: /continue to payment/i })
+      fireEvent.click(submitButton)
+    }
+    
+    // Wait for the validation to complete
+    await waitFor(() => {
+      const toast = require('react-hot-toast')
+      expect(toast.default.error).toHaveBeenCalledWith('Please enter a valid email address')
+    })
   })
 
   it('handles successful registration for paid event', async () => {
@@ -183,8 +203,10 @@ describe('EventRegistration Component', () => {
     await user.type(emailInput, 'john@example.com')
     await user.click(submitButton)
     
+    // Check that toast.error was called with the error message
+    const toast = require('react-hot-toast')
     await waitFor(() => {
-      expect(screen.getByText('Registration failed')).toBeInTheDocument()
+      expect(toast.default.error).toHaveBeenCalledWith('Registration failed')
     })
   })
 

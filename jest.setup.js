@@ -1,6 +1,23 @@
 import '@testing-library/jest-dom'
 import { TextEncoder, TextDecoder } from 'util'
 
+// Setup DOM environment
+import { configure } from '@testing-library/react'
+
+// Configure testing library
+configure({
+  testIdAttribute: 'data-testid',
+})
+
+// Ensure DOM is properly set up
+if (typeof document === 'undefined') {
+  const { JSDOM } = require('jsdom')
+  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>')
+  global.document = dom.window.document
+  global.window = dom.window
+  global.navigator = dom.window.navigator
+}
+
 // Polyfill for TextEncoder/TextDecoder for Jest environment
 if (typeof global.TextEncoder === 'undefined') {
   global.TextEncoder = TextEncoder

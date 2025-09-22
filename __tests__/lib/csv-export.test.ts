@@ -22,6 +22,21 @@ jest.mock('@/lib/supabase', () => ({
 describe('CSVExportService', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    
+    // Mock DOM methods
+    global.URL.createObjectURL = jest.fn(() => 'mock-url')
+    global.URL.revokeObjectURL = jest.fn()
+    
+    // Mock document methods
+    document.createElement = jest.fn(() => ({
+      href: '',
+      download: '',
+      style: { visibility: '' },
+      setAttribute: jest.fn(),
+      click: jest.fn(),
+    })) as any
+    document.body.appendChild = jest.fn()
+    document.body.removeChild = jest.fn()
   })
 
   describe('exportDonations', () => {
@@ -41,7 +56,8 @@ describe('CSVExportService', () => {
         },
       ]
 
-      mockSupabase.from().select().eq().gte().lte().order().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().gte().lte().order().mockResolvedValue({
         data: mockDonations,
         error: null,
       })
@@ -70,7 +86,8 @@ describe('CSVExportService', () => {
         },
       ]
 
-      mockSupabase.from().select().eq().gte().lte().order().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().gte().lte().order().mockResolvedValue({
         data: mockDonations,
         error: null,
       })
@@ -84,7 +101,8 @@ describe('CSVExportService', () => {
     })
 
     it('handles database errors', async () => {
-      mockSupabase.from().select().eq().gte().lte().order().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().gte().lte().order().mockResolvedValue({
         data: null,
         error: { message: 'Database error' },
       })
@@ -120,7 +138,8 @@ describe('CSVExportService', () => {
         },
       ]
 
-      mockSupabase.from().select().eq().gte().lte().order().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().gte().lte().order().mockResolvedValue({
         data: mockRegistrations,
         error: null,
       })
@@ -151,7 +170,8 @@ describe('CSVExportService', () => {
         },
       ]
 
-      mockSupabase.from().select().eq().gte().lte().order().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().gte().lte().order().mockResolvedValue({
         data: mockRegistrations,
         error: null,
       })
@@ -186,7 +206,8 @@ describe('CSVExportService', () => {
         },
       ]
 
-      mockSupabase.from().select().eq().gte().lte().order().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().gte().lte().order().mockResolvedValue({
         data: mockVolunteers,
         error: null,
       })
@@ -218,7 +239,8 @@ describe('CSVExportService', () => {
         },
       ]
 
-      mockSupabase.from().select().eq().gte().lte().order().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().gte().lte().order().mockResolvedValue({
         data: mockVolunteers,
         error: null,
       })
@@ -250,7 +272,8 @@ describe('CSVExportService', () => {
       ]
 
       // Mock campaign fetch
-      mockSupabase.from().select().eq().single().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().single().mockResolvedValue({
         data: mockCampaign,
         error: null,
       })
@@ -272,7 +295,8 @@ describe('CSVExportService', () => {
     })
 
     it('handles campaign not found', async () => {
-      mockSupabase.from().select().eq().single().mockResolvedValue({
+      const { supabase } = require('@/lib/supabase')
+      supabase.from().select().eq().single().mockResolvedValue({
         data: null,
         error: { message: 'Campaign not found' },
       })

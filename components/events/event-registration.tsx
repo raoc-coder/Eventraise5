@@ -203,7 +203,10 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
         {/* Event Summary */}
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Registration Summary</h3>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Registration Summary</h3>
+              <p className="text-sm text-gray-600 mt-1">{event.title}</p>
+            </div>
             <div className="flex items-center space-x-2">
               <Star className="h-4 w-4 text-yellow-500" />
               <span className="text-sm text-gray-600">Featured Event</span>

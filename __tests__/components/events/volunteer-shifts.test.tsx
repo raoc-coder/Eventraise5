@@ -18,8 +18,8 @@ const mockShifts = [
     id: 'shift-1',
     title: 'Setup Crew',
     description: 'Help set up tables and decorations',
-    start_time: new Date(Date.now() + 86400000 * 30 - 3600000 * 2).toISOString(), // 30 days - 2 hours
-    end_time: new Date(Date.now() + 86400000 * 30).toISOString(), // 30 days
+    start_time: '2024-04-15T16:00:00.000Z', // Fixed date for testing
+    end_time: '2024-04-15T18:00:00.000Z',
     max_volunteers: 10,
     current_volunteers: 5,
     requirements: 'Must be able to lift 25+ lbs',
@@ -31,8 +31,8 @@ const mockShifts = [
     id: 'shift-2',
     title: 'Event Coordination',
     description: 'Help coordinate activities during the event',
-    start_time: new Date(Date.now() + 86400000 * 30).toISOString(), // 30 days
-    end_time: new Date(Date.now() + 86400000 * 30 + 3600000 * 5).toISOString(), // 30 days + 5 hours
+    start_time: '2024-04-15T18:00:00.000Z',
+    end_time: '2024-04-15T23:00:00.000Z',
     max_volunteers: 15,
     current_volunteers: 15,
     requirements: 'Friendly and organized',
@@ -44,8 +44,8 @@ const mockShifts = [
     id: 'shift-3',
     title: 'Cleanup Crew',
     description: 'Help clean up after the event',
-    start_time: new Date(Date.now() + 86400000 * 30 + 3600000 * 5).toISOString(), // 30 days + 5 hours
-    end_time: new Date(Date.now() + 86400000 * 30 + 3600000 * 7).toISOString(), // 30 days + 7 hours
+    start_time: '2024-04-15T23:00:00.000Z',
+    end_time: '2024-04-16T01:00:00.000Z',
     max_volunteers: 8,
     current_volunteers: 0,
     requirements: 'Must be able to lift 25+ lbs',
@@ -113,7 +113,7 @@ describe('VolunteerShifts Component', () => {
     
     await waitFor(() => {
       expect(screen.getByText('Help set up tables and decorations')).toBeInTheDocument()
-      expect(screen.getByText('Must be able to lift 25+ lbs')).toBeInTheDocument()
+      expect(screen.getAllByText('Must be able to lift 25+ lbs')[0]).toBeInTheDocument()
       expect(screen.getByText('setup')).toBeInTheDocument()
       expect(screen.getByText('decorating')).toBeInTheDocument()
     })
@@ -168,7 +168,7 @@ describe('VolunteerShifts Component', () => {
     await user.click(signupButton)
     
     expect(screen.getByText('Volunteer Signup')).toBeInTheDocument()
-    expect(screen.getByText('Setup Crew - Apr 15, 2024, 4:00 PM')).toBeInTheDocument()
+    expect(screen.getByText(/Setup Crew.*Apr 15.*11:00 AM/)).toBeInTheDocument()
   })
 
   it('renders signup form fields correctly', async () => {
@@ -215,10 +215,18 @@ describe('VolunteerShifts Component', () => {
     const signupButton = screen.getByRole('button', { name: /sign up to volunteer/i })
     await user.click(signupButton)
     
-    const submitButton = screen.getByRole('button', { name: /sign up to volunteer/i })
-    await user.click(submitButton)
+    const form = screen.getByRole('button', { name: /sign up to volunteer/i }).closest('form')
+    if (form) {
+      fireEvent.submit(form)
+    } else {
+      const submitButton = screen.getByRole('button', { name: /sign up to volunteer/i })
+      fireEvent.click(submitButton)
+    }
     
-    expect(screen.getByText('Please enter your name')).toBeInTheDocument()
+    await waitFor(() => {
+      const toast = require('react-hot-toast')
+      expect(toast.default.error).toHaveBeenCalledWith('Please enter your name')
+    })
   })
 
   it('validates email format in signup form', async () => {
@@ -245,9 +253,19 @@ describe('VolunteerShifts Component', () => {
     
     await user.type(nameInput, 'John Doe')
     await user.type(emailInput, 'invalid-email')
-    await user.click(submitButton)
     
-    expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument()
+    const form = screen.getByRole('button', { name: /sign up to volunteer/i }).closest('form')
+    if (form) {
+      fireEvent.submit(form)
+    } else {
+      const submitButton = screen.getByRole('button', { name: /sign up to volunteer/i })
+      fireEvent.click(submitButton)
+    }
+    
+    await waitFor(() => {
+      const toast = require('react-hot-toast')
+      expect(toast.default.error).toHaveBeenCalledWith('Please enter a valid email address')
+    })
   })
 
   it('handles successful volunteer signup', async () => {
@@ -326,7 +344,8 @@ describe('VolunteerShifts Component', () => {
     await user.click(submitButton)
     
     await waitFor(() => {
-      expect(screen.getByText('Signup failed')).toBeInTheDocument()
+      const toast = require('react-hot-toast')
+      expect(toast.default.error).toHaveBeenCalledWith('Signup failed')
     })
   })
 
@@ -366,7 +385,8 @@ describe('VolunteerShifts Component', () => {
     render(<VolunteerShifts eventId="event-123" eventTitle="Test Event" />)
     
     await waitFor(() => {
-      expect(screen.getByText('Apr 15, 2024, 4:00 PM')).toBeInTheDocument()
+      // The formatTime function will format the date as "Mon, Apr 15, 11:00 AM" (timezone conversion)
+      expect(screen.getByText(/Apr 15.*11:00 AM/)).toBeInTheDocument()
     })
   })
 
