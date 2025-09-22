@@ -106,18 +106,22 @@ jobs:
           # Get the last commit message
           LAST_COMMIT=$(git log -1 --pretty=%B)
           
-          # Check if it's a version bump commit
-          if [[ "$LAST_COMMIT" =~ ^(feat|fix|perf|breaking)(\(.+\))?: ]]; then
+          echo "Last commit: $LAST_COMMIT"
+
+          # Check if it's a version bump commit using grep for reliability in CI shells
+          if echo "$LAST_COMMIT" | grep -Eq '^(feat|fix|perf|breaking)(\([^)]+\))?:'; then
             echo "version_bump=true" >> $GITHUB_OUTPUT
-            echo "bump_type=patch" >> $GITHUB_OUTPUT
-            
-            if [[ "$LAST_COMMIT" =~ ^feat(\(.+\))?: ]]; then
-              echo "bump_type=minor" >> $GITHUB_OUTPUT
+            BUMP_TYPE=patch
+
+            if echo "$LAST_COMMIT" | grep -Eq '^feat(\([^)]+\))?:'; then
+              BUMP_TYPE=minor
             fi
-            
-            if [[ "$LAST_COMMIT" =~ ^breaking(\(.+\))?: ]] || [[ "$LAST_COMMIT" =~ BREAKING CHANGE ]]; then
-              echo "bump_type=major" >> $GITHUB_OUTPUT
+
+            if echo "$LAST_COMMIT" | grep -Eq '^breaking(\([^)]+\))?:|BREAKING CHANGE'; then
+              BUMP_TYPE=major
             fi
+
+            echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
           else
             echo "version_bump=false" >> $GITHUB_OUTPUT
           fi
