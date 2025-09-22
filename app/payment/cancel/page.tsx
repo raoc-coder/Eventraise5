@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,7 +14,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-export default function PaymentCancelPage() {
+function PaymentCancelContent() {
   const searchParams = useSearchParams()
   const campaignId = searchParams.get('campaign')
 
@@ -155,5 +156,27 @@ export default function PaymentCancelPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentCancelPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-8">
+            <div className="relative inline-block">
+              <XCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
+              <Sparkles className="h-6 w-6 text-yellow-400 absolute -top-2 -right-2 animate-pulse" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">Loading...</h1>
+            <p className="text-gray-300 text-lg">Please wait...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <PaymentCancelContent />
+    </Suspense>
   )
 }

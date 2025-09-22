@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,7 +9,7 @@ import { Heart, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 
-export default function EmailConfirmPage() {
+function EmailConfirmContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [message, setMessage] = useState('')
   const router = useRouter()
@@ -182,5 +182,40 @@ export default function EmailConfirmPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function EmailConfirmPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md card-soft">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+                  EventraiseHub
+                </span>
+              </div>
+            </div>
+            <CardTitle className="text-2xl text-white">Email Confirmation</CardTitle>
+            <CardDescription className="text-gray-300">
+              Loading...
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <div className="flex flex-col items-center space-y-4">
+              <Loader2 className="h-8 w-8 text-cyan-400 animate-spin" />
+              <p className="text-gray-300">Please wait...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <EmailConfirmContent />
+    </Suspense>
   )
 }

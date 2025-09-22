@@ -11,9 +11,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-  experimental: {
-    instrumentationHook: true,
-  },
 }
 
 const sentryWebpackPluginOptions = {
