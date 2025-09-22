@@ -142,14 +142,20 @@ try {
 }
 
 // Mock react-hot-toast
-jest.mock('react-hot-toast', () => ({
-  toast: {
+jest.mock('react-hot-toast', () => {
+  const mockToast = {
     success: jest.fn(),
     error: jest.fn(),
     loading: jest.fn(),
-  },
-  Toaster: () => <div data-testid="toaster" />,
-}))
+  }
+  
+  return {
+    __esModule: true,
+    default: mockToast,
+    toast: mockToast,
+    Toaster: () => <div data-testid="toaster" />,
+  }
+})
 
 // Global test utilities
 global.ResizeObserver = jest.fn().mockImplementation(() => ({

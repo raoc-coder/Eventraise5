@@ -1,24 +1,22 @@
 import { CSVExportService } from '@/lib/csv-export'
 
 // Mock Supabase
-const mockSupabase = {
-  from: jest.fn(() => ({
-    select: jest.fn(() => ({
-      eq: jest.fn(() => ({
-        gte: jest.fn(() => ({
-          lte: jest.fn(() => ({
-            order: jest.fn(() => ({
-              single: jest.fn(),
+jest.mock('@/lib/supabase', () => ({
+  supabase: {
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          gte: jest.fn(() => ({
+            lte: jest.fn(() => ({
+              order: jest.fn(() => ({
+                single: jest.fn(),
+              })),
             })),
           })),
         })),
       })),
     })),
-  })),
-}
-
-jest.mock('@/lib/supabase', () => ({
-  supabase: mockSupabase,
+  },
 }))
 
 describe('CSVExportService', () => {

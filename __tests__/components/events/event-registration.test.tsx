@@ -98,7 +98,9 @@ describe('EventRegistration Component', () => {
     await user.type(emailInput, 'invalid-email')
     await user.click(submitButton)
     
-    expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument()
+    // Check that toast.error was called with the validation message
+    const toast = require('react-hot-toast')
+    expect(toast.default.error).toHaveBeenCalledWith('Please enter a valid email address')
   })
 
   it('handles successful registration for paid event', async () => {
@@ -210,10 +212,14 @@ describe('EventRegistration Component', () => {
     render(<EventRegistration event={mockEvent} />)
     
     const quantityInput = screen.getByLabelText(/number of tickets/i)
-    await user.clear(quantityInput)
-    await user.type(quantityInput, '3')
+    fireEvent.change(quantityInput, { target: { value: '3' } })
     
-    expect(screen.getByText('$450.00')).toBeInTheDocument() // 3 * $150
+    // Debug: Check what the input value is
+    expect(quantityInput).toHaveValue(3)
+    
+    await waitFor(() => {
+      expect(screen.getByText('$450.00')).toBeInTheDocument() // 3 * $150
+    })
   })
 
   it('shows loading state during submission', async () => {
