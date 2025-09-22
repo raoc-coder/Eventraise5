@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { DonorWall } from '@/components/engagement/DonorWall'
+import { InsightsSummary } from '@/components/analytics/InsightsSummary'
 
 export default function MarketplacePage() {
   return (
@@ -11,7 +13,7 @@ export default function MarketplacePage() {
           <p className="text-gray-300">Discover verified campaigns by cause, location, and urgency</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {[1,2,3].map((i) => (
             <div key={i} className="rounded-lg border border-gray-800 bg-black/40 p-4">
               <div className="h-32 w-full rounded-md bg-gradient-to-br from-cyan-500/20 to-blue-500/10 mb-3" />
@@ -23,6 +25,17 @@ export default function MarketplacePage() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-lg border border-gray-800 bg-black/40 p-4">
+            <h2 className="text-white font-semibold mb-2">Marketplace Insights</h2>
+            <InsightsSummary />
+          </div>
+          <div className="rounded-lg border border-gray-800 bg-black/40 p-4">
+            <h2 className="text-white font-semibold mb-2">Live Donor Wall</h2>
+            <DonorWall />
+          </div>
         </div>
       </div>
     </div>
