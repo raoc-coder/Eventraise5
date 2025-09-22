@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "setup": "node scripts/setup-env.js",
     "type-check": "tsc --noEmit",
     "build-check": "node scripts/build-check.js",
@@ -17,7 +18,14 @@
     "test:ci": "jest --ci --coverage --watchAll=false",
     "test:e2e": "cypress run || echo 'Cypress tests skipped due to environment issues'",
     "test:e2e:open": "cypress open",
-    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e"
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "commitlint": "commitlint --edit",
+    "commitlint:check": "commitlint --from HEAD~1 --to HEAD --verbose",
+    "semantic-release": "semantic-release",
+    "release": "semantic-release",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "validate": "npm run lint && npm run type-check && npm run test:ci",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -54,8 +62,16 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
     "@cypress/react": "^9.0.1",
     "@cypress/webpack-dev-server": "^5.1.2",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^11.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^10.0.4",
+    "@semantic-release/release-notes-generator": "^12.0.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -63,12 +79,16 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "conventional-changelog-cli": "^4.1.0",
     "cypress": "^15.2.0",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
+    "husky": "^8.0.3",
     "jest": "^30.1.3",
     "jest-environment-jsdom": "^30.1.2",
+    "lint-staged": "^15.2.0",
     "msw": "^2.11.3",
+    "semantic-release": "^22.0.7",
     "ts-jest": "^29.4.4",
     "typescript": "^5"
   }

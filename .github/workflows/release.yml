@@ -1,0 +1,198 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Create release
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            echo "## What's Changed" >> $GITHUB_OUTPUT
+            git log --oneline --pretty=format:"- %s" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            echo "## What's Changed" >> $GITHUB_OUTPUT
+            git log ${PREVIOUS_TAG}..HEAD --oneline --pretty=format:"- %s" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'rc') }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .next/
+          asset_name: build-${{ github.ref_name }}.zip
+          asset_content_type: application/zip
+
+  # Auto-versioning
+  auto-version:
+    name: Auto Version
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Check for version bump
+        id: version_check
+        run: |
+          # Get the last commit message
+          LAST_COMMIT=$(git log -1 --pretty=%B)
+          
+          # Check if it's a version bump commit
+          if [[ "$LAST_COMMIT" =~ ^(feat|fix|perf|breaking)(\(.+\))?: ]]; then
+            echo "version_bump=true" >> $GITHUB_OUTPUT
+            echo "bump_type=patch" >> $GITHUB_OUTPUT
+            
+            if [[ "$LAST_COMMIT" =~ ^feat(\(.+\))?: ]]; then
+              echo "bump_type=minor" >> $GITHUB_OUTPUT
+            fi
+            
+            if [[ "$LAST_COMMIT" =~ ^breaking(\(.+\))?: ]] || [[ "$LAST_COMMIT" =~ BREAKING CHANGE ]]; then
+              echo "bump_type=major" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "version_bump=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump version
+        if: steps.version_check.outputs.version_bump == 'true'
+        run: |
+          BUMP_TYPE=${{ steps.version_check.outputs.bump_type }}
+          npm version $BUMP_TYPE --no-git-tag-version
+          
+          # Get the new version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          
+          # Commit the version bump
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to $NEW_VERSION"
+          git push
+
+      - name: Create tag
+        if: steps.version_check.outputs.version_bump == 'true'
+        run: |
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          git tag "v$NEW_VERSION"
+          git push origin "v$NEW_VERSION"
+
+  # Deploy to staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel (Staging)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod=false'
+
+  # Deploy to production
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel (Production)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+
+  # Notify team
+  notify:
+    name: Notify Team
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [create-release, deploy-production]
+    steps:
+      - name: Notify on success
+        if: needs.create-release.result == 'success' && needs.deploy-production.result == 'success'
+        run: |
+          echo "✅ Release ${{ github.ref_name }} deployed successfully to production"
+
+      - name: Notify on failure
+        if: needs.create-release.result == 'failure' || needs.deploy-production.result == 'failure'
+        run: |
+          echo "❌ Release ${{ github.ref_name }} failed to deploy"
+          exit 1
