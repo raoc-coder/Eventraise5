@@ -65,39 +65,27 @@ export default function SettingsPage() {
   })
 
   useEffect(() => {
-    // Mock data for demonstration
-    const mockProfile: SchoolProfile = {
-      name: 'Lincoln Elementary School',
-      address: '123 Education Street',
-      city: 'Springfield',
-      state: 'IL',
-      zipCode: '62701',
-      phone: '(555) 123-4567',
-      email: 'contact@lincolnelementary.edu',
-      website: 'https://lincolnelementary.edu',
-      logo_url: '',
-      description: 'A community-focused elementary school dedicated to providing quality education and fostering student growth.'
+    const fetchProfileData = async () => {
+      try {
+        // Fetch school profile
+        const profileResponse = await fetch('/api/settings/profile')
+        if (profileResponse.ok) {
+          const profileData = await profileResponse.json()
+          setSchoolProfile(profileData.profile)
+        }
+
+        // Fetch payment methods
+        const paymentResponse = await fetch('/api/settings/payment-methods')
+        if (paymentResponse.ok) {
+          const paymentData = await paymentResponse.json()
+          setPaymentMethods(paymentData.paymentMethods || [])
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error)
+      }
     }
 
-    const mockPaymentMethods: PaymentMethod[] = [
-      {
-        id: '1',
-        type: 'card',
-        last4: '4242',
-        brand: 'Visa',
-        isDefault: true
-      },
-      {
-        id: '2',
-        type: 'bank',
-        last4: '1234',
-        brand: 'Chase',
-        isDefault: false
-      }
-    ]
-
-    setSchoolProfile(mockProfile)
-    setPaymentMethods(mockPaymentMethods)
+    fetchProfileData()
   }, [])
 
   const handleProfileSave = async (e: React.FormEvent) => {

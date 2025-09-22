@@ -39,24 +39,25 @@ export default function CampaignDetailPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Mock data for demonstration
-    const mockCampaign: Campaign = {
-      id: params.id as string,
-      title: 'Spring School Playground Renovation',
-      description: 'Help us create a safe and fun playground for our students. This project will include new equipment, safety surfacing, and accessibility improvements.',
-      goal_amount: 50000,
-      current_amount: 32500,
-      start_date: '2024-03-01',
-      end_date: '2024-06-30',
-      organization_name: 'Lincoln Elementary School PTA',
-      category: 'Education',
-      is_featured: true
+    const fetchCampaign = async () => {
+      try {
+        const response = await fetch(`/api/campaigns/${params.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          setCampaign(data.campaign)
+        } else {
+          console.error('Failed to fetch campaign:', response.statusText)
+          setCampaign(null)
+        }
+      } catch (error) {
+        console.error('Error fetching campaign:', error)
+        setCampaign(null)
+      } finally {
+        setLoading(false)
+      }
     }
-    
-    setTimeout(() => {
-      setCampaign(mockCampaign)
-      setLoading(false)
-    }, 1000)
+
+    fetchCampaign()
   }, [params.id])
 
   const getProgressPercentage = (current: number, goal: number) => {

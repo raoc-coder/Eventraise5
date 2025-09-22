@@ -63,26 +63,25 @@ export default function EventDetailPage() {
   const [specialRequests, setSpecialRequests] = useState('')
 
   useEffect(() => {
-    // Mock data for demonstration
-    const mockEvent: Event = {
-      id: params.id as string,
-      title: 'Spring Charity Walkathon 2024',
-      description: 'Join us for our annual 5K walkathon to raise funds for the school playground renovation. This family-friendly event includes a scenic route through the park, refreshments, and prizes for top fundraisers.',
-      event_type: 'walkathon',
-      start_date: '2024-04-15T09:00:00Z',
-      end_date: '2024-04-15T12:00:00Z',
-      location: 'Central Park, Main Entrance',
-      max_participants: 200,
-      current_participants: 127,
-      ticket_price: 25,
-      organization_name: 'Lincoln Elementary School',
-      is_featured: true
+    const fetchEvent = async () => {
+      try {
+        const response = await fetch(`/api/events/${params.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          setEvent(data.event)
+        } else {
+          console.error('Failed to fetch event:', response.statusText)
+          setEvent(null)
+        }
+      } catch (error) {
+        console.error('Error fetching event:', error)
+        setEvent(null)
+      } finally {
+        setLoading(false)
+      }
     }
-    
-    setTimeout(() => {
-      setEvent(mockEvent)
-      setLoading(false)
-    }, 1000)
+
+    fetchEvent()
   }, [params.id])
 
   const formatDate = (dateString: string) => {

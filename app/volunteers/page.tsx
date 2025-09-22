@@ -68,76 +68,33 @@ export default function VolunteersPage() {
     event_id: ''
   })
 
-  // Mock data for demonstration
+  // Fetch volunteer data from API
   useEffect(() => {
-    const mockOpportunities: VolunteerOpportunity[] = [
-      {
-        id: '1',
-        title: 'Event Setup Crew',
-        description: 'Help set up tables, chairs, and decorations for the charity auction',
-        required_skills: ['Physical labor', 'Teamwork'],
-        time_commitment: '4 hours',
-        location: 'Grand Ballroom, Downtown',
-        max_volunteers: 10,
-        start_time: '2024-04-20T14:00:00Z',
-        end_time: '2024-04-20T18:00:00Z',
-        current_volunteers: 7,
-        event_title: 'Silent Auction Gala'
-      },
-      {
-        id: '2',
-        title: 'Registration Desk',
-        description: 'Welcome guests and handle event registration',
-        required_skills: ['Customer service', 'Organization'],
-        time_commitment: '3 hours',
-        location: 'Main Entrance',
-        max_volunteers: 4,
-        start_time: '2024-04-20T17:00:00Z',
-        end_time: '2024-04-20T20:00:00Z',
-        current_volunteers: 3,
-        event_title: 'Silent Auction Gala'
-      },
-      {
-        id: '3',
-        title: 'Walkathon Route Marshals',
-        description: 'Guide participants along the 5K route and provide encouragement',
-        required_skills: ['Enthusiasm', 'Safety awareness'],
-        time_commitment: '2 hours',
-        location: 'Central Park Route',
-        max_volunteers: 15,
-        start_time: '2024-04-15T08:00:00Z',
-        end_time: '2024-04-15T10:00:00Z',
-        current_volunteers: 12,
-        event_title: 'Spring Charity Walkathon'
-      }
-    ]
+    const fetchVolunteerData = async () => {
+      try {
+        // Fetch volunteer opportunities
+        const opportunitiesResponse = await fetch('/api/volunteers/opportunities')
+        if (opportunitiesResponse.ok) {
+          const opportunitiesData = await opportunitiesResponse.json()
+          setOpportunities(opportunitiesData.opportunities || [])
+        }
 
-    const mockSignups: VolunteerSignup[] = [
-      {
-        id: '1',
-        opportunity_id: '1',
-        user_name: 'Sarah Johnson',
-        user_email: 'sarah@email.com',
-        status: 'confirmed',
-        signed_up_at: '2024-04-10T10:00:00Z',
-        notes: 'Has experience with event setup'
-      },
-      {
-        id: '2',
-        opportunity_id: '1',
-        user_name: 'Mike Chen',
-        user_email: 'mike@email.com',
-        status: 'pending',
-        signed_up_at: '2024-04-11T14:30:00Z',
-        notes: 'Available for early setup'
+        // Fetch volunteer signups
+        const signupsResponse = await fetch('/api/volunteers/signups')
+        if (signupsResponse.ok) {
+          const signupsData = await signupsResponse.json()
+          setSignups(signupsData.signups || [])
+        }
+      } catch (error) {
+        console.error('Error fetching volunteer data:', error)
+        setOpportunities([])
+        setSignups([])
+      } finally {
+        setLoading(false)
       }
-    ]
+    }
 
-    setTimeout(() => {
-      setOpportunities(mockOpportunities)
-      setSignups(mockSignups)
-      setLoading(false)
-    }, 1000)
+    fetchVolunteerData()
   }, [])
 
   const handleCreateOpportunity = async (e: React.FormEvent) => {

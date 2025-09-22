@@ -45,54 +45,27 @@ export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
 
-  // Mock data for demonstration
+  // Fetch events from API
   useEffect(() => {
-    const mockEvents: Event[] = [
-      {
-        id: '1',
-        title: 'Spring Charity Walkathon',
-        description: 'Join us for a 5K walk to raise funds for local children\'s hospital',
-        event_type: 'walkathon',
-        start_date: '2024-04-15T09:00:00Z',
-        end_date: '2024-04-15T12:00:00Z',
-        goal_amount: 10000,
-        current_amount: 7500,
-        max_participants: 200,
-        organization_name: 'Children\'s Health Foundation',
-        location: 'Central Park, New York'
-      },
-      {
-        id: '2',
-        title: 'Silent Auction Gala',
-        description: 'Elegant evening with fine dining and exclusive auction items',
-        event_type: 'auction',
-        start_date: '2024-04-20T18:00:00Z',
-        end_date: '2024-04-20T23:00:00Z',
-        goal_amount: 25000,
-        current_amount: 18500,
-        max_participants: 150,
-        organization_name: 'Arts & Culture Society',
-        location: 'Grand Ballroom, Downtown'
-      },
-      {
-        id: '3',
-        title: 'Bake Sale for Education',
-        description: 'Delicious homemade treats supporting local schools',
-        event_type: 'product_sale',
-        start_date: '2024-04-10T10:00:00Z',
-        end_date: '2024-04-10T16:00:00Z',
-        goal_amount: 5000,
-        current_amount: 3200,
-        max_participants: 50,
-        organization_name: 'Parent Teacher Association',
-        location: 'Community Center'
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/events')
+        if (response.ok) {
+          const data = await response.json()
+          setEvents(data.events || [])
+        } else {
+          console.error('Failed to fetch events:', response.statusText)
+          setEvents([])
+        }
+      } catch (error) {
+        console.error('Error fetching events:', error)
+        setEvents([])
+      } finally {
+        setLoading(false)
       }
-    ]
-    
-    setTimeout(() => {
-      setEvents(mockEvents)
-      setLoading(false)
-    }, 1000)
+    }
+
+    fetchEvents()
   }, [])
 
   const filteredEvents = events.filter(event => {
