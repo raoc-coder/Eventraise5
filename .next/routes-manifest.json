@@ -28,14 +28,6 @@
       "namedRegex": "^/api/events/(?<nxtPid>[^/]+?)/volunteer\\-shifts(?:/)?$"
     },
     {
-      "page": "/campaigns/[id]",
-      "regex": "^/campaigns/([^/]+?)(?:/)?$",
-      "routeKeys": {
-        "nxtPid": "nxtPid"
-      },
-      "namedRegex": "^/campaigns/(?<nxtPid>[^/]+?)(?:/)?$"
-    },
-    {
       "page": "/events/[id]",
       "regex": "^/events/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -86,12 +78,6 @@
       "regex": "^/auth/register(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/auth/register(?:/)?$"
-    },
-    {
-      "page": "/campaigns/create",
-      "regex": "^/campaigns/create(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/campaigns/create(?:/)?$"
     },
     {
       "page": "/dashboard",

@@ -40,26 +40,23 @@ export const trackPageView = (path: string, properties?: Record<string, any>) =>
 }
 
 // Campaign-specific events
-export const trackDonationStarted = (campaignId: string, amount: number) => {
+export const trackDonationStarted = (amount: number) => {
   trackEvent('donation_started', {
-    campaign_id: campaignId,
     amount,
     currency: 'USD',
   })
 }
 
-export const trackDonationCompleted = (campaignId: string, amount: number, donorEmail?: string) => {
+export const trackDonationCompleted = (campaignId: string | undefined, amount: number, donorEmail?: string) => {
   trackEvent('donation_completed', {
-    campaign_id: campaignId,
     amount,
     currency: 'USD',
     donor_email: donorEmail ? 'provided' : 'anonymous',
   })
 }
 
-export const trackDonationFailed = (campaignId: string, amount: number, error: string) => {
+export const trackDonationFailed = (amount: number, error: string) => {
   trackEvent('donation_failed', {
-    campaign_id: campaignId,
     amount,
     currency: 'USD',
     error_message: error,
@@ -121,14 +118,6 @@ export const trackVolunteerSignupFailed = (eventId: string, eventTitle: string, 
   })
 }
 
-export const trackCampaignCreated = (campaignId: string, title: string, goal: number) => {
-  trackEvent('campaign_created', {
-    campaign_id: campaignId,
-    title,
-    goal,
-    currency: 'USD',
-  })
-}
 
 export const trackUserRegistration = (userId: string, method: string) => {
   trackEvent('user_registration', {

@@ -84,15 +84,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return
   }
 
-  const campaignId = session.metadata?.campaign_id
   const profileId = session.metadata?.profile_id
   const donorName = session.metadata?.donor_name || session.customer_details?.name || 'Anonymous'
   const donorEmail = session.metadata?.donor_email || session.customer_details?.email || ''
-
-  if (!campaignId) {
-    console.error('No campaign_id in session metadata')
-    return
-  }
 
   const amount = session.amount_total ? session.amount_total / 100 : 0
 
@@ -101,7 +95,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     const { data: donation, error: donationError } = await supabase
       .from('donations')
       .insert({
-        campaign_id: campaignId,
         profile_id: profileId,
         amount,
         donor_name: donorName,
@@ -119,75 +112,43 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       throw donationError
     }
 
-    // Update campaign raised amount using a database function
-    const { error: updateError } = await supabase.rpc('increment_campaign_amount', {
-      campaign_id: campaignId,
-      amount: amount
-    })
-
-    if (updateError) {
-      console.error('Error updating campaign amount:', updateError)
-      throw updateError
-    }
 
     // Track successful donation completion
-    trackDonationCompleted(campaignId, amount, donorEmail)
+    trackDonationCompleted(undefined, amount, donorEmail)
 
     // Track business metrics
     MonitoringService.trackBusinessMetric('donation_completed', amount, {
-      campaign_id: campaignId,
       donor_email: donorEmail ? 'provided' : 'anonymous',
     })
 
     // Send confirmation and receipt emails
     if (donorEmail) {
       try {
-        // Get campaign details for email
-        const { data: campaign } = await supabase
-          .from('campaigns')
-          .select('title, description, goal_amount, current_amount')
-          .eq('id', campaignId)
-          .single()
+        const donationDate = new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
 
-        if (campaign) {
-          const donationDate = new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })
+        // Send confirmation email
+        await SendGridService.sendDonationConfirmation({
+          donorName,
+          donorEmail,
+          amount,
+          donationId: donation.id,
+          transactionId: session.payment_intent as string,
+          donationDate,
+        })
 
-          const progressPercentage = campaign.goal_amount > 0 
-            ? (campaign.current_amount / campaign.goal_amount) * 100 
-            : 0
-
-          // Send confirmation email
-          await SendGridService.sendDonationConfirmation({
-            donorName,
-            donorEmail,
-            amount,
-            campaignTitle: campaign.title,
-            campaignDescription: campaign.description,
-            donationId: donation.id,
-            transactionId: session.payment_intent as string,
-            donationDate,
-            progressPercentage,
-            goalAmount: campaign.goal_amount,
-            currentAmount: campaign.current_amount,
-          })
-
-          // Send receipt email
-          await SendGridService.sendDonationReceipt({
-            donorName,
-            donorEmail,
-            amount,
-            campaignTitle: campaign.title,
-            campaignDescription: campaign.description,
-            donationId: donation.id,
-            transactionId: session.payment_intent as string,
-            donationDate,
-            taxDeductible: true, // Assuming donations are tax deductible
-          })
-        }
+        // Send receipt email
+        await SendGridService.sendDonationReceipt({
+          donorName,
+          donorEmail,
+          amount,
+          donationId: donation.id,
+          transactionId: session.payment_intent as string,
+          donationDate,
+        })
       } catch (emailError) {
         console.error('Error sending emails:', emailError)
         // Don't fail the webhook if email sending fails
@@ -196,7 +157,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
     console.log('Successfully processed donation:', {
       donationId: donation.id,
-      campaignId,
       amount,
       donorName
     })
@@ -208,7 +168,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     MonitoringService.trackCriticalError(
       error instanceof Error ? error : new Error('Unknown checkout error'),
       {
-        campaign_id: campaignId,
         amount,
         session_id: session.id,
       }

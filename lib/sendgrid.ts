@@ -9,8 +9,6 @@ export interface DonationReceiptData {
   donorName: string
   donorEmail: string
   amount: number
-  campaignTitle: string
-  campaignDescription?: string
   donationId: string
   transactionId: string
   donationDate: string
@@ -24,14 +22,9 @@ export interface DonationConfirmationData {
   donorName: string
   donorEmail: string
   amount: number
-  campaignTitle: string
-  campaignDescription?: string
   donationId: string
   transactionId: string
   donationDate: string
-  progressPercentage?: number
-  goalAmount?: number
-  currentAmount?: number
 }
 
 export class SendGridService {
@@ -56,8 +49,6 @@ export class SendGridService {
         dynamicTemplateData: {
           donor_name: data.donorName,
           amount: data.amount,
-          campaign_title: data.campaignTitle,
-          campaign_description: data.campaignDescription,
           donation_id: data.donationId,
           transaction_id: data.transactionId,
           donation_date: data.donationDate,
@@ -68,7 +59,7 @@ export class SendGridService {
         },
         // Fallback to HTML email if template not configured
         html: this.generateReceiptHTML(data),
-        subject: `Receipt for your donation to ${data.campaignTitle}`,
+        subject: `Receipt for your donation`,
       }
 
       await sgMail.send(msg)
@@ -97,18 +88,13 @@ export class SendGridService {
         dynamicTemplateData: {
           donor_name: data.donorName,
           amount: data.amount,
-          campaign_title: data.campaignTitle,
-          campaign_description: data.campaignDescription,
           donation_id: data.donationId,
           transaction_id: data.transactionId,
           donation_date: data.donationDate,
-          progress_percentage: data.progressPercentage,
-          goal_amount: data.goalAmount,
-          current_amount: data.currentAmount,
         },
         // Fallback to HTML email if template not configured
         html: this.generateConfirmationHTML(data),
-        subject: `Thank you for your donation to ${data.campaignTitle}!`,
+        subject: `Thank you for your donation!`,
       }
 
       await sgMail.send(msg)
@@ -147,7 +133,6 @@ export class SendGridService {
             <div class="receipt-details">
               <h2>Donation Receipt</h2>
               <p><strong>Donor:</strong> ${data.donorName}</p>
-              <p><strong>Campaign:</strong> ${data.campaignTitle}</p>
               <p><strong>Amount:</strong> <span class="amount">$${data.amount.toFixed(2)}</span></p>
               <p><strong>Date:</strong> ${data.donationDate}</p>
               <p><strong>Transaction ID:</strong> ${data.transactionId}</p>
@@ -200,27 +185,14 @@ export class SendGridService {
           <div class="content">
             <h2>Donation Confirmation</h2>
             <p>Dear ${data.donorName},</p>
-            <p>Thank you for your generous donation of <span class="amount">$${data.amount.toFixed(2)}</span> to <strong>${data.campaignTitle}</strong>!</p>
-            
-            ${data.campaignDescription ? `<p><em>"${data.campaignDescription}"</em></p>` : ''}
-            
-            <h3>Campaign Progress</h3>
-            ${data.progressPercentage !== undefined ? `
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${Math.min(data.progressPercentage, 100)}%"></div>
-              </div>
-              <p><strong>${data.progressPercentage.toFixed(1)}%</strong> of goal reached</p>
-              ${data.currentAmount && data.goalAmount ? `
-                <p>$${data.currentAmount.toLocaleString()} raised of $${data.goalAmount.toLocaleString()} goal</p>
-              ` : ''}
-            ` : ''}
+            <p>Thank you for your generous donation of <span class="amount">$${data.amount.toFixed(2)}</span>!</p>
             
             <h3>Donation Details</h3>
             <p><strong>Transaction ID:</strong> ${data.transactionId}</p>
             <p><strong>Donation ID:</strong> ${data.donationId}</p>
             <p><strong>Date:</strong> ${data.donationDate}</p>
             
-            <p>Your donation is helping to make a positive impact in our community. We'll keep you updated on the campaign's progress!</p>
+            <p>Your donation is helping to make a positive impact in our community. Thank you for your support!</p>
           </div>
           <div class="footer">
             <p>Powered by EventraiseHUB - Making fundraising simple and effective</p>

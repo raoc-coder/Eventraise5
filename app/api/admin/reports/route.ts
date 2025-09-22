@@ -1,95 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { CSVExportService } from '@/lib/csv-export'
 import { MonitoringService } from '@/lib/monitoring'
-
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const reportType = searchParams.get('type')
-    const startDate = searchParams.get('startDate')
-    const endDate = searchParams.get('endDate')
-    const campaignId = searchParams.get('campaignId')
-    const eventId = searchParams.get('eventId')
-    const includePersonalData = searchParams.get('includePersonalData') === 'true'
-
-    if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database not configured' },
-        { status: 500 }
-      )
-    }
-
-    const options = {
-      startDate: startDate || undefined,
-      endDate: endDate || undefined,
-      campaignId: campaignId || undefined,
-      eventId: eventId || undefined,
-      includePersonalData
-    }
-
-    let csvContent: string
-
-    switch (reportType) {
-      case 'donations':
-        csvContent = await CSVExportService.exportDonations(options)
-        break
-      case 'event-registrations':
-        csvContent = await CSVExportService.exportEventRegistrations(options)
-        break
-      case 'volunteers':
-        csvContent = await CSVExportService.exportVolunteers(options)
-        break
-      case 'campaign-analytics':
-        if (!campaignId) {
-          return NextResponse.json(
-            { error: 'Campaign ID is required for campaign analytics' },
-            { status: 400 }
-          )
-        }
-        csvContent = await CSVExportService.exportCampaignAnalytics(campaignId)
-        break
-      default:
-        return NextResponse.json(
-          { error: 'Invalid report type' },
-          { status: 400 }
-        )
-    }
-
-    // Track report generation
-    MonitoringService.trackBusinessMetric('report_generated', 0, {
-      report_type: reportType,
-      campaign_id: campaignId,
-      event_id: eventId,
-      include_personal_data: includePersonalData
-    })
-
-    return new NextResponse(csvContent, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename="${reportType}_${new Date().toISOString().split('T')[0]}.csv"`
-      }
-    })
-
-  } catch (error) {
-    console.error('Error generating report:', error)
-    
-    // Monitor report generation errors
-    MonitoringService.trackCriticalError(
-      error instanceof Error ? error : new Error('Unknown report generation error'),
-      {
-        endpoint: 'admin_reports',
-        error_type: 'report_generation_failure'
-      }
-    )
-    
-    return NextResponse.json(
-      { error: 'Failed to generate report' },
-      { status: 500 }
-    )
-  }
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -147,17 +58,13 @@ async function generateAnalyticsData(filters: any = {}) {
   // Get donations analytics
   let donationsQuery = supabase
     .from('donations')
-    .select('amount, created_at, campaign_id, status')
+    .select('amount, created_at, status')
 
   if (Object.keys(dateFilter).length > 0) {
     donationsQuery = donationsQuery.filter('created_at', 'gte', startDate || '1900-01-01')
     if (endDate) {
       donationsQuery = donationsQuery.filter('created_at', 'lte', endDate)
     }
-  }
-
-  if (campaignId) {
-    donationsQuery = donationsQuery.eq('campaign_id', campaignId)
   }
 
   const { data: donations, error: donationsError } = await donationsQuery
@@ -225,9 +132,6 @@ async function generateAnalyticsData(filters: any = {}) {
   // Monthly breakdown
   const monthlyData = getMonthlyBreakdown(donations || [], registrations || [])
 
-  // Campaign performance
-  const campaignPerformance = await getCampaignPerformance(campaignId)
-
   // Event performance
   const eventPerformance = await getEventPerformance(eventId)
 
@@ -244,44 +148,11 @@ async function generateAnalyticsData(filters: any = {}) {
       totalRevenue: totalDonationAmount + totalRegistrationAmount
     },
     monthlyData,
-    campaignPerformance,
     eventPerformance,
     generated_at: new Date().toISOString()
   }
 }
 
-async function getCampaignPerformance(campaignId?: string) {
-  if (!supabase) return null
-
-  let query = supabase
-    .from('campaigns')
-    .select(`
-      id,
-      title,
-      goal_amount,
-      current_amount,
-      created_at,
-      donations(count)
-    `)
-
-  if (campaignId) {
-    query = query.eq('id', campaignId)
-  }
-
-  const { data: campaigns } = await query.limit(10)
-
-  return campaigns?.map(campaign => ({
-    id: campaign.id,
-    title: campaign.title,
-    goal_amount: campaign.goal_amount,
-    current_amount: campaign.current_amount,
-    progress_percentage: campaign.goal_amount > 0 
-      ? (campaign.current_amount / campaign.goal_amount) * 100 
-      : 0,
-    donation_count: (campaign.donations as any)?.length || 0,
-    created_at: campaign.created_at
-  })) || []
-}
 
 async function getEventPerformance(eventId?: string) {
   if (!supabase) return null
