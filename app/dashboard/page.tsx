@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { DonorWall } from '@/components/engagement/DonorWall'
+import { InsightsSummary } from '@/components/analytics/InsightsSummary'
 
 export default function DashboardPage() {
   const { user, loading } = useAuth()
@@ -163,8 +164,20 @@ export default function DashboardPage() {
 
           <Card className="card-soft hover:card-elevated transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-gray-900">Recent Activity</CardTitle>
-              <CardDescription>Latest updates on your campaigns</CardDescription>
+              <CardTitle className="text-gray-900">Insights</CardTitle>
+              <CardDescription>Conversion and top donors (last 20)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <InsightsSummary />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-8">
+          <Card className="card-soft hover:card-elevated transition-all duration-300">
+            <CardHeader>
+              <CardTitle className="text-gray-900">Donor Wall</CardTitle>
+              <CardDescription>Recent supporters</CardDescription>
             </CardHeader>
             <CardContent>
               <DonorWall />
