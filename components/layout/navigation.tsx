@@ -34,9 +34,9 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 Events
               </Button>
             </Link>
-            <Link href="/campaigns">
+            <Link href="/pricing">
               <Button variant="ghost" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-white/5">
-                Campaigns
+                Pricing
               </Button>
             </Link>
             
