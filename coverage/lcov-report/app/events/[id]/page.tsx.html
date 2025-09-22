@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/51</span>
+                <span class='fraction'>0/59</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/51</span>
+                <span class='fraction'>0/59</span>
             </div>
         
             
@@ -490,8 +490,7 @@
 <a name='L425'></a><a href='#L425'>425</a>
 <a name='L426'></a><a href='#L426'>426</a>
 <a name='L427'></a><a href='#L427'>427</a>
-<a name='L428'></a><a href='#L428'>428</a>
-<a name='L429'></a><a href='#L429'>429</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L428'></a><a href='#L428'>428</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -556,26 +555,25 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -984,26 +982,25 @@ export default function <span class="cstat-no" title="statement not covered" ><s
   const [specialRequests, setSpecialRequests] = <span class="cstat-no" title="statement not covered" >useState('')</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-    // Mock data for demonstration
-    const mockEvent: Event = <span class="cstat-no" title="statement not covered" >{</span>
-      id: params.id as string,
-      title: 'Spring Charity Walkathon 2024',
-      description: 'Join us for our annual 5K walkathon to raise funds for the school playground renovation. This family-friendly event includes a scenic route through the park, refreshments, and prizes for top fundraisers.',
-      event_type: 'walkathon',
-      start_date: '2024-04-15T09:00:00Z',
-      end_date: '2024-04-15T12:00:00Z',
-      location: 'Central Park, Main Entrance',
-      max_participants: 200,
-      current_participants: 127,
-      ticket_price: 25,
-      organization_name: 'Lincoln Elementary School',
-      is_featured: true
+    const fetchEvent = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >      try {</span>
+        const response = <span class="cstat-no" title="statement not covered" >await fetch(`/api/events/${params.id}`)</span>
+<span class="cstat-no" title="statement not covered" >        if (response.ok) {</span>
+          const data = <span class="cstat-no" title="statement not covered" >await response.json()</span>
+<span class="cstat-no" title="statement not covered" >          setEvent(data.event)</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >          console.error('Failed to fetch event:', response.statusText)</span>
+<span class="cstat-no" title="statement not covered" >          setEvent(null)</span>
+        }
+      } catch (error) {
+<span class="cstat-no" title="statement not covered" >        console.error('Error fetching event:', error)</span>
+<span class="cstat-no" title="statement not covered" >        setEvent(null)</span>
+      } finally {
+<span class="cstat-no" title="statement not covered" >        setLoading(false)</span>
+      }
     }
-    
-<span class="cstat-no" title="statement not covered" >    setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >      setEvent(mockEvent)</span>
-<span class="cstat-no" title="statement not covered" >      setLoading(false)</span>
-    }, 1000)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    fetchEvent()</span>
   }, [params.id])
 &nbsp;
   const formatDate = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ateString: string) =&gt; {</span>
@@ -1354,7 +1351,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T01:27:27.261Z
+                at 2025-09-22T01:46:29.851Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

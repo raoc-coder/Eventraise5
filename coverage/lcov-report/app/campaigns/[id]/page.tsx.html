@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/35</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/35</span>
             </div>
         
             
@@ -332,7 +332,8 @@
 <a name='L267'></a><a href='#L267'>267</a>
 <a name='L268'></a><a href='#L268'>268</a>
 <a name='L269'></a><a href='#L269'>269</a>
-<a name='L270'></a><a href='#L270'>270</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -373,24 +374,25 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -642,24 +644,25 @@ export default function <span class="cstat-no" title="statement not covered" ><s
   const [loading, setLoading] = <span class="cstat-no" title="statement not covered" >useState(true)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-    // Mock data for demonstration
-    const mockCampaign: Campaign = <span class="cstat-no" title="statement not covered" >{</span>
-      id: params.id as string,
-      title: 'Spring School Playground Renovation',
-      description: 'Help us create a safe and fun playground for our students. This project will include new equipment, safety surfacing, and accessibility improvements.',
-      goal_amount: 50000,
-      current_amount: 32500,
-      start_date: '2024-03-01',
-      end_date: '2024-06-30',
-      organization_name: 'Lincoln Elementary School PTA',
-      category: 'Education',
-      is_featured: true
+    const fetchCampaign = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >      try {</span>
+        const response = <span class="cstat-no" title="statement not covered" >await fetch(`/api/campaigns/${params.id}`)</span>
+<span class="cstat-no" title="statement not covered" >        if (response.ok) {</span>
+          const data = <span class="cstat-no" title="statement not covered" >await response.json()</span>
+<span class="cstat-no" title="statement not covered" >          setCampaign(data.campaign)</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >          console.error('Failed to fetch campaign:', response.statusText)</span>
+<span class="cstat-no" title="statement not covered" >          setCampaign(null)</span>
+        }
+      } catch (error) {
+<span class="cstat-no" title="statement not covered" >        console.error('Error fetching campaign:', error)</span>
+<span class="cstat-no" title="statement not covered" >        setCampaign(null)</span>
+      } finally {
+<span class="cstat-no" title="statement not covered" >        setLoading(false)</span>
+      }
     }
-    
-<span class="cstat-no" title="statement not covered" >    setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >      setCampaign(mockCampaign)</span>
-<span class="cstat-no" title="statement not covered" >      setLoading(false)</span>
-    }, 1000)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    fetchCampaign()</span>
   }, [params.id])
 &nbsp;
   const getProgressPercentage = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(c</span>urrent: number, goal: number) =&gt; {</span>
@@ -877,7 +880,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T01:27:27.261Z
+                at 2025-09-22T01:46:29.851Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

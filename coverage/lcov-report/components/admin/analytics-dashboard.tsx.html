@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.11% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/61</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.11% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/61</span>
+                <span class='fraction'>0/61</span>
             </div>
         
             
@@ -625,11 +625,11 @@
 <a name='L560'></a><a href='#L560'>560</a>
 <a name='L561'></a><a href='#L561'>561</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -656,9 +656,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -705,7 +705,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1185,11 +1185,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use client'
 &nbsp;
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useState, useEffect } from <span class="cstat-no" title="statement not covered" >'react'</span>
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from <span class="cstat-no" title="statement not covered" >'@/components/ui/card'</span>
+import { Button } from <span class="cstat-no" title="statement not covered" >'@/components/ui/button'</span>
+import { Input } from <span class="cstat-no" title="statement not covered" >'@/components/ui/input'</span>
+import { Label } from <span class="cstat-no" title="statement not covered" >'@/components/ui/label'</span>
 import { 
   TrendingUp, 
   TrendingDown,
@@ -1216,9 +1216,9 @@ import {
   ArrowUp,
   ArrowDown,
   Minus
-} from 'lucide-react'
+} from <span class="cstat-no" title="statement not covered" >'lucide-react'</span>
 import { CSVExportService } from '@/lib/csv-export'
-import toast from 'react-hot-toast'
+import toast from <span class="cstat-no" title="statement not covered" >'react-hot-toast'</span>
 &nbsp;
 interface AnalyticsData {
   summary: {
@@ -1265,7 +1265,7 @@ interface AnalyticsDashboardProps {
   onRefresh?: () =&gt; void
 }
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >AnalyticsDashboard({</span> initialData, onRefresh }: AnalyticsDashboardProps) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AnalyticsDashboard({</span></span> initialData, onRefresh }: AnalyticsDashboardProps) {
   const [data, setData] = <span class="cstat-no" title="statement not covered" >useState&lt;AnalyticsData | null&gt;(initialData || null)</span>
   const [loading, setLoading] = <span class="cstat-no" title="statement not covered" >useState(false)</span>
   const [filters, setFilters] = <span class="cstat-no" title="statement not covered" >useState({</span>
@@ -1750,7 +1750,7 @@ export function <span class="fstat-no" title="function not covered" >AnalyticsDa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T01:27:27.261Z
+                at 2025-09-22T01:46:29.851Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
