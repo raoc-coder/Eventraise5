@@ -86,6 +86,7 @@ export default function PricingPage() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-extrabold mb-4">$0<span className="text-lg font-medium text-gray-400">/mo</span></div>
+              <div className="text-xs text-gray-400 mb-4">Platform fee: 8.99% of donations collected (excl. Stripe fees)</div>
               <ul className="space-y-2 mb-6">
                 {featuresFree.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-gray-300"><Check className="h-4 w-4 text-green-400 mt-1" />{f}</li>
@@ -107,6 +108,7 @@ export default function PricingPage() {
             <CardContent>
               <div className="text-4xl font-extrabold mb-1">{annual ? '$290' : '$29'}<span className="text-lg font-medium text-gray-400">{annual ? '/yr' : '/mo'}</span></div>
               {annual && <div className="text-green-400 text-sm mb-3">2 months free</div>}
+              <div className="text-xs text-gray-400 mb-4">Platform fee: 8.99% of donations collected (excl. Stripe fees)</div>
               <ul className="space-y-2 mb-6">
                 {featuresPro.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-gray-300"><Check className="h-4 w-4 text-green-400 mt-1" />{f}</li>
@@ -130,7 +132,8 @@ export default function PricingPage() {
               <CardDescription className="text-gray-400">For enterprises and platforms</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-extrabold mb-4">Let’s talk</div>
+              <div className="text-4xl font-extrabold mb-2">Let’s talk</div>
+              <div className="text-xs text-gray-400 mb-4">Platform fee: 8.99% of donations collected (excl. Stripe fees)</div>
               <ul className="space-y-2 mb-6">
                 {featuresCustom.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-gray-300"><Check className="h-4 w-4 text-green-400 mt-1" />{f}</li>
