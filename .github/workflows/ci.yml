@@ -103,7 +103,7 @@ jobs:
         run: NEXT_TELEMETRY_DISABLED=1 npm run build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-files
           path: .next/
