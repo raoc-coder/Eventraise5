@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1758508242540" clover="3.2.0">
-  <project timestamp="1758508242540" name="All files">
-    <metrics statements="1813" coveredstatements="175" conditionals="885" coveredconditionals="69" methods="452" coveredmethods="22" elements="3150" coveredelements="266" complexity="0" loc="1813" ncloc="1813" packages="32" files="53" classes="53"/>
+<coverage generated="1758539983246" clover="3.2.0">
+  <project timestamp="1758539983246" name="All files">
+    <metrics statements="1841" coveredstatements="175" conditionals="889" coveredconditionals="69" methods="463" coveredmethods="22" elements="3193" coveredelements="266" complexity="0" loc="1841" ncloc="1841" packages="33" files="54" classes="54"/>
     <package name="app">
       <metrics statements="71" coveredstatements="0" conditionals="16" coveredconditionals="0" methods="16" coveredmethods="0"/>
       <file name="analytics-provider.tsx" path="/Users/raoc/Documents/GitHub/Eventraise/app/analytics-provider.tsx">
@@ -325,6 +325,15 @@
         <line num="123" count="0" type="stmt"/>
         <line num="126" count="0" type="stmt"/>
         <line num="128" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.api.impact">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="route.ts" path="/Users/raoc/Documents/GitHub/Eventraise/app/api/impact/route.ts">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
       </file>
     </package>
     <package name="app.api.webhooks.stripe">
@@ -1546,7 +1555,7 @@
       </file>
     </package>
     <package name="lib">
-      <metrics statements="489" coveredstatements="4" conditionals="223" coveredconditionals="0" methods="155" coveredmethods="1"/>
+      <metrics statements="514" coveredstatements="4" conditionals="227" coveredconditionals="0" methods="165" coveredmethods="1"/>
       <file name="analytics-enhanced.ts" path="/Users/raoc/Documents/GitHub/Eventraise/lib/analytics-enhanced.ts">
         <metrics statements="97" coveredstatements="0" conditionals="52" coveredconditionals="0" methods="29" coveredmethods="0"/>
         <line num="2" count="0" type="stmt"/>
@@ -1648,7 +1657,7 @@
         <line num="466" count="0" type="stmt"/>
       </file>
       <file name="analytics.ts" path="/Users/raoc/Documents/GitHub/Eventraise/lib/analytics.ts">
-        <metrics statements="35" coveredstatements="0" conditionals="20" coveredconditionals="0" methods="15" coveredmethods="0"/>
+        <metrics statements="53" coveredstatements="0" conditionals="20" coveredconditionals="0" methods="24" coveredmethods="0"/>
         <line num="1" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="cond" truecount="0" falsecount="4"/>
@@ -1666,24 +1675,42 @@
         <line num="44" count="0" type="stmt"/>
         <line num="50" count="0" type="stmt"/>
         <line num="51" count="0" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
         <line num="59" count="0" type="stmt"/>
-        <line num="66" count="0" type="stmt"/>
-        <line num="67" count="0" type="stmt"/>
-        <line num="75" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="69" count="0" type="stmt"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
         <line num="76" count="0" type="stmt"/>
-        <line num="84" count="0" type="stmt"/>
+        <line num="77" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
         <line num="85" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="91" count="0" type="stmt"/>
         <line num="94" count="0" type="stmt"/>
         <line num="95" count="0" type="stmt"/>
-        <line num="103" count="0" type="stmt"/>
-        <line num="104" count="0" type="stmt"/>
-        <line num="112" count="0" type="stmt"/>
-        <line num="113" count="0" type="stmt"/>
-        <line num="122" count="0" type="stmt"/>
-        <line num="123" count="0" type="stmt"/>
-        <line num="129" count="0" type="stmt"/>
-        <line num="130" count="0" type="stmt"/>
+        <line num="98" count="0" type="stmt"/>
+        <line num="99" count="0" type="stmt"/>
+        <line num="106" count="0" type="stmt"/>
+        <line num="107" count="0" type="stmt"/>
+        <line num="115" count="0" type="stmt"/>
+        <line num="116" count="0" type="stmt"/>
+        <line num="124" count="0" type="stmt"/>
+        <line num="125" count="0" type="stmt"/>
+        <line num="134" count="0" type="stmt"/>
+        <line num="135" count="0" type="stmt"/>
+        <line num="143" count="0" type="stmt"/>
+        <line num="144" count="0" type="stmt"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="153" count="0" type="stmt"/>
+        <line num="162" count="0" type="stmt"/>
+        <line num="163" count="0" type="stmt"/>
+        <line num="169" count="0" type="stmt"/>
+        <line num="170" count="0" type="stmt"/>
       </file>
       <file name="auth-config.ts" path="/Users/raoc/Documents/GitHub/Eventraise/lib/auth-config.ts">
         <metrics statements="22" coveredstatements="0" conditionals="20" coveredconditionals="0" methods="3" coveredmethods="0"/>
@@ -1711,7 +1738,7 @@
         <line num="52" count="0" type="stmt"/>
       </file>
       <file name="config.ts" path="/Users/raoc/Documents/GitHub/Eventraise/lib/config.ts">
-        <metrics statements="10" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <metrics statements="17" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="4" coveredmethods="0"/>
         <line num="1" count="0" type="stmt"/>
         <line num="3" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="4" count="0" type="stmt"/>
@@ -1722,6 +1749,13 @@
         <line num="17" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>
         <line num="21" count="0" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="42" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="43" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="45" count="0" type="stmt"/>
       </file>
       <file name="monitoring-enhanced.ts" path="/Users/raoc/Documents/GitHub/Eventraise/lib/monitoring-enhanced.ts">
         <metrics statements="85" coveredstatements="0" conditionals="25" coveredconditionals="0" methods="28" coveredmethods="0"/>

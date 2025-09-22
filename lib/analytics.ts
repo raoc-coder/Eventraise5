@@ -47,12 +47,52 @@ export const trackDonationStarted = (amount: number) => {
   })
 }
 
-export const trackDonationCompleted = (campaignId: string | undefined, amount: number, donorEmail?: string) => {
+export const trackDonationCompleted = (_campaignId: string | undefined, amount: number, donorEmail?: string) => {
   trackEvent('donation_completed', {
     amount,
     currency: 'USD',
     donor_email: donorEmail ? 'provided' : 'anonymous',
   })
+}
+
+// Transparency & Trust Layer events
+export const trackImpactBreakdownViewed = (allocation: { program: number; operations: number }) => {
+  trackEvent('impact_breakdown_viewed', allocation)
+}
+
+export const trackImpactWidgetInteracted = (impactMetric: string, value: number) => {
+  trackEvent('impact_widget_interacted', { impactMetric, value })
+}
+
+// Engagement-First Donation Experience events
+export const trackOneClickDonate = (paymentMethod: 'apple_pay' | 'google_pay' | 'card') => {
+  trackEvent('one_click_donate', { paymentMethod })
+}
+
+export const trackRecurringDonationSet = (interval: 'weekly' | 'monthly' | 'yearly', amount: number) => {
+  trackEvent('recurring_donation_set', { interval, amount })
+}
+
+export const trackRoundUpEnabled = () => {
+  trackEvent('roundup_enabled')
+}
+
+// Community & Storytelling
+export const trackStoryViewed = (storyId: string) => {
+  trackEvent('campaign_story_viewed', { storyId })
+}
+
+export const trackDonorWallInteracted = (action: 'like' | 'comment' | 'filter') => {
+  trackEvent('donor_wall_interacted', { action })
+}
+
+// Marketplace & leaderboards
+export const trackLeaderboardViewed = () => {
+  trackEvent('leaderboard_viewed')
+}
+
+export const trackLeaderboardShare = () => {
+  trackEvent('leaderboard_shared')
 }
 
 export const trackDonationFailed = (amount: number, error: string) => {
