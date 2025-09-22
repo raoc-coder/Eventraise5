@@ -91,6 +91,18 @@
     line-height: 1.5;
   }
   
+  /* Form typography: improve legibility */
+  label {
+    font-weight: 600;
+  }
+  input, select, textarea {
+    font-weight: 500;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    font-weight: 500;
+  }
+
   /* Typography Hierarchy */
   .display {
     font-size: 3.5rem;
