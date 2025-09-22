@@ -20,11 +20,13 @@ Sentry.init({
   // Custom tags
   initialScope: {
     tags: {
-      component: 'client'
+      component: 'client',
+      platform: 'web',
+      app: 'eventraisehub'
     }
   },
   
-  // Error filtering
+  // Enhanced error filtering
   beforeSend(event, hint) {
     // Filter out non-critical errors
     if (event.exception) {
@@ -36,8 +38,24 @@ Sentry.init({
             !error.message.includes('donation')) {
           return null
         }
+        
+        // Filter out common browser errors
+        if (error.message.includes('ResizeObserver loop limit exceeded') ||
+            error.message.includes('Non-Error promise rejection')) {
+          return null
+        }
       }
     }
+    
+    // Add custom context
+    event.contexts = {
+      ...event.contexts,
+      runtime: {
+        name: 'browser',
+        version: navigator.userAgent
+      }
+    }
+    
     return event
   },
   
@@ -46,6 +64,31 @@ Sentry.init({
     Sentry.replayIntegration({
       maskAllText: false,
       blockAllMedia: false,
+      maskAllInputs: true,
+      blockAllMedia: true,
+    }),
+    Sentry.browserTracingIntegration({
+      routingInstrumentation: Sentry.nextjsRouterInstrumentation({
+        instrumentNavigation: true,
+        instrumentPageLoad: true,
+      }),
     }),
   ],
+  
+  // Custom performance monitoring
+  beforeSendTransaction(event) {
+    // Track custom performance metrics
+    if (event.transaction) {
+      // Track page load times
+      if (event.transaction.includes('/campaigns/') || 
+          event.transaction.includes('/events/') ||
+          event.transaction.includes('/admin/')) {
+        event.tags = {
+          ...event.tags,
+          page_type: 'content_page'
+        }
+      }
+    }
+    return event
+  },
 })
