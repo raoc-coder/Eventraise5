@@ -12,18 +12,32 @@ export function InsightsSummary() {
   const [data, setData] = useState<Insights | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [from, setFrom] = useState<string>('')
+  const [to, setTo] = useState<string>('')
+
+  const fetchInsights = async () => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams()
+      if (from) params.set('from', from)
+      if (to) params.set('to', to)
+      const res = await fetch(`/api/insights?${params.toString()}`, { cache: 'no-store' })
+      if (!res.ok) throw new Error('Failed to load insights')
+      const json = (await res.json()) as Insights
+      setData(json)
+    } catch (e: any) {
+      setError(e?.message || 'Failed to load insights')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/api/insights', { cache: 'no-store' })
-        if (!res.ok) throw new Error('Failed to load insights')
-        const json = (await res.json()) as Insights
-        setData(json)
+        await fetchInsights()
       } catch (e: any) {
         setError(e?.message || 'Failed to load insights')
-      } finally {
-        setLoading(false)
       }
     }
     load()
@@ -39,6 +53,12 @@ export function InsightsSummary() {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center gap-2 text-xs">
+        <input type="date" className="bg-transparent border border-gray-300 rounded px-2 py-1" value={from} onChange={(e) => setFrom(e.target.value)} />
+        <span className="text-gray-500">to</span>
+        <input type="date" className="bg-transparent border border-gray-300 rounded px-2 py-1" value={to} onChange={(e) => setTo(e.target.value)} />
+        <button onClick={fetchInsights} className="px-2 py-1 rounded bg-gray-900 text-white">Apply</button>
+      </div>
       <div className="grid grid-cols-3 gap-4 text-sm">
         <div>
           <div className="text-gray-600">Starts</div>

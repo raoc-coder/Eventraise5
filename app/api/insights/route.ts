@@ -1,12 +1,16 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
 // Performance insights from Supabase donations table
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     if (!supabase) {
       return NextResponse.json({ funnel: null, topDonors: [], dropOffs: null })
     }
+
+    const url = new URL(request.url)
+    const fromParam = url.searchParams.get('from')
+    const toParam = url.searchParams.get('to')
 
     const { data, error } = await supabase
       .from('donations')
@@ -17,8 +21,12 @@ export async function GET() {
       return NextResponse.json({ funnel: null, topDonors: [], dropOffs: null })
     }
 
-    const completed = (data || []).filter(d => d.status === 'completed')
-    const starts = (data || []).length
+    let rows = data || []
+    if (fromParam) rows = rows.filter(r => new Date(r.created_at) >= new Date(fromParam))
+    if (toParam) rows = rows.filter(r => new Date(r.created_at) <= new Date(toParam))
+
+    const completed = rows.filter(d => d.status === 'completed')
+    const starts = rows.length
     const completes = completed.length
     const conversion = starts ? completes / starts : 0
 
