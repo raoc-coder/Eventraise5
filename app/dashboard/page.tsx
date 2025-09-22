@@ -21,6 +21,7 @@ import {
   Bell
 } from 'lucide-react'
 import Link from 'next/link'
+import { DonorWall } from '@/components/engagement/DonorWall'
 
 export default function DashboardPage() {
   const { user, loading } = useAuth()
@@ -166,32 +167,7 @@ export default function DashboardPage() {
               <CardDescription>Latest updates on your campaigns</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-green-50 transition-colors">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">New donation received</p>
-                    <p className="text-xs text-gray-500">$50 for Spring Walkathon</p>
-                  </div>
-                  <span className="text-xs text-gray-400">2h ago</span>
-                </div>
-                <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-blue-50 transition-colors">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Volunteer signed up</p>
-                    <p className="text-xs text-gray-500">Sarah Johnson for Auction Setup</p>
-                  </div>
-                  <span className="text-xs text-gray-400">4h ago</span>
-                </div>
-                <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-yellow-50 transition-colors">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Event milestone reached</p>
-                    <p className="text-xs text-gray-500">75% of goal for Charity Run</p>
-                  </div>
-                  <span className="text-xs text-gray-400">1d ago</span>
-                </div>
-              </div>
+              <DonorWall />
             </CardContent>
           </Card>
         </div>
