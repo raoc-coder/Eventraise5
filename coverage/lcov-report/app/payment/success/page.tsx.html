@@ -39,7 +39,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
@@ -113,24 +113,35 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -147,6 +158,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,12 +187,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use client'
 &nbsp;
-import { useEffect, useState } from <span class="cstat-no" title="statement not covered" >'react'</span>
+import { useEffect, useState, Suspense } from <span class="cstat-no" title="statement not covered" >'react'</span>
 import { useSearchParams } from <span class="cstat-no" title="statement not covered" >'next/navigation'</span>
 import { Navigation } from <span class="cstat-no" title="statement not covered" >'@/components/layout/navigation'</span>
 import { DonationConfirmation } from <span class="cstat-no" title="statement not covered" >'@/components/payments/donation-confirmation'</span>
 &nbsp;
-export default function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >PaymentSuccessPage() {</span></span>
+function <span class="fstat-no" title="function not covered" >PaymentSuccessContent() {</span>
   const searchParams = <span class="cstat-no" title="statement not covered" >useSearchParams()</span>
   const sessionId = <span class="cstat-no" title="statement not covered" >searchParams.get('session_id')</span>
   const campaignId = <span class="cstat-no" title="statement not covered" >searchParams.get('campaign')</span>
@@ -185,31 +207,42 @@ export default function <span class="cstat-no" title="statement not covered" ><s
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  if (loading) {</span>
     return (
-      &lt;div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"&gt;
-        &lt;Navigation /&gt;
-        &lt;div className="flex items-center justify-center min-h-[60vh]"&gt;
-          &lt;div className="text-center"&gt;
-            &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"&gt;&lt;/div&gt;
-            &lt;p className="text-gray-600"&gt;Processing your donation...&lt;/p&gt;
-          &lt;/div&gt;
+      &lt;div className="flex items-center justify-center min-h-[60vh]"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"&gt;&lt;/div&gt;
+          &lt;p className="text-gray-600"&gt;Processing your donation...&lt;/p&gt;
         &lt;/div&gt;
       &lt;/div&gt;
     )
   }
 &nbsp;
   return (
+    &lt;div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8"&gt;
+      &lt;DonationConfirmation
+        campaignId={campaignId || undefined}
+        amount={amount ? parseFloat(amount) : undefined}
+        transactionId={sessionId || undefined}
+        showShareOptions={true}
+        showNextSteps={true}
+      /&gt;
+    &lt;/div&gt;
+  )
+}
+&nbsp;
+export default function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >PaymentSuccessPage() {</span></span>
+  return (
     &lt;div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"&gt;
       &lt;Navigation /&gt;
-      
-      &lt;div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8"&gt;
-        &lt;DonationConfirmation
-          campaignId={campaignId || undefined}
-          amount={amount ? parseFloat(amount) : undefined}
-          transactionId={sessionId || undefined}
-          showShareOptions={true}
-          showNextSteps={true}
-        /&gt;
-      &lt;/div&gt;
+      &lt;Suspense fallback={
+        &lt;div className="flex items-center justify-center min-h-[60vh]"&gt;
+          &lt;div className="text-center"&gt;
+            &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"&gt;&lt;/div&gt;
+            &lt;p className="text-gray-600"&gt;Loading...&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      }&gt;
+        &lt;PaymentSuccessContent /&gt;
+      &lt;/Suspense&gt;
     &lt;/div&gt;
   )
 }
@@ -220,7 +253,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T01:58:24.797Z
+                at 2025-09-22T02:22:38.029Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
