@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Navigation } from '@/components/layout/navigation'
 import { 
   Heart, 
   Share2, 
@@ -15,10 +16,25 @@ import {
   Clock,
   Ticket,
   Star,
-  CheckCircle
+  CheckCircle,
+  Sparkles,
+  Gift,
+  Award,
+  Shield,
+  Zap,
+  Target,
+  Bell,
+  ArrowRight,
+  ExternalLink,
+  Phone,
+  Mail,
+  Globe
 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { DonationConfirmation } from '@/components/payments/donation-confirmation'
+import { EventRegistration } from '@/components/events/event-registration'
+import { VolunteerShifts } from '@/components/events/volunteer-shifts'
 
 interface Event {
   id: string

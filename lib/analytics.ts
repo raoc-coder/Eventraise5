@@ -66,10 +66,58 @@ export const trackDonationFailed = (campaignId: string, amount: number, error: s
   })
 }
 
-export const trackEventRegistration = (eventId: string, eventTitle: string) => {
-  trackEvent('event_registration', {
+export const trackEventRegistration = (eventId: string, eventTitle: string, amount: number, participantEmail: string) => {
+  trackEvent('event_registration_started', {
     event_id: eventId,
     event_title: eventTitle,
+    amount,
+    participant_email: participantEmail,
+  })
+}
+
+export const trackEventRegistrationCompleted = (eventId: string, eventTitle: string, amount: number, participantEmail: string) => {
+  trackEvent('event_registration_completed', {
+    event_id: eventId,
+    event_title: eventTitle,
+    amount,
+    participant_email: participantEmail,
+  })
+}
+
+export const trackEventRegistrationFailed = (eventId: string, eventTitle: string, amount: number, error: string) => {
+  trackEvent('event_registration_failed', {
+    event_id: eventId,
+    event_title: eventTitle,
+    amount,
+    error,
+  })
+}
+
+// Volunteer signup tracking
+export const trackVolunteerSignup = (eventId: string, eventTitle: string, shiftId: string, volunteerEmail: string) => {
+  trackEvent('volunteer_signup_started', {
+    event_id: eventId,
+    event_title: eventTitle,
+    shift_id: shiftId,
+    volunteer_email: volunteerEmail,
+  })
+}
+
+export const trackVolunteerSignupCompleted = (eventId: string, eventTitle: string, shiftId: string, volunteerEmail: string) => {
+  trackEvent('volunteer_signup_completed', {
+    event_id: eventId,
+    event_title: eventTitle,
+    shift_id: shiftId,
+    volunteer_email: volunteerEmail,
+  })
+}
+
+export const trackVolunteerSignupFailed = (eventId: string, eventTitle: string, shiftId: string, error: string) => {
+  trackEvent('volunteer_signup_failed', {
+    event_id: eventId,
+    event_title: eventTitle,
+    shift_id: shiftId,
+    error,
   })
 }
 
