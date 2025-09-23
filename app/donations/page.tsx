@@ -26,13 +26,18 @@ export default function DonationsListPage() {
     const client = createClient(url, anon, {
       global: { headers: { apikey: anon, Authorization: `Bearer ${anon}` } },
     })
-    client
-      .from('donation_requests')
-      .select('id, amount_cents, currency, status, created_at')
-      .order('created_at', { ascending: false })
-      .limit(25)
-      .then(({ data }) => setItems(data || []))
-      .finally(() => setLoading(false))
+    ;(async () => {
+      try {
+        const { data } = await client
+          .from('donation_requests')
+          .select('id, amount_cents, currency, status, created_at')
+          .order('created_at', { ascending: false })
+          .limit(25)
+        setItems(data || [])
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [])
 
   return (
