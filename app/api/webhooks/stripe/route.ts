@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { trackDonationCompleted } from '@/lib/analytics'
@@ -180,12 +180,12 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
   console.log('Payment succeeded:', paymentIntent.id)
   
-  if (!supabase) {
+  if (!supabase || !supabaseAdmin) {
     console.error('Database not configured')
     return
   }
   
-  // Update donation status if it exists
+  // Update donation status if it exists (legacy)
   const { error } = await supabase
     .from('donations')
     .update({ status: 'completed' })
@@ -194,12 +194,22 @@ async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
   if (error) {
     console.error('Error updating donation status:', error)
   }
+
+  // Update new donation_requests if present
+  const { error: drError } = await supabaseAdmin
+    .from('donation_requests')
+    .update({ status: 'succeeded' })
+    .eq('payment_intent_id', paymentIntent.id)
+
+  if (drError) {
+    console.error('Error updating donation_requests status:', drError)
+  }
 }
 
 async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
   console.log('Payment failed:', paymentIntent.id)
   
-  if (!supabase) {
+  if (!supabase || !supabaseAdmin) {
     console.error('Database not configured')
     return
   }
@@ -212,5 +222,14 @@ async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
 
   if (error) {
     console.error('Error updating donation status:', error)
+  }
+  // Update new donation_requests
+  const { error: drError } = await supabaseAdmin
+    .from('donation_requests')
+    .update({ status: 'failed' })
+    .eq('payment_intent_id', paymentIntent.id)
+
+  if (drError) {
+    console.error('Error updating donation_requests status:', drError)
   }
 }
