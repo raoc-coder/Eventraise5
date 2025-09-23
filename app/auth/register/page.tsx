@@ -36,6 +36,14 @@ export default function RegisterPage() {
           return
         }
 
+        // Debug: safe env visibility in client (prefixes only)
+        const redact = (v?: string) => (v ? `${v.slice(0, 8)}…(${v.length})` : 'undefined')
+        console.log('[auth/register] Initializing Supabase', {
+          supabaseUrl,
+          supabaseAnonKeyPrefix: redact(supabaseAnonKey),
+          appUrl: process.env.NEXT_PUBLIC_APP_URL,
+        })
+
         const client = createClient(supabaseUrl, supabaseAnonKey)
         setSupabase(client)
       } catch (error) {
@@ -60,6 +68,10 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
+      console.log('[auth/register] signUp request', {
+        email: formData.email,
+        emailRedirectTo: getEmailRedirectUrl(),
+      })
       const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -72,10 +84,10 @@ export default function RegisterPage() {
         }
       })
 
-      console.log('Registration attempt:', {
-        email: formData.email,
-        redirectUrl: getEmailRedirectUrl(),
-        currentOrigin: typeof window !== 'undefined' ? window.location.origin : 'server'
+      console.log('[auth/register] signUp response', {
+        errorMessage: error?.message,
+        errorName: (error as any)?.name,
+        currentOrigin: typeof window !== 'undefined' ? window.location.origin : 'server',
       })
 
       if (error) {

@@ -30,6 +30,13 @@ export default function LoginPage() {
           return
         }
 
+        // Debug: safe env visibility in client (prefixes only)
+        const redact = (v?: string) => (v ? `${v.slice(0, 8)}…(${v.length})` : 'undefined')
+        console.log('[auth/login] Initializing Supabase', {
+          supabaseUrl,
+          supabaseAnonKeyPrefix: redact(supabaseAnonKey),
+        })
+
         const client = createClient(supabaseUrl, supabaseAnonKey)
         setSupabase(client)
       } catch (error) {
@@ -49,11 +56,13 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
+      console.log('[auth/login] signIn request', { email })
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
+      console.log('[auth/login] signIn response', { errorMessage: error?.message, errorName: (error as any)?.name })
       if (error) {
         if (error.message.includes('email not confirmed')) {
           toast.error('Please check your email and click the confirmation link before signing in.')
