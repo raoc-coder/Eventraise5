@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic'
-
-const Navigation = dynamic(() => import('@/components/layout/navigation').then(m => m.Navigation), { ssr: false })
+import { Navigation } from '@/components/layout/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function ReportsPage() {

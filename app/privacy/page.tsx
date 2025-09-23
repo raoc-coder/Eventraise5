@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic'
-
-const Navigation = dynamic(() => import('@/components/layout/navigation').then(m => m.Navigation), { ssr: false })
+import { Navigation } from '@/components/layout/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Shield, Eye, Lock, Database, Users, Mail } from 'lucide-react'
 

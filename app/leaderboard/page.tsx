@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic'
-
-const Navigation = dynamic(() => import('@/components/layout/navigation').then(m => m.Navigation), { ssr: false })
+import { Navigation } from '@/components/layout/navigation'
 
 export default function LeaderboardPage() {
   return (
