@@ -45,15 +45,18 @@ END $$;
 ALTER TABLE public.donation_requests ENABLE ROW LEVEL SECURITY;
 
 -- Owners can read their own donation requests
-CREATE POLICY IF NOT EXISTS "Users can view own donation requests" ON public.donation_requests
+DROP POLICY IF EXISTS "Users can view own donation requests" ON public.donation_requests;
+CREATE POLICY "Users can view own donation requests" ON public.donation_requests
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Owners can insert their own donation requests
-CREATE POLICY IF NOT EXISTS "Users can create donation requests" ON public.donation_requests
+DROP POLICY IF EXISTS "Users can create donation requests" ON public.donation_requests;
+CREATE POLICY "Users can create donation requests" ON public.donation_requests
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Owners can update their own donation requests (non-finalized)
-CREATE POLICY IF NOT EXISTS "Users can update own draft/pending donation requests" ON public.donation_requests
+DROP POLICY IF EXISTS "Users can update own draft/pending donation requests" ON public.donation_requests;
+CREATE POLICY "Users can update own draft/pending donation requests" ON public.donation_requests
   FOR UPDATE USING (auth.uid() = user_id AND status IN ('draft','pending'));
 
 
