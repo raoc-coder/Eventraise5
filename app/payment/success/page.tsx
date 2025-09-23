@@ -1,9 +1,24 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 import { Navigation } from '@/components/layout/navigation'
-import { DonationConfirmation } from '@/components/payments/donation-confirmation'
+
+const DonationConfirmation = dynamic(
+  () => import('@/components/payments/donation-confirmation').then(m => m.DonationConfirmation),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading confirmation...</p>
+        </div>
+      </div>
+    )
+  }
+)
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams()
