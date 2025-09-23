@@ -44,7 +44,14 @@ export default function RegisterPage() {
           appUrl: process.env.NEXT_PUBLIC_APP_URL,
         })
 
-        const client = createClient(supabaseUrl, supabaseAnonKey)
+        const client = createClient(supabaseUrl, supabaseAnonKey, {
+          global: {
+            headers: {
+              apikey: supabaseAnonKey,
+              Authorization: `Bearer ${supabaseAnonKey}`,
+            },
+          },
+        })
         setSupabase(client)
       } catch (error) {
         console.error('Failed to initialize Supabase client:', error)

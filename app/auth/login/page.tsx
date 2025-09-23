@@ -37,7 +37,14 @@ export default function LoginPage() {
           supabaseAnonKeyPrefix: redact(supabaseAnonKey),
         })
 
-        const client = createClient(supabaseUrl, supabaseAnonKey)
+        const client = createClient(supabaseUrl, supabaseAnonKey, {
+          global: {
+            headers: {
+              apikey: supabaseAnonKey,
+              Authorization: `Bearer ${supabaseAnonKey}`,
+            },
+          },
+        })
         setSupabase(client)
       } catch (error) {
         console.error('Failed to initialize Supabase client:', error)
