@@ -1,7 +1,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-const Card = React.forwardRef<
+const CardBase = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
@@ -14,9 +14,12 @@ const Card = React.forwardRef<
     {...props}
   />
 ))
+CardBase.displayName = "Card"
+
+const Card = React.memo(CardBase)
 Card.displayName = "Card"
 
-const CardHeader = React.forwardRef<
+const CardHeaderBase = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
@@ -26,9 +29,12 @@ const CardHeader = React.forwardRef<
     {...props}
   />
 ))
+CardHeaderBase.displayName = "CardHeader"
+
+const CardHeader = React.memo(CardHeaderBase)
 CardHeader.displayName = "CardHeader"
 
-const CardTitle = React.forwardRef<
+const CardTitleBase = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
@@ -41,9 +47,12 @@ const CardTitle = React.forwardRef<
     {...props}
   />
 ))
+CardTitleBase.displayName = "CardTitle"
+
+const CardTitle = React.memo(CardTitleBase)
 CardTitle.displayName = "CardTitle"
 
-const CardDescription = React.forwardRef<
+const CardDescriptionBase = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
@@ -53,17 +62,23 @@ const CardDescription = React.forwardRef<
     {...props}
   />
 ))
+CardDescriptionBase.displayName = "CardDescription"
+
+const CardDescription = React.memo(CardDescriptionBase)
 CardDescription.displayName = "CardDescription"
 
-const CardContent = React.forwardRef<
+const CardContentBase = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
 ))
+CardContentBase.displayName = "CardContent"
+
+const CardContent = React.memo(CardContentBase)
 CardContent.displayName = "CardContent"
 
-const CardFooter = React.forwardRef<
+const CardFooterBase = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
@@ -73,6 +88,9 @@ const CardFooter = React.forwardRef<
     {...props}
   />
 ))
+CardFooterBase.displayName = "CardFooter"
+
+const CardFooter = React.memo(CardFooterBase)
 CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const revalidate = 60
+
 // Performance insights (Stripe + Supabase) placeholder
 export async function GET() {
   return NextResponse.json({
