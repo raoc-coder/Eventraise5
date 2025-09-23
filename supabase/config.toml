@@ -20,7 +20,7 @@ port = 54322
 # Port used by db diff command to initialize the shadow database.
 shadow_port = 54320
 # The database major version to use. This has to be the same as your remote database's. Run `SHOW server_version;` on the remote database to check.
-major_version = 15
+major_version = 17
 
 [db.pooler]
 enabled = false
@@ -234,8 +234,4 @@ client_id = ""
 secret = "env(SUPABASE_AUTH_EXTERNAL_ZOOM_SECRET)"
 redirect_uri = ""
 
-[edge_functions]
-enabled = true
-# Configure one of the supported request policies: `oneshot`, `per_worker`.
-# Use `oneshot` for hot reload, or `per_worker` for load testing.
-request_policy = "oneshot"
+# Removed deprecated edge_functions config to satisfy latest Supabase CLI
