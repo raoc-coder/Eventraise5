@@ -1,7 +1,7 @@
-'use client'
+import dynamic from 'next/dynamic'
 
 import Link from 'next/link'
-import { Navigation } from '@/components/layout/navigation'
+const Navigation = dynamic(() => import('@/components/layout/navigation').then(m => m.Navigation), { ssr: false })
 
 export default function MarketplacePage() {
   return (
