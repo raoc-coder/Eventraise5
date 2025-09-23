@@ -7,11 +7,6 @@ export function getAuthRedirectUrl() {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     
-    // Production domain
-    if (hostname === 'eventraise2.vercel.app') {
-      return 'https://eventraise2.vercel.app/auth/callback';
-    }
-    
     // Local development
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'http://localhost:3000/auth/callback';
@@ -28,18 +23,22 @@ export function getAuthRedirectUrl() {
 
 // Alternative: Force production URL for email confirmations
 export function getEmailRedirectUrl() {
-  // Always use production URL for email confirmations
-  // This ensures consistency with Supabase dashboard settings
-  return 'https://eventraise2.vercel.app/auth/callback';
+  // Prefer explicit app URL if provided
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (appUrl) {
+    return `${appUrl}/auth/callback`;
+  }
+  // Fallback to browser origin when available
+  if (typeof window !== 'undefined') {
+    return `${window.location.origin}/auth/callback`;
+  }
+  // Default local
+  return 'http://localhost:3000/auth/callback';
 }
 
 export function getConfirmRedirectUrl() {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    
-    if (hostname === 'eventraise2.vercel.app') {
-      return 'https://eventraise2.vercel.app/auth/confirm';
-    }
     
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'http://localhost:3000/auth/confirm';
