@@ -52,12 +52,22 @@ export async function POST(req: NextRequest) {
     insertPayload.is_published = true
 
     let { data, error } = await db.from('events').insert(insertPayload).select('*').single()
-    if (error && (error as any).code === '42703') {
-      // Column(s) not present in this schema; retry without optional fields
-      delete insertPayload.organizer_id
-      delete insertPayload.created_by
-      delete insertPayload.is_published
-      ;({ data, error } = await db.from('events').insert(insertPayload).select('*').single())
+    if (error) {
+      const msg = (error as any).message || ''
+      const code = (error as any).code || ''
+      if (
+        code === '42703' ||
+        code === 'PGRST204' ||
+        msg.includes('is_published') ||
+        msg.includes('created_by') ||
+        msg.includes('organizer_id')
+      ) {
+        // Column(s) not present in this schema; retry without optional fields
+        delete insertPayload.organizer_id
+        delete insertPayload.created_by
+        delete insertPayload.is_published
+        ;({ data, error } = await db.from('events').insert(insertPayload).select('*').single())
+      }
     }
     if (error) {
       console.error('[events/create] insert error', error)
