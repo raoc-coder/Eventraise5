@@ -22,19 +22,34 @@ export async function POST(req: NextRequest) {
     const feeCents = Math.floor(amountCents * 0.0899)
 
     const userId = req.headers.get('x-user-id') || null
-    const { data: dr, error: drErr } = await supabaseAdmin
+    const baseInsert: any = {
+      user_id: userId,
+      amount_cents: amountCents,
+      currency: 'usd',
+      status: 'pending',
+      donor_name,
+      donor_email,
+    }
+    if (eventId) baseInsert.event_id = eventId
+
+    let { data: dr, error: drErr } = await supabaseAdmin
       .from('donation_requests')
-      .insert({
-        user_id: userId,
-        event_id: eventId,
-        amount_cents: amountCents,
-        currency: 'usd',
-        status: 'pending',
-        donor_name,
-        donor_email,
-      })
+      .insert(baseInsert)
       .select()
       .single()
+    if (drErr) {
+      const msg = (drErr as any).message || ''
+      const code = (drErr as any).code || ''
+      if (code === 'PGRST204' || code === '42703' || msg.includes('event_id')) {
+        // Retry without event_id on schema variants
+        delete baseInsert.event_id
+        ;({ data: dr, error: drErr } = await supabaseAdmin
+          .from('donation_requests')
+          .insert(baseInsert)
+          .select()
+          .single())
+      }
+    }
     if (drErr) {
       console.error('[donations/checkout] Persist error', drErr)
       return NextResponse.json({ error: 'Failed to persist donation' }, { status: 500 })
