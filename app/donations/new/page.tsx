@@ -24,6 +24,7 @@ function DonationForm() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [feeCents, setFeeCents] = useState<number>(0)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,6 +66,7 @@ function DonationForm() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to create payment')
+      if (typeof data.fee_cents === 'number') setFeeCents(data.fee_cents)
 
       const card = elements.getElement(CardElement)
       if (!card) throw new Error('Card element not found')
@@ -97,6 +99,13 @@ function DonationForm() {
         <Input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" aria-invalid={!!errors.amount} required />
         {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
       </div>
+      {Number(amount) > 0 && (
+        <div className="text-sm bg-white/70 rounded-md p-3">
+          <div className="flex justify-between"><span>Donation</span><span>${Number(amount).toFixed(2)}</span></div>
+          <div className="flex justify-between"><span>Platform fee (8.99%)</span><span>${((Number(amount)*0.0899)).toFixed(2)}</span></div>
+          <div className="border-t mt-2 pt-2 flex justify-between font-semibold"><span>Total charged</span><span>${(Number(amount)*(1+0.0899)).toFixed(2)}</span></div>
+        </div>
+      )}
       <div className="space-y-2">
         <Label htmlFor="name">Full Name</Label>
         <Input id="name" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={!!errors.donor_name} />

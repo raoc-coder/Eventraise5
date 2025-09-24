@@ -68,6 +68,10 @@ export default function EventDetailPage() {
   const [editMode, setEditMode] = useState(false)
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState({ title: '', description: '', location: '', start_date: '', end_date: '' })
+  const [shareOpen, setShareOpen] = useState(false)
+  const [shareEmail, setShareEmail] = useState('')
+  const [shareMsg, setShareMsg] = useState('')
+  const [shareSending, setShareSending] = useState(false)
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -180,6 +184,32 @@ export default function EventDetailPage() {
       window.location.href = '/events'
     } catch (e: any) {
       toast.error(e.message || 'Delete failed')
+    }
+  }
+
+  const sendDonationInvite = async () => {
+    if (!params?.id) return
+    if (!shareEmail) {
+      toast.error('Recipient email required')
+      return
+    }
+    setShareSending(true)
+    try {
+      const res = await fetch('/api/donations/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: shareEmail, eventId: params.id, message: shareMsg }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to send')
+      toast.success('Donation link sent')
+      setShareOpen(false)
+      setShareEmail('')
+      setShareMsg('')
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to send donation link')
+    } finally {
+      setShareSending(false)
     }
   }
 
@@ -296,6 +326,7 @@ export default function EventDetailPage() {
                     <Link href={`/donations/new?eventId=${params.id}`}>
                       <Button className="btn-primary">Donate</Button>
                     </Link>
+                    <Button variant="outline" onClick={()=>setShareOpen(!shareOpen)}>Email Link</Button>
                     {editMode ? null : (
                       <>
                         {user && (

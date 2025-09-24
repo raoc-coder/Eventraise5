@@ -23,10 +23,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Minimum donation is $1' }, { status: 400 })
     }
 
+    // Apply platform fee metadata; net is handled off-session (this is standard mode, not Connect)
+    const platformFeePct = 0.0899
+    const feeCents = Math.floor(amountCents * platformFeePct)
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountCents,
       currency,
       automatic_payment_methods: { enabled: true },
+      metadata: {
+        platform_fee_cents: String(feeCents),
+        platform_fee_pct: String(platformFeePct),
+        event_id: eventId || '',
+      }
     })
 
     // NOTE: user_id should be taken from auth; as a placeholder, this endpoint trusts edge auth proxy
@@ -53,7 +61,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to persist donation' }, { status: 500 })
     }
 
-    return NextResponse.json({ client_secret: paymentIntent.client_secret, id: data.id })
+    return NextResponse.json({ client_secret: paymentIntent.client_secret, id: data.id, fee_cents: feeCents })
   } catch (e) {
     console.error('create-intent error', e)
     return NextResponse.json({ error: 'Failed to create payment intent' }, { status: 500 })
