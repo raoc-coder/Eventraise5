@@ -220,85 +220,72 @@ export default function EventDetailPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
-      {/* Navigation */}
-      <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
-                  <Heart className="h-5 w-5 text-white" />
-                </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
-                  EventraiseHub
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/events">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Browse Events</Button>
-              </Link>
-              <Link href="/auth/login">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Login</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-white">
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {showCreatedBanner && (
-          <div className="mb-6 p-4 rounded-lg border border-green-300 bg-green-50 flex items-center justify-between">
+          <div className="mb-6 alert-success flex items-center justify-between">
             <div>
-              <p className="text-green-700 font-semibold">Your event is live!</p>
-              <p className="text-green-700/80 text-sm">Share it now or manage it from My Events.</p>
+              <p className="font-semibold text-green-800">Your campaign is live!</p>
+              <p className="text-green-700 text-sm">Share it now or manage it from My Campaigns.</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleShare}>Share</Button>
+              <Button variant="outline" onClick={handleShare} className="border-green-600 text-green-700 hover:bg-green-50">Share</Button>
               <Link href="/events/mine">
-                <Button className="btn-primary">My Events</Button>
+                <Button className="btn-primary">My Campaigns</Button>
               </Link>
-              <Button variant="outline" onClick={()=>setShowCreatedBanner(false)}>Dismiss</Button>
+              <Button variant="outline" onClick={()=>setShowCreatedBanner(false)} className="border-green-600 text-green-700 hover:bg-green-50">Dismiss</Button>
             </div>
           </div>
         )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Event Info */}
           <div className="lg:col-span-2 space-y-6">
-            <Card className="card-soft">
+            <Card className="event-card">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     {editMode ? (
-                      <div className="space-y-2">
-                        <input value={draft.title} onChange={(e)=>setDraft({...draft,title:e.target.value})} className="w-full px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
-                        <textarea value={draft.description} onChange={(e)=>setDraft({...draft,description:e.target.value})} className="w-full px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
+                      <div className="space-y-4">
+                        <input 
+                          value={draft.title} 
+                          onChange={(e)=>setDraft({...draft,title:e.target.value})} 
+                          className="input text-lg font-semibold" 
+                          placeholder="Campaign title"
+                        />
+                        <textarea 
+                          value={draft.description} 
+                          onChange={(e)=>setDraft({...draft,description:e.target.value})} 
+                          className="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                          rows={4}
+                          placeholder="Campaign description"
+                        />
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          <input type="date" value={draft.start_date} onChange={(e)=>setDraft({...draft,start_date:e.target.value})} className="px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
-                          <input type="date" value={draft.end_date} onChange={(e)=>setDraft({...draft,end_date:e.target.value})} className="px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
-                          <input value={draft.location} onChange={(e)=>setDraft({...draft,location:e.target.value})} placeholder="Location" className="px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
+                          <input type="date" value={draft.start_date} onChange={(e)=>setDraft({...draft,start_date:e.target.value})} className="input" />
+                          <input type="date" value={draft.end_date} onChange={(e)=>setDraft({...draft,end_date:e.target.value})} className="input" />
+                          <input value={draft.location} onChange={(e)=>setDraft({...draft,location:e.target.value})} placeholder="Location" className="input" />
                         </div>
                         <div className="flex gap-2">
                           <Button onClick={updateEvent} disabled={saving} className="btn-primary">{saving?'Saving…':'Save'}</Button>
-                          <Button variant="outline" onClick={()=>setEditMode(false)}>Cancel</Button>
+                          <Button variant="outline" onClick={()=>setEditMode(false)} className="btn-secondary">Cancel</Button>
                         </div>
                       </div>
                     ) : (
                       <>
-                        <CardTitle className="text-2xl text-white mb-2">{event.title}</CardTitle>
-                        <p className="text-gray-300">Direct Donation Campaign</p>
+                        <CardTitle className="text-3xl font-bold text-gray-900 mb-2">{event.title}</CardTitle>
+                        <p className="text-gray-600 text-lg">Direct Donation Campaign</p>
                       </>
                     )}
                     {event.goal_amount && (
-                      <div className="flex items-center mt-2">
-                        <Target className="h-4 w-4 text-cyan-400 mr-1" />
-                        <span className="text-sm text-cyan-400 font-semibold">Goal: ${event.goal_amount.toLocaleString()}</span>
+                      <div className="flex items-center mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <Target className="h-5 w-5 text-blue-600 mr-2" />
+                        <span className="text-blue-800 font-semibold">Fundraising Goal: ${event.goal_amount.toLocaleString()}</span>
                       </div>
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={handleShare} variant="outline" className="text-cyan-400 hover:bg-cyan-500/20">
+                    <Button onClick={handleShare} variant="outline" className="btn-secondary">
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
@@ -315,14 +302,17 @@ export default function EventDetailPage() {
                       } catch (e:any) {
                         toast.error(e.message || 'Unable to start checkout')
                       }
-                    }}>Donate</Button>
-                    <Button variant="outline" onClick={()=>setShareOpen(!shareOpen)}>Email Link</Button>
+                    }}>
+                      <Heart className="h-4 w-4 mr-2" />
+                      Donate ${donationAmount}
+                    </Button>
+                    <Button variant="outline" onClick={()=>setShareOpen(!shareOpen)} className="btn-secondary">Email Link</Button>
                     {editMode ? null : (
                       <>
                         {user && (
                           <>
-                            <Button variant="outline" onClick={()=>setEditMode(true)}>Edit</Button>
-                            <Button variant="outline" onClick={deleteEvent} className="text-red-500 border-red-500">Delete</Button>
+                            <Button variant="outline" onClick={()=>setEditMode(true)} className="btn-secondary">Edit</Button>
+                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50">Delete</Button>
                           </>
                         )}
                       </>
@@ -331,38 +321,38 @@ export default function EventDetailPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-300 mb-6">{event.description}</p>
+                <p className="text-gray-700 mb-6 text-lg leading-relaxed">{event.description}</p>
                 
-                {/* Event Details */}
+                {/* Campaign Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
-                    <Calendar className="h-5 w-5 text-cyan-400 mr-3" />
+                  <div className="flex items-center p-4 rounded-lg bg-blue-50 border border-blue-200">
+                    <Calendar className="h-5 w-5 text-blue-600 mr-3" />
                     <div>
-                      <p className="text-sm text-gray-400">Campaign Period</p>
-                      <p className="text-white font-semibold">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
+                      <p className="text-sm text-blue-600 font-medium">Campaign Period</p>
+                      <p className="text-gray-900 font-semibold">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
                     </div>
                   </div>
-                  <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
-                    <MapPin className="h-5 w-5 text-orange-400 mr-3" />
+                  <div className="flex items-center p-4 rounded-lg bg-orange-50 border border-orange-200">
+                    <MapPin className="h-5 w-5 text-orange-600 mr-3" />
                     <div>
-                      <p className="text-sm text-gray-400">Location</p>
-                      <p className="text-white font-semibold">{event.location || 'Online'}</p>
+                      <p className="text-sm text-orange-600 font-medium">Location</p>
+                      <p className="text-gray-900 font-semibold">{event.location || 'Online'}</p>
                     </div>
                   </div>
                   {event.goal_amount && (
-                    <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
-                      <Target className="h-5 w-5 text-cyan-400 mr-3" />
+                    <div className="flex items-center p-4 rounded-lg bg-green-50 border border-green-200">
+                      <Target className="h-5 w-5 text-green-600 mr-3" />
                       <div>
-                        <p className="text-sm text-gray-400">Fundraising Goal</p>
-                        <p className="text-white font-semibold">${event.goal_amount.toLocaleString()}</p>
+                        <p className="text-sm text-green-600 font-medium">Fundraising Goal</p>
+                        <p className="text-gray-900 font-semibold">${event.goal_amount.toLocaleString()}</p>
                       </div>
                     </div>
                   )}
-                  <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
-                    <Heart className="h-5 w-5 text-orange-400 mr-3" />
+                  <div className="flex items-center p-4 rounded-lg bg-purple-50 border border-purple-200">
+                    <Heart className="h-5 w-5 text-purple-600 mr-3" />
                     <div>
-                      <p className="text-sm text-gray-400">Campaign Type</p>
-                      <p className="text-white font-semibold">Direct Donation</p>
+                      <p className="text-sm text-purple-600 font-medium">Campaign Type</p>
+                      <p className="text-gray-900 font-semibold">Direct Donation</p>
                     </div>
                   </div>
                 </div>
@@ -373,81 +363,90 @@ export default function EventDetailPage() {
 
           {/* Donation Form */}
           <div className="space-y-6">
-            <Card className="card-soft">
+            <Card className="event-card">
               <CardHeader>
-                <CardTitle className="text-white">Support This Campaign</CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardTitle className="text-gray-900">Support This Campaign</CardTitle>
+                <CardDescription className="text-gray-600">
                   Make a direct donation to support this cause
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {/* Quick Donation Amounts */}
                 <div className="mb-6">
-                  <p className="text-gray-300 mb-2">Quick Donate</p>
-                  <div className="flex items-center gap-2 mb-3">
+                  <p className="text-gray-700 mb-3 font-medium">Quick Donate</p>
+                  <div className="flex items-center gap-2 mb-4">
                     {[10,25,50].map(v => (
-                      <Button key={v} variant="outline" onClick={()=>setDonationAmount(v)} className={donationAmount===v?"border-cyan-400 text-cyan-400":""}>${v}</Button>
+                      <Button 
+                        key={v} 
+                        variant="outline" 
+                        onClick={()=>setDonationAmount(v)} 
+                        className={donationAmount===v ? "btn-primary" : "btn-secondary"}
+                      >
+                        ${v}
+                      </Button>
                     ))}
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-300 text-sm">Custom</span>
+                      <span className="text-gray-600 text-sm font-medium">Custom</span>
                       <input
                         type="number"
                         min={1}
                         value={donationAmount}
                         onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
-                        className="w-24 px-2 py-1 rounded-md bg-gray-800 text-white border border-gray-700"
+                        className="input w-24"
                       />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="donorName" className="text-gray-300">Your Name (Optional)</Label>
+                    <Label htmlFor="donorName" className="text-gray-700 font-medium">Your Name (Optional)</Label>
                     <Input
                       id="donorName"
                       type="text"
                       placeholder="Enter your name"
                       value={donorName}
                       onChange={(e) => setDonorName(e.target.value)}
+                      className="input"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="donorEmail" className="text-gray-300">Your Email (Optional)</Label>
+                    <Label htmlFor="donorEmail" className="text-gray-700 font-medium">Your Email (Optional)</Label>
                     <Input
                       id="donorEmail"
                       type="email"
                       placeholder="Enter your email"
                       value={donorEmail}
                       onChange={(e) => setDonorEmail(e.target.value)}
+                      className="input"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="donorMessage" className="text-gray-300">Message (Optional)</Label>
+                    <Label htmlFor="donorMessage" className="text-gray-700 font-medium">Message (Optional)</Label>
                     <textarea
                       id="donorMessage"
                       placeholder="Leave a message of support..."
                       value={donorMessage}
                       onChange={(e) => setDonorMessage(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       rows={3}
                     />
                   </div>
 
-                  <div className="bg-gray-800/50 p-4 rounded-lg">
+                  <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-300">Donation Amount</span>
-                      <span className="text-white font-semibold">${donationAmount}</span>
+                      <span className="text-gray-700 font-medium">Donation Amount</span>
+                      <span className="text-gray-900 font-semibold">${donationAmount}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-300">Platform Fee (8.99%)</span>
-                      <span className="text-white font-semibold">${(donationAmount * 0.0899).toFixed(2)}</span>
+                      <span className="text-gray-700 font-medium">Platform Fee (8.99%)</span>
+                      <span className="text-gray-900 font-semibold">${(donationAmount * 0.0899).toFixed(2)}</span>
                     </div>
-                    <div className="border-t border-gray-600 mt-2 pt-2">
+                    <div className="border-t border-blue-300 mt-2 pt-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-white font-bold">Total Charged</span>
-                        <span className="text-cyan-400 font-bold text-lg">
+                        <span className="text-gray-900 font-bold">Total Charged</span>
+                        <span className="text-blue-600 font-bold text-lg">
                           ${(donationAmount + (donationAmount * 0.0899)).toFixed(2)}
                         </span>
                       </div>
@@ -485,25 +484,25 @@ export default function EventDetailPage() {
             </Card>
 
             {/* Campaign Info */}
-            <Card className="card-soft">
+            <Card className="event-card">
               <CardHeader>
-                <CardTitle className="text-white">Campaign Information</CardTitle>
+                <CardTitle className="text-gray-900">Campaign Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Campaign Type</span>
-                    <span className="text-cyan-400 font-bold">Direct Donation</span>
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <span className="text-gray-700 font-medium">Campaign Type</span>
+                    <span className="text-blue-600 font-bold">Direct Donation</span>
                   </div>
                   {event.goal_amount && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-300">Fundraising Goal</span>
-                      <span className="text-white font-bold">${event.goal_amount.toLocaleString()}</span>
+                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
+                      <span className="text-gray-700 font-medium">Fundraising Goal</span>
+                      <span className="text-green-600 font-bold">${event.goal_amount.toLocaleString()}</span>
                     </div>
                   )}
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Campaign Period</span>
-                    <span className="text-white font-bold">
+                  <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
+                    <span className="text-gray-700 font-medium">Campaign Period</span>
+                    <span className="text-orange-600 font-bold">
                       {new Date(event.start_date).toLocaleDateString()} - {new Date(event.end_date).toLocaleDateString()}
                     </span>
                   </div>
