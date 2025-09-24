@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     const raw = await req.json().catch(() => ({}))
     const body = createEventSchema.parse(raw)
-    const { title, description, event_type, start_date, end_date, /* registration_deadline, goal_amount, */ max_participants, location, image_url } = body
+    const { title, description, event_type, start_date, end_date, goal_amount, location, is_public, invite_emails } = body
 
     const todayIso = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
     const safeTitle = title && String(title).trim().length > 0 ? String(title).trim() : 'Untitled Event'
@@ -37,11 +37,13 @@ export async function POST(req: NextRequest) {
       start_date: toIsoDate(safeStart),
       end_date: toIsoDate(safeEnd),
       location: safeLocation,
+      is_public: is_public !== false, // Default to public if not specified
     }
 
-    // registration_deadline and goal_amount are not present in older schemas; omit to be compatible
-    if (max_participants !== undefined && max_participants !== '') insertPayload.max_participants = Number(max_participants as any)
-    if (image_url) insertPayload.image_url = image_url
+    // Add goal_amount if provided
+    if (goal_amount !== undefined && goal_amount !== '') {
+      insertPayload.goal_amount = Number(goal_amount)
+    }
 
     // Attempt to set ownership and publish flags if supported
     const userId = req.headers.get('x-user-id') || ''
@@ -72,6 +74,25 @@ export async function POST(req: NextRequest) {
     if (error) {
       console.error('[events/create] insert error', error)
       return fail(error.message || 'Failed to create event', 500, { code: (error as any).code })
+    }
+
+    // Handle bulk invites for private events
+    if (!is_public && invite_emails && typeof invite_emails === 'string' && invite_emails.trim()) {
+      try {
+        const emails = invite_emails
+          .split(',')
+          .map(email => email.trim())
+          .filter(email => email && email.includes('@'))
+        
+        if (emails.length > 0) {
+          // Store invite emails for later processing (could be sent via email service)
+          console.log(`[events/create] Private event created with ${emails.length} invite emails:`, emails)
+          // TODO: Implement email sending service to send invites
+        }
+      } catch (inviteError) {
+        console.error('[events/create] Error processing invites:', inviteError)
+        // Don't fail the event creation if invite processing fails
+      }
     }
 
     return ok({ event: data })

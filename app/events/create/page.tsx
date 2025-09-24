@@ -21,15 +21,13 @@ export default function CreateEventPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    event_type: 'walkathon',
+    event_type: 'direct_donation',
     start_date: '',
     end_date: '',
-    registration_deadline: '',
     goal_amount: '',
-    max_participants: '',
-    registration_fee: '0',
     location: '',
     is_public: true,
+    invite_emails: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -51,9 +49,7 @@ export default function CreateEventPage() {
           event_type: formData.event_type,
           start_date: formData.start_date || undefined,
           end_date: formData.end_date || undefined,
-          registration_deadline: formData.registration_deadline || undefined,
           goal_amount: formData.goal_amount ? Number(formData.goal_amount) : undefined,
-          max_participants: formData.max_participants ? Number(formData.max_participants) : undefined,
           location: formData.location,
         })
       } catch (err: any) {
@@ -76,10 +72,9 @@ export default function CreateEventPage() {
         event_type: formData.event_type,
         start_date: formData.start_date,
         end_date: formData.end_date,
-        registration_deadline: formData.registration_deadline || undefined,
         goal_amount: formData.goal_amount || undefined,
-        max_participants: formData.max_participants || undefined,
         location: formData.location,
+        is_public: formData.is_public,
       }
       // Try to include user JWT to satisfy RLS (authenticated role)
       let authHeader: Record<string, string> = {}
@@ -165,59 +160,6 @@ export default function CreateEventPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="event_type">Event Type *</Label>
-                  <select
-                    id="event_type"
-                    value={formData.event_type}
-                    onChange={(e) => handleInputChange('event_type', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    required
-                  >
-                    <option value="walkathon">Walk-a-thon</option>
-                    <option value="auction">Auction</option>
-                    <option value="product_sale">Product Sale</option>
-                    <option value="direct_donation">Direct Donation</option>
-                    <option value="raffle">Raffle</option>
-                  </select>
-                </div>
-              </div>
-
-                <div className="space-y-2">
-                <Label htmlFor="description">Description *</Label>
-                <textarea
-                  id="description"
-                  placeholder="Describe your event and its purpose"
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[100px]"
-                    aria-invalid={!!errors.description}
-                  required
-                />
-                  {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="start_date">Start Date *</Label>
-                  <Input id="start_date" type="date" value={formData.start_date} onChange={(e) => handleInputChange('start_date', e.target.value)} aria-invalid={!!errors.start_date} required />
-                  {errors.start_date && <p className="text-red-500 text-sm">{errors.start_date}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="end_date">End Date *</Label>
-                  <Input id="end_date" type="date" value={formData.end_date} onChange={(e) => handleInputChange('end_date', e.target.value)} aria-invalid={!!errors.end_date} required />
-                  {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="registration_deadline">Registration Deadline</Label>
-                  <Input id="registration_deadline" type="date" value={formData.registration_deadline} onChange={(e) => handleInputChange('registration_deadline', e.target.value)} aria-invalid={!!errors.registration_deadline} />
-                  {errors.registration_deadline && <p className="text-red-500 text-sm">{errors.registration_deadline}</p>}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
                   <Label htmlFor="goal_amount">Fundraising Goal ($) *</Label>
                   <Input
                     id="goal_amount"
@@ -227,52 +169,89 @@ export default function CreateEventPage() {
                     onChange={(e) => handleInputChange('goal_amount', e.target.value)}
                     required
                   />
+                  {errors.goal_amount && <p className="text-red-500 text-sm">{errors.goal_amount}</p>}
                 </div>
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="max_participants">Max Participants</Label>
-                  <Input
-                    id="max_participants"
-                    type="number"
-                    placeholder="100"
-                    value={formData.max_participants}
-                    onChange={(e) => handleInputChange('max_participants', e.target.value)}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Description *</Label>
+                <textarea
+                  id="description"
+                  placeholder="Describe your fundraising campaign and its purpose"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[100px]"
+                  aria-invalid={!!errors.description}
+                  required
+                />
+                {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="registration_fee">Registration Fee ($)</Label>
-                  <Input
-                    id="registration_fee"
-                    type="number"
-                    placeholder="0"
-                    value={formData.registration_fee}
-                    onChange={(e) => handleInputChange('registration_fee', e.target.value)}
+                  <Label htmlFor="start_date">Start Date *</Label>
+                  <Input 
+                    id="start_date" 
+                    type="date" 
+                    value={formData.start_date} 
+                    onChange={(e) => handleInputChange('start_date', e.target.value)} 
+                    aria-invalid={!!errors.start_date} 
+                    required 
                   />
+                  {errors.start_date && <p className="text-red-500 text-sm">{errors.start_date}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
-                  <Input
-                    id="location"
-                    placeholder="Event location"
-                    value={formData.location}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
+                  <Label htmlFor="end_date">End Date *</Label>
+                  <Input 
+                    id="end_date" 
+                    type="date" 
+                    value={formData.end_date} 
+                    onChange={(e) => handleInputChange('end_date', e.target.value)} 
+                    aria-invalid={!!errors.end_date} 
+                    required 
                   />
+                  {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date}</p>}
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="is_public"
-                  checked={formData.is_public}
-                  onChange={(e) => handleInputChange('is_public', e.target.checked.toString())}
-                  className="rounded border-gray-300"
+              <div className="space-y-2">
+                <Label htmlFor="location">Location (Optional)</Label>
+                <Input
+                  id="location"
+                  placeholder="Event location"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
                 />
-                <Label htmlFor="is_public">Make this event public</Label>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="is_public"
+                    checked={formData.is_public}
+                    onChange={(e) => handleInputChange('is_public', e.target.checked.toString())}
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="is_public">Make this event public (visible to everyone)</Label>
+                </div>
+
+                {!formData.is_public && (
+                  <div className="space-y-2">
+                    <Label htmlFor="invite_emails">Invite Donors & Volunteers (Optional)</Label>
+                    <textarea
+                      id="invite_emails"
+                      placeholder="Enter email addresses separated by commas: john@example.com, jane@example.com"
+                      value={formData.invite_emails}
+                      onChange={(e) => handleInputChange('invite_emails', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[80px]"
+                    />
+                    <p className="text-sm text-gray-500">
+                      For private events, you can invite specific people by email. They'll receive a direct link to your campaign.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end space-x-4 pt-6">

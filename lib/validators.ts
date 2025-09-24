@@ -8,11 +8,10 @@ export const createEventSchema = z.object({
   event_type: z.string().trim().min(0).optional(),
   start_date: dateStringSchema,
   end_date: dateStringSchema,
-  registration_deadline: dateStringSchema.or(z.literal('')).optional(),
   goal_amount: z.union([z.number(), z.string()]).optional(),
-  max_participants: z.union([z.number(), z.string()]).optional(),
   location: z.string().trim().min(0).optional(),
-  image_url: z.string().url().optional(),
+  is_public: z.boolean().optional(),
+  invite_emails: z.string().trim().optional(),
 })
 
 export type CreateEventInput = z.infer<typeof createEventSchema>
