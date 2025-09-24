@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   const db = supabaseAdmin || supabase
@@ -34,7 +36,10 @@ export async function GET(req: NextRequest) {
         .order('created_at', { ascending: false })
         .range(from, to))
     }
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[api/events] mine query error', error)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
     return NextResponse.json({ events: data, page, pageSize, total: count })
   }
 
@@ -43,7 +48,10 @@ export async function GET(req: NextRequest) {
     // Column filters not available; retry without specific filters
     ;({ data, error, count } = await db.from('events').select('*', { count: 'exact' }).order('id', { ascending: false }).range(from, to))
   }
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[api/events] list error', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
   return NextResponse.json({ events: data, page, pageSize, total: count })
 }
 
