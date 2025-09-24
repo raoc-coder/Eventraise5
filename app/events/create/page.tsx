@@ -39,14 +39,29 @@ export default function CreateEventPage() {
     setLoading(true)
 
     try {
-      // Here you would typically make an API call to create the event
-      // For now, we'll simulate the process
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        event_type: formData.event_type,
+        start_date: formData.start_date,
+        end_date: formData.end_date,
+        registration_deadline: formData.registration_deadline || undefined,
+        goal_amount: formData.goal_amount || undefined,
+        max_participants: formData.max_participants || undefined,
+        location: formData.location,
+      }
+      const res = await fetch('/api/events/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to create event')
+
       toast.success('Event created successfully!')
-      router.push('/dashboard')
-    } catch (error) {
-      toast.error('Failed to create event. Please try again.')
+      router.push(`/events/${data.event.id}`)
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create event. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -131,34 +146,17 @@ export default function CreateEventPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="start_date">Start Date *</Label>
-                  <Input
-                    id="start_date"
-                    type="datetime-local"
-                    value={formData.start_date}
-                    onChange={(e) => handleInputChange('start_date', e.target.value)}
-                    required
-                  />
+                  <Input id="start_date" type="date" value={formData.start_date} onChange={(e) => handleInputChange('start_date', e.target.value)} required />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="end_date">End Date *</Label>
-                  <Input
-                    id="end_date"
-                    type="datetime-local"
-                    value={formData.end_date}
-                    onChange={(e) => handleInputChange('end_date', e.target.value)}
-                    required
-                  />
+                  <Input id="end_date" type="date" value={formData.end_date} onChange={(e) => handleInputChange('end_date', e.target.value)} required />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="registration_deadline">Registration Deadline</Label>
-                  <Input
-                    id="registration_deadline"
-                    type="datetime-local"
-                    value={formData.registration_deadline}
-                    onChange={(e) => handleInputChange('registration_deadline', e.target.value)}
-                  />
+                  <Input id="registration_deadline" type="date" value={formData.registration_deadline} onChange={(e) => handleInputChange('registration_deadline', e.target.value)} />
                 </div>
               </div>
 
