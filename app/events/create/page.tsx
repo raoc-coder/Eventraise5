@@ -102,11 +102,13 @@ export default function CreateEventPage() {
         headers: { 'Content-Type': 'application/json', ...authHeader, ...userIdHeader },
         body: JSON.stringify(payload),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Failed to create event')
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to create event')
+      const ev = json.event ?? json.data?.event
+      if (!ev?.id) throw new Error('Event ID missing from response')
 
       toast.success('Event created successfully!')
-      router.push(`/events/${data.event.id}?created=1`)
+      router.push(`/events/${ev.id}?created=1`)
     } catch (error: any) {
       toast.error(error.message || 'Failed to create event. Please try again.')
     } finally {
