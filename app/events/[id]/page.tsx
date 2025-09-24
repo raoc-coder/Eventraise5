@@ -335,7 +335,6 @@ export default function EventDetailPage() {
                       </>
                     )}
                   </div>
-                </div>
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-50 rounded-lg p-6 mb-6">
