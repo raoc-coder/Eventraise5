@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,6 +32,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { useAuth } from '@/app/providers'
 import { DonationConfirmation } from '@/components/payments/donation-confirmation'
 import { EventRegistration } from '@/components/events/event-registration'
 import { VolunteerShifts } from '@/components/events/volunteer-shifts'
@@ -54,6 +55,9 @@ interface Event {
 
 export default function EventDetailPage() {
   const params = useParams()
+  const { user } = useAuth()
+  const searchParams = useSearchParams()
+  const [showCreatedBanner, setShowCreatedBanner] = useState(false)
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
   const [participantName, setParticipantName] = useState('')
@@ -61,6 +65,9 @@ export default function EventDetailPage() {
   const [participantPhone, setParticipantPhone] = useState('')
   const [ticketQuantity, setTicketQuantity] = useState(1)
   const [specialRequests, setSpecialRequests] = useState('')
+  const [editMode, setEditMode] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [draft, setDraft] = useState({ title: '', description: '', location: '', start_date: '', end_date: '' })
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -69,6 +76,17 @@ export default function EventDetailPage() {
         if (response.ok) {
           const data = await response.json()
           setEvent(data.event)
+          setDraft({
+            title: data.event?.title || '',
+            description: data.event?.description || '',
+            location: data.event?.location || '',
+            start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
+            end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
+          })
+          if (searchParams.get('created') === '1') {
+            setShowCreatedBanner(true)
+            toast.success('Your event is live! Share it with your community.')
+          }
         } else {
           console.error('Failed to fetch event:', response.statusText)
           setEvent(null)
@@ -121,6 +139,47 @@ export default function EventDetailPage() {
     } else {
       navigator.clipboard.writeText(window.location.href)
       toast.success('Link copied to clipboard!')
+    }
+  }
+
+  const updateEvent = async () => {
+    if (!event) return
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/events/${event.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: draft.title,
+          description: draft.description,
+          location: draft.location,
+          start_date: draft.start_date || undefined,
+          end_date: draft.end_date || undefined,
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to update')
+      setEvent(json.data?.event || json.event)
+      toast.success('Event updated')
+      setEditMode(false)
+    } catch (e: any) {
+      toast.error(e.message || 'Update failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const deleteEvent = async () => {
+    if (!event) return
+    if (!confirm('Delete this event? This action cannot be undone.')) return
+    try {
+      const res = await fetch(`/api/events/${event.id}`, { method: 'DELETE' })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to delete')
+      toast.success('Event deleted')
+      window.location.href = '/events'
+    } catch (e: any) {
+      toast.error(e.message || 'Delete failed')
     }
   }
 
@@ -180,15 +239,48 @@ export default function EventDetailPage() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {showCreatedBanner && (
+          <div className="mb-6 p-4 rounded-lg border border-green-300 bg-green-50 flex items-center justify-between">
+            <div>
+              <p className="text-green-700 font-semibold">Your event is live!</p>
+              <p className="text-green-700/80 text-sm">Share it now or manage it from My Events.</p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={handleShare}>Share</Button>
+              <Link href="/events/mine">
+                <Button className="btn-primary">My Events</Button>
+              </Link>
+              <Button variant="outline" onClick={()=>setShowCreatedBanner(false)}>Dismiss</Button>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Event Info */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="card-soft">
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-2xl text-white mb-2">{event.title}</CardTitle>
-                    <p className="text-gray-300">{event.organization_name}</p>
+                  <div className="flex-1">
+                    {editMode ? (
+                      <div className="space-y-2">
+                        <input value={draft.title} onChange={(e)=>setDraft({...draft,title:e.target.value})} className="w-full px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
+                        <textarea value={draft.description} onChange={(e)=>setDraft({...draft,description:e.target.value})} className="w-full px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <input type="date" value={draft.start_date} onChange={(e)=>setDraft({...draft,start_date:e.target.value})} className="px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
+                          <input type="date" value={draft.end_date} onChange={(e)=>setDraft({...draft,end_date:e.target.value})} className="px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
+                          <input value={draft.location} onChange={(e)=>setDraft({...draft,location:e.target.value})} placeholder="Location" className="px-3 py-2 rounded-md bg-gray-800 text-white border border-gray-700" />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button onClick={updateEvent} disabled={saving} className="btn-primary">{saving?'Saving…':'Save'}</Button>
+                          <Button variant="outline" onClick={()=>setEditMode(false)}>Cancel</Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <CardTitle className="text-2xl text-white mb-2">{event.title}</CardTitle>
+                        <p className="text-gray-300">{event.organization_name}</p>
+                      </>
+                    )}
                     {event.is_featured && (
                       <div className="flex items-center mt-2">
                         <Star className="h-4 w-4 text-orange-400 mr-1" />
@@ -196,10 +288,22 @@ export default function EventDetailPage() {
                       </div>
                     )}
                   </div>
-                  <Button onClick={handleShare} variant="outline" className="text-cyan-400 hover:bg-cyan-500/20">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button onClick={handleShare} variant="outline" className="text-cyan-400 hover:bg-cyan-500/20">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Share
+                    </Button>
+                    {editMode ? null : (
+                      <>
+                        {user && (
+                          <>
+                            <Button variant="outline" onClick={()=>setEditMode(true)}>Edit</Button>
+                            <Button variant="outline" onClick={deleteEvent} className="text-red-500 border-red-500">Delete</Button>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>

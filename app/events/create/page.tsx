@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { createEventSchema } from '@/lib/validators'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/providers'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -30,6 +31,7 @@ export default function CreateEventPage() {
     location: '',
     is_public: true,
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -40,6 +42,34 @@ export default function CreateEventPage() {
     setLoading(true)
 
     try {
+      // Client-side validation for friendlier errors
+      try {
+        setErrors({})
+        createEventSchema.parse({
+          title: formData.title,
+          description: formData.description,
+          event_type: formData.event_type,
+          start_date: formData.start_date || undefined,
+          end_date: formData.end_date || undefined,
+          registration_deadline: formData.registration_deadline || undefined,
+          goal_amount: formData.goal_amount ? Number(formData.goal_amount) : undefined,
+          max_participants: formData.max_participants ? Number(formData.max_participants) : undefined,
+          location: formData.location,
+        })
+      } catch (err: any) {
+        const fieldErrors: Record<string, string> = {}
+        if (err?.issues?.length) {
+          for (const issue of err.issues) {
+            const path = issue.path?.[0]
+            if (path && !fieldErrors[path]) fieldErrors[path] = issue.message || 'Invalid value'
+          }
+        }
+        setErrors(fieldErrors)
+        toast.error('Please fix the highlighted fields.')
+        setLoading(false)
+        return
+      }
+
       const payload = {
         title: formData.title,
         description: formData.description,
@@ -53,6 +83,7 @@ export default function CreateEventPage() {
       }
       // Try to include user JWT to satisfy RLS (authenticated role)
       let authHeader: Record<string, string> = {}
+      let userIdHeader: Record<string, string> = {}
       try {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
         const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -60,20 +91,22 @@ export default function CreateEventPage() {
           const client = createClient(supabaseUrl, supabaseAnonKey)
           const { data: sessionData } = await client.auth.getSession()
           const token = sessionData?.session?.access_token
+          const uid = sessionData?.session?.user?.id
           if (token) authHeader = { Authorization: `Bearer ${token}` }
+          if (uid) userIdHeader = { 'x-user-id': uid }
         }
       } catch {}
 
       const res = await fetch('/api/events/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeader },
+        headers: { 'Content-Type': 'application/json', ...authHeader, ...userIdHeader },
         body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to create event')
 
       toast.success('Event created successfully!')
-      router.push(`/events/${data.event.id}`)
+      router.push(`/events/${data.event.id}?created=1`)
     } catch (error: any) {
       toast.error(error.message || 'Failed to create event. Please try again.')
     } finally {
@@ -123,8 +156,10 @@ export default function CreateEventPage() {
                     placeholder="Enter event title"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
+                    aria-invalid={!!errors.title}
                     required
                   />
+                  {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -145,7 +180,7 @@ export default function CreateEventPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
+                <div className="space-y-2">
                 <Label htmlFor="description">Description *</Label>
                 <textarea
                   id="description"
@@ -153,24 +188,29 @@ export default function CreateEventPage() {
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[100px]"
+                    aria-invalid={!!errors.description}
                   required
                 />
+                  {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="start_date">Start Date *</Label>
-                  <Input id="start_date" type="date" value={formData.start_date} onChange={(e) => handleInputChange('start_date', e.target.value)} required />
+                  <Input id="start_date" type="date" value={formData.start_date} onChange={(e) => handleInputChange('start_date', e.target.value)} aria-invalid={!!errors.start_date} required />
+                  {errors.start_date && <p className="text-red-500 text-sm">{errors.start_date}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="end_date">End Date *</Label>
-                  <Input id="end_date" type="date" value={formData.end_date} onChange={(e) => handleInputChange('end_date', e.target.value)} required />
+                  <Input id="end_date" type="date" value={formData.end_date} onChange={(e) => handleInputChange('end_date', e.target.value)} aria-invalid={!!errors.end_date} required />
+                  {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="registration_deadline">Registration Deadline</Label>
-                  <Input id="registration_deadline" type="date" value={formData.registration_deadline} onChange={(e) => handleInputChange('registration_deadline', e.target.value)} />
+                  <Input id="registration_deadline" type="date" value={formData.registration_deadline} onChange={(e) => handleInputChange('registration_deadline', e.target.value)} aria-invalid={!!errors.registration_deadline} />
+                  {errors.registration_deadline && <p className="text-red-500 text-sm">{errors.registration_deadline}</p>}
                 </div>
               </div>
 

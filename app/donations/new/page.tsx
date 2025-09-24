@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
+import { createDonationIntentSchema } from '@/lib/validators'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -19,12 +20,41 @@ function DonationForm() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!stripe || !elements) return
     setLoading(true)
     try {
+      // Client validation
+      setErrors({})
+      try {
+        createDonationIntentSchema.parse({
+          amount: Number(amount),
+          currency: 'usd',
+          donor_name: name || undefined,
+          donor_email: email || undefined,
+          message: message || undefined,
+        })
+        if (!amount || Number(amount) <= 0) {
+          throw new Error('Amount must be greater than 0')
+        }
+      } catch (err: any) {
+        const fieldErrs: Record<string, string> = {}
+        if (err?.issues?.length) {
+          for (const issue of err.issues) {
+            const path = issue.path?.[0]
+            if (path && !fieldErrs[path]) fieldErrs[path] = issue.message || 'Invalid value'
+          }
+        }
+        if (err?.message && !fieldErrs.amount) fieldErrs.amount = err.message
+        setErrors(fieldErrs)
+        toast.error('Please fix the highlighted fields.')
+        setLoading(false)
+        return
+      }
+
       const res = await fetch('/api/donations/create-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -61,15 +91,18 @@ function DonationForm() {
     <form onSubmit={submit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="amount">Amount (USD)</Label>
-        <Input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" required />
+        <Input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" aria-invalid={!!errors.amount} required />
+        {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
       </div>
       <div className="space-y-2">
         <Label htmlFor="name">Full Name</Label>
-        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={!!errors.donor_name} />
+        {errors.donor_name && <p className="text-red-500 text-sm">{errors.donor_name}</p>}
       </div>
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
+        <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" aria-invalid={!!errors.donor_email} />
+        {errors.donor_email && <p className="text-red-500 text-sm">{errors.donor_email}</p>}
       </div>
       <div className="space-y-2">
         <Label>Card Details</Label>
