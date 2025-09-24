@@ -293,6 +293,9 @@ export default function EventDetailPage() {
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
+                    <Link href={`/donations/new?eventId=${params.id}`}>
+                      <Button className="btn-primary">Donate</Button>
+                    </Link>
                     {editMode ? null : (
                       <>
                         {user && (

@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     const payload = await req.json()
     const parsed = createDonationIntentSchema.parse(payload)
     const { amount, currency = 'usd', donor_name, donor_email, message } = parsed as any
+    const eventId = (payload?.eventId as string) || null
 
     const amountCents = Math.round(Number(amount) * 100)
     if (!amountCents || amountCents < 100) {
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
         donor_name,
         donor_email,
         message,
+        event_id: eventId,
       })
       .select()
       .single()

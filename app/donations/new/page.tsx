@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
+import { useSearchParams } from 'next/navigation'
 import { createDonationIntentSchema } from '@/lib/validators'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
@@ -15,6 +16,8 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 function DonationForm() {
   const stripe = useStripe()
   const elements = useElements()
+  const searchParams = useSearchParams()
+  const eventId = searchParams.get('eventId') || undefined
   const [amount, setAmount] = useState('25')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -58,7 +61,7 @@ function DonationForm() {
       const res = await fetch('/api/donations/create-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: Number(amount), donor_name: name, donor_email: email, message }),
+        body: JSON.stringify({ amount: Number(amount), donor_name: name, donor_email: email, message, eventId }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to create payment')
