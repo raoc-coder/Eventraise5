@@ -72,6 +72,7 @@ export default function EventDetailPage() {
   const [shareEmail, setShareEmail] = useState('')
   const [shareMsg, setShareMsg] = useState('')
   const [shareSending, setShareSending] = useState(false)
+  const [donationAmount, setDonationAmount] = useState<number>(25)
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -328,7 +329,7 @@ export default function EventDetailPage() {
                         const res = await fetch('/api/donations/checkout', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ amount: 25, eventId: params.id }),
+                          body: JSON.stringify({ amount: donationAmount, eventId: params.id }),
                         })
                         const json = await res.json()
                         if (!res.ok) throw new Error(json.error || 'Failed to start checkout')
@@ -431,6 +432,25 @@ export default function EventDetailPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Quick Donation Amounts */}
+                <div className="mb-6">
+                  <p className="text-gray-300 mb-2">Quick Donate</p>
+                  <div className="flex items-center gap-2 mb-3">
+                    {[10,25,50].map(v => (
+                      <Button key={v} variant="outline" onClick={()=>setDonationAmount(v)} className={donationAmount===v?"border-cyan-400 text-cyan-400":""}>${v}</Button>
+                    ))}
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-300 text-sm">Custom</span>
+                      <input
+                        type="number"
+                        min={1}
+                        value={donationAmount}
+                        onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
+                        className="w-24 px-2 py-1 rounded-md bg-gray-800 text-white border border-gray-700"
+                      />
+                    </div>
+                  </div>
+                </div>
                 {isFullyBooked ? (
                   <div className="text-center py-6">
                     <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
