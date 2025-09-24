@@ -384,6 +384,7 @@ export default function EventDetailPage() {
                       <p className="text-purple-900 font-bold text-lg">Direct Donation</p>
                     </div>
                   </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
