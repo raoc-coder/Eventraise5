@@ -187,7 +187,7 @@ export default function EventsPage() {
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-center p-2 rounded-lg hover:bg-blue-50 transition-colors">
                       <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                      <span className="font-medium">{formatDate(event.start_date)}</span>
+                      <span className="font-medium">{event.start_date ? formatDate(event.start_date) : ''}</span>
                     </div>
                     {(event.location) && (
                       <div className="flex items-center p-2 rounded-lg hover:bg-green-50 transition-colors">
