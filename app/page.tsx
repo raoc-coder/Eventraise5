@@ -19,25 +19,26 @@ import {
   Target,
   Award,
   ArrowRight,
-  CheckCircle
+  CheckCircle,
+  Share2
 } from 'lucide-react'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="display text-white mb-6">
+            <h1 className="display text-gray-900 mb-6">
               Raise More. Stress Less.{' '}
               <span className="text-gradient">Celebrate Together.</span>
             </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              The ultimate EventraiseHUB platform for schools and parents to manage fundraising events, 
-              track progress, and build stronger communities with energy and impact.
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              The ultimate EventraiseHUB platform for creating direct donation campaigns, 
+              tracking progress, and building stronger communities with energy and impact.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/auth/register">
@@ -47,8 +48,8 @@ export default function HomePage() {
                 </Button>
               </Link>
               <Link href="/events">
-                <Button variant="secondary" className="text-lg px-8 py-4">
-                  Browse Events
+                <Button variant="outline" className="btn-secondary text-lg px-8 py-4">
+                  Browse Campaigns
                 </Button>
               </Link>
             </div>
@@ -60,11 +61,11 @@ export default function HomePage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Everything You Need to Fundraise Successfully
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Everything You Need for Direct Donation Campaigns
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              From event planning to payment processing, we&apos;ve got you covered.
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              From campaign creation to secure payment processing, we&apos;ve got you covered.
             </p>
           </div>
 
@@ -72,26 +73,26 @@ export default function HomePage() {
             <Card className="event-card">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <Calendar className="h-6 w-6 text-white" />
+                  <Heart className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-gray-900">Event Management</CardTitle>
+                <CardTitle className="text-gray-900">Campaign Creation</CardTitle>
                 <CardDescription className="text-gray-600">
-                  Create and manage fundraising events with ease
+                  Create and manage direct donation campaigns with ease
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Walk-a-thons & Fun Runs
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Simple Campaign Setup
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Silent Auctions
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Goal Setting & Tracking
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Product Sales
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Campaign Sharing
                   </li>
                 </ul>
               </CardContent>
@@ -102,24 +103,24 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
                   <DollarSign className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-charcoal">Payment Processing</CardTitle>
-                <CardDescription className="text-slate">
-                  Secure, fast, and reliable payment collection
+                <CardTitle className="text-gray-900">Secure Payments</CardTitle>
+                <CardDescription className="text-gray-600">
+                  Secure, fast, and reliable donation processing
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Credit Card & ACH
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Stripe Integration
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Mobile Wallets
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Instant Processing
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Tax Receipts
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Donation Receipts
                   </li>
                 </ul>
               </CardContent>
@@ -128,26 +129,26 @@ export default function HomePage() {
             <Card className="event-card">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="h-6 w-6 text-white" />
+                  <Share2 className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-charcoal">Volunteer Management</CardTitle>
-                <CardDescription className="text-slate">
-                  Organize volunteers and track participation
+                <CardTitle className="text-gray-900">Easy Sharing</CardTitle>
+                <CardDescription className="text-gray-600">
+                  Share your campaigns across multiple channels
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Sign-up Sheets
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Social Media Integration
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Shift Scheduling
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Email Campaigns
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Automated Reminders
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Direct Links
                   </li>
                 </ul>
               </CardContent>
@@ -158,23 +159,23 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-4">
                   <BarChart3 className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-charcoal">Real-time Tracking</CardTitle>
-                <CardDescription className="text-slate">
+                <CardTitle className="text-gray-900">Real-time Tracking</CardTitle>
+                <CardDescription className="text-gray-600">
                   Monitor progress and celebrate milestones
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                     Progress Dashboards
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Leaderboards
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Donation Analytics
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                     Goal Tracking
                   </li>
                 </ul>
@@ -186,24 +187,24 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center mb-4">
                   <Smartphone className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-charcoal">Mobile Optimized</CardTitle>
-                <CardDescription className="text-slate">
+                <CardTitle className="text-gray-900">Mobile Optimized</CardTitle>
+                <CardDescription className="text-gray-600">
                   Access everything from any device, anywhere
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                     Responsive Design
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Mobile Payments
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Mobile Donations
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Push Notifications
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Easy Sharing
                   </li>
                 </ul>
               </CardContent>
@@ -214,24 +215,24 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
                   <Shield className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-charcoal">Secure & Compliant</CardTitle>
-                <CardDescription className="text-slate">
+                <CardTitle className="text-gray-900">Secure & Compliant</CardTitle>
+                <CardDescription className="text-gray-600">
                   Bank-level security with full compliance
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                     PCI DSS Compliant
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                     Data Encryption
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-success-green mr-2" />
-                    Audit Reports
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Secure Processing
                   </li>
                 </ul>
               </CardContent>
@@ -241,14 +242,14 @@ export default function HomePage() {
       </section>
 
       {/* Success Stories */}
-      <section className="py-20">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Trusted by Schools Nationwide
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Trusted by Organizations Nationwide
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              See how schools are raising more with Event Raise
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              See how organizations are raising more with EventraiseHUB
             </p>
           </div>
 
@@ -269,7 +270,7 @@ export default function HomePage() {
                   <Users className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">500+</h3>
-                <p className="text-gray-600">Schools using Event Raise</p>
+                <p className="text-gray-600">Organizations using EventraiseHUB</p>
               </CardContent>
             </Card>
 
@@ -289,11 +290,11 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Raise More for Your School?
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Ready to Start Your Campaign?
           </h2>
-          <p className="text-lg text-gray-300 mb-8">
-            Join thousands of schools already using Event Raise to create amazing fundraising experiences.
+          <p className="text-lg text-gray-600 mb-8">
+            Join thousands of organizations already using EventraiseHUB to create amazing fundraising experiences.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/register">
@@ -303,57 +304,29 @@ export default function HomePage() {
               </Button>
             </Link>
             <Link href="/events">
-              <Button variant="secondary" className="text-lg px-8 py-4">
-                See Examples
+              <Button variant="outline" className="btn-secondary text-lg px-8 py-4">
+                Browse Campaigns
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-charcoal text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Heart className="h-5 w-5 text-white" />
-                </div>
-                <span className="text-lg font-bold">Event Raise</span>
-              </div>
-              <p className="text-gray-400">
-                Empowering schools to raise more and build stronger communities.
-              </p>
+      {/* Simple Footer */}
+      <footer className="bg-gray-900 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <Heart className="h-5 w-5 text-white" />
             </div>
-            <div>
-              <h3 className="font-semibold mb-4 text-white">Product</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/features" className="hover:text-white transition-colors">Features</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="/integrations" className="hover:text-white transition-colors">Integrations</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4 text-white">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><Link href="/status" className="hover:text-white transition-colors">Status</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4 text-white">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
-                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                <li><Link href="/careers" className="hover:text-white transition-colors">Careers</Link></li>
-              </ul>
-            </div>
+            <span className="text-lg font-bold">EventraiseHUB</span>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Event Raise. All rights reserved.</p>
-          </div>
+          <p className="text-gray-400 mb-4">
+            Empowering organizations to raise more and build stronger communities.
+          </p>
+          <p className="text-gray-500 text-sm">
+            &copy; 2025 EventraiseHUB. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
