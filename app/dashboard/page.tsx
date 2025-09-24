@@ -62,49 +62,21 @@ export default function DashboardPage() {
           <p className="text-gray-300">Manage your fundraising campaigns and events</p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="card-soft hover:card-elevated transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Raised</CardTitle>
-              <DollarSign className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">$12,345</div>
-              <p className="text-xs text-gray-500">+20.1% from last month</p>
-            </CardContent>
-          </Card>
-
-          <Card className="card-soft hover:card-elevated transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Active Events</CardTitle>
-              <Calendar className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">3</div>
-              <p className="text-xs text-gray-500">2 ending this week</p>
-            </CardContent>
-          </Card>
-
-          <Card className="card-soft hover:card-elevated transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Volunteers</CardTitle>
-              <Users className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-600">24</div>
-              <p className="text-xs text-gray-500">+4 new this week</p>
-            </CardContent>
-          </Card>
-
-          <Card className="card-soft hover:card-elevated transition-all duration-300">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Donations</CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">156</div>
-              <p className="text-xs text-gray-500">+12% from last month</p>
+        {/* Welcome Message */}
+        <div className="mb-8">
+          <Card className="card-soft">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Heart className="h-12 w-12 text-cyan-400 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-white mb-2">Welcome to EventraiseHub</h2>
+                <p className="text-gray-300 mb-4">Create and manage your direct donation campaigns</p>
+                <Link href="/events/create">
+                  <Button className="btn-primary">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Your First Campaign
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -113,26 +85,26 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="card-soft hover:card-elevated transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-gray-900">Quick Actions</CardTitle>
-              <CardDescription>Get started with your fundraising</CardDescription>
+              <CardTitle className="text-white">Quick Actions</CardTitle>
+              <CardDescription className="text-gray-300">Manage your fundraising campaigns</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link href="/events/create">
                 <Button className="w-full justify-start btn-primary">
                   <Plus className="mr-2 h-4 w-4" />
-                  Create New Event
+                  Create New Campaign
                 </Button>
               </Link>
-              <Link href="/volunteers">
+              <Link href="/events/mine">
                 <Button variant="outline" className="w-full justify-start btn-secondary">
-                  <Users className="mr-2 h-4 w-4" />
-                  Manage Volunteers
+                  <Calendar className="mr-2 h-4 w-4" />
+                  My Campaigns
                 </Button>
               </Link>
-              <Link href="/reports">
+              <Link href="/events">
                 <Button variant="outline" className="w-full justify-start btn-secondary">
-                  <TrendingUp className="mr-2 h-4 w-4" />
-                  View Reports
+                  <Heart className="mr-2 h-4 w-4" />
+                  Browse Campaigns
                 </Button>
               </Link>
             </CardContent>
@@ -140,34 +112,31 @@ export default function DashboardPage() {
 
           <Card className="card-soft hover:card-elevated transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-gray-900">Recent Activity</CardTitle>
-              <CardDescription>Latest updates on your campaigns</CardDescription>
+              <CardTitle className="text-white">Getting Started</CardTitle>
+              <CardDescription className="text-gray-300">Learn how to create effective campaigns</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-green-50 transition-colors">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <div className="flex items-center space-x-4 p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                  <Target className="h-5 w-5 text-cyan-400" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">New donation received</p>
-                    <p className="text-xs text-gray-500">$50 for Spring Walkathon</p>
+                    <p className="text-sm font-medium text-white">Set Clear Goals</p>
+                    <p className="text-xs text-gray-300">Define specific fundraising targets for your campaign</p>
                   </div>
-                  <span className="text-xs text-gray-400">2h ago</span>
                 </div>
-                <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-blue-50 transition-colors">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <div className="flex items-center space-x-4 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
+                  <Heart className="h-5 w-5 text-orange-400" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Volunteer signed up</p>
-                    <p className="text-xs text-gray-500">Sarah Johnson for Auction Setup</p>
+                    <p className="text-sm font-medium text-white">Share Your Story</p>
+                    <p className="text-xs text-gray-300">Connect with donors through compelling descriptions</p>
                   </div>
-                  <span className="text-xs text-gray-400">4h ago</span>
                 </div>
-                <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-yellow-50 transition-colors">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="flex items-center space-x-4 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                  <Zap className="h-5 w-5 text-green-400" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Event milestone reached</p>
-                    <p className="text-xs text-gray-500">75% of goal for Charity Run</p>
+                    <p className="text-sm font-medium text-white">Easy Donations</p>
+                    <p className="text-xs text-gray-300">Accept secure donations with just a few clicks</p>
                   </div>
-                  <span className="text-xs text-gray-400">1d ago</span>
                 </div>
               </div>
             </CardContent>
