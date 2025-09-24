@@ -45,12 +45,9 @@ interface Event {
   start_date: string
   end_date: string
   location: string
-  max_participants: number
-  current_participants: number
-  ticket_price: number
-  organization_name: string
+  goal_amount?: number
+  is_public?: boolean
   image_url?: string
-  is_featured: boolean
 }
 
 export default function EventDetailPage() {
@@ -60,11 +57,9 @@ export default function EventDetailPage() {
   const [showCreatedBanner, setShowCreatedBanner] = useState(false)
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
-  const [participantName, setParticipantName] = useState('')
-  const [participantEmail, setParticipantEmail] = useState('')
-  const [participantPhone, setParticipantPhone] = useState('')
-  const [ticketQuantity, setTicketQuantity] = useState(1)
-  const [specialRequests, setSpecialRequests] = useState('')
+  const [donorName, setDonorName] = useState('')
+  const [donorEmail, setDonorEmail] = useState('')
+  const [donorMessage, setDonorMessage] = useState('')
   const [editMode, setEditMode] = useState(false)
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState({ title: '', description: '', location: '', start_date: '', end_date: '' })
@@ -118,21 +113,6 @@ export default function EventDetailPage() {
     })
   }
 
-  const handleRegistration = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!participantName || !participantEmail) {
-      toast.error('Please fill in all required fields')
-      return
-    }
-    
-    // Here you would integrate with payment processing
-    toast.success(`Registration successful! You'll receive a confirmation email shortly.`)
-    setParticipantName('')
-    setParticipantEmail('')
-    setParticipantPhone('')
-    setTicketQuantity(1)
-    setSpecialRequests('')
-  }
 
   const handleShare = () => {
     if (navigator.share) {
@@ -238,8 +218,6 @@ export default function EventDetailPage() {
     )
   }
 
-  const spotsRemaining = event.max_participants - event.current_participants
-  const isFullyBooked = spotsRemaining <= 0
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
@@ -309,13 +287,13 @@ export default function EventDetailPage() {
                     ) : (
                       <>
                         <CardTitle className="text-2xl text-white mb-2">{event.title}</CardTitle>
-                        <p className="text-gray-300">{event.organization_name}</p>
+                        <p className="text-gray-300">Direct Donation Campaign</p>
                       </>
                     )}
-                    {event.is_featured && (
+                    {event.goal_amount && (
                       <div className="flex items-center mt-2">
-                        <Star className="h-4 w-4 text-orange-400 mr-1" />
-                        <span className="text-sm text-orange-400 font-semibold">Featured Event</span>
+                        <Target className="h-4 w-4 text-cyan-400 mr-1" />
+                        <span className="text-sm text-cyan-400 font-semibold">Goal: ${event.goal_amount.toLocaleString()}</span>
                       </div>
                     )}
                   </div>
@@ -360,75 +338,46 @@ export default function EventDetailPage() {
                   <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
                     <Calendar className="h-5 w-5 text-cyan-400 mr-3" />
                     <div>
-                      <p className="text-sm text-gray-400">Date & Time</p>
-                      <p className="text-white font-semibold">{formatDate(event.start_date)}</p>
+                      <p className="text-sm text-gray-400">Campaign Period</p>
+                      <p className="text-white font-semibold">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
                     </div>
                   </div>
                   <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
                     <MapPin className="h-5 w-5 text-orange-400 mr-3" />
                     <div>
                       <p className="text-sm text-gray-400">Location</p>
-                      <p className="text-white font-semibold">{event.location}</p>
+                      <p className="text-white font-semibold">{event.location || 'Online'}</p>
                     </div>
                   </div>
-                  <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
-                    <Users className="h-5 w-5 text-cyan-400 mr-3" />
-                    <div>
-                      <p className="text-sm text-gray-400">Participants</p>
-                      <p className="text-white font-semibold">{event.current_participants}/{event.max_participants}</p>
+                  {event.goal_amount && (
+                    <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
+                      <Target className="h-5 w-5 text-cyan-400 mr-3" />
+                      <div>
+                        <p className="text-sm text-gray-400">Fundraising Goal</p>
+                        <p className="text-white font-semibold">${event.goal_amount.toLocaleString()}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="flex items-center p-3 rounded-lg bg-gray-800/50">
-                    <Ticket className="h-5 w-5 text-orange-400 mr-3" />
+                    <Heart className="h-5 w-5 text-orange-400 mr-3" />
                     <div>
-                      <p className="text-sm text-gray-400">Ticket Price</p>
-                      <p className="text-white font-semibold">${event.ticket_price}</p>
+                      <p className="text-sm text-gray-400">Campaign Type</p>
+                      <p className="text-white font-semibold">Direct Donation</p>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Event Schedule */}
-            <Card className="card-soft">
-              <CardHeader>
-                <CardTitle className="text-white">Event Schedule</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center p-3 rounded-lg bg-gray-800/30">
-                    <Clock className="h-5 w-5 text-cyan-400 mr-3" />
-                    <div>
-                      <p className="text-white font-semibold">Registration & Check-in</p>
-                      <p className="text-gray-400 text-sm">8:30 AM - 9:00 AM</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center p-3 rounded-lg bg-gray-800/30">
-                    <Clock className="h-5 w-5 text-orange-400 mr-3" />
-                    <div>
-                      <p className="text-white font-semibold">Walkathon Start</p>
-                      <p className="text-gray-400 text-sm">9:00 AM</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center p-3 rounded-lg bg-gray-800/30">
-                    <Clock className="h-5 w-5 text-cyan-400 mr-3" />
-                    <div>
-                      <p className="text-white font-semibold">Awards & Refreshments</p>
-                      <p className="text-gray-400 text-sm">11:30 AM - 12:00 PM</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
-          {/* Registration Form */}
+          {/* Donation Form */}
           <div className="space-y-6">
             <Card className="card-soft">
               <CardHeader>
-                <CardTitle className="text-white">Register for Event</CardTitle>
+                <CardTitle className="text-white">Support This Campaign</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Join this amazing event and make a difference
+                  Make a direct donation to support this cause
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -451,139 +400,112 @@ export default function EventDetailPage() {
                     </div>
                   </div>
                 </div>
-                {isFullyBooked ? (
-                  <div className="text-center py-6">
-                    <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle className="h-8 w-8 text-red-400" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Event Fully Booked</h3>
-                    <p className="text-gray-400 mb-4">This event has reached maximum capacity.</p>
-                    <Button variant="outline" className="text-gray-400 cursor-not-allowed" disabled>
-                      Registration Closed
-                    </Button>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="donorName" className="text-gray-300">Your Name (Optional)</Label>
+                    <Input
+                      id="donorName"
+                      type="text"
+                      placeholder="Enter your name"
+                      value={donorName}
+                      onChange={(e) => setDonorName(e.target.value)}
+                    />
                   </div>
-                ) : (
-                  <form onSubmit={handleRegistration} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-gray-300">Full Name *</Label>
-                      <Input
-                        id="name"
-                        type="text"
-                        placeholder="Enter your full name"
-                        value={participantName}
-                        onChange={(e) => setParticipantName(e.target.value)}
-                        required
-                      />
-                    </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-gray-300">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={participantEmail}
-                        onChange={(e) => setParticipantEmail(e.target.value)}
-                        required
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="donorEmail" className="text-gray-300">Your Email (Optional)</Label>
+                    <Input
+                      id="donorEmail"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={donorEmail}
+                      onChange={(e) => setDonorEmail(e.target.value)}
+                    />
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-gray-300">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        value={participantPhone}
-                        onChange={(e) => setParticipantPhone(e.target.value)}
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="donorMessage" className="text-gray-300">Message (Optional)</Label>
+                    <textarea
+                      id="donorMessage"
+                      placeholder="Leave a message of support..."
+                      value={donorMessage}
+                      onChange={(e) => setDonorMessage(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      rows={3}
+                    />
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="quantity" className="text-gray-300">Number of Tickets</Label>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setTicketQuantity(Math.max(1, ticketQuantity - 1))}
-                          className="text-cyan-400 hover:bg-cyan-500/20"
-                        >
-                          -
-                        </Button>
-                        <span className="text-white font-semibold px-4">{ticketQuantity}</span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setTicketQuantity(Math.min(5, ticketQuantity + 1))}
-                          className="text-cyan-400 hover:bg-cyan-500/20"
-                        >
-                          +
-                        </Button>
-                      </div>
+                  <div className="bg-gray-800/50 p-4 rounded-lg">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-300">Donation Amount</span>
+                      <span className="text-white font-semibold">${donationAmount}</span>
                     </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="requests" className="text-gray-300">Special Requests</Label>
-                      <textarea
-                        id="requests"
-                        placeholder="Any special dietary requirements or accessibility needs..."
-                        value={specialRequests}
-                        onChange={(e) => setSpecialRequests(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                        rows={3}
-                      />
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Platform Fee (8.99%)</span>
+                      <span className="text-white font-semibold">${(donationAmount * 0.0899).toFixed(2)}</span>
                     </div>
-
-                    <div className="bg-gray-800/50 p-4 rounded-lg">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-300">Tickets ({ticketQuantity})</span>
-                        <span className="text-white font-semibold">${(event.ticket_price * ticketQuantity).toFixed(2)}</span>
-                      </div>
+                    <div className="border-t border-gray-600 mt-2 pt-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-300">Processing Fee</span>
-                        <span className="text-white font-semibold">$2.50</span>
-                      </div>
-                      <div className="border-t border-gray-600 mt-2 pt-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-white font-bold">Total</span>
-                          <span className="text-cyan-400 font-bold text-lg">
-                            ${((event.ticket_price * ticketQuantity) + 2.50).toFixed(2)}
-                          </span>
-                        </div>
+                        <span className="text-white font-bold">Total Charged</span>
+                        <span className="text-cyan-400 font-bold text-lg">
+                          ${(donationAmount + (donationAmount * 0.0899)).toFixed(2)}
+                        </span>
                       </div>
                     </div>
+                  </div>
 
-                    <Button type="submit" className="w-full btn-primary">
-                      <Ticket className="h-4 w-4 mr-2" />
-                      Register Now
-                    </Button>
-                  </form>
-                )}
+                  <Button 
+                    onClick={async()=>{
+                      try {
+                        const res = await fetch('/api/donations/checkout', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ 
+                            amount: donationAmount, 
+                            eventId: params.id,
+                            donor_name: donorName,
+                            donor_email: donorEmail,
+                            message: donorMessage
+                          }),
+                        })
+                        const json = await res.json()
+                        if (!res.ok) throw new Error(json.error || 'Failed to start checkout')
+                        window.location.href = json.url
+                      } catch (e:any) {
+                        toast.error(e.message || 'Unable to start checkout')
+                      }
+                    }}
+                    className="w-full btn-primary"
+                  >
+                    <Heart className="h-4 w-4 mr-2" />
+                    Donate ${donationAmount}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Event Stats */}
+            {/* Campaign Info */}
             <Card className="card-soft">
               <CardHeader>
-                <CardTitle className="text-white">Event Statistics</CardTitle>
+                <CardTitle className="text-white">Campaign Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Participants</span>
-                    <span className="text-cyan-400 font-bold">{event.current_participants}/{event.max_participants}</span>
+                    <span className="text-gray-300">Campaign Type</span>
+                    <span className="text-cyan-400 font-bold">Direct Donation</span>
                   </div>
-                  <div className="w-full bg-gray-700 rounded-full h-2">
-                    <div 
-                      className="bg-gradient-to-r from-cyan-400 to-orange-400 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(event.current_participants / event.max_participants) * 100}%` }}
-                    ></div>
-                  </div>
+                  {event.goal_amount && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Fundraising Goal</span>
+                      <span className="text-white font-bold">${event.goal_amount.toLocaleString()}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Spots Remaining</span>
-                    <span className="text-white font-bold">{spotsRemaining}</span>
+                    <span className="text-gray-300">Campaign Period</span>
+                    <span className="text-white font-bold">
+                      {new Date(event.start_date).toLocaleDateString()} - {new Date(event.end_date).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </CardContent>
