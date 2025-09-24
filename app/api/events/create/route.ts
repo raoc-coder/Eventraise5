@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 
 function toIsoDate(dateStr: string) {
   // Expect YYYY-MM-DD; store start of day UTC
@@ -8,7 +8,8 @@ function toIsoDate(dateStr: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
+    const db = supabaseAdmin || supabase
+    if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
     const body = await req.json().catch(() => ({}))
     const { title, description, event_type, start_date, end_date, registration_deadline, goal_amount, max_participants, location, image_url } = body
@@ -31,10 +32,10 @@ export async function POST(req: NextRequest) {
     if (max_participants) insertPayload.max_participants = Number(max_participants)
     if (image_url) insertPayload.image_url = image_url
 
-    const { data, error } = await supabaseAdmin.from('events').insert(insertPayload).select('*').single()
+    const { data, error } = await db.from('events').insert(insertPayload).select('*').single()
     if (error) {
       console.error('[events/create] insert error', error)
-      return NextResponse.json({ error: 'Failed to create event' }, { status: 500 })
+      return NextResponse.json({ error: error.message || 'Failed to create event' }, { status: 500 })
     }
 
     return NextResponse.json({ event: data })
