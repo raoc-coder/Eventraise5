@@ -105,7 +105,7 @@ export default function EventDetailPage() {
     }
 
     fetchEvent()
-  }, [params.id])
+  }, [params.id, searchParams])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {

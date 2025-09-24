@@ -248,7 +248,7 @@ export default function CreateEventPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[80px]"
                     />
                     <p className="text-sm text-gray-500">
-                      For private events, you can invite specific people by email. They'll receive a direct link to your campaign.
+                      For private events, you can invite specific people by email. They&#39;ll receive a direct link to your campaign.
                     </p>
                   </div>
                 )}
