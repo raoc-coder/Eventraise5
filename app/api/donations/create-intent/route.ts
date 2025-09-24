@@ -1,12 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase'
+import { createDonationIntentSchema } from '@/lib/validators'
+import { getClientKeyFromHeaders, rateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
   try {
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
-    const { amount, currency = 'usd', donor_name, donor_email, message } = await req.json()
+    const clientKey = getClientKeyFromHeaders(req.headers)
+    if (!rateLimit(`don-intent:${clientKey}`, 15)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
+    const payload = await req.json()
+    const parsed = createDonationIntentSchema.parse(payload)
+    const { amount, currency = 'usd', donor_name, donor_email, message } = parsed as any
 
     const amountCents = Math.round(Number(amount) * 100)
     if (!amountCents || amountCents < 100) {
