@@ -323,9 +323,20 @@ export default function EventDetailPage() {
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
-                    <Link href={`/donations/new?eventId=${params.id}`}>
-                      <Button className="btn-primary">Donate</Button>
-                    </Link>
+                    <Button className="btn-primary" onClick={async()=>{
+                      try {
+                        const res = await fetch('/api/donations/checkout', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ amount: 25, eventId: params.id }),
+                        })
+                        const json = await res.json()
+                        if (!res.ok) throw new Error(json.error || 'Failed to start checkout')
+                        window.location.href = json.url
+                      } catch (e:any) {
+                        toast.error(e.message || 'Unable to start checkout')
+                      }
+                    }}>Donate</Button>
                     <Button variant="outline" onClick={()=>setShareOpen(!shareOpen)}>Email Link</Button>
                     {editMode ? null : (
                       <>
