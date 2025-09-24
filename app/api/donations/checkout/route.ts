@@ -13,6 +13,11 @@ export async function POST(req: NextRequest) {
     const donor_email = body?.donor_email as string | undefined
     if (!amount || amount <= 0) return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
 
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('[donations/checkout] Missing STRIPE_SECRET_KEY')
+      return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
+    }
+
     const amountCents = Math.round(amount * 100)
     const feeCents = Math.floor(amountCents * 0.0899)
 
@@ -30,7 +35,10 @@ export async function POST(req: NextRequest) {
       })
       .select()
       .single()
-    if (drErr) return NextResponse.json({ error: 'Failed to persist donation' }, { status: 500 })
+    if (drErr) {
+      console.error('[donations/checkout] Persist error', drErr)
+      return NextResponse.json({ error: 'Failed to persist donation' }, { status: 500 })
+    }
 
     const appUrl = getAppUrl()
     const session = await stripe.checkout.sessions.create({
@@ -62,8 +70,9 @@ export async function POST(req: NextRequest) {
       .eq('id', dr.id)
 
     return NextResponse.json({ url: session.url })
-  } catch (e) {
-    return NextResponse.json({ error: 'Failed to start checkout' }, { status: 500 })
+  } catch (e: any) {
+    console.error('[donations/checkout] Error', e?.message || e)
+    return NextResponse.json({ error: e?.message || 'Failed to start checkout' }, { status: 500 })
   }
 }
 
