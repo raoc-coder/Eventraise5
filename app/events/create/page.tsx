@@ -31,7 +31,7 @@ export default function CreateEventPage() {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -231,7 +231,7 @@ export default function CreateEventPage() {
                     type="checkbox"
                     id="is_public"
                     checked={formData.is_public}
-                    onChange={(e) => handleInputChange('is_public', e.target.checked.toString())}
+                    onChange={(e) => handleInputChange('is_public', (e.target.checked as unknown) as string)}
                     className="rounded border-gray-300"
                   />
                   <Label htmlFor="is_public">Make this event public (visible to everyone)</Label>
