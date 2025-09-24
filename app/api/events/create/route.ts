@@ -14,22 +14,27 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}))
     const { title, description, event_type, start_date, end_date, registration_deadline, goal_amount, max_participants, location, image_url } = body
 
-    if (!title || !description || !event_type || !start_date || !end_date || !location) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-    }
+    const todayIso = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+    const safeTitle = title && String(title).trim().length > 0 ? String(title).trim() : 'Untitled Event'
+    const safeDescription = typeof description === 'string' ? description : ''
+    // Pick a broadly valid default across schema variants
+    const safeType = typeof event_type === 'string' && event_type ? event_type : 'fundraiser'
+    const safeStart = typeof start_date === 'string' && start_date ? start_date : todayIso
+    const safeEnd = typeof end_date === 'string' && end_date ? end_date : todayIso
+    const safeLocation = typeof location === 'string' && location ? location : 'TBD'
 
     const insertPayload: any = {
-      title,
-      description,
-      event_type,
-      start_date: toIsoDate(start_date),
-      end_date: toIsoDate(end_date),
-      location,
+      title: safeTitle,
+      description: safeDescription,
+      event_type: safeType,
+      start_date: toIsoDate(safeStart),
+      end_date: toIsoDate(safeEnd),
+      location: safeLocation,
     }
 
     if (registration_deadline) insertPayload.registration_deadline = toIsoDate(registration_deadline)
-    if (goal_amount) insertPayload.goal_amount = Number(goal_amount)
-    if (max_participants) insertPayload.max_participants = Number(max_participants)
+    if (goal_amount !== undefined && goal_amount !== '') insertPayload.goal_amount = Number(goal_amount)
+    if (max_participants !== undefined && max_participants !== '') insertPayload.max_participants = Number(max_participants)
     if (image_url) insertPayload.image_url = image_url
 
     const { data, error } = await db.from('events').insert(insertPayload).select('*').single()
