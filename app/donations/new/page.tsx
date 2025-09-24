@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -133,7 +133,9 @@ export default function NewDonationPage() {
         </CardHeader>
         <CardContent>
           <Elements stripe={stripePromise}>
-            <DonationForm />
+            <Suspense fallback={<div className="text-gray-300">Loading…</div>}>
+              <DonationForm />
+            </Suspense>
           </Elements>
         </CardContent>
       </Card>
