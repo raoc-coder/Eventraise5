@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
     const body = await req.json().catch(() => ({}))
-    const { title, description, event_type, start_date, end_date, registration_deadline, goal_amount, max_participants, location, image_url } = body
+    const { title, description, event_type, start_date, end_date, /* registration_deadline, goal_amount, */ max_participants, location, image_url } = body
 
     const todayIso = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
     const safeTitle = title && String(title).trim().length > 0 ? String(title).trim() : 'Untitled Event'
@@ -32,8 +32,7 @@ export async function POST(req: NextRequest) {
       location: safeLocation,
     }
 
-    if (registration_deadline) insertPayload.registration_deadline = toIsoDate(registration_deadline)
-    if (goal_amount !== undefined && goal_amount !== '') insertPayload.goal_amount = Number(goal_amount)
+    // registration_deadline and goal_amount are not present in older schemas; omit to be compatible
     if (max_participants !== undefined && max_participants !== '') insertPayload.max_participants = Number(max_participants)
     if (image_url) insertPayload.image_url = image_url
 
