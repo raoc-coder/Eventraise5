@@ -166,9 +166,9 @@ export default function EventsPage() {
                       <p className="text-sm text-gray-600 mt-1">{(event as any).organization_name}</p>
                     )}
                   </div>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
-                    {getEventTypeLabel(event.event_type)}
-                  </span>
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
+                      {getEventTypeLabel(event.event_type || '')}
+                    </span>
                 </div>
                 <CardDescription className="mt-2">
                   {event.description}
