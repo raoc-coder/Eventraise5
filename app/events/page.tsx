@@ -27,16 +27,12 @@ import {
 
 interface Event {
   id: string
-  title: string
-  description: string
-  event_type: string
-  start_date: string
-  end_date: string
-  goal_amount: number
-  current_amount: number
-  max_participants: number
-  organization_name: string
-  location: string
+  title?: string
+  description?: string
+  event_type?: string
+  start_date?: string
+  end_date?: string
+  location?: string
 }
 
 export default function EventsPage() {
@@ -69,12 +65,10 @@ export default function EventsPage() {
   }, [])
 
   const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.organization_name.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesFilter = filterType === 'all' || event.event_type === filterType
-    
+    const title = (event.title || '').toLowerCase()
+    const desc = (event.description || '').toLowerCase()
+    const matchesSearch = title.includes(searchTerm.toLowerCase()) || desc.includes(searchTerm.toLowerCase())
+    const matchesFilter = filterType === 'all' || (event.event_type || '') === filterType
     return matchesSearch && matchesFilter
   })
 
@@ -89,8 +83,9 @@ export default function EventsPage() {
     return labels[type] || type
   }
 
-  const getProgressPercentage = (current: number, goal: number) => {
-    return Math.min((current / goal) * 100, 100)
+  const formatType = (t?: string) => {
+    const map: Record<string,string> = { walkathon: 'Walk-a-thon', auction: 'Auction', product_sale: 'Product Sale', direct_donation: 'Direct Donation', raffle: 'Raffle' }
+    return map[t || ''] || (t || 'Event')
   }
 
   const formatDate = (dateString: string) => {
@@ -180,21 +175,10 @@ export default function EventsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {/* Progress Bar */}
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-green-600 font-semibold">Progress</span>
-                      <span className="text-green-600 font-semibold">{getProgressPercentage(event.current_amount, event.goal_amount).toFixed(0)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div 
-                        className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-300"
-                        style={{ width: `${getProgressPercentage(event.current_amount, event.goal_amount)}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex justify-between text-sm text-gray-600 mt-1">
-                      <span className="font-semibold">${event.current_amount.toLocaleString()}</span>
-                      <span>${event.goal_amount.toLocaleString()} goal</span>
-                    </div>
+                  {/* Compact meta row */}
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>{formatType(event.event_type)}</span>
+                    <span>{event.start_date ? formatDate(event.start_date) : ''}</span>
                   </div>
 
                   {/* Event Details */}
@@ -203,14 +187,12 @@ export default function EventsPage() {
                       <Calendar className="h-4 w-4 mr-2 text-blue-500" />
                       <span className="font-medium">{formatDate(event.start_date)}</span>
                     </div>
-                    <div className="flex items-center p-2 rounded-lg hover:bg-green-50 transition-colors">
-                      <MapPin className="h-4 w-4 mr-2 text-green-500" />
-                      <span className="font-medium">{event.location}</span>
-                    </div>
-                    <div className="flex items-center p-2 rounded-lg hover:bg-purple-50 transition-colors">
-                      <Users className="h-4 w-4 mr-2 text-purple-500" />
-                      <span className="font-medium">{event.max_participants} max participants</span>
-                    </div>
+                    {(event.location) && (
+                      <div className="flex items-center p-2 rounded-lg hover:bg-green-50 transition-colors">
+                        <MapPin className="h-4 w-4 mr-2 text-green-500" />
+                        <span className="font-medium">{event.location}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Action Buttons */}
