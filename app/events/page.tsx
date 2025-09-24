@@ -162,7 +162,9 @@ export default function EventsPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="text-lg text-gray-900">{event.title}</CardTitle>
-                    <p className="text-sm text-gray-600 mt-1">{event.organization_name}</p>
+                    {('organization_name' in (event as any)) && (event as any).organization_name && (
+                      <p className="text-sm text-gray-600 mt-1">{(event as any).organization_name}</p>
+                    )}
                   </div>
                   <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
                     {getEventTypeLabel(event.event_type)}
