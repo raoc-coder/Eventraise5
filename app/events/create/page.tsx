@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/providers'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -50,9 +51,22 @@ export default function CreateEventPage() {
         max_participants: formData.max_participants || undefined,
         location: formData.location,
       }
+      // Try to include user JWT to satisfy RLS (authenticated role)
+      let authHeader: Record<string, string> = {}
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        if (supabaseUrl && supabaseAnonKey) {
+          const client = createClient(supabaseUrl, supabaseAnonKey)
+          const { data: sessionData } = await client.auth.getSession()
+          const token = sessionData?.session?.access_token
+          if (token) authHeader = { Authorization: `Bearer ${token}` }
+        }
+      } catch {}
+
       const res = await fetch('/api/events/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeader },
         body: JSON.stringify(payload),
       })
       const data = await res.json()
