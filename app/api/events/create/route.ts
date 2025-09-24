@@ -62,12 +62,14 @@ export async function POST(req: NextRequest) {
         code === 'PGRST204' ||
         msg.includes('is_published') ||
         msg.includes('created_by') ||
-        msg.includes('organizer_id')
+        msg.includes('organizer_id') ||
+        msg.includes('goal_amount')
       ) {
         // Column(s) not present in this schema; retry without optional fields
         delete insertPayload.organizer_id
         delete insertPayload.created_by
         delete insertPayload.is_published
+        delete insertPayload.goal_amount
         ;({ data, error } = await db.from('events').insert(insertPayload).select('*').single())
       }
     }
