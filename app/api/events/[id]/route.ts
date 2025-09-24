@@ -24,8 +24,8 @@ export async function PATCH(req: Request, { params }: any) {
   if (body.start_date !== undefined) update.start_date = toIso(body.start_date)
   if (body.end_date !== undefined) update.end_date = toIso(body.end_date)
   if (body.location !== undefined) update.location = body.location
-  if (body.max_participants !== undefined && body.max_participants !== '') update.max_participants = Number(body.max_participants as any)
-  if (body.image_url !== undefined) update.image_url = body.image_url
+  if (body.goal_amount !== undefined) update.goal_amount = Number(body.goal_amount)
+  if (body.is_public !== undefined) update.is_public = body.is_public
   const { data, error } = await db.from('events').update(update).eq('id', params.id).select('*').single()
   if (error) return fail(error.message, 500, { code: (error as any).code })
   return ok({ event: data })
