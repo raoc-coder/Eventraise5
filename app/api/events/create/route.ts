@@ -43,7 +43,22 @@ export async function POST(req: NextRequest) {
     if (max_participants !== undefined && max_participants !== '') insertPayload.max_participants = Number(max_participants as any)
     if (image_url) insertPayload.image_url = image_url
 
-    const { data, error } = await db.from('events').insert(insertPayload).select('*').single()
+    // Attempt to set ownership and publish flags if supported
+    const userId = req.headers.get('x-user-id') || ''
+    if (userId) {
+      insertPayload.organizer_id = userId
+      insertPayload.created_by = userId
+    }
+    insertPayload.is_published = true
+
+    let { data, error } = await db.from('events').insert(insertPayload).select('*').single()
+    if (error && (error as any).code === '42703') {
+      // Column(s) not present in this schema; retry without optional fields
+      delete insertPayload.organizer_id
+      delete insertPayload.created_by
+      delete insertPayload.is_published
+      ;({ data, error } = await db.from('events').insert(insertPayload).select('*').single())
+    }
     if (error) {
       console.error('[events/create] insert error', error)
       return fail(error.message || 'Failed to create event', 500, { code: (error as any).code })

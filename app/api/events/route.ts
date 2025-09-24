@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const from = (page - 1) * pageSize
   const to = from + pageSize - 1
 
-  // Base query
+  // Base query; prefer published only if column exists
   let query = db.from('events').select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(from, to)
 
   if (mine && userId) {
@@ -38,7 +38,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ events: data, page, pageSize, total: count })
   }
 
-  const { data, error, count } = await query
+  let { data, error, count } = await query
+  if (error && (error as any).code === '42703') {
+    // Column filters not available; retry without specific filters
+    ;({ data, error, count } = await db.from('events').select('*', { count: 'exact' }).order('id', { ascending: false }).range(from, to))
+  }
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ events: data, page, pageSize, total: count })
 }
