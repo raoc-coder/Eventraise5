@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
     const todayIso = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
     const safeTitle = title && String(title).trim().length > 0 ? String(title).trim() : 'Untitled Event'
     const safeDescription = typeof description === 'string' ? description : ''
-    // Pick a broadly valid default across schema variants
-    const safeType = typeof event_type === 'string' && event_type ? event_type : 'fundraiser'
+    // Simplify: default to direct_donation
+    const safeType = typeof event_type === 'string' && event_type ? event_type : 'direct_donation'
     const safeStart = typeof start_date === 'string' && start_date ? start_date : todayIso
     const safeEnd = typeof end_date === 'string' && end_date ? end_date : todayIso
     const safeLocation = typeof location === 'string' && location ? location : 'TBD'
