@@ -18,7 +18,7 @@ function DonationForm() {
   const elements = useElements()
   const searchParams = useSearchParams()
   const eventId = searchParams.get('eventId') || undefined
-  const [amount, setAmount] = useState('25')
+  const [amount, setAmount] = useState('1')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
@@ -92,18 +92,49 @@ function DonationForm() {
     }
   }
 
+  const presetAmounts = [1, 5, 10, 25, 50, 100]
+
   return (
     <form onSubmit={submit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="amount">Amount (USD)</Label>
-        <Input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" min="1" aria-invalid={!!errors.amount} required />
+        <Label htmlFor="amount">Donation Amount (USD)</Label>
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-2">
+            {presetAmounts.map((preset) => (
+              <Button
+                key={preset}
+                type="button"
+                variant={amount === preset.toString() ? "default" : "outline"}
+                onClick={() => setAmount(preset.toString())}
+                className={amount === preset.toString() ? "btn-primary" : "btn-secondary"}
+              >
+                ${preset}
+              </Button>
+            ))}
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">Custom:</span>
+            <Input 
+              id="amount" 
+              value={amount} 
+              onChange={(e) => setAmount(e.target.value)} 
+              type="number" 
+              min="1" 
+              step="1"
+              className="w-24"
+              aria-invalid={!!errors.amount} 
+              required 
+            />
+            <span className="text-sm text-gray-600">USD</span>
+          </div>
+        </div>
         {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
       </div>
       {Number(amount) > 0 && (
-        <div className="text-sm bg-white/70 rounded-md p-3">
-          <div className="flex justify-between"><span>Donation</span><span>${Number(amount).toFixed(2)}</span></div>
-          <div className="flex justify-between"><span>Platform fee (8.99%)</span><span>${((Number(amount)*0.0899)).toFixed(2)}</span></div>
-          <div className="border-t mt-2 pt-2 flex justify-between font-semibold"><span>Total charged</span><span>${(Number(amount)*(1+0.0899)).toFixed(2)}</span></div>
+        <div className="text-sm bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex justify-between mb-2"><span className="text-gray-700">Donation</span><span className="text-gray-900 font-medium">${Number(amount).toFixed(2)}</span></div>
+          <div className="flex justify-between mb-2"><span className="text-gray-700">Platform fee (8.99%)</span><span className="text-gray-900 font-medium">${((Number(amount)*0.0899)).toFixed(2)}</span></div>
+          <div className="border-t border-blue-300 pt-2 flex justify-between font-bold"><span className="text-gray-900">Total charged</span><span className="text-blue-600">${(Number(amount)*(1+0.0899)).toFixed(2)}</span></div>
         </div>
       )}
       <div className="space-y-2">
@@ -135,14 +166,14 @@ function DonationForm() {
 
 export default function NewDonationPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md card-soft">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <Card className="w-full max-w-md event-card">
         <CardHeader>
-          <CardTitle className="text-white">Make a Donation</CardTitle>
+          <CardTitle className="text-gray-900">Make a Donation</CardTitle>
         </CardHeader>
         <CardContent>
           <Elements stripe={stripePromise}>
-            <Suspense fallback={<div className="text-gray-300">Loading…</div>}>
+            <Suspense fallback={<div className="text-gray-600">Loading…</div>}>
               <DonationForm />
             </Suspense>
           </Elements>
