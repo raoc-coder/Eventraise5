@@ -27,6 +27,10 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
     
+    /* Mobile Touch Targets */
+    --touch-target: 44px;
+    --touch-target-large: 50px;
+    
     /* EventraiseHUB Design System */
     --hub-blue: #1D4ED8;
     --success-green: #059669;
@@ -350,5 +354,74 @@
   100% {
     opacity: 0;
     transform: translateX(-50%) translateY(-60px);
+  }
+}
+
+/* Mobile Optimizations */
+@layer utilities {
+  /* Touch-friendly button sizes */
+  .btn-mobile {
+    @apply min-h-[44px] px-4 py-2 text-base;
+  }
+  
+  .btn-mobile-lg {
+    @apply min-h-[50px] px-6 py-3 text-lg;
+  }
+  
+  /* Mobile-friendly input fields */
+  .input-mobile {
+    @apply min-h-[44px] text-base px-3 py-2;
+  }
+  
+  /* Mobile spacing */
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .mobile-margin {
+    @apply mx-4 sm:mx-6 lg:mx-8;
+  }
+  
+  /* Mobile typography */
+  .mobile-heading {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+  }
+  
+  .mobile-subheading {
+    @apply text-lg sm:text-xl md:text-2xl;
+  }
+  
+  .mobile-body {
+    @apply text-base sm:text-lg;
+  }
+  
+  /* Mobile grid layouts */
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+  
+  /* Mobile flex layouts */
+  .mobile-flex {
+    @apply flex flex-col sm:flex-row gap-3 sm:gap-4;
+  }
+  
+  /* Mobile card spacing */
+  .mobile-card {
+    @apply p-4 sm:p-6;
+  }
+  
+  /* Mobile button groups */
+  .mobile-button-group {
+    @apply flex flex-col sm:flex-row gap-3 sm:gap-4;
+  }
+  
+  /* Mobile form spacing */
+  .mobile-form {
+    @apply space-y-4 sm:space-y-6;
+  }
+  
+  /* Mobile section spacing */
+  .mobile-section {
+    @apply py-8 sm:py-12 lg:py-16;
   }
 }

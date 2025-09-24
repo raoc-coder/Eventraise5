@@ -115,14 +115,14 @@ export default function EventsPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       <Navigation />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="display text-white mb-2">Support Impactful Campaigns</h1>
-          <p className="text-gray-300 text-lg">Donate, share, and amplify good with EventraiseHUB</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">Support Impactful Campaigns</h1>
+          <p className="text-gray-300 text-base sm:text-lg">Donate, share, and amplify good with EventraiseHUB</p>
         </div>
 
         {/* Search and Filter */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4">
+        <div className="mb-6 sm:mb-8 flex flex-col gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -130,15 +130,15 @@ export default function EventsPage() {
                 placeholder="Search events..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 h-12 text-base"
               />
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-3">
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 border border-gray-700 bg-black/40 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-3 border border-gray-700 bg-black/40 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base h-12"
             >
               <option value="all">All Types</option>
               <option value="walkathon">Walk-a-thon</option>
@@ -147,15 +147,15 @@ export default function EventsPage() {
               <option value="direct_donation">Direct Donation</option>
               <option value="raffle">Raffle</option>
             </select>
-                  <Button variant="outline" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">
-                    <Filter className="h-4 w-4 mr-2" />
-                    Filters
-                  </Button>
+            <Button variant="outline" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20 h-12">
+              <Filter className="h-4 w-4 mr-2" />
+              Filters
+            </Button>
           </div>
         </div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredEvents.map((event) => (
             <Card key={event.id} className="card-soft hover:card-elevated transition-all duration-300">
               <CardHeader>

@@ -28,7 +28,9 @@ import {
   ExternalLink,
   Phone,
   Mail,
-  Globe
+  Globe,
+  Edit,
+  Trash2
 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -273,23 +275,28 @@ export default function EventDetailPage() {
                       </div>
                     ) : (
                       <>
-                        <CardTitle className="text-3xl font-bold text-gray-900 mb-2">{event.title}</CardTitle>
-                        <p className="text-gray-600 text-lg">Direct Donation Campaign</p>
+                        <CardTitle className="text-4xl font-bold text-gray-900 mb-3 leading-tight">{event.title}</CardTitle>
+                        <div className="flex items-center space-x-2 mb-4">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <p className="text-blue-600 font-semibold text-lg">Direct Donation Campaign</p>
+                        </div>
                       </>
                     )}
                     {event.goal_amount && (
-                      <div className="flex items-center mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <Target className="h-5 w-5 text-blue-600 mr-2" />
-                        <span className="text-blue-800 font-semibold">Fundraising Goal: ${event.goal_amount.toLocaleString()}</span>
+                      <div className="flex items-center mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm">
+                        <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
+                          <Target className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
+                          <p className="text-2xl font-bold text-blue-900">${event.goal_amount.toLocaleString()}</p>
                       </div>
-                    )}
+                    </div>
+                  )}
                   </div>
-                  <div className="flex gap-2">
-                    <Button onClick={handleShare} variant="outline" className="btn-secondary">
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Share
-                    </Button>
-                    <Button className="btn-primary" onClick={async()=>{
+                </div>
+                  <div className="flex flex-wrap gap-3 mt-6">
+                    <Button className="btn-primary text-lg px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-200" onClick={async()=>{
                       try {
                         const res = await fetch('/api/donations/checkout', {
                           method: 'POST',
@@ -303,17 +310,27 @@ export default function EventDetailPage() {
                         toast.error(e.message || 'Unable to start checkout')
                       }
                     }}>
-                      <Heart className="h-4 w-4 mr-2" />
+                      <Heart className="h-5 w-5 mr-2" />
                       Donate ${donationAmount}
                     </Button>
-                    <Button variant="outline" onClick={()=>setShareOpen(!shareOpen)} className="btn-secondary">Email Link</Button>
+                    <Button onClick={handleShare} variant="outline" className="btn-secondary border-2 hover:bg-blue-50 transition-colors">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Share
+                    </Button>
+                    <Button variant="outline" onClick={()=>setShareOpen(!shareOpen)} className="btn-secondary border-2 hover:bg-green-50 transition-colors">Email Link</Button>
                     {editMode ? null : (
                       <>
                         {user && (
-                          <>
-                            <Button variant="outline" onClick={()=>setEditMode(true)} className="btn-secondary">Edit</Button>
-                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50">Delete</Button>
-                          </>
+                          <div className="flex gap-2 ml-auto">
+                            <Button variant="outline" onClick={()=>setEditMode(true)} className="btn-secondary border-2 hover:bg-gray-50 transition-colors">
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit
+                            </Button>
+                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors">
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </Button>
+                          </div>
                         )}
                       </>
                     )}
@@ -321,38 +338,51 @@ export default function EventDetailPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700 mb-6 text-lg leading-relaxed">{event.description}</p>
+                <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Campaign Description</h3>
+                  <p className="text-gray-700 text-lg leading-relaxed">{event.description}</p>
+                </div>
                 
                 {/* Campaign Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div className="flex items-center p-4 rounded-lg bg-blue-50 border border-blue-200">
-                    <Calendar className="h-5 w-5 text-blue-600 mr-3" />
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">Campaign Details</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200 shadow-sm">
+                    <div className="flex items-center justify-center w-12 h-12 bg-blue-500 rounded-full mr-4">
+                      <Calendar className="h-6 w-6 text-white" />
+                    </div>
                     <div>
-                      <p className="text-sm text-blue-600 font-medium">Campaign Period</p>
-                      <p className="text-gray-900 font-semibold">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
+                      <p className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Campaign Period</p>
+                      <p className="text-blue-900 font-bold text-lg">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
                     </div>
                   </div>
-                  <div className="flex items-center p-4 rounded-lg bg-orange-50 border border-orange-200">
-                    <MapPin className="h-5 w-5 text-orange-600 mr-3" />
+                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-200 shadow-sm">
+                    <div className="flex items-center justify-center w-12 h-12 bg-orange-500 rounded-full mr-4">
+                      <MapPin className="h-6 w-6 text-white" />
+                    </div>
                     <div>
-                      <p className="text-sm text-orange-600 font-medium">Location</p>
-                      <p className="text-gray-900 font-semibold">{event.location || 'Online'}</p>
+                      <p className="text-sm font-semibold text-orange-700 uppercase tracking-wide">Location</p>
+                      <p className="text-orange-900 font-bold text-lg">{event.location || 'Online'}</p>
                     </div>
                   </div>
                   {event.goal_amount && (
-                    <div className="flex items-center p-4 rounded-lg bg-green-50 border border-green-200">
-                      <Target className="h-5 w-5 text-green-600 mr-3" />
+                    <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-200 shadow-sm">
+                      <div className="flex items-center justify-center w-12 h-12 bg-green-500 rounded-full mr-4">
+                        <Target className="h-6 w-6 text-white" />
+                      </div>
                       <div>
-                        <p className="text-sm text-green-600 font-medium">Fundraising Goal</p>
-                        <p className="text-gray-900 font-semibold">${event.goal_amount.toLocaleString()}</p>
+                        <p className="text-sm font-semibold text-green-700 uppercase tracking-wide">Fundraising Goal</p>
+                        <p className="text-green-900 font-bold text-lg">${event.goal_amount.toLocaleString()}</p>
                       </div>
                     </div>
                   )}
-                  <div className="flex items-center p-4 rounded-lg bg-purple-50 border border-purple-200">
-                    <Heart className="h-5 w-5 text-purple-600 mr-3" />
+                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-purple-50 to-purple-100 border-2 border-purple-200 shadow-sm">
+                    <div className="flex items-center justify-center w-12 h-12 bg-purple-500 rounded-full mr-4">
+                      <Heart className="h-6 w-6 text-white" />
+                    </div>
                     <div>
-                      <p className="text-sm text-purple-600 font-medium">Campaign Type</p>
-                      <p className="text-gray-900 font-semibold">Direct Donation</p>
+                      <p className="text-sm font-semibold text-purple-700 uppercase tracking-wide">Campaign Type</p>
+                      <p className="text-purple-900 font-bold text-lg">Direct Donation</p>
                     </div>
                   </div>
                 </div>
@@ -374,25 +404,25 @@ export default function EventDetailPage() {
                 {/* Quick Donation Amounts */}
                 <div className="mb-6">
                   <p className="text-gray-700 mb-3 font-medium">Quick Donate</p>
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
                     {[10,25,50].map(v => (
                       <Button 
                         key={v} 
                         variant="outline" 
                         onClick={()=>setDonationAmount(v)} 
-                        className={donationAmount===v ? "btn-primary" : "btn-secondary"}
+                        className={`${donationAmount===v ? "btn-primary" : "btn-secondary"} min-h-[44px] px-4`}
                       >
                         ${v}
                       </Button>
                     ))}
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-600 text-sm font-medium">Custom</span>
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span className="text-gray-600 text-sm font-medium whitespace-nowrap">Custom</span>
                       <input
                         type="number"
                         min={1}
                         value={donationAmount}
                         onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
-                        className="input w-24"
+                        className="input w-24 min-h-[44px] text-base"
                       />
                     </div>
                   </div>
@@ -515,3 +545,4 @@ export default function EventDetailPage() {
     </div>
   )
 }
+

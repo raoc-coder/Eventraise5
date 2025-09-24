@@ -128,24 +128,24 @@ export default function CreateEventPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       <Navigation showAuth={false} />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <Link href="/dashboard" className="inline-flex items-center text-cyan-400 hover:text-cyan-300 mb-4 transition-colors">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <Link href="/dashboard" className="inline-flex items-center text-cyan-400 hover:text-cyan-300 mb-4 transition-colors text-sm sm:text-base">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Link>
-          <h1 className="text-3xl font-bold text-white">Create New Event</h1>
-          <p className="text-gray-300">Set up your fundraising campaign</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Create New Event</h1>
+          <p className="text-gray-300 text-sm sm:text-base">Set up your fundraising campaign</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Event Details</CardTitle>
-            <CardDescription>Provide information about your fundraising event</CardDescription>
+            <CardTitle className="text-lg sm:text-xl">Event Details</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Provide information about your fundraising event</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 gap-4 sm:gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="title">Event Title *</Label>
                   <Input
