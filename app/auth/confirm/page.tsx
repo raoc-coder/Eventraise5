@@ -44,18 +44,18 @@ function EmailConfirmContent() {
     if (!supabase) return
 
     const handleEmailConfirmation = async () => {
-      const token_hash = searchParams.get('token_hash')
-      const type = searchParams.get('type')
-      const access_token = searchParams.get('access_token')
-      const refresh_token = searchParams.get('refresh_token')
-      const next = searchParams.get('next') ?? '/dashboard'
+      const token_hash = searchParams?.get('token_hash') || null
+      const type = searchParams?.get('type') || null
+      const access_token = searchParams?.get('access_token') || null
+      const refresh_token = searchParams?.get('refresh_token') || null
+      const next = searchParams?.get('next') ?? '/dashboard'
 
       console.log('Email confirmation params:', {
         token_hash,
         type,
         access_token,
         refresh_token,
-        allParams: Object.fromEntries(searchParams.entries())
+        allParams: searchParams ? Object.fromEntries(searchParams.entries()) : {}
       })
 
       // Handle different types of confirmation links
