@@ -17,7 +17,7 @@ function DonationForm() {
   const stripe = useStripe()
   const elements = useElements()
   const searchParams = useSearchParams()
-  const eventId = searchParams.get('eventId') || undefined
+  const eventId = searchParams?.get('eventId') || undefined
   const [amount, setAmount] = useState('1')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
