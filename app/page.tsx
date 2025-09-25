@@ -59,10 +59,10 @@ export default function HomePage() {
       <section className="py-12 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-4">
               Everything You Need for Direct Donation Campaigns
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            <p className="text-base sm:text-lg text-gray-800 max-w-2xl mx-auto px-4">
               From campaign creation to secure payment processing, we&apos;ve got you covered.
             </p>
           </div>
@@ -314,7 +314,7 @@ export default function HomePage() {
       <footer className="bg-gray-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-600">
               <Heart className="h-5 w-5 text-white" />
             </div>
             <span className="text-lg font-bold">EventraiseHUB</span>
