@@ -59,7 +59,7 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-300">Manage your fundraising campaigns and events</p>
+          <p className="text-gray-300">Create, share, and manage your direct donation campaigns</p>
         </div>
 
         {/* Welcome Message */}
@@ -86,7 +86,7 @@ export default function DashboardPage() {
           <Card className="card-soft hover:card-elevated transition-all duration-300">
             <CardHeader>
               <CardTitle className="text-white">Quick Actions</CardTitle>
-              <CardDescription className="text-gray-300">Manage your fundraising campaigns</CardDescription>
+              <CardDescription className="text-gray-300">Start a new campaign or jump back into your work</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link href="/events/create">

@@ -8,8 +8,6 @@ import {
   Users, 
   TrendingUp, 
   Calendar, 
-  DollarSign, 
-  BarChart3,
   Shield,
   Smartphone,
   Sparkles,

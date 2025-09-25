@@ -143,6 +143,7 @@ function DonationForm() {
           <div className="flex justify-between mb-2"><span className="text-gray-700">Donation</span><span className="text-gray-900 font-medium">${Number(amount).toFixed(2)}</span></div>
           <div className="flex justify-between mb-2"><span className="text-gray-700">Platform fee (8.99%)</span><span className="text-gray-900 font-medium">${((Number(amount)*0.0899)).toFixed(2)}</span></div>
           <div className="border-t border-blue-300 pt-2 flex justify-between font-bold"><span className="text-gray-900">Total charged</span><span className="text-blue-600">${(Number(amount)*(1+0.0899)).toFixed(2)}</span></div>
+          <p className="text-gray-600 mt-2">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus Stripe fees).</p>
         </div>
       )}
       <div className="space-y-2">
