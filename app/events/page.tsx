@@ -112,13 +112,13 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">Support Impactful Campaigns</h1>
-          <p className="text-gray-300 text-base sm:text-lg">Donate, share, and amplify good with EventraiseHUB</p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">Support Impactful Campaigns</h1>
+          <p className="text-gray-600 text-base sm:text-lg">Donate, share, and amplify good with EventraiseHUB</p>
         </div>
 
         {/* Search and Filter */}
@@ -138,7 +138,7 @@ export default function EventsPage() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-3 border border-gray-700 bg-black/40 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base h-12"
+              className="px-3 py-3 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base h-12"
             >
               <option value="all">All Types</option>
               <option value="walkathon">Walk-a-thon</option>
@@ -147,7 +147,7 @@ export default function EventsPage() {
               <option value="direct_donation">Direct Donation</option>
               <option value="raffle">Raffle</option>
             </select>
-            <Button variant="outline" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20 h-12">
+            <Button variant="outline" className="h-12">
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </Button>
@@ -157,7 +157,7 @@ export default function EventsPage() {
         {/* Events Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredEvents.map((event) => (
-            <Card key={event.id} className="card-soft hover:card-elevated transition-all duration-300">
+            <Card key={event.id} className="event-card hover:shadow-md transition-all duration-200">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
@@ -185,9 +185,9 @@ export default function EventsPage() {
 
                   {/* Event Details */}
                   <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                  <div className="flex items-center p-2 rounded-lg hover:bg-blue-50 transition-colors">
                       <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                      <span className="font-medium">{event.start_date ? formatDate(event.start_date) : ''}</span>
+                    <span className="font-medium">{event.start_date ? formatDate(event.start_date) : ''}</span>
                     </div>
                     {(event.location) && (
                       <div className="flex items-center p-2 rounded-lg hover:bg-green-50 transition-colors">
@@ -200,7 +200,7 @@ export default function EventsPage() {
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-4">
                     <Link href={`/events/${event.id}`} className="flex-1">
-                      <Button className="w-full btn-primary">View Details</Button>
+                      <Button className="w-full btn-primary btn-mobile">View Details</Button>
                     </Link>
                     <Button variant="outline" size="sm" className="text-gray-700 hover:text-red-600">
                       <Heart className="h-4 w-4" />

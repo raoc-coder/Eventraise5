@@ -262,37 +262,37 @@ export default function EventDetailPage() {
                         <input 
                           value={draft.title} 
                           onChange={(e)=>setDraft({...draft,title:e.target.value})} 
-                          className="input text-lg font-semibold" 
+                          className="input text-lg font-semibold"
                           placeholder="Campaign title"
                         />
                         <textarea 
                           value={draft.description} 
                           onChange={(e)=>setDraft({...draft,description:e.target.value})} 
-                          className="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                          className="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           rows={4}
                           placeholder="Campaign description"
                         />
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          <input type="date" value={draft.start_date} onChange={(e)=>setDraft({...draft,start_date:e.target.value})} className="input" />
-                          <input type="date" value={draft.end_date} onChange={(e)=>setDraft({...draft,end_date:e.target.value})} className="input" />
-                          <input value={draft.location} onChange={(e)=>setDraft({...draft,location:e.target.value})} placeholder="Location" className="input" />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                          <input type="date" value={draft.start_date} onChange={(e)=>setDraft({...draft,start_date:e.target.value})} className="input min-h-[44px]" />
+                          <input type="date" value={draft.end_date} onChange={(e)=>setDraft({...draft,end_date:e.target.value})} className="input min-h-[44px]" />
+                          <input value={draft.location} onChange={(e)=>setDraft({...draft,location:e.target.value})} placeholder="Location" className="input min-h-[44px]" />
                         </div>
                         <div className="flex gap-2">
-                          <Button onClick={updateEvent} disabled={saving} className="btn-primary">{saving?'Saving…':'Save'}</Button>
-                          <Button variant="outline" onClick={()=>setEditMode(false)} className="btn-secondary">Cancel</Button>
+                          <Button onClick={updateEvent} disabled={saving} className="btn-primary btn-mobile-lg">{saving?'Saving…':'Save'}</Button>
+                          <Button variant="outline" onClick={()=>setEditMode(false)} className="btn-secondary btn-mobile">Cancel</Button>
                         </div>
                       </div>
                     ) : (
                       <>
-                        <CardTitle className="text-4xl font-bold text-gray-900 mb-3 leading-tight">{event.title}</CardTitle>
+                        <CardTitle className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{event.title}</CardTitle>
                         <div className="flex items-center space-x-2 mb-4">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <p className="text-blue-600 font-semibold text-lg">Direct Donation Campaign</p>
+                          <p className="text-blue-600 font-semibold text-base sm:text-lg">Direct Donation Campaign</p>
                         </div>
                       </>
                     )}
                     {event.goal_amount && (
-                      <div className="flex items-center mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm">
+                      <div className="flex items-center mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
                         <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
                           <Target className="h-6 w-6 text-white" />
                         </div>
@@ -305,7 +305,7 @@ export default function EventDetailPage() {
                   </div>
                 </div>
                   <div className="flex flex-wrap gap-3 mt-6">
-                    <Button className="btn-primary text-lg px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-200" onClick={async()=>{
+                    <Button className="btn-primary text-base sm:text-lg px-5 sm:px-6 py-3 font-semibold shadow hover:shadow-md transition-all duration-200" onClick={async()=>{
                       try {
                         const res = await fetch('/api/donations/checkout', {
                           method: 'POST',
