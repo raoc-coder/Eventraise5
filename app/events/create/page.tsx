@@ -267,7 +267,7 @@ export default function CreateEventPage() {
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
                 />
-                  <p className="text-xs text-gray-500">If online, leave this blank or write "Online".</p>
+                  <p className="text-xs text-gray-500">If online, leave this blank or write &quot;Online&quot;.</p>
               </div>
 
               <div className="space-y-4">
