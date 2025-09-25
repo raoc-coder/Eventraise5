@@ -1,4 +1,5 @@
-/* @sentry/nextjs:no-wrap */
+// @sentry/nextjs:no-wrap
+// Avoid top-level imports and only export a single POST symbol to prevent duplicate-wrap issues.
 // Intentionally avoid top-level imports to reduce Sentry wrapping conflicts
 export async function POST(req: Request) {
   try {
