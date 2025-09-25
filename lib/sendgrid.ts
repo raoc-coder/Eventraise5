@@ -202,4 +202,41 @@ export class SendGridService {
       </html>
     `
   }
+
+  static async sendDonationLink(to: string, eventUrl: string, message?: string): Promise<boolean> {
+    if (!this.isConfigured()) {
+      console.warn('SendGrid not configured, skipping donation link email')
+      return false
+    }
+    try {
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head><meta charset="utf-8"><title>Support this Campaign</title></head>
+          <body style="font-family: Arial, sans-serif; line-height:1.6; color:#111">
+            <div style="max-width:600px;margin:0 auto;padding:24px">
+              <h2 style="margin:0 0 12px">You're invited to support a campaign</h2>
+              ${message ? `<p style="margin:0 0 12px">${message}</p>` : ''}
+              <p style="margin:0 0 16px">Use the secure link below to view the campaign and make a donation:</p>
+              <p><a href="${eventUrl}" style="display:inline-block;background:#0ea5e9;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">View Campaign</a></p>
+              <p style="margin-top:24px;color:#555">EventraiseHUB</p>
+            </div>
+          </body>
+        </html>
+      `
+      await sgMail.send({
+        to,
+        from: {
+          email: process.env.SENDGRID_FROM_EMAIL || 'noreply@eventraisehub.com',
+          name: 'EventraiseHUB'
+        },
+        subject: 'Support this campaign on EventraiseHUB',
+        html,
+      })
+      return true
+    } catch (error) {
+      console.error('Error sending donation link:', error)
+      return false
+    }
+  }
 }

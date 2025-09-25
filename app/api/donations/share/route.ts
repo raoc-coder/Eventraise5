@@ -1,3 +1,28 @@
+import { NextResponse } from 'next/server'
+import { SendGridService } from '@/lib/sendgrid'
+
+export async function POST(req: Request) {
+  try {
+    const { to, eventId, message } = await req.json()
+    if (!to || !eventId) {
+      return NextResponse.json({ ok: false, error: 'Missing to or eventId' }, { status: 400 })
+    }
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://'+(process.env.VERCEL_URL || 'localhost:3000')
+    const eventUrl = `${appUrl}/events/${encodeURIComponent(eventId)}`
+
+    const sent = await SendGridService.sendDonationLink(to, eventUrl, message)
+    if (!sent) {
+      return NextResponse.json({ ok: false, error: 'Email service not configured or failed' }, { status: 500 })
+    }
+
+    return NextResponse.json({ ok: true })
+  } catch (e: any) {
+    return NextResponse.json({ ok: false, error: e?.message || 'Unexpected error' }, { status: 500 })
+  }
+}
+
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { SendGridService } from '@/lib/sendgrid'
 import { getAppUrl } from '@/lib/config'
