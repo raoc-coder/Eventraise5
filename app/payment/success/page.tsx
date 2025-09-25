@@ -22,9 +22,9 @@ const DonationConfirmation = dynamic(
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams()
-  const sessionId = searchParams.get('session_id')
-  const campaignId = searchParams.get('campaign')
-  const amount = searchParams.get('amount')
+  const sessionId = searchParams?.get('session_id') || null
+  const campaignId = searchParams?.get('campaign') || null
+  const amount = searchParams?.get('amount') || null
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
