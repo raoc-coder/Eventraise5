@@ -53,7 +53,7 @@ interface Event {
 }
 
 export default function EventDetailPage() {
-  const params = useParams()
+  const params = useParams() as { id?: string } | null
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const [showCreatedBanner, setShowCreatedBanner] = useState(false)
@@ -74,7 +74,9 @@ export default function EventDetailPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`/api/events/${params.id}`)
+        const id = typeof params?.id === 'string' ? params.id : ''
+        if (!id) return
+        const response = await fetch(`/api/events/${id}`)
         if (response.ok) {
           const data = await response.json()
           setEvent(data.event)
@@ -102,7 +104,7 @@ export default function EventDetailPage() {
     }
 
     fetchEvent()
-  }, [params.id, searchParams])
+  }, [params, searchParams])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -178,7 +180,7 @@ export default function EventDetailPage() {
       const res = await fetch('/api/donations/share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: shareEmail, eventId: params.id, message: shareMsg }),
+        body: JSON.stringify({ to: shareEmail, eventId: (params as any)?.id, message: shareMsg }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error || 'Failed to send')
@@ -310,7 +312,7 @@ export default function EventDetailPage() {
                         const res = await fetch('/api/donations/checkout', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ amount: donationAmount, eventId: params.id }),
+                          body: JSON.stringify({ amount: donationAmount, eventId: (params as any)?.id }),
                         })
                         const json = await res.json()
                         if (!res.ok) throw new Error(json.error || 'Failed to start checkout')
@@ -501,7 +503,7 @@ export default function EventDetailPage() {
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({ 
                             amount: donationAmount, 
-                            eventId: params.id,
+                            eventId: (params as any)?.id,
                             donor_name: donorName,
                             donor_email: donorEmail,
                             message: donorMessage
