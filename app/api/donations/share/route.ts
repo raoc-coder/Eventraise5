@@ -1,7 +1,6 @@
+/* @sentry/nextjs:no-wrap */
 // Intentionally avoid top-level imports to reduce Sentry wrapping conflicts
-export const dynamic = 'force-dynamic'
-
-export const POST = async (req: Request) => {
+export async function POST(req: Request) {
   try {
     const { SendGridService } = await import('@/lib/sendgrid')
     const { to, eventId, message } = await req.json()
