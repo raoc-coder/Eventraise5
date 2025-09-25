@@ -16,7 +16,7 @@ import Link from 'next/link'
 
 function PaymentCancelContent() {
   const searchParams = useSearchParams()
-  const campaignId = searchParams.get('campaign')
+  const campaignId = searchParams?.get('campaign') || ''
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
