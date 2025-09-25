@@ -99,7 +99,7 @@ export default function HomePage() {
             <Card className="event-card">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
-                  <DollarSign className="h-6 w-6 text-white" />
+                  <Shield className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Secure Payments</CardTitle>
                 <CardDescription className="text-gray-600">
@@ -155,7 +155,7 @@ export default function HomePage() {
             <Card className="event-card">
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-4">
-                  <BarChart3 className="h-6 w-6 text-white" />
+                  <Star className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Real-time Tracking</CardTitle>
                 <CardDescription className="text-gray-600">
