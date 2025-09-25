@@ -35,26 +35,26 @@ export default function MyEventsPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="min-h-screen bg-white">
       <Navigation />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="display text-white mb-6">My Events</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Campaigns</h1>
         {loading ? (
-          <p className="text-gray-300">Loading…</p>
+          <p className="text-gray-700">Loading…</p>
         ) : events.length === 0 ? (
-          <p className="text-gray-300">You haven’t created any events yet.</p>
+          <p className="text-gray-700">You haven’t created any campaigns yet.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((ev) => (
-              <Card key={ev.id} className="card-soft">
+              <Card key={ev.id} className="event-card">
                 <CardHeader>
-                  <CardTitle className="text-white">{ev.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold text-gray-900">{ev.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-300 mb-3">{ev.description || 'No description'}</p>
+                  <p className="text-gray-800 mb-3">{ev.description || 'No description'}</p>
                   <div className="flex justify-between">
-                    <span className="text-cyan-400 text-sm">{ev.event_type}</span>
-                    <Link href={`/events/${ev.id}`} className="text-sm text-orange-400 hover:underline">Manage</Link>
+                    <span className="text-blue-700 text-xs px-2 py-1 bg-blue-50 rounded-full font-medium">{ev.event_type || 'direct_donation'}</span>
+                    <Link href={`/events/${ev.id}`} className="text-sm text-blue-600 hover:underline">Manage</Link>
                   </div>
                 </CardContent>
               </Card>

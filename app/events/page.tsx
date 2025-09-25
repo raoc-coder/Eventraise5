@@ -117,8 +117,8 @@ export default function EventsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">Support Impactful Campaigns</h1>
-          <p className="text-gray-600 text-base sm:text-lg">Donate, share, and amplify good with EventraiseHUB</p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">Support Impactful Campaigns</h1>
+          <p className="text-gray-800 text-base sm:text-lg">Donate, share, and amplify good with EventraiseHUB</p>
         </div>
 
         {/* Search and Filter */}
@@ -130,7 +130,7 @@ export default function EventsPage() {
                 placeholder="Search events..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12 text-base"
+                className="pl-10 h-12 text-base text-gray-900 placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function EventsPage() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-3 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base h-12"
+              className="px-3 py-3 border border-gray-400 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base h-12"
             >
               <option value="all">All Types</option>
               <option value="walkathon">Walk-a-thon</option>
@@ -161,7 +161,7 @@ export default function EventsPage() {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-lg text-gray-900">{event.title}</CardTitle>
+                    <CardTitle className="text-xl font-semibold text-gray-900">{event.title}</CardTitle>
                     {('organization_name' in (event as any)) && (event as any).organization_name && (
                       <p className="text-sm text-gray-600 mt-1">{(event as any).organization_name}</p>
                     )}
@@ -170,7 +170,7 @@ export default function EventsPage() {
                       {getEventTypeLabel(event.event_type || '')}
                     </span>
                 </div>
-                <CardDescription className="mt-2">
+                <CardDescription className="mt-2 text-gray-800">
                   {event.description}
                 </CardDescription>
               </CardHeader>
@@ -185,14 +185,14 @@ export default function EventsPage() {
 
                   {/* Event Details */}
                   <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                  <div className="flex items-center p-2 rounded-lg hover:bg-blue-50 transition-colors overflow-hidden">
                       <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                    <span className="font-medium">{event.start_date ? formatDate(event.start_date) : ''}</span>
+                    <span className="font-medium truncate">{event.start_date ? formatDate(event.start_date) : ''}</span>
                     </div>
                     {(event.location) && (
-                      <div className="flex items-center p-2 rounded-lg hover:bg-green-50 transition-colors">
+                      <div className="flex items-center p-2 rounded-lg hover:bg-green-50 transition-colors overflow-hidden">
                         <MapPin className="h-4 w-4 mr-2 text-green-500" />
-                        <span className="font-medium">{event.location}</span>
+                        <span className="font-medium truncate">{event.location}</span>
                       </div>
                     )}
                   </div>

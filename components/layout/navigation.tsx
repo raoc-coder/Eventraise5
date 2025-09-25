@@ -19,7 +19,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm" style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #f59e0b 100%)' }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm bg-blue-600">
                 <Heart className="h-5 w-5 text-white" />
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
