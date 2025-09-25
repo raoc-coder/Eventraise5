@@ -106,12 +106,9 @@ export default function EventDetailPage() {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
+      year: 'numeric'
     })
   }
 
@@ -226,6 +223,18 @@ export default function EventDetailPage() {
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {showCreatedBanner && (
+          <div className="mb-6 p-4 rounded-lg border-2 border-green-200 bg-green-50 flex items-start justify-between">
+            <div>
+              <p className="text-green-800 font-semibold">Your campaign is live!</p>
+              <p className="text-green-700 text-sm">Share the link below to start accepting donations.</p>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={handleShare} variant="outline" className="btn-secondary border-2">Share</Button>
+              <Button onClick={()=> setShowCreatedBanner(false)} variant="ghost">Dismiss</Button>
+            </div>
+          </div>
+        )}
         {showCreatedBanner && (
           <div className="mb-6 alert-success flex items-center justify-between">
             <div>

@@ -44,6 +44,9 @@ function DonationForm() {
         if (!amount || Number(amount) <= 0) {
           throw new Error('Amount must be greater than 0')
         }
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          throw Object.assign(new Error('Please enter a valid email address'), { field: 'donor_email' })
+        }
       } catch (err: any) {
         const fieldErrs: Record<string, string> = {}
         if (err?.issues?.length) {
@@ -52,7 +55,11 @@ function DonationForm() {
             if (path && !fieldErrs[path]) fieldErrs[path] = issue.message || 'Invalid value'
           }
         }
-        if (err?.message && !fieldErrs.amount) fieldErrs.amount = err.message
+        if (err?.field) {
+          fieldErrs[err.field] = err.message
+        } else if (err?.message && !fieldErrs.amount) {
+          fieldErrs.amount = err.message
+        }
         setErrors(fieldErrs)
         toast.error('Please fix the highlighted fields.')
         setLoading(false)
@@ -127,6 +134,7 @@ function DonationForm() {
             />
             <span className="text-sm text-gray-600">USD</span>
           </div>
+          <p className="text-xs text-gray-500">You can adjust the amount. Platform fee is shown below.</p>
         </div>
         {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
       </div>
@@ -146,6 +154,7 @@ function DonationForm() {
           aria-invalid={!!errors.donor_name}
           className="min-h-[44px] text-base"
         />
+        <p className="text-xs text-gray-500">Optional. Helps us personalize your receipt.</p>
         {errors.donor_name && <p className="text-red-500 text-sm">{errors.donor_name}</p>}
       </div>
       <div className="space-y-2">
@@ -158,6 +167,7 @@ function DonationForm() {
           aria-invalid={!!errors.donor_email}
           className="min-h-[44px] text-base"
         />
+        <p className="text-xs text-gray-500">Optional. Enter to receive an emailed receipt.</p>
         {errors.donor_email && <p className="text-red-500 text-sm">{errors.donor_email}</p>}
       </div>
       <div className="space-y-2">
@@ -174,13 +184,14 @@ function DonationForm() {
           onChange={(e) => setMessage(e.target.value)}
           className="min-h-[44px] text-base"
         />
+        <p className="text-xs text-gray-500">Optional. A short note to the organizer.</p>
       </div>
       <Button 
         type="submit" 
         className="w-full btn-primary min-h-[50px] text-base font-semibold" 
         disabled={loading || !stripe}
       >
-        {loading ? 'Processing…' : 'Donate'}
+        {loading ? 'Processing your donation…' : `Donate $${Number(amount || '0') || 0}`}
       </Button>
     </form>
   )

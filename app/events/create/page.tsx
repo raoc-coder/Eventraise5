@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Navigation } from '@/components/layout/navigation'
-import { Heart, ArrowLeft } from 'lucide-react'
+import { Heart, ArrowLeft, Calendar, MapPin, Target } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 
@@ -18,6 +18,35 @@ export default function CreateEventPage() {
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  
+  // Inline validation support
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  
+  const validateInline = (next: typeof formData) => {
+    const nextErrors: Record<string, string> = { ...errors }
+    if (next.start_date && next.end_date) {
+      const start = new Date(next.start_date)
+      const end = new Date(next.end_date)
+      if (end < start) {
+        nextErrors.end_date = 'End date cannot be before start date'
+      } else {
+        delete nextErrors.end_date
+      }
+    }
+    setErrors(nextErrors)
+  }
+  const formatDate = (value: string) => {
+    if (!value) return '—'
+    try {
+      return new Date(value).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    } catch {
+      return value
+    }
+  }
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -29,10 +58,16 @@ export default function CreateEventPage() {
     is_public: true,
     invite_emails: '',
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData(prev => {
+      const next = { ...prev, [field]: value }
+      // run lightweight validation for dependent fields
+      if (field === 'start_date' || field === 'end_date') {
+        validateInline(next)
+      }
+      return next
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,34 +163,37 @@ export default function CreateEventPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       <Navigation showAuth={false} />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
           <Link href="/dashboard" className="inline-flex items-center text-cyan-400 hover:text-cyan-300 mb-4 transition-colors text-sm sm:text-base">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">Create New Event</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Create New Campaign</h1>
           <p className="text-gray-300 text-sm sm:text-base">Set up your fundraising campaign</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Event Details</CardTitle>
-            <CardDescription className="text-sm sm:text-base">Provide information about your fundraising event</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          {/* Form */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">Campaign Details</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Provide information about your campaign</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Event Title *</Label>
+                  <Label htmlFor="title">Campaign Title *</Label>
                   <Input
                     id="title"
-                    placeholder="Enter event title"
+                    placeholder="Enter campaign title"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     aria-invalid={!!errors.title}
                     required
                   />
+                  <p className="text-xs text-gray-500">Keep it short and clear. Example: Community Relief Fund</p>
                   {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
                 </div>
 
@@ -167,8 +205,11 @@ export default function CreateEventPage() {
                     placeholder="10000"
                     value={formData.goal_amount}
                     onChange={(e) => handleInputChange('goal_amount', e.target.value)}
+                    min={1}
+                    step={1}
                     required
                   />
+                  <p className="text-xs text-gray-500">Enter a whole dollar amount. You can adjust later.</p>
                   {errors.goal_amount && <p className="text-red-500 text-sm">{errors.goal_amount}</p>}
                 </div>
               </div>
@@ -184,6 +225,7 @@ export default function CreateEventPage() {
                   aria-invalid={!!errors.description}
                   required
                 />
+                <p className="text-xs text-gray-500">Share what the funds will support and why it matters.</p>
                 {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
               </div>
 
@@ -198,6 +240,7 @@ export default function CreateEventPage() {
                     aria-invalid={!!errors.start_date} 
                     required 
                   />
+                  <p className="text-xs text-gray-500">Use date-only; time is not required.</p>
                   {errors.start_date && <p className="text-red-500 text-sm">{errors.start_date}</p>}
                 </div>
 
@@ -211,6 +254,7 @@ export default function CreateEventPage() {
                     aria-invalid={!!errors.end_date} 
                     required 
                   />
+                  <p className="text-xs text-gray-500">End date must be on or after the start date.</p>
                   {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date}</p>}
                 </div>
               </div>
@@ -223,6 +267,7 @@ export default function CreateEventPage() {
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
                 />
+                  <p className="text-xs text-gray-500">If online, leave this blank or write "Online".</p>
               </div>
 
               <div className="space-y-4">
@@ -231,11 +276,12 @@ export default function CreateEventPage() {
                     type="checkbox"
                     id="is_public"
                     checked={formData.is_public}
-                    onChange={(e) => handleInputChange('is_public', (e.target.checked as unknown) as string)}
+                    onChange={(e) => handleInputChange('is_public', e.target.checked)}
                     className="rounded border-gray-300"
                   />
-                  <Label htmlFor="is_public">Make this event public (visible to everyone)</Label>
+                     <Label htmlFor="is_public">Make this campaign public (visible to everyone)</Label>
                 </div>
+                <p className="text-xs text-gray-500">Uncheck to make it private and invite only specific people.</p>
 
                 {!formData.is_public && (
                   <div className="space-y-2">
@@ -258,13 +304,82 @@ export default function CreateEventPage() {
                 <Link href="/dashboard">
                   <Button type="button" variant="outline">Cancel</Button>
                 </Link>
-                <Button type="submit" disabled={loading}>
-                  {loading ? 'Creating Event...' : 'Create Event'}
+                     <Button type="submit" disabled={loading}>
+                     {loading ? 'Creating Campaign...' : 'Create Campaign'}
                 </Button>
               </div>
-            </form>
-          </CardContent>
-        </Card>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Live Preview */}
+          <Card className="event-card">
+            <CardHeader>
+              <CardTitle className="text-gray-900">Preview</CardTitle>
+              <CardDescription className="text-gray-600">This is how your campaign will look</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-1">{formData.title || 'Your Event Title'}</h2>
+                  <p className="text-blue-600 font-semibold">Direct Donation Campaign</p>
+                </div>
+
+                {formData.goal_amount && (
+                  <div className="flex items-center mt-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm">
+                    <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
+                      <Target className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
+                      <p className="text-xl font-bold text-blue-900">${Number(formData.goal_amount).toLocaleString()}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200 shadow-sm">
+                    <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
+                      <Calendar className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Campaign Period</p>
+                      <p className="text-blue-900 font-bold">{formatDate(formData.start_date)} - {formatDate(formData.end_date)}</p>
+                    </div>
+                  </div>
+                  {formData.location ? (
+                    <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-200 shadow-sm">
+                      <div className="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-full mr-3">
+                        <MapPin className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-orange-700 uppercase tracking-wide">Location</p>
+                        <p className="text-orange-900 font-bold">{formData.location}</p>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="rounded-lg bg-gray-50 p-4">
+                  <p className="text-gray-700 whitespace-pre-line">{formData.description || 'Describe your fundraising campaign and its purpose.'}</p>
+                </div>
+
+                <div>
+                  {formData.is_public ? (
+                    <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">Public</span>
+                  ) : (
+                    <span className="inline-block px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-700">Private</span>
+                  )}
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <Button className="btn-primary" disabled>Donate</Button>
+                  <Button variant="outline" className="btn-secondary" disabled>Share</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
