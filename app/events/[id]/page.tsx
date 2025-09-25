@@ -87,7 +87,7 @@ export default function EventDetailPage() {
             start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
-          if (searchParams.get('created') === '1') {
+          if (searchParams?.get('created') === '1') {
             setShowCreatedBanner(true)
             toast.success('Your event is live! Share it with your community.')
           }
