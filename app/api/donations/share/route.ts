@@ -1,7 +1,8 @@
-import { SendGridService } from '@/lib/sendgrid'
+// Intentionally no top-level import to avoid Sentry duplicate import wrapping
 
 export async function POST(req: Request) {
   try {
+    const { SendGridService } = await import('@/lib/sendgrid')
     const { to, eventId, message } = await req.json()
     if (!to || !eventId) {
       return Response.json({ ok: false, error: 'Missing to or eventId' }, { status: 400 })
