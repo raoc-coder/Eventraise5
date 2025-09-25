@@ -1,6 +1,6 @@
 // Intentionally no top-level import to avoid Sentry duplicate import wrapping
 
-export async function POST(req: Request) {
+async function handlerShare(req: Request) {
   try {
     const { SendGridService } = await import('@/lib/sendgrid')
     const { to, eventId, message } = await req.json()
@@ -23,6 +23,8 @@ export async function POST(req: Request) {
 }
 
 export const dynamic = 'force-dynamic'
+
+export { handlerShare as POST }
 import { NextRequest, NextResponse } from 'next/server'
 import { SendGridService } from '@/lib/sendgrid'
 import { getAppUrl } from '@/lib/config'
