@@ -53,23 +53,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-300">Create, share, and manage your direct donation campaigns</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Dashboard</h1>
+          <p className="text-gray-800">Create, share, and manage your direct donation campaigns</p>
         </div>
 
         {/* Welcome Message */}
         <div className="mb-8">
-          <Card className="card-soft">
+          <Card className="event-card">
             <CardContent className="pt-6">
               <div className="text-center">
-                <Heart className="h-12 w-12 text-cyan-400 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-white mb-2">Welcome to EventraiseHub</h2>
-                <p className="text-gray-300 mb-4">Create and manage your direct donation campaigns</p>
+                <Heart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Welcome to EventraiseHub</h2>
+                <p className="text-gray-800 mb-4">Create and manage your direct donation campaigns</p>
                 <Link href="/events/create">
                   <Button className="btn-primary">
                     <Plus className="mr-2 h-4 w-4" />
@@ -83,10 +83,10 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="card-soft hover:card-elevated transition-all duration-300">
+          <Card className="event-card hover:shadow-md transition-all duration-200">
             <CardHeader>
-              <CardTitle className="text-white">Quick Actions</CardTitle>
-              <CardDescription className="text-gray-300">Start a new campaign or jump back into your work</CardDescription>
+              <CardTitle className="text-gray-900">Quick Actions</CardTitle>
+              <CardDescription className="text-gray-800">Start a new campaign or jump back into your work</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link href="/events/create">
@@ -110,32 +110,32 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="card-soft hover:card-elevated transition-all duration-300">
+          <Card className="event-card hover:shadow-md transition-all duration-200">
             <CardHeader>
-              <CardTitle className="text-white">Getting Started</CardTitle>
-              <CardDescription className="text-gray-300">Learn how to create effective campaigns</CardDescription>
+              <CardTitle className="text-gray-900">Getting Started</CardTitle>
+              <CardDescription className="text-gray-800">Learn how to create effective campaigns</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                  <Target className="h-5 w-5 text-cyan-400" />
+                <div className="flex items-center space-x-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                  <Target className="h-5 w-5 text-blue-600" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-white">Set Clear Goals</p>
-                    <p className="text-xs text-gray-300">Define specific fundraising targets for your campaign</p>
+                    <p className="text-sm font-semibold text-gray-900">Set Clear Goals</p>
+                    <p className="text-sm text-gray-800">Define specific fundraising targets for your campaign</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
-                  <Heart className="h-5 w-5 text-orange-400" />
+                <div className="flex items-center space-x-4 p-3 rounded-lg bg-orange-50 border border-orange-200">
+                  <Heart className="h-5 w-5 text-orange-600" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-white">Share Your Story</p>
-                    <p className="text-xs text-gray-300">Connect with donors through compelling descriptions</p>
+                    <p className="text-sm font-semibold text-gray-900">Share Your Story</p>
+                    <p className="text-sm text-gray-800">Connect with donors through compelling descriptions</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                  <Zap className="h-5 w-5 text-green-400" />
+                <div className="flex items-center space-x-4 p-3 rounded-lg bg-green-50 border border-green-200">
+                  <Zap className="h-5 w-5 text-green-600" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-white">Easy Donations</p>
-                    <p className="text-xs text-gray-300">Accept secure donations with just a few clicks</p>
+                    <p className="text-sm font-semibold text-gray-900">Easy Donations</p>
+                    <p className="text-sm text-gray-800">Accept secure donations with just a few clicks</p>
                   </div>
                 </div>
               </div>
