@@ -1,6 +1,7 @@
-// Intentionally no top-level import to avoid Sentry duplicate import wrapping
+// Intentionally avoid top-level imports to reduce Sentry wrapping conflicts
+export const dynamic = 'force-dynamic'
 
-async function handlerShare(req: Request) {
+export const POST = async (req: Request) => {
   try {
     const { SendGridService } = await import('@/lib/sendgrid')
     const { to, eventId, message } = await req.json()
@@ -8,7 +9,7 @@ async function handlerShare(req: Request) {
       return Response.json({ ok: false, error: 'Missing to or eventId' }, { status: 400 })
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://'+(process.env.VERCEL_URL || 'localhost:3000')
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://' + (process.env.VERCEL_URL || 'localhost:3000')
     const eventUrl = `${appUrl}/events/${encodeURIComponent(eventId)}`
 
     const sent = await SendGridService.sendDonationLink(to, eventUrl, message)
@@ -21,10 +22,6 @@ async function handlerShare(req: Request) {
     return Response.json({ ok: false, error: e?.message || 'Unexpected error' }, { status: 500 })
   }
 }
-
-export const dynamic = 'force-dynamic'
-
-export { handlerShare as POST }
 import { NextRequest, NextResponse } from 'next/server'
 import { SendGridService } from '@/lib/sendgrid'
 import { getAppUrl } from '@/lib/config'
