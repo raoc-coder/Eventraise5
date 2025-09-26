@@ -45,7 +45,7 @@ export default function MyEventsPage() {
     <div className="min-h-screen bg-white">
       <Navigation />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Campaigns</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Events</h1>
         {loading ? (
           <p className="text-gray-700">Loading…</p>
         ) : events.length === 0 ? (

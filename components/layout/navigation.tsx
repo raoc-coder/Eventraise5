@@ -34,6 +34,11 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 Events
               </Button>
             </Link>
+            <Link href="/events/mine">
+              <Button variant="ghost" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-white/5">
+                My Events
+              </Button>
+            </Link>
             {/* Pricing removed: single transparent fee */}
             
             {showAuth && (
