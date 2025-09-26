@@ -8,6 +8,11 @@ export const braintreeGateway = {
 
 // Server-side Braintree Gateway (for Node.js)
 export const getBraintreeGateway = async () => {
+  // Check if Braintree environment variables are configured
+  if (!process.env.BRAINTREE_MERCHANT_ID || !process.env.BRAINTREE_PUBLIC_KEY || !process.env.BRAINTREE_PRIVATE_KEY) {
+    throw new Error('Braintree environment variables not configured. Please check BRAINTREE_MERCHANT_ID, BRAINTREE_PUBLIC_KEY, and BRAINTREE_PRIVATE_KEY.')
+  }
+
   const braintree = await import('braintree')
   
   return new braintree.default.BraintreeGateway({

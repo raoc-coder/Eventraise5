@@ -30,11 +30,6 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
   useEffect(() => {
     const initializeBraintree = async () => {
       try {
-        // Check if Braintree is configured
-        if (!process.env.NEXT_PUBLIC_BRAINTREE_CLIENT_TOKEN) {
-          throw new Error('Braintree not configured')
-        }
-
         // Get client token from server
         const response = await fetch('/api/braintree/client-token', {
           method: 'POST',
@@ -44,18 +39,15 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
         })
 
         if (!response.ok) {
-          throw new Error('Failed to get client token')
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to get client token')
         }
 
         const { clientToken } = await response.json()
         
-        // Create Braintree client
-        const braintreeClient = await getBraintreeClient()
-        if (!braintreeClient) {
-          throw new Error('Failed to create Braintree client')
+        if (!clientToken) {
+          throw new Error('No client token received from server')
         }
-
-        setClient(braintreeClient)
 
         // Create Drop-in UI
         if (!dropinRef.current) {
@@ -97,7 +89,7 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
         setDropinInstance(dropin)
       } catch (error) {
         console.error('Braintree initialization error:', error)
-        toast.error('Failed to initialize payment system')
+        toast.error(`Failed to initialize payment system: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     }
 

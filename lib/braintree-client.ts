@@ -1,10 +1,10 @@
 // Client-side Braintree configuration (browser only)
-export const getBraintreeClient = async () => {
+export const getBraintreeClient = async (clientToken: string) => {
   if (typeof window !== 'undefined') {
     try {
       const braintree = await import('braintree-web')
       const client = await braintree.default.client.create({
-        authorization: process.env.NEXT_PUBLIC_BRAINTREE_CLIENT_TOKEN!
+        authorization: clientToken
       })
       return client
     } catch (error) {
