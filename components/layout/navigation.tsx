@@ -24,16 +24,16 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
   }
 
   return (
-    <nav className={`sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 border-b border-gray-200/60 dark:border-gray-800/60 backdrop-blur supports-[backdrop-filter]:backdrop-saturate-150 shadow-sm ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className={`sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 border-b border-gray-200/60 dark:border-gray-800/60 backdrop-blur supports-[backdrop-filter]:backdrop-saturate-150 shadow-sm w-full overflow-hidden ${className}`}>
+      <div className="nav-container w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+        <div className="flex justify-between items-center h-16 min-h-[64px]">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm bg-blue-600">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm bg-blue-600 flex-shrink-0">
                 <Heart className="h-5 w-5 text-white" />
               </div>
-              <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+              <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white tracking-tight truncate">
                 EventraiseHUB
               </span>
             </Link>
@@ -89,12 +89,12 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleMobileMenu}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-white/5"
+              className="p-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-white/5 min-w-[44px] min-h-[44px]"
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
