@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'next/navigation'
 import { createDonationIntentSchema } from '@/lib/validators'
-import BraintreeCheckout from '@/components/payment/BraintreeCheckout'
+// import BraintreeCheckout from '@/components/payment/BraintreeCheckout'
 
 function DonationForm() {
   const searchParams = useSearchParams()
@@ -81,11 +81,14 @@ function DonationForm() {
       )}
 
       {amount > 0 && (
-        <BraintreeCheckout
-          amount={amount}
-          eventId={eventId || ''}
-          onSuccess={handlePaymentSuccess}
-        />
+        <div className="text-center py-8">
+          <div className="text-gray-600 text-lg font-semibold mb-2">
+            Payment System Temporarily Unavailable
+          </div>
+          <p className="text-gray-500">
+            We're currently updating our payment system. Please try again later.
+          </p>
+        </div>
       )}
     </div>
   )

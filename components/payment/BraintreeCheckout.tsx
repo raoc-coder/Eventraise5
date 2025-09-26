@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { DollarSign, CreditCard } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getBraintreeClient } from '@/lib/braintree'
+import { getBraintreeClient } from '@/lib/braintree-client'
 
 // Braintree Drop-in UI will be imported dynamically
 
@@ -32,6 +32,11 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
   useEffect(() => {
     const initializeBraintree = async () => {
       try {
+        // Check if Braintree is configured
+        if (!process.env.NEXT_PUBLIC_BRAINTREE_CLIENT_TOKEN) {
+          throw new Error('Braintree not configured')
+        }
+
         // Get client token from server
         const response = await fetch('/api/braintree/client-token', {
           method: 'POST',

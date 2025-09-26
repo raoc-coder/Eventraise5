@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generateClientToken } from '@/lib/braintree'
+import { generateClientToken } from '@/lib/braintree-server'
 import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {

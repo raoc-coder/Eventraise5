@@ -1,26 +1,9 @@
-// Braintree Gateway Configuration (server-side only)
+// Server-side Braintree Gateway (Node.js only)
 export const braintreeGateway = {
   environment: process.env.BRAINTREE_ENVIRONMENT === 'production' ? 'production' : 'sandbox',
   merchantId: process.env.BRAINTREE_MERCHANT_ID!,
   publicKey: process.env.BRAINTREE_PUBLIC_KEY!,
   privateKey: process.env.BRAINTREE_PRIVATE_KEY!,
-}
-
-// Client-side Braintree configuration
-export const getBraintreeClient = async () => {
-  if (typeof window !== 'undefined') {
-    try {
-      const braintree = await import('braintree-web')
-      const client = await braintree.default.client.create({
-        authorization: process.env.NEXT_PUBLIC_BRAINTREE_CLIENT_TOKEN!
-      })
-      return client
-    } catch (error) {
-      console.error('Failed to create Braintree client:', error)
-      return null
-    }
-  }
-  return null
 }
 
 // Server-side Braintree Gateway (for Node.js)
