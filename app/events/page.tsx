@@ -176,6 +176,25 @@ export default function EventsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  {/* Goal + Thermometer */}
+                  {(() => {
+                    const goal = Number((event as any).goal_amount || 0)
+                    const raisedRaw = (event as any).total_raised ?? (event as any).amount_raised ?? (event as any).raised ?? 0
+                    const raised = Number(raisedRaw) || 0
+                    if (!goal || goal <= 0) return null
+                    const pct = Math.min(100, Math.max(0, Math.round((raised / goal) * 100)))
+                    return (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Goal: ${goal.toLocaleString()}</span>
+                          <span className="text-xs text-gray-700">Raised ${raised.toLocaleString()} • {pct}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                          <div className="h-2 bg-blue-600" style={{ width: pct + '%' }} />
+                        </div>
+                      </div>
+                    )
+                  })()}
                   {/* Progress Bar */}
                   {/* Compact meta row */}
                   <div className="flex items-center justify-between text-sm text-gray-600">
