@@ -98,7 +98,7 @@ async function generateAnalyticsData(filters: any = {}) {
   // Get volunteer analytics
   let volunteersQuery = supabase
     .from('volunteer_signups')
-    .select('signed_up_at, status, volunteer_shifts!inner(event_id)')
+    .select('signed_up_at, status, shift_id')
 
   if (Object.keys(dateFilter).length > 0) {
     volunteersQuery = volunteersQuery.filter('signed_up_at', 'gte', startDate || '1900-01-01')
