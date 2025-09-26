@@ -58,6 +58,10 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
         setClient(braintreeClient)
 
         // Create Drop-in UI
+        if (!dropinRef.current) {
+          throw new Error('Drop-in container not found')
+        }
+
         const braintree = await import('braintree-web-drop-in')
         const dropin = await braintree.default.create({
           authorization: clientToken,
