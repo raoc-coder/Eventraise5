@@ -24,13 +24,13 @@ export const getBraintreeClient = async () => {
 }
 
 // Server-side Braintree Gateway (for Node.js)
-export const getBraintreeGateway = () => {
-  const braintree = require('braintree')
+export const getBraintreeGateway = async () => {
+  const braintree = await import('braintree')
   
-  return new braintree.BraintreeGateway({
+  return new braintree.default.BraintreeGateway({
     environment: process.env.BRAINTREE_ENVIRONMENT === 'production' 
-      ? braintree.Environment.Production 
-      : braintree.Environment.Sandbox,
+      ? braintree.default.Environment.Production 
+      : braintree.default.Environment.Sandbox,
     merchantId: process.env.BRAINTREE_MERCHANT_ID!,
     publicKey: process.env.BRAINTREE_PUBLIC_KEY!,
     privateKey: process.env.BRAINTREE_PRIVATE_KEY!,
@@ -39,7 +39,7 @@ export const getBraintreeGateway = () => {
 
 // Generate client token for frontend
 export const generateClientToken = async (customerId?: string) => {
-  const gateway = getBraintreeGateway()
+  const gateway = await getBraintreeGateway()
   
   try {
     const response = await gateway.clientToken.generate({
@@ -54,7 +54,7 @@ export const generateClientToken = async (customerId?: string) => {
 
 // Create transaction
 export const createTransaction = async (amount: string, paymentMethodNonce: string, options: any = {}) => {
-  const gateway = getBraintreeGateway()
+  const gateway = await getBraintreeGateway()
   
   try {
     const result = await gateway.transaction.sale({

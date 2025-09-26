@@ -9,8 +9,7 @@ import { DollarSign, CreditCard } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { getBraintreeClient } from '@/lib/braintree'
 
-// Import Braintree Drop-in UI
-const braintree = require('braintree-web-drop-in')
+// Braintree Drop-in UI will be imported dynamically
 
 interface PaymentFormProps {
   amount: number
@@ -56,7 +55,8 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
         setClient(braintreeClient)
 
         // Create Drop-in UI
-        const dropin = await braintree.create({
+        const braintree = await import('braintree-web-drop-in')
+        const dropin = await braintree.default.create({
           authorization: clientToken,
           container: dropinRef.current,
           card: {
