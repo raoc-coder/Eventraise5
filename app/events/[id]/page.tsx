@@ -287,10 +287,7 @@ export default function EventDetailPage() {
                     ) : (
                       <>
                         <CardTitle className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{event.title}</CardTitle>
-                        <div className="flex items-center space-x-2 mb-4">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <p className="text-blue-600 font-semibold text-base sm:text-lg">Direct Donation Campaign</p>
-                        </div>
+                        <div className="h-2 mb-4" />
                       </>
                     )}
                     {event.goal_amount && (
@@ -322,13 +319,12 @@ export default function EventDetailPage() {
                       }
                     }}>
                       <Heart className="h-5 w-5 mr-2" />
-                      Donate ${donationAmount}
+                      Donate Now
                     </Button>
                     <Button onClick={handleShare} variant="outline" className="btn-secondary border-2 hover:bg-blue-50 transition-colors">
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
-                    <Button variant="outline" onClick={()=>setShareOpen(!shareOpen)} className="btn-secondary border-2 hover:bg-green-50 transition-colors">Email Link</Button>
                     {editMode ? null : (
                       <>
                         {user && (
@@ -489,7 +485,7 @@ export default function EventDetailPage() {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-900 font-bold">Total Charged</span>
                         <span className="text-blue-600 font-bold text-lg">
-                          ${(donationAmount + (donationAmount * 0.0899)).toFixed(2)}
+                    {(donationAmount + (donationAmount * 0.0899)).toFixed(2)}
                         </span>
                       </div>
                     </div>
