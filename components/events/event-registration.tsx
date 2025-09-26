@@ -123,7 +123,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
 
       if (event.ticket_price > 0) {
         // Redirect to payment if ticket has a price
-        const paymentResponse = await fetch('/api/create-checkout', {
+        const paymentResponse = await fetch('/api/braintree/checkout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -144,9 +144,10 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
           throw new Error(paymentData.error || 'Failed to create payment session')
         }
 
-        // Redirect to Stripe Checkout
+        // Redirect to Braintree payment
         toast.loading('Redirecting to secure payment...', { duration: 2000 })
-        window.location.href = paymentData.sessionUrl
+        // For Braintree, we'll redirect to a payment page with Drop-in UI
+        window.location.href = `/payment/braintree?request_id=${paymentData.donationRequestId}&amount=${totalAmount}`
       } else {
         // Free event - confirm registration
         setRegistrationId(data.registration_id)
