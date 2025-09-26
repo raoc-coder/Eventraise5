@@ -125,7 +125,7 @@ export default function TermsOfServicePage() {
                 <ul className="text-gray-700 space-y-2">
                   <li>• All donations are final and non-refundable unless otherwise stated</li>
                   <li>• Payment processing is handled securely through Stripe</li>
-                  <li>• Use of the platform is free. A platform fee of 8.99% applies to donations received (plus Stripe fees).</li>
+                  <li>• Use of the platform is free. A platform fee of 8.99% applies to donations received (plus Braintree processing fees).</li>
                   <li>• Donors will receive receipts for tax purposes</li>
                 </ul>
               </div>

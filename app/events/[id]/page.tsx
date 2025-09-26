@@ -454,7 +454,7 @@ export default function EventDetailPage() {
                     </div>
                   </div>
                 </div>
-                <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus Stripe fees).</p>
+                <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus Braintree processing fees).</p>
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="donorName" className="text-gray-700 font-medium">Your Name (Optional)</Label>
