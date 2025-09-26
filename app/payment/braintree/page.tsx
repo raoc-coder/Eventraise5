@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Navigation } from '@/components/layout/navigation'
-// import BraintreeCheckout from '@/components/payment/BraintreeCheckout'
+import BraintreeCheckout from '@/components/payment/BraintreeCheckout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, CreditCard } from 'lucide-react'
@@ -107,29 +107,11 @@ function BraintreePaymentContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Payment Form */}
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment System Temporarily Unavailable</CardTitle>
-              <CardDescription>
-                We&apos;re currently updating our payment system
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <div className="text-gray-600 text-lg font-semibold mb-2">
-                  Payment System Under Maintenance
-                </div>
-                <p className="text-gray-500 mb-4">
-                  We&apos;re currently updating our payment system. Please try again later.
-                </p>
-                <Button asChild>
-                  <Link href="/">
-                    Return to Home
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <BraintreeCheckout
+            amount={parseFloat(amount)}
+            eventId={paymentData?.event_id || ''}
+            onSuccess={handlePaymentSuccess}
+          />
         </div>
 
         {/* Payment Summary */}

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { generateClientToken } from '@/lib/braintree-server'
 import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
@@ -12,10 +13,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}))
     const customerId = body.customerId
 
-    // Braintree is temporarily disabled
+    const clientToken = await generateClientToken(customerId)
+
     return NextResponse.json({ 
-      error: 'Payment system temporarily unavailable' 
-    }, { status: 503 })
+      clientToken,
+      success: true 
+    })
   } catch (error) {
     console.error('Client token generation error:', error)
     return NextResponse.json({ 

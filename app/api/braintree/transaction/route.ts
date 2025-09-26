@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createTransaction } from '@/lib/braintree-server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit } from '@/lib/rate-limit'
 
@@ -38,10 +39,63 @@ export async function POST(req: NextRequest) {
       }, { status: 400 })
     }
 
-    // Braintree is temporarily disabled
-    return NextResponse.json({ 
-      error: 'Payment system temporarily unavailable' 
-    }, { status: 503 })
+    // Create transaction with Braintree
+    const result = await createTransaction(amount, paymentMethodNonce, {
+      submitForSettlement: true,
+      customFields: {
+        event_id: eventId || '',
+        campaign_id: campaignId || '',
+        donor_name: donorInfo?.name || '',
+        donor_email: donorInfo?.email || '',
+        is_anonymous: donorInfo?.isAnonymous ? 'true' : 'false'
+      }
+    })
+
+    if (!result.success) {
+      return NextResponse.json({ 
+        error: result.errors || 'Transaction failed',
+        success: false 
+      }, { status: 400 })
+    }
+
+    const transaction = result.transaction
+    const userId = req.headers.get('x-user-id') || null
+
+    // Store donation in database
+    const { data, error } = await supabaseAdmin
+      .from('donation_requests')
+      .insert({
+        user_id: userId,
+        amount_cents: Math.round(amountNum * 100),
+        currency: 'usd',
+        status: 'completed',
+        payment_intent_id: transaction.id,
+        donor_name: donorInfo?.name,
+        donor_email: donorInfo?.email,
+        message: donorInfo?.message,
+        event_id: eventId,
+        campaign_id: campaignId,
+        transaction_id: transaction.id,
+        payment_method: paymentMethodType || 'card',
+        braintree_transaction_id: transaction.id
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Failed to store donation:', error)
+      return NextResponse.json({ 
+        error: 'Payment processed but failed to record donation',
+        transaction: transaction,
+        success: false 
+      }, { status: 500 })
+    }
+
+    return NextResponse.json({
+      success: true,
+      transaction: transaction,
+      donation: data
+    })
 
   } catch (error) {
     console.error('Transaction error:', error)
