@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify webhook signature with Braintree
-    const gateway = getBraintreeGateway()
+    const gateway = await getBraintreeGateway()
     const webhookNotification = gateway.webhookNotification.parse(signature, payload)
 
     console.log('Braintree webhook received:', {
