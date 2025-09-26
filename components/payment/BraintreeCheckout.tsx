@@ -107,7 +107,7 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
         dropinInstance.teardown()
       }
     }
-  }, [amount])
+  }, [amount, dropinInstance])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()

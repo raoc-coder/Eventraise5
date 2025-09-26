@@ -86,7 +86,7 @@ function DonationForm() {
             Payment System Temporarily Unavailable
           </div>
           <p className="text-gray-500">
-            We're currently updating our payment system. Please try again later.
+            We&apos;re currently updating our payment system. Please try again later.
           </p>
         </div>
       )}
