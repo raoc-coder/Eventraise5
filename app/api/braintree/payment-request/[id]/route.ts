@@ -3,14 +3,14 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!supabaseAdmin) {
       return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
     }
 
-    const requestId = params.id
+    const { id: requestId } = await params
 
     if (!requestId) {
       return NextResponse.json({ error: 'Request ID required' }, { status: 400 })
