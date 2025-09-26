@@ -57,6 +57,11 @@ export async function POST(req: NextRequest) {
 
 async function handleTransactionSettled(notification: any) {
   try {
+    if (!supabaseAdmin) {
+      console.error('Supabase admin not available')
+      return
+    }
+
     const transaction = notification.transaction
     
     // Update donation status in database
@@ -81,6 +86,11 @@ async function handleTransactionSettled(notification: any) {
 
 async function handleTransactionDeclined(notification: any) {
   try {
+    if (!supabaseAdmin) {
+      console.error('Supabase admin not available')
+      return
+    }
+
     const transaction = notification.transaction
     
     // Update donation status in database
