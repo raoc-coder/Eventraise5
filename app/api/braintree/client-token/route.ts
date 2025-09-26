@@ -13,7 +13,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}))
     const customerId = body.customerId
 
+    console.log('Generating client token with customerId:', customerId)
+    
     const clientToken = await generateClientToken(customerId)
+    
+    console.log('Client token generated successfully')
 
     return NextResponse.json({ 
       clientToken,
@@ -22,7 +26,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Client token generation error:', error)
     return NextResponse.json({ 
-      error: 'Failed to generate client token' 
+      error: error instanceof Error ? error.message : 'Failed to generate client token',
+      details: error instanceof Error ? error.stack : undefined
     }, { status: 500 })
   }
 }
