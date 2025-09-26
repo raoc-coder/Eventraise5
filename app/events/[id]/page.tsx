@@ -114,6 +114,13 @@ export default function EventDetailPage() {
     })
   }
 
+  const getRaisedAmount = (ev: any): number => {
+    if (!ev) return 0
+    const val = ev.total_raised ?? ev.amount_raised ?? ev.raised ?? 0
+    const num = Number(val)
+    return isNaN(num) ? 0 : num
+  }
+
 
   const handleShare = () => {
     if (navigator.share) {
@@ -291,16 +298,37 @@ export default function EventDetailPage() {
                       </>
                     )}
                     {event.goal_amount && (
-                      <div className="flex items-center mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
-                        <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
-                          <Target className="h-6 w-6 text-white" />
+                      <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                        <div className="flex items-center mb-3">
+                          <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
+                            <Target className="h-6 w-6 text-white" />
+                          </div>
+                          <div>
+                            <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
+                            <p className="text-2xl font-bold text-blue-900">${event.goal_amount.toLocaleString()}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
-                          <p className="text-2xl font-bold text-blue-900">${event.goal_amount.toLocaleString()}</p>
+                        {/* Thermometer */}
+                        <div className="w-full bg-white border border-blue-200 rounded-full h-3 overflow-hidden">
+                          {(() => {
+                            const raised = getRaisedAmount(event)
+                            const goal = Number(event.goal_amount) || 0
+                            const pct = goal > 0 ? Math.min(100, Math.max(0, Math.round((raised / goal) * 100))) : 0
+                            return (
+                              <div className="h-full bg-blue-500 transition-all" style={{ width: pct + '%' }} />
+                            )
+                          })()}
+                        </div>
+                        <div className="flex justify-between mt-1 text-xs text-blue-800">
+                          <span>Raised ${getRaisedAmount(event).toLocaleString()}</span>
+                          <span>{(() => {
+                            const goal = Number(event.goal_amount) || 0
+                            const pct = goal > 0 ? Math.min(100, Math.max(0, Math.round((getRaisedAmount(event) / goal) * 100))) : 0
+                            return pct
+                          })()}%</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </div>
                 </div>
                   <div className="flex flex-wrap gap-3 mt-6">
@@ -360,15 +388,6 @@ export default function EventDetailPage() {
                     <div>
                       <p className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Campaign Period</p>
                       <p className="text-blue-900 font-bold text-lg">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-200 shadow-sm">
-                    <div className="flex items-center justify-center w-12 h-12 bg-orange-500 rounded-full mr-4">
-                      <MapPin className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-orange-700 uppercase tracking-wide">Location</p>
-                      <p className="text-orange-900 font-bold text-lg">{event.location || 'Online'}</p>
                     </div>
                   </div>
                   {event.goal_amount && (
