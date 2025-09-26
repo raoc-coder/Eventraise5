@@ -76,17 +76,20 @@ function DonationForm() {
           <div className="flex justify-between mb-2"><span className="text-gray-700">Donation</span><span className="text-gray-900 font-medium">${amount.toFixed(2)}</span></div>
           <div className="flex justify-between mb-2"><span className="text-gray-700">Platform fee (8.99%)</span><span className="text-gray-900 font-medium">${(amount * 0.0899).toFixed(2)}</span></div>
           <div className="border-t border-blue-300 pt-2 flex justify-between font-bold"><span className="text-gray-900">Total charged</span><span className="text-blue-600">${(amount * 1.0899).toFixed(2)}</span></div>
-          <p className="text-gray-600 mt-2">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus Braintree fees).</p>
+          <p className="text-gray-600 mt-2">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus Braintree processing fees).</p>
         </div>
       )}
 
       {amount > 0 && (
         <div className="text-center py-8">
           <div className="text-gray-600 text-lg font-semibold mb-2">
-            Payment System Temporarily Unavailable
+            Braintree Payment System Temporarily Unavailable
           </div>
           <p className="text-gray-500">
-            We&apos;re currently updating our payment system. Please try again later.
+            We&apos;re currently updating our Braintree payment integration. Please try again later.
+          </p>
+          <p className="text-sm text-gray-400 mt-2">
+            Powered by Braintree • Supports PayPal, Venmo, Apple Pay, Google Pay
           </p>
         </div>
       )}
