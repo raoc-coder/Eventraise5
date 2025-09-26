@@ -19,17 +19,7 @@ export async function GET(
     // Fetch donation request details
     const { data, error } = await supabaseAdmin
       .from('donation_requests')
-      .select(`
-        *,
-        events (
-          id,
-          title,
-          description,
-          start_date,
-          end_date,
-          location
-        )
-      `)
+      .select('*')
       .eq('id', requestId)
       .single()
 
@@ -38,6 +28,25 @@ export async function GET(
       return NextResponse.json({ 
         error: 'Payment request not found' 
       }, { status: 404 })
+    }
+
+    // If there's an event_id, try to fetch event details separately
+    let eventData = null
+    if (data.event_id) {
+      try {
+        const { data: event, error: eventError } = await supabaseAdmin
+          .from('events')
+          .select('id, title, description, start_date, end_date, location')
+          .eq('id', data.event_id)
+          .single()
+        
+        if (!eventError && event) {
+          eventData = event
+        }
+      } catch (eventFetchError) {
+        console.warn('Could not fetch event details:', eventFetchError)
+        // Continue without event data
+      }
     }
 
     if (!data) {
@@ -55,7 +64,10 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      paymentRequest: data,
+      paymentRequest: {
+        ...data,
+        events: eventData
+      },
       event_id: data.event_id,
       amount: data.amount_cents / 100,
       currency: data.currency,
