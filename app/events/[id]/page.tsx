@@ -431,7 +431,7 @@ export default function EventDetailPage() {
                 <div className="mb-6">
                   <p className="text-gray-700 mb-3 font-medium">Quick Donate</p>
                   <div className="flex flex-wrap items-center gap-2 mb-4 overflow-hidden">
-                    {[10,25,50].map(v => (
+                    {[1,10,25].map(v => (
                       <Button 
                         key={v} 
                         variant="outline" 
@@ -446,6 +446,7 @@ export default function EventDetailPage() {
                       <input
                         type="number"
                         min={1}
+                        step={1}
                         value={donationAmount}
                         onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
                         className="input w-20 sm:w-24 min-h-[44px] text-base"
