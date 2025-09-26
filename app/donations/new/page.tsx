@@ -15,12 +15,43 @@ function DonationForm() {
   const eventId = searchParams?.get('eventId') || undefined
   const [amount, setAmount] = useState(25)
   const [paymentComplete, setPaymentComplete] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handlePaymentSuccess = (transactionId: string) => {
     setPaymentComplete(true)
     toast.success('Thank you for your donation!')
     // Redirect to success page
     window.location.href = `/payment/success?transaction_id=${transactionId}&amount=${amount}`
+  }
+
+  const handleCheckout = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/donations/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: amount,
+          eventId: eventId,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to start checkout')
+      }
+
+      // Redirect to Braintree payment page
+      window.location.href = data.url
+    } catch (error) {
+      console.error('Checkout error:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to process payment')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (paymentComplete) {
@@ -81,16 +112,19 @@ function DonationForm() {
       )}
 
       {amount > 0 && (
-        <div className="text-center py-8">
-          <div className="text-gray-600 text-lg font-semibold mb-2">
-            Braintree Payment System Temporarily Unavailable
+        <div className="space-y-4">
+          <div className="text-center">
+            <p className="text-sm text-gray-500 mb-4">
+              Powered by Braintree • Supports PayPal, Venmo, Apple Pay, Google Pay
+            </p>
+            <Button 
+              onClick={handleCheckout}
+              className="w-full btn-primary min-h-[50px] text-base font-semibold"
+              disabled={loading}
+            >
+              {loading ? 'Processing...' : `Donate $${amount.toFixed(2)}`}
+            </Button>
           </div>
-          <p className="text-gray-500">
-            We&apos;re currently updating our Braintree payment integration. Please try again later.
-          </p>
-          <p className="text-sm text-gray-400 mt-2">
-            Powered by Braintree • Supports PayPal, Venmo, Apple Pay, Google Pay
-          </p>
         </div>
       )}
     </div>
