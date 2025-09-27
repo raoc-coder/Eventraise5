@@ -85,17 +85,17 @@ function DonationForm() {
               </Button>
             ))}
           </div>
-          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-            <span className="text-sm text-gray-600 whitespace-nowrap">Custom amount:</span>
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 bg-yellow-50 p-2 rounded border">
+            <span className="text-sm text-gray-600 whitespace-nowrap font-semibold">Custom amount:</span>
             <div className="flex items-center space-x-2">
-              <Input 
+              <input 
                 id="amount" 
                 value={amount} 
                 onChange={(e) => setAmount(Number(e.target.value) || 0)} 
                 type="number" 
                 min="1" 
                 step="1"
-                className="w-32 min-h-[44px] text-base"
+                className="w-32 min-h-[44px] text-base border-2 border-blue-500 px-3 py-2 rounded"
                 placeholder="Enter amount"
                 required 
               />
