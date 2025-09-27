@@ -93,6 +93,12 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
                   totalPrice: amount.toFixed(2),
                   currencyCode: 'USD'
                 }
+              },
+              onError: (error) => {
+                console.error('Braintree Drop-in error:', error)
+              },
+              onPaymentMethodReceived: (payload) => {
+                console.log('Payment method received:', payload)
               }
             })
 
