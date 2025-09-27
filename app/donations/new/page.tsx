@@ -85,6 +85,12 @@ function DonationForm() {
               </Button>
             ))}
           </div>
+          
+          {/* DEBUG: Test if this section renders */}
+          <div className="bg-red-500 text-white p-4 text-center font-bold">
+            DEBUG: This should be visible below the buttons
+          </div>
+          
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 bg-yellow-50 p-2 rounded border">
             <span className="text-sm text-gray-600 whitespace-nowrap font-semibold">Custom amount:</span>
             <div className="flex items-center space-x-2">
