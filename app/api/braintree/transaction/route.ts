@@ -69,8 +69,7 @@ export async function POST(req: NextRequest) {
         event_id: eventId,
         campaign_id: campaignId,
         transaction_id: transaction.id,
-        payment_method: paymentMethodType || 'card',
-        braintree_transaction_id: transaction.id
+        payment_method: paymentMethodType || 'card'
       })
       .select()
       .single()
