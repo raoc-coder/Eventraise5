@@ -26,14 +26,21 @@ function BraintreePaymentContent() {
       }
 
       try {
-        // Fetch payment request details
-        const response = await fetch(`/api/braintree/payment-request/${requestId}`)
-        if (response.ok) {
-          const data = await response.json()
-          setPaymentData(data)
+        // Create payment data from URL parameters instead of fetching from API
+        const paymentData = {
+          success: true,
+          paymentRequest: {
+            id: requestId,
+            amount_cents: Math.round(parseFloat(amount) * 100),
+            status: 'pending'
+          },
+          amount: parseFloat(amount),
+          currency: 'usd'
         }
+        
+        setPaymentData(paymentData)
       } catch (error) {
-        console.error('Failed to fetch payment data:', error)
+        console.error('Failed to create payment data:', error)
         toast.error('Failed to load payment information')
       } finally {
         setLoading(false)
