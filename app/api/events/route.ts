@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (mine && userId) {
+    console.log('[api/events] Fetching events for user:', userId)
     // Try filter by common creator columns, falling back gracefully
     let data, error, count
     // Attempt created_by
@@ -32,19 +33,26 @@ export async function GET(req: NextRequest) {
       .eq('created_by', userId)
       .order('created_at', { ascending: false })
       .range(from, to))
+    
+    console.log('[api/events] created_by query result:', { data: data?.length, error, count })
+    
     if (error && (error as any).code === '42703') {
       // Column not found; try organizer_id
+      console.log('[api/events] created_by column not found, trying organizer_id')
       ;({ data, error, count } = await db
         .from('events')
         .select('*', { count: 'exact' })
         .eq('organizer_id', userId)
         .order('created_at', { ascending: false })
         .range(from, to))
+      
+      console.log('[api/events] organizer_id query result:', { data: data?.length, error, count })
     }
     if (error) {
       console.error('[api/events] mine query error', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
+    console.log('[api/events] Returning events for user:', data?.length || 0)
     return NextResponse.json({ events: data, page, pageSize, total: count })
   }
 

@@ -23,16 +23,21 @@ export default function MyEventsPage() {
             const { data } = await client.auth.getSession()
             const uid = data?.session?.user?.id
             const token = data?.session?.access_token
+            console.log('User session data:', { uid, hasToken: !!token })
             if (uid) headers['x-user-id'] = uid
             if (token) headers['Authorization'] = `Bearer ${token}`
           }
-        } catch {}
+        } catch (error) {
+          console.error('Error getting user session:', error)
+        }
         const res = await fetch('/api/events?mine=1', { headers, cache: 'no-store' as RequestCache })
         const json = await res.json().catch(() => ({}))
+        console.log('API response:', { status: res.status, json })
         if (!res.ok) {
           console.error('Failed to fetch my events:', json)
           setEvents([])
         } else {
+          console.log('Setting events:', json.events?.length || 0)
           setEvents(json.events || [])
         }
       } finally {
