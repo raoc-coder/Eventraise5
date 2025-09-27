@@ -41,14 +41,7 @@ export async function POST(req: NextRequest) {
 
     // Create transaction with Braintree
     const result = await createTransaction(amount, paymentMethodNonce, {
-      submitForSettlement: true,
-      customFields: {
-        event_id: eventId || '',
-        campaign_id: campaignId || '',
-        donor_name: donorInfo?.name || '',
-        donor_email: donorInfo?.email || '',
-        is_anonymous: donorInfo?.isAnonymous ? 'true' : 'false'
-      }
+      submitForSettlement: true
     })
 
     if (!result.success) {
