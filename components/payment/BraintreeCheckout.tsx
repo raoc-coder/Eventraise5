@@ -27,81 +27,92 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
     isAnonymous: false
   })
 
-  useEffect(() => {
-    const initializeBraintree = async () => {
-      try {
-        // Get client token from server
-        const response = await fetch('/api/braintree/client-token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
+      useEffect(() => {
+        const initializeBraintree = async () => {
+          try {
+            console.log('Starting Braintree initialization...')
+            
+            // Get client token from server
+            const response = await fetch('/api/braintree/client-token', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
 
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Failed to get client token')
-        }
+            console.log('Client token response status:', response.status)
 
-        const { clientToken } = await response.json()
-        
-        if (!clientToken) {
-          throw new Error('No client token received from server')
-        }
-
-        // Create Drop-in UI
-        if (!dropinRef.current) {
-          throw new Error('Drop-in container not found')
-        }
-
-        const braintree = await import('braintree-web-drop-in')
-        const dropin = await braintree.default.create({
-          authorization: clientToken,
-          container: dropinRef.current,
-          card: {
-            cardholderName: {
-              required: true
+            if (!response.ok) {
+              const errorData = await response.json()
+              console.error('Client token error:', errorData)
+              throw new Error(errorData.error || 'Failed to get client token')
             }
-          },
-          paypal: {
-            flow: 'vault'
-          },
-          venmo: true,
-          applePay: {
-            displayName: 'EventraiseHUB',
-            paymentRequest: {
-              total: {
-                label: 'Donation',
-                amount: amount.toFixed(2)
+
+            const { clientToken } = await response.json()
+            console.log('Client token received:', clientToken ? 'Yes' : 'No')
+            
+            if (!clientToken) {
+              throw new Error('No client token received from server')
+            }
+
+            // Create Drop-in UI
+            if (!dropinRef.current) {
+              throw new Error('Drop-in container not found')
+            }
+
+            console.log('Importing Braintree Drop-in...')
+            const braintree = await import('braintree-web-drop-in')
+            console.log('Braintree Drop-in imported successfully')
+
+            console.log('Creating Drop-in instance...')
+            const dropin = await braintree.default.create({
+              authorization: clientToken,
+              container: dropinRef.current,
+              card: {
+                cardholderName: {
+                  required: true
+                }
+              },
+              paypal: {
+                flow: 'vault'
+              },
+              venmo: true,
+              applePay: {
+                displayName: 'EventraiseHUB',
+                paymentRequest: {
+                  total: {
+                    label: 'Donation',
+                    amount: amount.toFixed(2)
+                  }
+                }
+              },
+              googlePay: {
+                merchantId: process.env.NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_ID,
+                transactionInfo: {
+                  totalPriceStatus: 'FINAL',
+                  totalPrice: amount.toFixed(2),
+                  currencyCode: 'USD'
+                }
               }
-            }
-          },
-          googlePay: {
-            merchantId: process.env.NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_ID,
-            transactionInfo: {
-              totalPriceStatus: 'FINAL',
-              totalPrice: amount.toFixed(2),
-              currencyCode: 'USD'
-            }
+            })
+
+            console.log('Drop-in instance created successfully')
+            setDropinInstance(dropin)
+          } catch (error) {
+            console.error('Braintree initialization error:', error)
+            toast.error(`Failed to initialize payment system: ${error instanceof Error ? error.message : 'Unknown error'}`)
           }
-        })
+        }
 
-        setDropinInstance(dropin)
-      } catch (error) {
-        console.error('Braintree initialization error:', error)
-        toast.error(`Failed to initialize payment system: ${error instanceof Error ? error.message : 'Unknown error'}`)
-      }
-    }
+        initializeBraintree()
 
-    initializeBraintree()
-
-    // Cleanup
-    return () => {
-      if (dropinInstance) {
-        dropinInstance.teardown()
-      }
-    }
-  }, [amount, dropinInstance])
+        // Cleanup
+        return () => {
+          if (dropinInstance) {
+            dropinInstance.teardown()
+          }
+        }
+      }, [amount, dropinInstance])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
