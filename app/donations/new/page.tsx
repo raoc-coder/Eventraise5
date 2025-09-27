@@ -142,17 +142,22 @@ function DonationForm() {
 
 export default function NewDonationPage() {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 sm:p-6">
-      <Card className="w-full max-w-md event-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-gray-900 text-xl sm:text-2xl">Make a Donation</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="min-h-screen bg-white p-4 sm:p-6">
+      <div className="max-w-2xl mx-auto">
+        <Card className="w-full event-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-gray-900 text-xl sm:text-2xl">Make a Donation</CardTitle>
+          </CardHeader>
+        <CardContent className="min-h-[600px]">
+          <div className="bg-green-200 p-2 mb-4 text-center font-bold">
+            DEBUG: Card content area is working
+          </div>
           <Suspense fallback={<div className="text-gray-600">Loading…</div>}>
             <DonationForm />
           </Suspense>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }
