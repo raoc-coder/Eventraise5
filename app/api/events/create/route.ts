@@ -67,18 +67,25 @@ export async function POST(req: NextRequest) {
     if (error) {
       const msg = (error as any).message || ''
       const code = (error as any).code || ''
+      
+      // Handle RLS policy violations - don't retry, just return the error
+      if (code === '42501' || msg.includes('row-level security policy')) {
+        console.error('[events/create] RLS policy violation:', error)
+        return fail('Permission denied: Unable to create event', 403, { code })
+      }
+      
+      // Handle missing columns - retry without optional fields
       if (
         code === '42703' ||
         code === 'PGRST204' ||
         msg.includes('is_published') ||
-        msg.includes('created_by') ||
         msg.includes('organizer_id') ||
         msg.includes('goal_amount') ||
         msg.includes('is_public')
       ) {
         // Column(s) not present in this schema; retry without optional fields
+        // BUT keep created_by as it's essential for ownership
         delete insertPayload.organizer_id
-        delete insertPayload.created_by
         delete insertPayload.is_published
         delete insertPayload.goal_amount
         delete insertPayload.is_public
