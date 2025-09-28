@@ -6,7 +6,7 @@ import { ok, fail } from '@/lib/api'
 export async function GET(_req: Request, { params }: any) {
   const db = supabaseAdmin || supabase
   if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
-  const { data, error } = await db.from('events').select('*, organizer_id').eq('id', params.id).single()
+  const { data, error } = await db.from('events').select('*, organizer_id, created_by').eq('id', params.id).single()
   if (error) return NextResponse.json({ error: error.message }, { status: 404 })
   return NextResponse.json({ event: data })
 }

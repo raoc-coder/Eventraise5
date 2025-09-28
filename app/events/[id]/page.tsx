@@ -51,6 +51,7 @@ interface Event {
   is_public?: boolean
   image_url?: string
   organizer_id?: string
+  created_by?: string
 }
 
 export default function EventDetailPage() {
@@ -339,7 +340,7 @@ export default function EventDetailPage() {
                     </Button>
                     {editMode ? null : (
                       <>
-                        {user && event && user.id === event.organizer_id && (
+                        {user && event && (user.id === event.organizer_id || user.id === event.created_by) && (
                           <div className="flex gap-2 ml-auto">
                             <Button variant="outline" onClick={()=>setEditMode(true)} className="btn-secondary border-2 hover:bg-gray-50 transition-colors">
                               <Edit className="h-4 w-4 mr-2" />
