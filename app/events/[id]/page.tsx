@@ -50,6 +50,7 @@ interface Event {
   goal_amount?: number
   is_public?: boolean
   image_url?: string
+  organizer_id?: string
 }
 
 export default function EventDetailPage() {
@@ -332,30 +333,13 @@ export default function EventDetailPage() {
                   </div>
                 </div>
                   <div className="flex flex-wrap gap-3 mt-6">
-                    <Button className="btn-primary text-base sm:text-lg px-5 sm:px-6 py-3 font-semibold shadow hover:shadow-md transition-all duration-200" onClick={async()=>{
-                      try {
-                        const res = await fetch('/api/donations/checkout', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ amount: donationAmount, eventId: (params as any)?.id }),
-                        })
-                        const json = await res.json()
-                        if (!res.ok) throw new Error(json.error || 'Failed to start checkout')
-                        window.location.href = json.url
-                      } catch (e:any) {
-                        toast.error(e.message || 'Unable to start checkout')
-                      }
-                    }}>
-                      <Heart className="h-5 w-5 mr-2" />
-                      Donate Now
-                    </Button>
                     <Button onClick={handleShare} variant="outline" className="btn-secondary border-2 hover:bg-blue-50 transition-colors">
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
                     {editMode ? null : (
                       <>
-                        {user && (
+                        {user && event && user.id === event.organizer_id && (
                           <div className="flex gap-2 ml-auto">
                             <Button variant="outline" onClick={()=>setEditMode(true)} className="btn-secondary border-2 hover:bg-gray-50 transition-colors">
                               <Edit className="h-4 w-4 mr-2" />
