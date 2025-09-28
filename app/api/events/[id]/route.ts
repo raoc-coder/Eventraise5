@@ -4,15 +4,19 @@ import { updateEventSchema } from '@/lib/validators'
 import { ok, fail } from '@/lib/api'
 
 export async function GET(_req: Request, { params }: any) {
-  const db = supabaseAdmin || supabase
+  // Use regular client for now
+  const db = supabase
   if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
   
+  // Await params in Next.js 15
+  const { id } = await params
+  
   // Try to select with organizer_id first, fall back to basic select if column doesn't exist
-  let { data, error } = await db.from('events').select('*, organizer_id, created_by').eq('id', params.id).single()
+  let { data, error } = await db.from('events').select('*, organizer_id, created_by').eq('id', id).single()
   
   if (error && (error as any).code === '42703') {
     // Column doesn't exist, try without organizer_id
-    const result = await db.from('events').select('*').eq('id', params.id).single()
+    const result = await db.from('events').select('*').eq('id', id).single()
     data = result.data
     error = result.error
   }
@@ -22,8 +26,13 @@ export async function GET(_req: Request, { params }: any) {
 }
 
 export async function PATCH(req: Request, { params }: any) {
-  const db = supabaseAdmin || supabase
+  // Use regular client for now
+  const db = supabase
   if (!db) return fail('Database unavailable', 500)
+  
+  // Await params in Next.js 15
+  const { id } = await params
+  
   const raw = await req.json().catch(() => ({}))
   const body = updateEventSchema.parse(raw)
   const toIso = (d?: string) => (d ? new Date(`${d}T00:00:00Z`).toISOString() : undefined)
@@ -36,15 +45,20 @@ export async function PATCH(req: Request, { params }: any) {
   if (body.location !== undefined) update.location = body.location
   if (body.goal_amount !== undefined) update.goal_amount = Number(body.goal_amount)
   if (body.is_public !== undefined) update.is_public = body.is_public
-  const { data, error } = await db.from('events').update(update).eq('id', params.id).select('*').single()
+  const { data, error } = await db.from('events').update(update).eq('id', id).select('*').single()
   if (error) return fail(error.message, 500, { code: (error as any).code })
   return ok({ event: data })
 }
 
 export async function DELETE(_req: Request, { params }: any) {
-  const db = supabaseAdmin || supabase
+  // Use regular client for now
+  const db = supabase
   if (!db) return fail('Database unavailable', 500)
-  const { error } = await db.from('events').delete().eq('id', params.id)
+  
+  // Await params in Next.js 15
+  const { id } = await params
+  
+  const { error } = await db.from('events').delete().eq('id', id)
   if (error) return fail(error.message, 500, { code: (error as any).code })
   return ok({ deleted: true })
 }

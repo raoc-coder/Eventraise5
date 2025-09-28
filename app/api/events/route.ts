@@ -4,7 +4,8 @@ export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
-  const db = supabaseAdmin || supabase
+  // Use regular client for now
+  const db = supabase
   if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
   const { searchParams } = new URL(req.url)
   const page = Number(searchParams.get('page') || '1')
