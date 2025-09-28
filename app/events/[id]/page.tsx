@@ -417,21 +417,21 @@ export default function EventDetailPage() {
 
           </div>
 
-          {/* Donation Form */}
+          {/* Simplified Donation Options */}
           <div className="space-y-6">
             <Card className="event-card">
               <CardHeader>
-                <CardTitle className="text-gray-900">Support This Campaign</CardTitle>
+                <CardTitle className="text-gray-900">Make a Donation</CardTitle>
                 <CardDescription className="text-gray-600">
-                  Make a direct donation to support this cause
+                  Choose your donation amount and support this cause
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {/* Quick Donation Amounts */}
                 <div className="mb-6">
-                  <p className="text-gray-700 mb-3 font-medium">Quick Donate</p>
+                  <p className="text-gray-700 mb-3 font-medium">Choose Amount</p>
                   <div className="flex flex-wrap items-center gap-2 mb-4 overflow-hidden">
-                    {[1,10,25].map(v => (
+                    {[1,10,25,50,100].map(v => (
                       <Button 
                         key={v} 
                         variant="outline" 
@@ -450,11 +450,14 @@ export default function EventDetailPage() {
                         value={donationAmount}
                         onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
                         className="input w-20 sm:w-24 min-h-[44px] text-base"
+                        placeholder="$1"
                       />
                     </div>
                   </div>
                 </div>
+                
                 <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus Braintree processing fees).</p>
+                
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="donorName" className="text-gray-700 font-medium">Your Name (Optional)</Label>
@@ -537,33 +540,6 @@ export default function EventDetailPage() {
                     <Heart className="h-4 w-4 mr-2" />
                     Donate ${donationAmount}
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Campaign Info */}
-            <Card className="event-card">
-              <CardHeader>
-                <CardTitle className="text-gray-900">Campaign Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <span className="text-gray-700 font-medium">Campaign Type</span>
-                    <span className="text-blue-600 font-bold">Direct Donation</span>
-                  </div>
-                  {event.goal_amount && (
-                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
-                      <span className="text-gray-700 font-medium">Fundraising Goal</span>
-                      <span className="text-green-600 font-bold">${event.goal_amount.toLocaleString()}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                    <span className="text-gray-700 font-medium">Campaign Period</span>
-                    <span className="text-orange-600 font-bold">
-                      {new Date(event.start_date).toLocaleDateString()} - {new Date(event.end_date).toLocaleDateString()}
-                    </span>
-                  </div>
                 </div>
               </CardContent>
             </Card>
