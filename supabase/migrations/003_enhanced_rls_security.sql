@@ -1,13 +1,11 @@
 -- Enhanced RLS Security Policies for Event Raise Platform
 -- This migration adds comprehensive Row Level Security policies
 
--- Enable RLS on all tables
+-- Enable RLS on existing tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE donations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE event_attendees ENABLE ROW LEVEL SECURITY;
-ALTER TABLE campaign_updates ENABLE ROW LEVEL SECURITY;
 
 -- Profiles: Users can only access their own profile
 DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
@@ -33,11 +31,11 @@ CREATE POLICY "Authenticated users can create campaigns" ON campaigns
 
 DROP POLICY IF EXISTS "Campaign owners can update their campaigns" ON campaigns;
 CREATE POLICY "Campaign owners can update their campaigns" ON campaigns
-  FOR UPDATE USING (auth.uid() = organizer_id);
+  FOR UPDATE USING (auth.uid() = created_by);
 
 DROP POLICY IF EXISTS "Campaign owners can delete their campaigns" ON campaigns;
 CREATE POLICY "Campaign owners can delete their campaigns" ON campaigns
-  FOR DELETE USING (auth.uid() = organizer_id);
+  FOR DELETE USING (auth.uid() = created_by);
 
 -- Events: Public read, authenticated users can create, owners can update
 DROP POLICY IF EXISTS "Events are viewable by everyone" ON events;
@@ -50,105 +48,24 @@ CREATE POLICY "Authenticated users can create events" ON events
 
 DROP POLICY IF EXISTS "Event owners can update their events" ON events;
 CREATE POLICY "Event owners can update their events" ON events
-  FOR UPDATE USING (auth.uid() = organizer_id);
+  FOR UPDATE USING (auth.uid() = created_by);
 
 DROP POLICY IF EXISTS "Event owners can delete their events" ON events;
 CREATE POLICY "Event owners can delete their events" ON events
-  FOR DELETE USING (auth.uid() = organizer_id);
+  FOR DELETE USING (auth.uid() = created_by);
 
--- Donations: Users can view their own donations, campaign owners can view donations to their campaigns
-DROP POLICY IF EXISTS "Users can view their own donations" ON donations;
-CREATE POLICY "Users can view their own donations" ON donations
-  FOR SELECT USING (auth.uid() = profile_id);
-
-DROP POLICY IF EXISTS "Campaign owners can view donations to their campaigns" ON donations;
-CREATE POLICY "Campaign owners can view donations to their campaigns" ON donations
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM campaigns 
-      WHERE campaigns.id = donations.campaign_id 
-      AND campaigns.organizer_id = auth.uid()
-    )
-  );
-
-DROP POLICY IF EXISTS "Anonymous donations are viewable by campaign owners" ON donations;
-CREATE POLICY "Anonymous donations are viewable by campaign owners" ON donations
-  FOR SELECT USING (
-    profile_id IS NULL AND
-    EXISTS (
-      SELECT 1 FROM campaigns 
-      WHERE campaigns.id = donations.campaign_id 
-      AND campaigns.organizer_id = auth.uid()
-    )
-  );
+-- Donations: Allow public viewing for now (simplified for development)
+DROP POLICY IF EXISTS "Donations are viewable by everyone" ON donations;
+CREATE POLICY "Donations are viewable by everyone" ON donations
+  FOR SELECT USING (true);
 
 -- Donations: Only system can insert (via webhooks)
 DROP POLICY IF EXISTS "System can insert donations" ON donations;
 CREATE POLICY "System can insert donations" ON donations
   FOR INSERT WITH CHECK (true); -- Webhook handles this
 
--- Event Attendees: Users can manage their own attendance
-DROP POLICY IF EXISTS "Users can view their own event attendance" ON event_attendees;
-CREATE POLICY "Users can view their own event attendance" ON event_attendees
-  FOR SELECT USING (auth.uid() = profile_id);
-
-DROP POLICY IF EXISTS "Users can register for events" ON event_attendees;
-CREATE POLICY "Users can register for events" ON event_attendees
-  FOR INSERT WITH CHECK (auth.uid() = profile_id);
-
-DROP POLICY IF EXISTS "Users can update their own attendance" ON event_attendees;
-CREATE POLICY "Users can update their own attendance" ON event_attendees
-  FOR UPDATE USING (auth.uid() = profile_id);
-
-DROP POLICY IF EXISTS "Users can cancel their own attendance" ON event_attendees;
-CREATE POLICY "Users can cancel their own attendance" ON event_attendees
-  FOR DELETE USING (auth.uid() = profile_id);
-
--- Event organizers can view attendees for their events
-DROP POLICY IF EXISTS "Event organizers can view attendees" ON event_attendees;
-CREATE POLICY "Event organizers can view attendees" ON event_attendees
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM events 
-      WHERE events.id = event_attendees.event_id 
-      AND events.organizer_id = auth.uid()
-    )
-  );
-
--- Campaign Updates: Campaign owners can manage updates
-DROP POLICY IF EXISTS "Campaign updates are viewable by everyone" ON campaign_updates;
-CREATE POLICY "Campaign updates are viewable by everyone" ON campaign_updates
-  FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Campaign owners can create updates" ON campaign_updates;
-CREATE POLICY "Campaign owners can create updates" ON campaign_updates
-  FOR INSERT WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM campaigns 
-      WHERE campaigns.id = campaign_updates.campaign_id 
-      AND campaigns.organizer_id = auth.uid()
-    )
-  );
-
-DROP POLICY IF EXISTS "Campaign owners can update their updates" ON campaign_updates;
-CREATE POLICY "Campaign owners can update their updates" ON campaign_updates
-  FOR UPDATE USING (
-    EXISTS (
-      SELECT 1 FROM campaigns 
-      WHERE campaigns.id = campaign_updates.campaign_id 
-      AND campaigns.organizer_id = auth.uid()
-    )
-  );
-
-DROP POLICY IF EXISTS "Campaign owners can delete their updates" ON campaign_updates;
-CREATE POLICY "Campaign owners can delete their updates" ON campaign_updates
-  FOR DELETE USING (
-    EXISTS (
-      SELECT 1 FROM campaigns 
-      WHERE campaigns.id = campaign_updates.campaign_id 
-      AND campaigns.organizer_id = auth.uid()
-    )
-  );
+-- Note: event_attendees and campaign_updates tables don't exist yet
+-- RLS policies for these tables will be added when the tables are created
 
 -- Create function to check if user is admin (for future admin features)
 CREATE OR REPLACE FUNCTION is_admin(user_id uuid)

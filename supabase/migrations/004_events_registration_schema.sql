@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS event_sponsors (
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_events_start_date ON events(start_date);
 CREATE INDEX IF NOT EXISTS idx_events_event_type ON events(event_type);
-CREATE INDEX IF NOT EXISTS idx_events_organizer_id ON events(organizer_id);
-CREATE INDEX IF NOT EXISTS idx_events_is_published ON events(is_published);
+-- CREATE INDEX IF NOT EXISTS idx_events_organizer_id ON events(organizer_id); -- organizer_id column doesn't exist
+-- CREATE INDEX IF NOT EXISTS idx_events_is_published ON events(is_published); -- is_published column doesn't exist
 CREATE INDEX IF NOT EXISTS idx_events_is_featured ON events(is_featured);
 
 CREATE INDEX IF NOT EXISTS idx_event_registrations_event_id ON event_registrations(event_id);

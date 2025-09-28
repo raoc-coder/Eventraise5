@@ -61,7 +61,7 @@ CREATE POLICY "Users can view donations for accessible campaigns" ON donations
       SELECT id FROM campaigns 
       WHERE organization_id IN (
         SELECT organization_id FROM profiles 
-        WHERE user_id = auth.uid()
+        WHERE id = auth.uid()
       )
     )
   );

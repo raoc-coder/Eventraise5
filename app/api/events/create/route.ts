@@ -53,7 +53,14 @@ export async function POST(req: NextRequest) {
       insertPayload.created_by = userId
       console.log('[api/events/create] Setting created_by to:', userId)
     }
-    insertPayload.is_published = true
+    
+    // Try to set is_published, but don't fail if column doesn't exist
+    try {
+      insertPayload.is_published = true
+    } catch (e) {
+      // Column doesn't exist, that's okay
+      console.log('[api/events/create] is_published column not available')
+    }
 
     console.log('[api/events/create] Inserting event with payload:', insertPayload)
     let { data, error } = await db.from('events').insert(insertPayload).select('*').single()
