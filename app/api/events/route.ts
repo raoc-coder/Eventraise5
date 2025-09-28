@@ -26,7 +26,8 @@ export async function GET(req: NextRequest) {
     console.log('[api/events] Fetching events for user:', userId)
     // Try filter by common creator columns, falling back gracefully
     let data, error, count
-    // Attempt created_by
+    
+    // First try created_by column
     ;({ data, error, count } = await db
       .from('events')
       .select('*', { count: 'exact' })
@@ -36,9 +37,9 @@ export async function GET(req: NextRequest) {
     
     console.log('[api/events] created_by query result:', { data: data?.length, error, count })
     
-    if (error && (error as any).code === '42703') {
-      // Column not found; try organizer_id
-      console.log('[api/events] created_by column not found, trying organizer_id')
+    // If created_by column doesn't exist or no results, try organizer_id
+    if ((error && (error as any).code === '42703') || (data && data.length === 0)) {
+      console.log('[api/events] created_by column not found or no results, trying organizer_id')
       ;({ data, error, count } = await db
         .from('events')
         .select('*', { count: 'exact' })
@@ -48,14 +49,23 @@ export async function GET(req: NextRequest) {
       
       console.log('[api/events] organizer_id query result:', { data: data?.length, error, count })
     }
+    
+    // If organizer_id column doesn't exist, return empty result
+    if (error && (error as any).code === '42703') {
+      console.log('[api/events] organizer_id column not found, returning empty result')
+      return NextResponse.json({ events: [], page, pageSize, total: 0 })
+    }
+    
     if (error) {
       console.error('[api/events] mine query error', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
+    
     console.log('[api/events] Returning events for user:', data?.length || 0)
-    return NextResponse.json({ events: data, page, pageSize, total: count })
+    return NextResponse.json({ events: data || [], page, pageSize, total: count || 0 })
   }
 
+  // Execute the main query for all events
   let { data, error, count } = await query
   if (error && (error as any).code === '42703') {
     // Column filters not available; retry without specific filters

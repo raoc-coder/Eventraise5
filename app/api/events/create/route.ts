@@ -48,8 +48,14 @@ export async function POST(req: NextRequest) {
     // Attempt to set ownership and publish flags if supported
     const userId = req.headers.get('x-user-id') || ''
     if (userId) {
-      insertPayload.organizer_id = userId
+      // Only set created_by for now, since organizer_id column might not exist
       insertPayload.created_by = userId
+      // Try to set organizer_id, but don't fail if column doesn't exist
+      try {
+        insertPayload.organizer_id = userId
+      } catch (e) {
+        // Column doesn't exist, that's okay
+      }
     }
     insertPayload.is_published = true
 

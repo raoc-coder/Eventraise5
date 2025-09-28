@@ -6,7 +6,17 @@ import { ok, fail } from '@/lib/api'
 export async function GET(_req: Request, { params }: any) {
   const db = supabaseAdmin || supabase
   if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
-  const { data, error } = await db.from('events').select('*, organizer_id, created_by').eq('id', params.id).single()
+  
+  // Try to select with organizer_id first, fall back to basic select if column doesn't exist
+  let { data, error } = await db.from('events').select('*, organizer_id, created_by').eq('id', params.id).single()
+  
+  if (error && (error as any).code === '42703') {
+    // Column doesn't exist, try without organizer_id
+    const result = await db.from('events').select('*').eq('id', params.id).single()
+    data = result.data
+    error = result.error
+  }
+  
   if (error) return NextResponse.json({ error: error.message }, { status: 404 })
   return NextResponse.json({ event: data })
 }
