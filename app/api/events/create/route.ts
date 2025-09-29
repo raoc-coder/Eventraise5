@@ -3,6 +3,8 @@ import { ok, fail } from '@/lib/api'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { createEventSchema } from '@/lib/validators'
 import { getClientKeyFromHeaders, rateLimit } from '@/lib/rate-limit'
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 
 function toIsoDate(dateStr: string) {
   // Expect YYYY-MM-DD; store start of day UTC
@@ -11,8 +13,9 @@ function toIsoDate(dateStr: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    // Use regular client for now, will handle RLS through proper authentication
-    const db = supabase
+    // Create authenticated Supabase client
+    const cookieStore = cookies()
+    const db = createRouteHandlerClient({ cookies: () => cookieStore })
     if (!db) return fail('Database unavailable', 500)
 
     const clientKey = getClientKeyFromHeaders(req.headers as any)
@@ -46,13 +49,15 @@ export async function POST(req: NextRequest) {
       insertPayload.goal_amount = Number(goal_amount)
     }
 
-    // Attempt to set ownership and publish flags if supported
-    const userId = req.headers.get('x-user-id') || ''
-    if (userId) {
-      // Set created_by (this column exists)
-      insertPayload.created_by = userId
-      console.log('[api/events/create] Setting created_by to:', userId)
+    // Get the authenticated user
+    const { data: { user }, error: authError } = await db.auth.getUser()
+    if (authError || !user) {
+      return fail('Authentication required', 401)
     }
+
+    // Set created_by to the authenticated user's ID
+    insertPayload.created_by = user.id
+    console.log('[api/events/create] Setting created_by to:', user.id)
     
     // Try to set is_published, but don't fail if column doesn't exist
     try {
