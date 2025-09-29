@@ -82,7 +82,6 @@ export async function POST(req: NextRequest) {
     let { data, error } = await supabaseAdmin
       .from('donation_requests')
       .insert(baseInsert)
-        user_id: userId,
       .select()
       .single()
 
