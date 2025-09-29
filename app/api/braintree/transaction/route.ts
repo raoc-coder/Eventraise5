@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     const netCents = amountCents - feeCents
 
     // Store donation in database
-    const { data, error } = await supabaseAdmin
+    let { data, error } = await supabaseAdmin
       .from('donation_requests')
       .insert({
         user_id: userId,
@@ -82,6 +82,34 @@ export async function POST(req: NextRequest) {
       })
       .select()
       .single()
+
+    if (error) {
+      const code = (error as any).code || ''
+      const msg = (error as any).message || ''
+      if (code === 'PGRST204' || code === '42703' || msg.includes('fee_cents') || msg.includes('net_cents') || msg.includes('settlement_status')) {
+        // Retry without new columns for older schemas
+        const payload: any = {
+          user_id: userId,
+          amount_cents: amountCents,
+          currency: 'usd',
+          status: 'completed',
+          payment_intent_id: transaction.id,
+          donor_name: donorInfo?.name,
+          donor_email: donorInfo?.email,
+          message: donorInfo?.message,
+          event_id: eventId,
+          campaign_id: campaignId,
+          transaction_id: transaction.id,
+          payment_method: paymentMethodType || 'card',
+          braintree_transaction_id: transaction.id,
+        }
+        ;({ data, error } = await supabaseAdmin
+          .from('donation_requests')
+          .insert(payload)
+          .select()
+          .single())
+      }
+    }
 
     if (error) {
       console.error('Failed to store donation:', error)

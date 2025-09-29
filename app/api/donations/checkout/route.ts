@@ -53,6 +53,20 @@ export async function POST(req: NextRequest) {
           .select()
           .single())
       }
+      if (drErr) {
+        // Retry without new columns (fee/net/settlement) for older schemas
+        const colErr = (drErr as any).message || ''
+        if (code === 'PGRST204' || code === '42703' || colErr.includes('fee_cents') || colErr.includes('net_cents') || colErr.includes('settlement_status')) {
+          delete (baseInsert as any).fee_cents
+          delete (baseInsert as any).net_cents
+          delete (baseInsert as any).settlement_status
+          ;({ data: dr, error: drErr } = await supabaseAdmin
+            .from('donation_requests')
+            .insert(baseInsert)
+            .select()
+            .single())
+        }
+      }
     }
     if (drErr) {
       console.error('[donations/checkout] Persist error', drErr)
