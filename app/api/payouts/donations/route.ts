@@ -1,8 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 
 export async function GET(req: NextRequest) {
   try {
+    // Check admin authentication
+    const cookieStore = cookies()
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+    
+    // Check if user is admin
+    const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
+    }
+    
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
     const { searchParams } = new URL(req.url)
     const eventId = searchParams.get('eventId')

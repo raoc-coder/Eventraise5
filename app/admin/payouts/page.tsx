@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Navigation } from '@/components/layout/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -22,6 +24,9 @@ interface Donation {
 }
 
 export default function AdminPayoutsPage() {
+  const router = useRouter()
+  const supabase = createClientComponentClient()
+  const [user, setUser] = useState<any>(null)
   const [eventId, setEventId] = useState('')
   const [campaignId, setCampaignId] = useState('')
   const [settlement, setSettlement] = useState<'all'|'pending'|'settled'|'failed'>('all')
@@ -60,7 +65,24 @@ export default function AdminPayoutsPage() {
   }
 
   useEffect(() => {
-    fetchData()
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/auth/login')
+        return
+      }
+      
+      const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
+      if (!isAdmin) {
+        router.push('/dashboard')
+        return
+      }
+      
+      setUser(user)
+      fetchData()
+    }
+    
+    checkAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -89,6 +111,17 @@ export default function AdminPayoutsPage() {
     link.download = 'payouts.csv'
     link.click()
     URL.revokeObjectURL(url)
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">Loading...</div>
+        </div>
+      </div>
+    )
   }
 
   return (
