@@ -64,14 +64,13 @@ export async function POST(req: NextRequest) {
       user_id: userId,
       amount_cents: amountCents,
       currency: 'usd',
-      status: 'completed',
+      status: 'succeeded',
       payment_intent_id: transaction.id,
       donor_name: donorInfo?.name,
       donor_email: donorInfo?.email,
       message: donorInfo?.message,
       event_id: eventId,
       campaign_id: campaignId,
-      transaction_id: transaction.id,
       payment_method: paymentMethodType || 'card',
       braintree_transaction_id: transaction.id,
       fee_cents: feeCents,
@@ -104,6 +103,23 @@ export async function POST(req: NextRequest) {
         ;({ data, error } = await supabaseAdmin
           .from('donation_requests')
           .insert(baseInsert)
+          .select()
+          .single())
+      }
+      // Final minimal fallback: insert only essential fields
+      if (error) {
+        const minimal: any = {
+          user_id: userId,
+          amount_cents: amountCents,
+          currency: 'usd',
+          status: 'succeeded',
+          donor_name: donorInfo?.name,
+          donor_email: donorInfo?.email,
+          braintree_transaction_id: transaction.id,
+        }
+        ;({ data, error } = await supabaseAdmin
+          .from('donation_requests')
+          .insert(minimal)
           .select()
           .single())
       }
