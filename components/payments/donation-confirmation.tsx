@@ -217,7 +217,7 @@ export function DonationConfirmation({
       {/* Action Buttons */}
       <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
         <Link href="/events">
-          <Button className="btn-primary">
+          <Button>
             Browse More Campaigns
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>

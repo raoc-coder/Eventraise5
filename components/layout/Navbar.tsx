@@ -105,7 +105,7 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button className="btn-primary">Get Started</Button>
+                  <Button>Get Started</Button>
                 </Link>
               </div>
             )}

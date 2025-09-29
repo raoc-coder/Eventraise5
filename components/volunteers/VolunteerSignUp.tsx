@@ -298,7 +298,7 @@ export default function VolunteerSignUp({
               </div>
             </div>
 
-            <Button type="submit" disabled={loading} className="w-full btn-primary">
+            <Button type="submit" disabled={loading} className="w-full">
               <Users className="h-4 w-4 mr-2" />
               {loading ? 'Signing Up...' : 'Sign Up as Volunteer'}
             </Button>
@@ -315,7 +315,7 @@ export default function VolunteerSignUp({
               Thank you for volunteering! You&apos;ll receive a confirmation email with event details.
             </p>
             <div className="space-y-2">
-              <Button onClick={resetForm} className="btn-primary">
+              <Button onClick={resetForm}>
                 Sign Up for Another Opportunity
               </Button>
               <Button variant="outline" className="w-full text-cyan-400 hover:bg-cyan-500/20">

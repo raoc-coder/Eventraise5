@@ -296,13 +296,13 @@ export default function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link href="/auth/register" className="w-full sm:w-auto">
-              <Button size="mobile" className="btn-primary">
+              <Button size="mobile">
                 Start Your First Campaign
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
             <Link href="/events" className="w-full sm:w-auto">
-              <Button variant="outline" size="mobile" className="btn-secondary">
+              <Button variant="outline" size="mobile">
                 Browse Campaigns
               </Button>
             </Link>

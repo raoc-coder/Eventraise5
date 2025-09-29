@@ -241,7 +241,7 @@ export default function EventDetailPage() {
               <p className="text-green-700 text-sm">Share the link below to start accepting donations.</p>
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleShare} variant="outline" className="btn-secondary border-2">Share</Button>
+              <Button onClick={handleShare} variant="outline" className="border-2">Share</Button>
               <Button onClick={()=> setShowCreatedBanner(false)} variant="ghost">Dismiss</Button>
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function EventDetailPage() {
             <div className="flex gap-2">
               <Button variant="outline" onClick={handleShare} className="border-green-600 text-green-700 hover:bg-green-50">Share</Button>
               <Link href="/events/mine">
-                <Button className="btn-primary">My Campaigns</Button>
+                <Button>My Campaigns</Button>
               </Link>
               <Button variant="outline" onClick={()=>setShowCreatedBanner(false)} className="border-green-600 text-green-700 hover:bg-green-50">Dismiss</Button>
             </div>

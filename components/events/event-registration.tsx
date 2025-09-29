@@ -389,7 +389,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
             <Button
               type="submit"
               disabled={isLoading || isSoldOut || !isRegistrationOpen}
-              className="btn-primary flex-1"
+              className="flex-1"
             >
               {isLoading ? (
                 <>

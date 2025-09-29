@@ -156,7 +156,7 @@ function EmailConfirmContent() {
               <p className="text-green-400 font-medium">{message}</p>
               <p className="text-gray-300 text-sm">Redirecting to dashboard...</p>
               <Link href="/auth/login">
-                <Button className="btn-primary">Sign In</Button>
+                <Button>Sign In</Button>
               </Link>
             </div>
           )}
@@ -167,12 +167,12 @@ function EmailConfirmContent() {
               <p className="text-red-400 font-medium">{message}</p>
               <div className="flex flex-col space-y-2">
                 <Link href="/auth/register">
-                  <Button variant="outline" className="btn-secondary w-full">
+                  <Button variant="outline" className="w-full">
                     Try Again
                   </Button>
                 </Link>
                 <Link href="/auth/login">
-                  <Button className="btn-primary w-full">
+                  <Button className="w-full">
                     Sign In
                   </Button>
                 </Link>

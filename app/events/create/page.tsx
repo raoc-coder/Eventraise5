@@ -373,8 +373,8 @@ export default function CreateEventPage() {
                 </div>
 
                 <div className="flex gap-2 pt-2">
-                  <Button className="btn-primary" disabled>Donate</Button>
-                  <Button variant="outline" className="btn-secondary" disabled>Share</Button>
+                  <Button disabled>Donate</Button>
+                  <Button variant="outline" disabled>Share</Button>
                 </div>
               </div>
             </CardContent>

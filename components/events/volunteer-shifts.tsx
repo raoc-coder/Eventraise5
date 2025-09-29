@@ -563,9 +563,9 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                   className={`w-full ${
                     isFull 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : isActive 
-                        ? 'btn-primary' 
-                        : 'bg-gray-400 cursor-not-allowed'
+                      : !isActive 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : ''
                   }`}
                 >
                   {isFull ? (

@@ -168,43 +168,6 @@
 }
 
 @layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
-  }
-  
-  .btn-primary {
-    background: var(--gradient-hub);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(29, 78, 216, 0.2);
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(29, 78, 216, 0.3);
-  }
-  
-  .btn-secondary {
-    background: white;
-    color: var(--hub-blue);
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    border: 2px solid var(--hub-blue);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .btn-secondary:hover {
-    background: var(--hub-blue);
-    color: white;
-  }
-  
   .btn-outline {
     @apply border border-gray-300 hover:bg-gray-50 hover:text-gray-900;
   }
