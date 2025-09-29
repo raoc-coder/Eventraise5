@@ -8,50 +8,49 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
     }
 
-    const body = await req.text()
-    const signature = req.headers.get('bt-signature')
-    const payload = req.headers.get('bt-payload')
+    // Braintree sends application/x-www-form-urlencoded body with bt_signature & bt_payload
+    const raw = await req.text()
+    const params = new URLSearchParams(raw)
+    const signature = params.get('bt_signature')
+    const payload = params.get('bt_payload')
 
     if (!signature || !payload) {
-      return NextResponse.json({ error: 'Missing webhook signature' }, { status: 400 })
+      return NextResponse.json({ error: 'Missing bt_signature/bt_payload' }, { status: 400 })
     }
 
-    // Verify webhook signature with Braintree
     const gateway = await getBraintreeGateway()
-    const webhookNotification = gateway.webhookNotification.parse(signature, payload)
+    const webhookNotification = await (gateway as any).webhookNotification.parse(signature, payload)
 
-    console.log('Braintree webhook received:', {
-      kind: webhookNotification.kind,
-      timestamp: webhookNotification.timestamp
+    console.log('[webhooks/braintree] received', {
+      kind: webhookNotification?.kind,
+      timestamp: webhookNotification?.timestamp
     })
 
     switch (webhookNotification.kind) {
       case 'transaction_settled':
         await handleTransactionSettled(webhookNotification)
         break
-      
+
       case 'transaction_settlement_declined':
         await handleTransactionDeclined(webhookNotification)
         break
-      
+
       case 'subscription_charged_successfully':
         await handleSubscriptionCharged(webhookNotification)
         break
-      
+
       case 'subscription_charged_unsuccessfully':
         await handleSubscriptionFailed(webhookNotification)
         break
-      
+
       default:
-        console.log('Unhandled webhook type:', webhookNotification.kind)
+        console.log('[webhooks/braintree] unhandled kind', webhookNotification.kind)
     }
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error('Webhook processing error:', error)
-    return NextResponse.json({ 
-      error: 'Webhook processing failed' 
-    }, { status: 500 })
+    console.error('[webhooks/braintree] error', error)
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
   }
 }
 
@@ -65,15 +64,32 @@ async function handleTransactionSettled(notification: any) {
     const transaction = notification.transaction
     
     // Update donation status in database
-    const { error } = await supabaseAdmin
+    // Try update by braintree_transaction_id; if none updated, attempt by payment_intent_id (legacy)
+    let { error } = await supabaseAdmin
       .from('donation_requests')
       .update({ 
-        status: 'completed',
+        status: 'succeeded',
         settlement_status: 'settled',
         braintree_transaction_id: transaction.id,
         updated_at: new Date().toISOString()
       })
       .eq('braintree_transaction_id', transaction.id)
+
+    if (error) {
+      console.error('[webhooks/braintree] update error by bt id', error)
+    } else {
+      // If no rows updated, try payment_intent_id
+      const { error: err2 } = await supabaseAdmin
+        .from('donation_requests')
+        .update({ 
+          status: 'succeeded',
+          settlement_status: 'settled',
+          braintree_transaction_id: transaction.id,
+          updated_at: new Date().toISOString()
+        })
+        .eq('payment_intent_id', transaction.id)
+      if (err2) console.error('[webhooks/braintree] update error by payment_intent_id', err2)
+    }
 
     if (error) {
       console.error('Failed to update donation status:', error)
