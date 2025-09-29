@@ -12,7 +12,6 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       services: {
         database: health.database ? 'healthy' : 'unhealthy',
-        stripe: health.stripe ? 'healthy' : 'unhealthy',
         auth: health.auth ? 'healthy' : 'unhealthy',
       },
       version: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
