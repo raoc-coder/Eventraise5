@@ -66,32 +66,25 @@ export default function AdminPayoutsPage() {
 
   useEffect(() => {
     const checkAuth = async () => {
+      console.log('🔍 Starting admin payouts page auth check...')
+      
       const { data: { user } } = await supabase.auth.getUser()
+      console.log('👤 User from auth:', user)
+      
       if (!user) {
+        console.log('❌ No user found, redirecting to login')
+        // Store the intended destination for after login
+        localStorage.setItem('redirectAfterLogin', '/admin/payouts')
         router.push('/auth/login')
         return
       }
       
-      // Debug: Log user object to see what we have
-      console.log('User object:', user)
-      console.log('User metadata:', user.user_metadata)
-      console.log('App metadata:', user.app_metadata)
+      console.log('✅ User found:', user.email)
+      console.log('📊 User metadata:', user.user_metadata)
+      console.log('📊 App metadata:', user.app_metadata)
       
       // TEMPORARY: Skip admin check for testing
-      console.log('Skipping admin check for testing')
-      
-      // const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
-      // console.log('Is admin:', isAdmin)
-      
-      // // Temporary bypass for testing - remove this in production
-      // const isTestAdmin = user.email === 'admin@eventraise.com' || user.email?.includes('admin')
-      // console.log('Is test admin:', isTestAdmin)
-      
-      // if (!isAdmin && !isTestAdmin) {
-      //   console.log('Not admin, redirecting to dashboard')
-      //   router.push('/dashboard')
-      //   return
-      // }
+      console.log('🚧 TEMPORARY: Skipping admin check for testing')
       
       setUser(user)
       fetchData()

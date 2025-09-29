@@ -78,7 +78,14 @@ export default function LoginPage() {
         }
       } else {
         toast.success('Login successful!')
-        router.push('/dashboard')
+        // Check if there's a stored redirect destination
+        const redirectTo = localStorage.getItem('redirectAfterLogin')
+        if (redirectTo) {
+          localStorage.removeItem('redirectAfterLogin')
+          router.push(redirectTo)
+        } else {
+          router.push('/dashboard')
+        }
       }
     } catch (error) {
       toast.error('An unexpected error occurred')
