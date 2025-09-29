@@ -47,7 +47,11 @@ export default function AdminPayoutsPage() {
       if (endDate) params.set('endDate', endDate)
 
       // Get the current session for authentication
+      console.log('🔍 [frontend] Getting session...')
       const { data: { session } } = await supabase.auth.getSession()
+      console.log('📊 [frontend] Session:', session ? 'Present' : 'Missing')
+      console.log('🎫 [frontend] Access token:', session?.access_token ? `${session.access_token.substring(0, 20)}...` : 'Missing')
+      
       if (!session) {
         throw new Error('No active session')
       }
@@ -56,6 +60,11 @@ export default function AdminPayoutsPage() {
         'Authorization': `Bearer ${session.access_token}`,
         'Content-Type': 'application/json'
       }
+      
+      console.log('📤 [frontend] Making API calls with headers:', {
+        hasAuth: !!headers.Authorization,
+        tokenLength: headers.Authorization?.length || 0
+      })
 
       const [donRes, sumRes] = await Promise.all([
         fetch(`/api/payouts/donations?${params.toString()}`, { headers }),
@@ -116,6 +125,15 @@ export default function AdminPayoutsPage() {
       console.log('🚧 TEMPORARY: Skipping admin check for testing')
       
       setUser(user)
+      
+      // Test session retrieval immediately
+      console.log('🧪 [test] Testing session retrieval...')
+      const { data: { session } } = await supabase.auth.getSession()
+      console.log('🧪 [test] Session result:', session ? 'Found' : 'Missing')
+      if (session) {
+        console.log('🧪 [test] Access token length:', session.access_token?.length || 0)
+      }
+      
       fetchData()
     }
     
