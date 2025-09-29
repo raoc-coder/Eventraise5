@@ -60,52 +60,51 @@ export async function POST(req: NextRequest) {
     const netCents = amountCents - feeCents
 
     // Store donation in database
+    const baseInsert: any = {
+      user_id: userId,
+      amount_cents: amountCents,
+      currency: 'usd',
+      status: 'completed',
+      payment_intent_id: transaction.id,
+      donor_name: donorInfo?.name,
+      donor_email: donorInfo?.email,
+      message: donorInfo?.message,
+      event_id: eventId,
+      campaign_id: campaignId,
+      transaction_id: transaction.id,
+      payment_method: paymentMethodType || 'card',
+      braintree_transaction_id: transaction.id,
+      fee_cents: feeCents,
+      net_cents: netCents,
+      settlement_status: 'pending'
+    }
+
     let { data, error } = await supabaseAdmin
       .from('donation_requests')
-      .insert({
+      .insert(baseInsert)
         user_id: userId,
-        amount_cents: amountCents,
-        currency: 'usd',
-        status: 'completed',
-        payment_intent_id: transaction.id,
-        donor_name: donorInfo?.name,
-        donor_email: donorInfo?.email,
-        message: donorInfo?.message,
-        event_id: eventId,
-        campaign_id: campaignId,
-        transaction_id: transaction.id,
-        payment_method: paymentMethodType || 'card',
-        braintree_transaction_id: transaction.id,
-        fee_cents: feeCents,
-        net_cents: netCents,
-        settlement_status: 'pending'
-      })
       .select()
       .single()
 
     if (error) {
       const code = (error as any).code || ''
       const msg = (error as any).message || ''
-      if (code === 'PGRST204' || code === '42703' || msg.includes('fee_cents') || msg.includes('net_cents') || msg.includes('settlement_status')) {
-        // Retry without new columns for older schemas
-        const payload: any = {
-          user_id: userId,
-          amount_cents: amountCents,
-          currency: 'usd',
-          status: 'completed',
-          payment_intent_id: transaction.id,
-          donor_name: donorInfo?.name,
-          donor_email: donorInfo?.email,
-          message: donorInfo?.message,
-          event_id: eventId,
-          campaign_id: campaignId,
-          transaction_id: transaction.id,
-          payment_method: paymentMethodType || 'card',
-          braintree_transaction_id: transaction.id,
-        }
+      if (code === 'PGRST204' || code === '42703' || msg.includes('event_id')) {
+        delete baseInsert.event_id
         ;({ data, error } = await supabaseAdmin
           .from('donation_requests')
-          .insert(payload)
+          .insert(baseInsert)
+          .select()
+          .single())
+      }
+      if (error && (code === 'PGRST204' || code === '42703' || msg.includes('fee_cents') || msg.includes('net_cents') || msg.includes('settlement_status'))) {
+        // Retry without new columns for older schemas
+        delete baseInsert.fee_cents
+        delete baseInsert.net_cents
+        delete baseInsert.settlement_status
+        ;({ data, error } = await supabaseAdmin
+          .from('donation_requests')
+          .insert(baseInsert)
           .select()
           .single())
       }
