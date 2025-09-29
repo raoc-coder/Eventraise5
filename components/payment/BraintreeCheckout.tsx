@@ -73,27 +73,10 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
                   required: true
                 }
               },
-              paypal: {
-                flow: 'vault'
-              },
-              venmo: true,
-              applePay: {
-                displayName: 'EventraiseHUB',
-                paymentRequest: {
-                  total: {
-                    label: 'Donation',
-                    amount: amount.toFixed(2)
-                  }
-                }
-              },
-              googlePay: {
-                merchantId: process.env.NEXT_PUBLIC_GOOGLE_PAY_MERCHANT_ID,
-                transactionInfo: {
-                  totalPriceStatus: 'FINAL',
-                  totalPrice: amount.toFixed(2),
-                  currencyCode: 'USD'
-                }
-              }
+              paypal: false,
+              venmo: false,
+              applePay: false,
+              googlePay: false
             })
 
             console.log('Drop-in instance created successfully')
