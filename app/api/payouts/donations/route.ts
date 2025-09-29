@@ -6,27 +6,36 @@ import { cookies } from 'next/headers'
 
 export async function GET(req: NextRequest) {
   try {
+    console.log('🔍 [payouts/donations] Starting authentication check...')
+    
     // Check admin authentication - try both cookie and header auth
     let user = null
     
     // Try cookie-based auth first
     try {
+      console.log('🍪 [payouts/donations] Trying cookie auth...')
       const cookieStore = cookies()
       const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
       const { data: { user: cookieUser } } = await supabase.auth.getUser()
       user = cookieUser
+      console.log('✅ [payouts/donations] Cookie auth successful:', !!user)
     } catch (e) {
+      console.log('❌ [payouts/donations] Cookie auth failed:', e instanceof Error ? e.message : String(e))
       // If cookie auth fails, try header auth
       const authHeader = req.headers.get('authorization')
+      console.log('🔑 [payouts/donations] Auth header:', authHeader ? 'Present' : 'Missing')
       if (authHeader && authHeader.startsWith('Bearer ')) {
         const token = authHeader.substring(7)
+        console.log('🎫 [payouts/donations] Token length:', token.length)
         const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
         const { data: { user: headerUser } } = await supabase.auth.getUser(token)
         user = headerUser
+        console.log('✅ [payouts/donations] Header auth successful:', !!user)
       }
     }
     
     if (!user) {
+      console.log('❌ [payouts/donations] No user found, returning 401')
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
     

@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
       user = cookieUser
       console.log('✅ [payouts/summary] Cookie auth successful:', !!user)
     } catch (e) {
-      console.log('❌ [payouts/summary] Cookie auth failed:', e.message)
+      console.log('❌ [payouts/summary] Cookie auth failed:', e instanceof Error ? e.message : String(e))
       // If cookie auth fails, try header auth
       const authHeader = req.headers.get('authorization')
       console.log('🔑 [payouts/summary] Auth header:', authHeader ? 'Present' : 'Missing')
