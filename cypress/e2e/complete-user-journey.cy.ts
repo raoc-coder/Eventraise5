@@ -34,8 +34,8 @@ describe('Complete User Journey - EventraiseHUB', () => {
     cy.get('button[type="submit"]').click()
     cy.wait('@createCheckout')
     
-    // Should redirect to Stripe Checkout
-    cy.url().should('include', 'checkout.stripe.com')
+    // Should redirect to Braintree payment page
+    cy.url().should('include', '/payment/braintree')
   })
 
   it('should complete event registration flow', () => {

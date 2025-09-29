@@ -71,7 +71,7 @@ Sentry.init({
         
         // Track critical endpoints
         if (event.transaction.includes('/api/create-checkout') ||
-            event.transaction.includes('/api/webhooks/stripe') ||
+            false ||
             event.transaction.includes('/api/events/register')) {
           event.tags = {
             ...event.tags,

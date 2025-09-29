@@ -21,7 +21,7 @@ export class MonitoringService {
     campaignId: string
     amount: number
     donorEmail?: string
-    stripeSessionId?: string
+    processor?: 'braintree'
   }) {
     Sentry.withScope((scope) => {
       scope.setLevel('error')
@@ -146,16 +146,7 @@ export class HealthCheck {
     }
   }
 
-  static async checkStripe(): Promise<boolean> {
-    try {
-      const { stripe } = await import('@/lib/stripe')
-      await stripe.prices.list({ limit: 1 })
-      return true
-    } catch (error) {
-      MonitoringService.trackCriticalError(error as Error, { component: 'stripe' })
-      return false
-    }
-  }
+  // Stripe check removed (migrated to Braintree)
 
   static async checkSupabaseAuth(): Promise<boolean> {
     try {
@@ -173,26 +164,23 @@ export class HealthCheck {
 
   static async runFullHealthCheck(): Promise<{
     database: boolean
-    stripe: boolean
     auth: boolean
     overall: boolean
   }> {
-    const [database, stripe, auth] = await Promise.all([
+    const [database, auth] = await Promise.all([
       this.checkDatabase(),
-      this.checkStripe(),
       this.checkSupabaseAuth(),
     ])
 
-    const overall = database && stripe && auth
+    const overall = database && auth
 
     if (!overall) {
       MonitoringService.alertCriticalEvent('health_check_failed', {
         database,
-        stripe,
         auth,
       })
     }
 
-    return { database, stripe, auth, overall }
+    return { database, auth, overall }
   }
 }

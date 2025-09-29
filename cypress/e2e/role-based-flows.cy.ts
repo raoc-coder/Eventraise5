@@ -27,7 +27,7 @@ describe('Role-Based User Flows', () => {
       cy.get('input[placeholder="Enter your email"]').type('parent@example.com')
       cy.get('button[type="submit"]').click()
       
-      cy.url().should('include', 'checkout.stripe.com')
+      cy.url().should('include', '/payment/braintree')
     })
 
     it('can view their dashboard', () => {
@@ -184,7 +184,7 @@ describe('Role-Based User Flows', () => {
       cy.get('input[placeholder="Enter your email"]').type('donor@example.com')
       cy.get('button[type="submit"]').click()
       
-      cy.url().should('include', 'checkout.stripe.com')
+      cy.url().should('include', '/payment/braintree')
     })
   })
 

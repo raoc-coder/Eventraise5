@@ -19,36 +19,7 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-// Mock Stripe for E2E tests
-Cypress.on('window:before:load', (win) => {
-  // Mock Stripe
-  win.Stripe = () => ({
-    redirectToCheckout: cy.stub().resolves(),
-    elements: () => ({
-      create: cy.stub().returns({
-        mount: cy.stub(),
-        on: cy.stub(),
-        confirmPayment: cy.stub().resolves(),
-      }),
-    }),
-  })
-})
-
-// Custom command for mocking Stripe
-Cypress.Commands.add('mockStripe', () => {
-  cy.window().then((win) => {
-    win.Stripe = () => ({
-      redirectToCheckout: cy.stub().resolves(),
-      elements: () => ({
-        create: cy.stub().returns({
-          mount: cy.stub(),
-          on: cy.stub(),
-          confirmPayment: cy.stub().resolves(),
-        }),
-      }),
-    })
-  })
-})
+// Stripe mocks removed (migrated to Braintree)
 
 // Custom command for mocking Supabase
 Cypress.Commands.add('mockSupabase', () => {
@@ -75,13 +46,7 @@ Cypress.Commands.add('mockSupabase', () => {
 // Global test configuration
 beforeEach(() => {
   // Intercept API calls
-  cy.intercept('POST', '/api/create-checkout', {
-    statusCode: 200,
-    body: {
-      sessionId: 'cs_test_123',
-      sessionUrl: 'https://checkout.stripe.com/test',
-    },
-  }).as('createCheckout')
+  // Replace Stripe create-checkout intercept with Braintree donation checkout if needed
 
   cy.intercept('GET', '/api/campaigns/*', {
     statusCode: 200,
@@ -99,8 +64,5 @@ beforeEach(() => {
     },
   }).as('getCampaign')
 
-  cy.intercept('POST', '/api/webhooks/stripe', {
-    statusCode: 200,
-    body: { received: true },
-  }).as('stripeWebhook')
+  // Remove Stripe webhook intercept
 })

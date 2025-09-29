@@ -1,6 +1,5 @@
 describe('Donation Checkout Flow', () => {
   beforeEach(() => {
-    cy.mockStripe()
     cy.mockSupabase()
     cy.visit('/campaigns/test-campaign-id')
   })
@@ -29,8 +28,8 @@ describe('Donation Checkout Flow', () => {
       })
     })
     
-    // Should redirect to Stripe checkout
-    cy.url().should('include', 'checkout.stripe.com')
+    // Should redirect to Braintree payment page
+    cy.url().should('include', '/payment/braintree')
   })
 
   it('completes donation flow with custom amount', () => {
@@ -84,7 +83,7 @@ describe('Donation Checkout Flow', () => {
       statusCode: 200,
       body: {
         sessionId: 'cs_test_123',
-        sessionUrl: 'https://checkout.stripe.com/test',
+        sessionUrl: '/payment/braintree',
       },
       delay: 1000,
     }).as('createCheckoutDelayed')
