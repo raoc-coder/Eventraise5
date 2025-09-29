@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@supabase/supabase-js'
 import { Navigation } from '@/components/layout/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -25,7 +25,7 @@ interface Donation {
 
 export default function AdminPayoutsPage() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const [supabase, setSupabase] = useState<any>(null)
   const [user, setUser] = useState<any>(null)
   const [eventId, setEventId] = useState('')
   const [campaignId, setCampaignId] = useState('')
@@ -65,8 +65,26 @@ export default function AdminPayoutsPage() {
   }
 
   useEffect(() => {
+    // Initialize Supabase client
+    if (typeof window !== 'undefined') {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      
+      if (supabaseUrl && supabaseAnonKey) {
+        const client = createClient(supabaseUrl, supabaseAnonKey)
+        setSupabase(client)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!supabase) return
+
     const checkAuth = async () => {
       console.log('🔍 Starting admin payouts page auth check...')
+      
+      // Add a small delay to allow auth state to settle after login
+      await new Promise(resolve => setTimeout(resolve, 500))
       
       const { data: { user } } = await supabase.auth.getUser()
       console.log('👤 User from auth:', user)
@@ -92,7 +110,7 @@ export default function AdminPayoutsPage() {
     
     checkAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [supabase])
 
   const toUSD = (cents?: number | null) => `$${(((cents || 0) / 100).toFixed(2))}`
 
