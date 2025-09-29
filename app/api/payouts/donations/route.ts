@@ -12,9 +12,10 @@ export async function GET(req: NextRequest) {
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
 
-    const query = supabaseAdmin
+    const baseSelect = 'id, amount_cents, fee_cents, net_cents, status, settlement_status, donor_name, donor_email, created_at, event_id, campaign_id, braintree_transaction_id'
+    let query = supabaseAdmin
       .from('donation_requests')
-      .select('id, amount_cents, fee_cents, net_cents, status, settlement_status, donor_name, donor_email, created_at, event_id, campaign_id, braintree_transaction_id')
+      .select(baseSelect)
       .order('created_at', { ascending: false })
 
     if (eventId) (query as any).eq('event_id', eventId)
@@ -29,7 +30,26 @@ export async function GET(req: NextRequest) {
       ;(query as any).lte('created_at', endIso.toISOString())
     }
 
-    const { data, error } = await query
+    let { data, error } = await query
+
+    // Fallback if certain columns don't exist in live schema (42703: undefined_column)
+    if (error && ((error as any).code === '42703' || (error as any).code === 'PGRST204')) {
+      let q2 = supabaseAdmin
+        .from('donation_requests')
+        .select('id, amount_cents, fee_cents, net_cents, status, settlement_status, donor_name, donor_email, created_at, braintree_transaction_id')
+        .order('created_at', { ascending: false })
+      if (status) (q2 as any).eq('status', status)
+      if (settlement) (q2 as any).eq('settlement_status', settlement)
+      if (startDate) (q2 as any).gte('created_at', new Date(startDate).toISOString())
+      if (endDate) {
+        const endIso = new Date(endDate)
+        endIso.setHours(23,59,59,999)
+        ;(q2 as any).lte('created_at', endIso.toISOString())
+      }
+      const alt = await q2
+      data = alt.data as any
+      error = alt.error as any
+    }
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
     return NextResponse.json({ donations: data || [] })

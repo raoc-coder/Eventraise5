@@ -27,7 +27,23 @@ export async function GET(req: NextRequest) {
       ;(query as any).lte('created_at', endIso.toISOString())
     }
 
-    const { data, error } = await query
+    let { data, error } = await query
+
+    // Fallback if columns missing in live schema
+    if (error && ((error as any).code === '42703' || (error as any).code === 'PGRST204')) {
+      let q2 = supabaseAdmin
+        .from('donation_requests')
+        .select('amount_cents, fee_cents, net_cents, status, settlement_status, created_at')
+      if (startDate) (q2 as any).gte('created_at', new Date(startDate).toISOString())
+      if (endDate) {
+        const endIso = new Date(endDate)
+        endIso.setHours(23,59,59,999)
+        ;(q2 as any).lte('created_at', endIso.toISOString())
+      }
+      const alt = await q2
+      data = alt.data as any
+      error = alt.error as any
+    }
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
