@@ -1,14 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 export async function GET(req: NextRequest) {
   try {
-    // Check admin authentication
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    const { data: { user } } = await supabase.auth.getUser()
+    // Check admin authentication - try both cookie and header auth
+    let user = null
+    
+    // Try cookie-based auth first
+    try {
+      const cookieStore = cookies()
+      const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+      const { data: { user: cookieUser } } = await supabase.auth.getUser()
+      user = cookieUser
+    } catch (e) {
+      // If cookie auth fails, try header auth
+      const authHeader = req.headers.get('authorization')
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7)
+        const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+        const { data: { user: headerUser } } = await supabase.auth.getUser(token)
+        user = headerUser
+      }
+    }
     
     if (!user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })

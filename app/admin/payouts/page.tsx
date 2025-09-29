@@ -46,9 +46,20 @@ export default function AdminPayoutsPage() {
       if (startDate) params.set('startDate', startDate)
       if (endDate) params.set('endDate', endDate)
 
+      // Get the current session for authentication
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('No active session')
+      }
+
+      const headers = {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
+      }
+
       const [donRes, sumRes] = await Promise.all([
-        fetch(`/api/payouts/donations?${params.toString()}`),
-        fetch(`/api/payouts/summary?${params.toString()}`)
+        fetch(`/api/payouts/donations?${params.toString()}`, { headers }),
+        fetch(`/api/payouts/summary?${params.toString()}`, { headers })
       ])
       const donJson = await donRes.json()
       const sumJson = await sumRes.json()
