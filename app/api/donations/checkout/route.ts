@@ -76,7 +76,8 @@ export async function POST(req: NextRequest) {
     const appUrl = getAppUrl()
     
     // For Braintree, we'll redirect to the Braintree payment page
-    const braintreeUrl = `${appUrl}/payment/braintree?request_id=${dr.id}&amount=${amount}`
+    const eventQuery = eventId ? `&eventId=${encodeURIComponent(eventId)}` : ''
+    const braintreeUrl = `${appUrl}/payment/braintree?request_id=${dr.id}&amount=${amount}${eventQuery}`
     
     return NextResponse.json({ url: braintreeUrl })
   } catch (e: any) {

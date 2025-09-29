@@ -14,6 +14,7 @@ function BraintreePaymentContent() {
   const searchParams = useSearchParams()
   const requestId = searchParams?.get('request_id')
   const amount = searchParams?.get('amount')
+  const eventIdFromQuery = searchParams?.get('eventId') || ''
   const [loading, setLoading] = useState(true)
   const [paymentData, setPaymentData] = useState<any>(null)
 
@@ -116,7 +117,7 @@ function BraintreePaymentContent() {
         <div>
           <BraintreeCheckout
             amount={parseFloat(amount)}
-            eventId={paymentData?.event_id || ''}
+            eventId={eventIdFromQuery}
             onSuccess={handlePaymentSuccess}
           />
         </div>

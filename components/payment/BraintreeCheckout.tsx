@@ -112,10 +112,27 @@ function PaymentForm({ amount, eventId, onSuccess }: PaymentFormProps) {
       const { nonce, type } = await dropinInstance.requestPaymentMethod()
 
       // Create transaction on server
+      // Fetch Supabase session to include user headers
+      let authHeaders: Record<string, string> = {}
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
+        const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+        if (supabaseUrl && supabaseAnon) {
+          const { createClient } = await import('@supabase/supabase-js')
+          const client = createClient(supabaseUrl, supabaseAnon)
+          const { data: sessionData } = await client.auth.getSession()
+          const token = sessionData?.session?.access_token
+          const uid = sessionData?.session?.user?.id
+          if (token) authHeaders['Authorization'] = `Bearer ${token}`
+          if (uid) authHeaders['x-user-id'] = uid
+        }
+      } catch {}
+
       const response = await fetch('/api/braintree/transaction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...authHeaders,
         },
         body: JSON.stringify({
           amount: amount.toFixed(2),
