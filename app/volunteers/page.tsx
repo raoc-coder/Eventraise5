@@ -154,7 +154,7 @@ export default function VolunteersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,10 +184,10 @@ export default function VolunteersPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Volunteer Management</h1>
-            <p className="text-gray-300">Manage volunteer opportunities and sign-ups</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Volunteer Management</h1>
+            <p className="text-gray-600">Manage volunteer opportunities and sign-ups</p>
           </div>
-          <Button onClick={() => setShowCreateForm(true)} className="btn-primary">
+          <Button onClick={() => setShowCreateForm(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Create Opportunity
           </Button>
@@ -289,10 +289,10 @@ export default function VolunteersPage() {
                 </div>
 
                 <div className="flex justify-end space-x-4">
-                        <Button type="button" variant="outline" onClick={() => setShowCreateForm(false)} className="btn-secondary">
-                          Cancel
-                        </Button>
-                        <Button type="submit" className="btn-primary">Create Opportunity</Button>
+                  <Button type="button" variant="outline" onClick={() => setShowCreateForm(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Create Opportunity</Button>
                 </div>
               </form>
             </CardContent>
@@ -342,10 +342,10 @@ export default function VolunteersPage() {
                     </div>
                   )}
                   <div className="flex gap-2 pt-2">
-                    <Button size="sm" className="flex-1 btn-primary">
+                    <Button size="sm" className="flex-1">
                       View Details
                     </Button>
-                    <Button variant="outline" size="sm" className="btn-secondary">
+                    <Button variant="outline" size="sm">
                       Manage
                     </Button>
                   </div>

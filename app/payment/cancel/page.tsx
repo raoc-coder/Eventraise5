@@ -19,7 +19,7 @@ function PaymentCancelContent() {
   const campaignId = searchParams?.get('campaign') || ''
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="min-h-screen bg-white">
       <Navigation />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -136,7 +136,7 @@ function PaymentCancelContent() {
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           {campaignId && (
             <Link href={`/campaigns/${campaignId}`}>
-              <Button className="btn-primary">
+              <Button>
                 Try Again
                 <RefreshCw className="h-4 w-4 ml-2" />
               </Button>

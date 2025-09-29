@@ -98,14 +98,10 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="relative">
-            <Heart className="h-16 w-16 text-cyan-400 bounce-animation mx-auto mb-4" />
-            <Sparkles className="h-6 w-6 text-orange-400 absolute -top-2 -right-2 animate-pulse" />
-          </div>
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400 mx-auto"></div>
-          <p className="mt-4 text-white font-semibold">Loading amazing events...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-700 font-medium">Loading events...</p>
         </div>
       </div>
     )
@@ -117,8 +113,8 @@ export default function EventsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">Support Impactful Campaigns</h1>
-          <p className="text-gray-800 text-base sm:text-lg">Donate, share, and amplify good with EventraiseHUB</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Support Impactful Campaigns</h1>
+          <p className="text-gray-600 text-base sm:text-lg">Donate, share, and amplify good with EventraiseHUB</p>
         </div>
 
         {/* Search and Filter */}
@@ -157,7 +153,7 @@ export default function EventsPage() {
         {/* Events Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredEvents.map((event) => (
-            <Card key={event.id} className="event-card hover:shadow-md transition-all duration-200">
+            <Card key={event.id} className="hover:shadow-md transition-all duration-200">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
@@ -170,7 +166,7 @@ export default function EventsPage() {
                       {getEventTypeLabel(event.event_type || '')}
                     </span>
                 </div>
-                <CardDescription className="mt-2 text-gray-800">
+                <CardDescription className="mt-2 text-gray-700">
                   {event.description}
                 </CardDescription>
               </CardHeader>
@@ -204,14 +200,14 @@ export default function EventsPage() {
 
                   {/* Event Details */}
                   <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center p-2 rounded-lg hover:bg-blue-50 transition-colors overflow-hidden">
+                    <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                    <span className="font-medium truncate">{event.start_date ? formatDate(event.start_date) : ''}</span>
+                      <span className="truncate">{event.start_date ? formatDate(event.start_date) : ''}</span>
                     </div>
                     {(event.location) && (
-                      <div className="flex items-center p-2 rounded-lg hover:bg-green-50 transition-colors overflow-hidden">
-                        <MapPin className="h-4 w-4 mr-2 text-green-500" />
-                        <span className="font-medium truncate">{event.location}</span>
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-2 text-green-600" />
+                        <span className="truncate">{event.location}</span>
                       </div>
                     )}
                   </div>
@@ -219,9 +215,9 @@ export default function EventsPage() {
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-4">
                     <Link href={`/events/${event.id}`} className="flex-1">
-                      <Button className="w-full btn-primary btn-mobile">View Details</Button>
+                      <Button className="w-full">View Details</Button>
                     </Link>
-                    <Button variant="outline" size="sm" className="text-gray-700 hover:text-red-600">
+                    <Button variant="outline" size="sm" className="text-gray-700">
                       <Heart className="h-4 w-4" />
                     </Button>
                   </div>

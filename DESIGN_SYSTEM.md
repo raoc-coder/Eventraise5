@@ -1,3 +1,56 @@
+EventraiseHub Design System (Light Theme)
+
+## Tokens
+- Colors (CSS vars in `app/globals.css`):
+  - Primary: `--hub-blue` (#1D4ED8)
+  - Success: `--success-green` (#059669)
+  - Accent warm: `--energy-orange` (#EA580C)
+  - Purple: `--hub-purple` (#7C3AED)
+  - Gold: `--hub-gold` (#F59E0B)
+  - Neutrals: `--charcoal` (#1F2937), `--slate` (#475569)
+- Base palette: `--background` (white), `--foreground` (charcoal)
+- Shadows: `--shadow-soft`, `--shadow-elevated`, `--shadow-button`
+- Radius: `--radius` = 8px
+- Fonts: `--font-heading`/`--font-body` = Inter, fallbacks
+
+## Components
+- Buttons: use `components/ui/button.tsx`
+  - Variants: `default` (primary blue), `outline`, `ghost`, `secondary`, `link`
+  - Sizes: `default`, `sm`, `lg`, `mobile`, `icon`
+  - Prefer default for primary CTAs, `outline` for secondary, `ghost` for nav/actions
+- Cards: use `components/ui/card.tsx`
+  - `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`
+  - Keep content padding `p-4 sm:p-6`; avoid custom shadows unless needed
+- Inputs: use `components/ui/input.tsx`
+  - Height 48px, clear hover/focus rings; use labels from `components/ui/label`
+
+## Layout
+- Root background: white; no forced `dark` class
+- Navigation: `components/layout/navigation.tsx` with `ghost` buttons
+- Footer: `components/layout/Footer.tsx`
+- Containers: max width `max-w-7xl`, horizontal padding `px-4 sm:px-6 lg:px-8`, vertical `py-8`
+
+## Page Patterns
+- Loading state: centered spinner with blue border, gray text
+- Empty state: centered icon, `text-gray-900` heading, `text-gray-600` body
+- Headings: h1 `text-3xl sm:text-4xl font-bold`, section h2 `text-2xl/3xl`
+
+## Usage Guidance
+- Prefer semantic `Button` variants over custom `btn-*` classes
+- Prefer `Card` + `CardHeader`/`CardContent` over ad-hoc bordered containers
+- Keep text colors: body `text-gray-700/600`, headings `text-gray-900`
+- Spacing: use `space-y-*`, grid gap `gap-4 sm:gap-6`
+
+## Deprecated Classes (avoid going forward)
+- Background gradients for page shells: `bg-gradient-to-br from-gray-900 via-black to-gray-800`
+- Custom button classes: `.btn-primary`, `.btn-secondary`, `.btn`, `.btn-mobile`, `.btn-mobile-lg`
+- Ad-hoc dark variants in nav: `dark:*` in `navigation.tsx` (removed)
+
+## Migration Notes
+- Replace custom buttons with `<Button>` variants
+- Replace gradient page backgrounds with `bg-white`
+- Use shared `Footer` from layout instead of per-page footers
+
 # 🎨 EventraiseHub Design System
 
 ## Overview

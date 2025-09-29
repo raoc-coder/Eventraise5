@@ -88,21 +88,21 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md card-soft">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Heart className="h-5 w-5 text-white" />
               </div>
-              <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+              <span className="text-lg font-bold text-gray-900">
                 EventraiseHub
               </span>
             </div>
           </div>
-          <CardTitle className="text-2xl text-white">Welcome Back!</CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardTitle className="text-2xl">Welcome Back!</CardTitle>
+          <CardDescription className="text-gray-600">
             Sign in to your EventraiseHub account
           </CardDescription>
         </CardHeader>
@@ -130,14 +130,14 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full btn-primary" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-300">
+            <p className="text-sm text-gray-600">
               Don&apos;t have an account?{' '}
-              <Link href="/auth/register" className="text-cyan-400 hover:underline">
+              <Link href="/auth/register" className="text-blue-600 hover:underline">
                 Sign up
               </Link>
             </p>

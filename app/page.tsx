@@ -32,7 +32,7 @@ export default function HomePage() {
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
               Raise More. Stress Less.{' '}
-              <span className="text-gradient">Celebrate Together.</span>
+              <span className="text-blue-600">Celebrate Together.</span>
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
               The ultimate EventraiseHUB platform for creating direct donation campaigns, 
@@ -40,13 +40,13 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
               <Link href="/auth/register" className="w-full sm:w-auto">
-                <Button size="mobile" className="btn-primary">
+                <Button size="mobile">
                   Start Your First Campaign
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
               <Link href="/events" className="w-full sm:w-auto">
-                <Button variant="outline" size="mobile" className="btn-secondary">
+                <Button variant="outline" size="mobile">
                   Browse Campaigns
                 </Button>
               </Link>
@@ -68,7 +68,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <Card className="event-card">
+            <Card>
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
                   <Heart className="h-6 w-6 text-white" />
@@ -96,7 +96,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="event-card">
+            <Card>
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
                   <Shield className="h-6 w-6 text-white" />
@@ -124,7 +124,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="event-card">
+            <Card>
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
                   <Share2 className="h-6 w-6 text-white" />
@@ -152,7 +152,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="event-card">
+            <Card>
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-4">
                   <Star className="h-6 w-6 text-white" />
@@ -180,7 +180,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="event-card">
+            <Card>
               <CardHeader>
                 <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center mb-4">
                   <Smartphone className="h-6 w-6 text-white" />
@@ -310,23 +310,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Simple Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-600">
-              <Heart className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-lg font-bold">EventraiseHUB</span>
-          </div>
-          <p className="text-gray-400 mb-4">
-            Empowering organizations to raise more and build stronger communities.
-          </p>
-          <p className="text-gray-500 text-sm">
-            &copy; 2025 EventraiseHUB. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      {/* Footer is now part of RootLayout */}
     </div>
   )
 }

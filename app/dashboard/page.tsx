@@ -35,14 +35,10 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="relative">
-            <Heart className="h-16 w-16 text-cyan-400 bounce-animation mx-auto mb-4" />
-            <Sparkles className="h-6 w-6 text-orange-400 absolute -top-2 -right-2 animate-pulse" />
-          </div>
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400 mx-auto"></div>
-          <p className="mt-4 text-white font-semibold">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-700 font-medium">Loading your dashboard...</p>
         </div>
       </div>
     )
@@ -64,14 +60,14 @@ export default function DashboardPage() {
 
         {/* Welcome Message */}
         <div className="mb-8">
-          <Card className="event-card">
+          <Card>
             <CardContent className="pt-6">
               <div className="text-center">
                 <Heart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
                 <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Welcome to EventraiseHub</h2>
                 <p className="text-gray-800 mb-4">Create and manage your direct donation campaigns</p>
                 <Link href="/events/create">
-                  <Button className="btn-primary">
+                  <Button>
                     <Plus className="mr-2 h-4 w-4" />
                     Create Your First Campaign
                   </Button>
@@ -83,26 +79,26 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="event-card hover:shadow-md transition-all duration-200">
+          <Card className="hover:shadow-md transition-all duration-200">
             <CardHeader>
               <CardTitle className="text-gray-900">Quick Actions</CardTitle>
               <CardDescription className="text-gray-800">Start a new campaign or jump back into your work</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link href="/events/create">
-                <Button className="w-full justify-start btn-primary">
+                <Button className="w-full justify-start">
                   <Plus className="mr-2 h-4 w-4" />
                   Create New Campaign
                 </Button>
               </Link>
               <Link href="/events/mine">
-                <Button variant="outline" className="w-full justify-start btn-secondary">
+                <Button variant="outline" className="w-full justify-start">
                   <Calendar className="mr-2 h-4 w-4" />
                   My Campaigns
                 </Button>
               </Link>
               <Link href="/events">
-                <Button variant="outline" className="w-full justify-start btn-secondary">
+                <Button variant="outline" className="w-full justify-start">
                   <Heart className="mr-2 h-4 w-4" />
                   Browse Campaigns
                 </Button>
@@ -110,7 +106,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="event-card hover:shadow-md transition-all duration-200">
+          <Card className="hover:shadow-md transition-all duration-200">
             <CardHeader>
               <CardTitle className="text-gray-900">Getting Started</CardTitle>
               <CardDescription className="text-gray-800">Learn how to create effective campaigns</CardDescription>

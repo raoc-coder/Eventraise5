@@ -206,10 +206,10 @@ export default function EventDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading event...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-700">Loading event...</p>
         </div>
       </div>
     )
@@ -217,11 +217,11 @@ export default function EventDetailPage() {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Event Not Found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Event Not Found</h1>
           <Link href="/events">
-            <Button className="btn-primary">Browse Events</Button>
+            <Button>Browse Events</Button>
           </Link>
         </div>
       </div>
@@ -289,8 +289,8 @@ export default function EventDetailPage() {
                           <input value={draft.location} onChange={(e)=>setDraft({...draft,location:e.target.value})} placeholder="Location" className="input min-h-[44px]" />
                         </div>
                         <div className="flex gap-2">
-                          <Button onClick={updateEvent} disabled={saving} className="btn-primary btn-mobile-lg">{saving?'Saving…':'Save'}</Button>
-                          <Button variant="outline" onClick={()=>setEditMode(false)} className="btn-secondary btn-mobile">Cancel</Button>
+                          <Button onClick={updateEvent} disabled={saving}>{saving?'Saving…':'Save'}</Button>
+                          <Button variant="outline" onClick={()=>setEditMode(false)}>Cancel</Button>
                         </div>
                       </div>
                     ) : (
@@ -334,7 +334,7 @@ export default function EventDetailPage() {
                   </div>
                 </div>
                   <div className="flex flex-wrap gap-3 mt-6">
-                    <Button onClick={handleShare} variant="outline" className="btn-secondary border-2 hover:bg-blue-50 transition-colors">
+                    <Button onClick={handleShare} variant="outline" className="hover:bg-blue-50 transition-colors">
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
@@ -342,7 +342,7 @@ export default function EventDetailPage() {
                       <>
                         {user && event && (user.id === (event.organizer_id || event.created_by)) && (
                           <div className="flex gap-2 ml-auto">
-                            <Button variant="outline" onClick={()=>setEditMode(true)} className="btn-secondary border-2 hover:bg-gray-50 transition-colors">
+                            <Button variant="outline" onClick={()=>setEditMode(true)} className="hover:bg-gray-50 transition-colors">
                               <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
@@ -418,10 +418,10 @@ export default function EventDetailPage() {
                   <div className="flex flex-wrap items-center gap-2 mb-4 overflow-hidden">
                     {[1,10,25,50,100].map(v => (
                       <Button 
-                        key={v} 
-                        variant="outline" 
-                        onClick={()=>setDonationAmount(v)} 
-                        className={`${donationAmount===v ? "btn-primary" : "btn-secondary"} min-h-[44px] px-4`}
+                        key={v}
+                        variant={donationAmount===v ? 'default' : 'outline'}
+                        onClick={()=>setDonationAmount(v)}
+                        className="min-h-[44px] px-4"
                       >
                         ${v}
                       </Button>
@@ -520,7 +520,7 @@ export default function EventDetailPage() {
                         toast.error(e.message || 'Unable to start checkout')
                       }
                     }}
-                    className="w-full btn-primary"
+                    className="w-full"
                   >
                     <Heart className="h-4 w-4 mr-2" />
                     Donate ${donationAmount}
