@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
 
     const amountCents = Math.round(amount * 100)
     const feeCents = Math.floor(amountCents * 0.0899)
+    const netCents = amountCents - feeCents
 
     const userId = req.headers.get('x-user-id') || null
     const baseInsert: any = {
@@ -29,6 +30,9 @@ export async function POST(req: NextRequest) {
       status: 'pending',
       donor_name,
       donor_email,
+      fee_cents: feeCents,
+      net_cents: netCents,
+      settlement_status: 'pending'
     }
     if (eventId) baseInsert.event_id = eventId
 

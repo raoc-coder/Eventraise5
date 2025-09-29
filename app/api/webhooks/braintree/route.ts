@@ -69,6 +69,7 @@ async function handleTransactionSettled(notification: any) {
       .from('donation_requests')
       .update({ 
         status: 'completed',
+        settlement_status: 'settled',
         braintree_transaction_id: transaction.id,
         updated_at: new Date().toISOString()
       })

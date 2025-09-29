@@ -54,12 +54,17 @@ export async function POST(req: NextRequest) {
     const transaction = result.transaction
     const userId = req.headers.get('x-user-id') || null
 
+    // Calculate fee and net (8.99%)
+    const amountCents = Math.round(amountNum * 100)
+    const feeCents = Math.floor(amountCents * 0.0899)
+    const netCents = amountCents - feeCents
+
     // Store donation in database
     const { data, error } = await supabaseAdmin
       .from('donation_requests')
       .insert({
         user_id: userId,
-        amount_cents: Math.round(amountNum * 100),
+        amount_cents: amountCents,
         currency: 'usd',
         status: 'completed',
         payment_intent_id: transaction.id,
@@ -69,7 +74,11 @@ export async function POST(req: NextRequest) {
         event_id: eventId,
         campaign_id: campaignId,
         transaction_id: transaction.id,
-        payment_method: paymentMethodType || 'card'
+        payment_method: paymentMethodType || 'card',
+        braintree_transaction_id: transaction.id,
+        fee_cents: feeCents,
+        net_cents: netCents,
+        settlement_status: 'pending'
       })
       .select()
       .single()
