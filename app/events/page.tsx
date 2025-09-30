@@ -1,23 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Events — EventraiseHub',
-  description: 'Discover and join events: donation drives, ticketed experiences, RSVPs, volunteer opportunities, and sponsorships.',
-  openGraph: {
-    title: 'Events — EventraiseHub',
-    description: 'Discover and join events: donation drives, ticketed experiences, RSVPs, volunteer opportunities, and sponsorships.',
-    url: 'https://eventraisehub.com/events',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Events — EventraiseHub',
-    description: 'Discover and join events: donation drives, ticketed experiences, RSVPs, volunteer opportunities, and sponsorships.',
-  },
-}
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
