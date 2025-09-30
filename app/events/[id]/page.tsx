@@ -72,6 +72,7 @@ export default function EventDetailPage() {
   const [shareMsg, setShareMsg] = useState('')
   const [shareSending, setShareSending] = useState(false)
   const [donationAmount, setDonationAmount] = useState<number>(25)
+  const [publishing, setPublishing] = useState(false)
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -161,6 +162,26 @@ export default function EventDetailPage() {
       toast.error(e.message || 'Update failed')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const togglePublish = async (next: boolean) => {
+    if (!event) return
+    setPublishing(true)
+    try {
+      const res = await fetch(`/api/events/${event.id}/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ publish: next }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to update publish status')
+      setEvent(json.event)
+      toast.success(next ? 'Published' : 'Unpublished')
+    } catch (e: any) {
+      toast.error(e.message || 'Publish toggle failed')
+    } finally {
+      setPublishing(false)
     }
   }
 
@@ -349,6 +370,9 @@ export default function EventDetailPage() {
                             <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors">
                               <Trash2 className="h-4 w-4 mr-2" />
                               Delete
+                            </Button>
+                            <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors">
+                              {(event as any).is_published ? 'Unpublish' : 'Publish'}
                             </Button>
                           </div>
                         )}
