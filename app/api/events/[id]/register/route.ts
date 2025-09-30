@@ -20,7 +20,12 @@ export async function POST(req: NextRequest, { params }: any) {
       .select('id, is_published')
       .eq('id', id)
       .single()
-    if (evErr || !eventRow) return NextResponse.json({ error: 'Event not found' }, { status: 404 })
+    if (evErr || !eventRow) return NextResponse.json({ error: 'Event not found', details: evErr }, { status: 404 })
+
+    // Require published events for public RSVP
+    if (eventRow && eventRow.is_published === false) {
+      return NextResponse.json({ error: 'Event is not published' }, { status: 400 })
+    }
 
     const { data, error } = await (supabaseAdmin as any)
       .from('event_registrations')
@@ -35,7 +40,7 @@ export async function POST(req: NextRequest, { params }: any) {
       .select('*')
       .single()
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+    if (error) return NextResponse.json({ error: error.message, details: error }, { status: 400 })
     return NextResponse.json({ registration: data })
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unknown error' }, { status: 500 })

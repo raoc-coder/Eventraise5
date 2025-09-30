@@ -41,6 +41,9 @@ export async function GET(_req: NextRequest) {
     { table: 'events', column: 'created_by' },
     { table: 'events', column: 'is_published' },
     { table: 'events', column: 'event_type' },
+    // RSVP/Tickets presence
+    { table: 'event_registrations', column: 'id' },
+    { table: 'event_tickets', column: 'id' },
   ]
 
   const results: Record<string, any> = {}
@@ -62,6 +65,10 @@ export async function GET(_req: NextRequest) {
       created_by: results['events.created_by'] === true,
       is_published: results['events.is_published'] === true,
       event_type: results['events.event_type'] === true,
+    },
+    rsvp_tickets: {
+      event_registrations: results['event_registrations.id'] === true,
+      event_tickets: results['event_tickets.id'] === true,
     },
   }
 
