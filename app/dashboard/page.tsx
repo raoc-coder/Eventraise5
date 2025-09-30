@@ -88,19 +88,19 @@ export default function DashboardPage() {
               <Link href="/events/create">
                 <Button className="w-full justify-start">
                   <Plus className="mr-2 h-4 w-4" />
-                  Create New Campaign
+                  Create New Event
                 </Button>
               </Link>
               <Link href="/events/mine">
                 <Button variant="outline" className="w-full justify-start">
                   <Calendar className="mr-2 h-4 w-4" />
-                  My Campaigns
+                  My Events
                 </Button>
               </Link>
               <Link href="/events">
                 <Button variant="outline" className="w-full justify-start">
                   <Heart className="mr-2 h-4 w-4" />
-                  Browse Campaigns
+                  Browse Events
                 </Button>
               </Link>
             </CardContent>
