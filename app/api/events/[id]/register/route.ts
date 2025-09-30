@@ -15,14 +15,14 @@ export async function POST(req: NextRequest, { params }: any) {
       return NextResponse.json({ error: 'Name or email required' }, { status: 400 })
     }
 
-    const { data: eventRow, error: evErr } = await supabaseAdmin
+    const { data: eventRow, error: evErr } = await (supabaseAdmin as any)
       .from('events')
       .select('id, is_published')
       .eq('id', id)
       .single()
     if (evErr || !eventRow) return NextResponse.json({ error: 'Event not found' }, { status: 404 })
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await (supabaseAdmin as any)
       .from('event_registrations')
       .insert({
         event_id: id,
