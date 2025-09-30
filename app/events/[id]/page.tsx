@@ -576,15 +576,42 @@ export default function EventDetailPage() {
             ) : (
               <Card className="event-card">
                 <CardHeader>
-                  <CardTitle className="text-gray-900">Coming Soon</CardTitle>
+                  <CardTitle className="text-gray-900">RSVP</CardTitle>
                   <CardDescription className="text-gray-600">
-                    This event type will support registration or ticketing shortly.
+                    Reserve your spot for this event
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full" disabled>
-                    {event.event_type === 'walkathon' ? 'Register' : event.event_type === 'auction' ? 'View Auction' : event.event_type === 'product_sale' ? 'Shop Products' : event.event_type === 'raffle' ? 'Enter Raffle' : 'Check Back Soon'}
-                  </Button>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="rsvpName" className="text-gray-700 font-medium">Your Name</Label>
+                      <Input id="rsvpName" type="text" value={donorName} onChange={(e)=>setDonorName(e.target.value)} className="input" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="rsvpEmail" className="text-gray-700 font-medium">Your Email</Label>
+                      <Input id="rsvpEmail" type="email" value={donorEmail} onChange={(e)=>setDonorEmail(e.target.value)} className="input" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="rsvpQty" className="text-gray-700 font-medium">Quantity</Label>
+                      <input id="rsvpQty" type="number" min={1} defaultValue={1} className="input w-24" />
+                    </div>
+                    <Button className="w-full" onClick={async()=>{
+                      try {
+                        const qtyEl = document.getElementById('rsvpQty') as HTMLInputElement | null
+                        const qty = Math.max(1, Number(qtyEl?.value || 1))
+                        const res = await fetch(`/api/events/${event.id}/register`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ name: donorName, email: donorEmail, quantity: qty, type: 'rsvp' })
+                        })
+                        const json = await res.json()
+                        if (!res.ok) throw new Error(json.error || 'Registration failed')
+                        toast.success('RSVP confirmed!')
+                      } catch (e:any) {
+                        toast.error(e.message || 'Unable to RSVP')
+                      }
+                    }}>Reserve Spot</Button>
+                  </div>
                 </CardContent>
               </Card>
             )}
