@@ -54,7 +54,7 @@ export default function MyEventsPage() {
         {loading ? (
           <p className="text-gray-700">Loading…</p>
         ) : events.length === 0 ? (
-          <p className="text-gray-700">You haven't created any events yet.</p>
+          <p className="text-gray-700">You haven&apos;t created any events yet.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((ev) => (
