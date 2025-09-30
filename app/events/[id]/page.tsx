@@ -73,6 +73,8 @@ export default function EventDetailPage() {
   const [shareSending, setShareSending] = useState(false)
   const [donationAmount, setDonationAmount] = useState<number>(25)
   const [publishing, setPublishing] = useState(false)
+  const [registrations, setRegistrations] = useState<any[] | null>(null)
+  const [regLoading, setRegLoading] = useState(false)
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -182,6 +184,21 @@ export default function EventDetailPage() {
       toast.error(e.message || 'Publish toggle failed')
     } finally {
       setPublishing(false)
+    }
+  }
+
+  const fetchRegistrations = async () => {
+    if (!event) return
+    setRegLoading(true)
+    try {
+      const res = await fetch(`/api/events/${event.id}/registrations`)
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to load registrations')
+      setRegistrations(json.registrations || [])
+    } catch (e:any) {
+      setRegistrations([])
+    } finally {
+      setRegLoading(false)
     }
   }
 
@@ -382,6 +399,9 @@ export default function EventDetailPage() {
                             </Button>
                             <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors">
                               {(event as any).is_published ? 'Unpublish' : 'Publish'}
+                            </Button>
+                            <Button variant="outline" onClick={fetchRegistrations} className="hover:bg-gray-50 transition-colors">
+                              View Registrations
                             </Button>
                           </div>
                         )}
@@ -611,6 +631,58 @@ export default function EventDetailPage() {
                         toast.error(e.message || 'Unable to RSVP')
                       }
                     }}>Reserve Spot</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Owner registrations table */}
+            {user && event && (user.id === (event.organizer_id || event.created_by)) && (
+              <Card className="event-card">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-gray-900">Registrations</CardTitle>
+                      <CardDescription className="text-gray-600">Owner-only view</CardDescription>
+                    </div>
+                    <a href={`/api/events/${event.id}/registrations/csv`} className="text-sm text-blue-600 hover:underline">Export CSV</a>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between mb-3">
+                    <Button variant="outline" size="sm" onClick={fetchRegistrations} disabled={regLoading}>{regLoading ? 'Loading…' : 'Refresh'}</Button>
+                    <span className="text-sm text-gray-600">{Array.isArray(registrations) ? registrations.length : 0} total</span>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-gray-700">
+                          <th className="py-2 pr-4">Created</th>
+                          <th className="py-2 pr-4">Name</th>
+                          <th className="py-2 pr-4">Email</th>
+                          <th className="py-2 pr-4">Type</th>
+                          <th className="py-2 pr-4">Qty</th>
+                          <th className="py-2 pr-4">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(registrations || []).map((r:any) => (
+                          <tr key={r.id} className="border-t border-gray-200 text-gray-800">
+                            <td className="py-2 pr-4">{new Date(r.created_at).toLocaleString()}</td>
+                            <td className="py-2 pr-4">{r.name || r.participant_name || '—'}</td>
+                            <td className="py-2 pr-4">{r.email || r.participant_email || '—'}</td>
+                            <td className="py-2 pr-4">{r.type}</td>
+                            <td className="py-2 pr-4">{r.quantity}</td>
+                            <td className="py-2 pr-4">{r.status}</td>
+                          </tr>
+                        ))}
+                        {Array.isArray(registrations) && registrations.length === 0 && (
+                          <tr>
+                            <td colSpan={6} className="py-6 text-center text-gray-600">No registrations yet</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
                   </div>
                 </CardContent>
               </Card>
