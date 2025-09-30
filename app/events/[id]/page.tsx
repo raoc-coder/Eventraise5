@@ -81,6 +81,7 @@ export default function EventDetailPage() {
   const [regPageSize, setRegPageSize] = useState(25)
   const [analytics, setAnalytics] = useState<any>(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
+  const [donationTotal, setDonationTotal] = useState<number>(0)
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>([])
 
   useEffect(() => {
@@ -99,6 +100,8 @@ export default function EventDetailPage() {
             start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
+          // Fetch donation total after event is loaded
+          setTimeout(() => fetchDonationTotal(), 100)
           if (searchParams?.get('created') === '1') {
             setShowCreatedBanner(true)
             toast.success('Your event is live! Share it with your community.')
@@ -128,9 +131,25 @@ export default function EventDetailPage() {
 
   const getRaisedAmount = (ev: any): number => {
     if (!ev) return 0
-    const val = ev.total_raised ?? ev.amount_raised ?? ev.raised ?? 0
+    // Use the real-time donation total if available, otherwise fall back to event fields
+    if (donationTotal > 0) return donationTotal
+    const val = ev.total_raised ?? ev.amount_raised ?? ev.raised ?? ev.donations_total ?? 0
     const num = Number(val)
     return isNaN(num) ? 0 : num
+  }
+
+  const fetchDonationTotal = async () => {
+    try {
+      const response = await fetch(`/api/events/${event?.id}/analytics`)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.revenue?.total) {
+          setDonationTotal(data.revenue.total)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch donation total:', error)
+    }
   }
 
 
@@ -675,46 +694,172 @@ export default function EventDetailPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="event-card">
-                <CardHeader>
-                  <CardTitle className="text-gray-900">RSVP</CardTitle>
-                  <CardDescription className="text-gray-600">
-                    Reserve your spot for this event
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="rsvpName" className="text-gray-700 font-medium">Your Name</Label>
-                      <Input id="rsvpName" type="text" value={donorName} onChange={(e)=>setDonorName(e.target.value)} className="input" />
+              <div className="space-y-6">
+                {/* RSVP Card */}
+                <Card className="event-card">
+                  <CardHeader>
+                    <CardTitle className="text-gray-900">RSVP</CardTitle>
+                    <CardDescription className="text-gray-600">
+                      Reserve your spot for this event
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="rsvpName" className="text-gray-700 font-medium">Your Name</Label>
+                        <Input id="rsvpName" type="text" value={donorName} onChange={(e)=>setDonorName(e.target.value)} className="input" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="rsvpEmail" className="text-gray-700 font-medium">Your Email</Label>
+                        <Input id="rsvpEmail" type="email" value={donorEmail} onChange={(e)=>setDonorEmail(e.target.value)} className="input" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="rsvpQty" className="text-gray-700 font-medium">Quantity</Label>
+                        <input id="rsvpQty" type="number" min={1} defaultValue={1} className="input w-24" />
+                      </div>
+                      <Button className="w-full" onClick={async()=>{
+                        try {
+                          const qtyEl = document.getElementById('rsvpQty') as HTMLInputElement | null
+                          const qty = Math.max(1, Number(qtyEl?.value || 1))
+                          const res = await fetch(`/api/events/${event.id}/register`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name: donorName, email: donorEmail, quantity: qty, type: 'rsvp' })
+                          })
+                          const json = await res.json()
+                          if (!res.ok) throw new Error(json.error || 'Registration failed')
+                          toast.success('RSVP confirmed!')
+                        } catch (e:any) {
+                          toast.error(e.message || 'Unable to RSVP')
+                        }
+                      }}>Reserve Spot</Button>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="rsvpEmail" className="text-gray-700 font-medium">Your Email</Label>
-                      <Input id="rsvpEmail" type="email" value={donorEmail} onChange={(e)=>setDonorEmail(e.target.value)} className="input" />
+                  </CardContent>
+                </Card>
+
+                {/* Optional Donation Card */}
+                <Card className="event-card">
+                  <CardHeader>
+                    <CardTitle className="text-gray-900">Support This Event</CardTitle>
+                    <CardDescription className="text-gray-600">
+                      Make an optional donation to support this event
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Quick Donation Amounts */}
+                    <div className="mb-6">
+                      <p className="text-gray-700 mb-3 font-medium">Choose Amount</p>
+                      <div className="flex flex-wrap items-center gap-2 mb-4 overflow-hidden">
+                        {[1,10,25,50,100].map(v => (
+                          <Button 
+                            key={v}
+                            variant={donationAmount===v ? 'default' : 'outline'}
+                            onClick={()=>setDonationAmount(v)}
+                            className="min-h-[44px] px-4"
+                          >
+                            ${v}
+                          </Button>
+                        ))}
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="text-gray-600 text-sm font-medium whitespace-nowrap">Custom</span>
+                          <input
+                            type="number"
+                            min={1}
+                            step={1}
+                            value={donationAmount}
+                            onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
+                            className="input w-20 sm:w-24 min-h-[44px] text-base"
+                            placeholder="$1"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="rsvpQty" className="text-gray-700 font-medium">Quantity</Label>
-                      <input id="rsvpQty" type="number" min={1} defaultValue={1} className="input w-24" />
+                    
+                    <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus PayPal processing fees).</p>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="donorMessage" className="text-gray-700 font-medium">Message (Optional)</Label>
+                        <textarea
+                          id="donorMessage"
+                          placeholder="Leave a message of support..."
+                          value={donorMessage}
+                          onChange={(e) => setDonorMessage(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-gray-700 font-medium">Donation Amount</span>
+                          <span className="text-gray-900 font-semibold">${donationAmount}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-700 font-medium">Platform Fee (8.99%)</span>
+                          <span className="text-gray-900 font-semibold">${(donationAmount * 0.0899).toFixed(2)}</span>
+                        </div>
+                        <div className="border-t border-blue-300 mt-2 pt-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-900 font-bold">Total Charged</span>
+                            <span className="text-blue-600 font-bold text-lg">
+                              ${(donationAmount + (donationAmount * 0.0899)).toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <PayPalDonationButton
+                          amount={donationAmount}
+                          eventId={(params as any)?.id}
+                          onSuccess={(orderId) => {
+                            toast.success('Donation successful! Thank you for your support.')
+                            // Reset form
+                            setDonationAmount(1)
+                            setDonorMessage('')
+                          }}
+                          onError={(error) => {
+                            toast.error(error)
+                          }}
+                          disabled={donationAmount < 1}
+                        />
+                        
+                        <div className="text-center">
+                          <Button 
+                            variant="outline"
+                            onClick={async()=>{
+                              try {
+                                const res = await fetch('/api/donations/checkout', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ 
+                                    amount: donationAmount, 
+                                    eventId: (params as any)?.id,
+                                    donor_name: donorName,
+                                    donor_email: donorEmail,
+                                    message: donorMessage
+                                  }),
+                                })
+                                const json = await res.json()
+                                if (!res.ok) throw new Error(json.error || 'Failed to start checkout')
+                                window.location.href = json.url
+                              } catch (e:any) {
+                                toast.error(e.message || 'Unable to start checkout')
+                              }
+                            }}
+                            className="w-full"
+                          >
+                            <Heart className="h-4 w-4 mr-2" />
+                            Donate ${donationAmount} (Legacy)
+                          </Button>
+                          <p className="text-xs text-gray-500 mt-2">Legacy Braintree payment method</p>
+                        </div>
+                      </div>
                     </div>
-                    <Button className="w-full" onClick={async()=>{
-                      try {
-                        const qtyEl = document.getElementById('rsvpQty') as HTMLInputElement | null
-                        const qty = Math.max(1, Number(qtyEl?.value || 1))
-                        const res = await fetch(`/api/events/${event.id}/register`, {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ name: donorName, email: donorEmail, quantity: qty, type: 'rsvp' })
-                        })
-                        const json = await res.json()
-                        if (!res.ok) throw new Error(json.error || 'Registration failed')
-                        toast.success('RSVP confirmed!')
-                      } catch (e:any) {
-                        toast.error(e.message || 'Unable to RSVP')
-                      }
-                    }}>Reserve Spot</Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Analytics Dashboard */}

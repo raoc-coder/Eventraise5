@@ -8,9 +8,17 @@ export const paypalClientConfig = {
   currency: 'USD',
   intent: 'capture',
   components: 'buttons',
-  enableFunding: 'paylater,venmo,card',
+  enableFunding: 'paylater,venmo,card,credit,paypal',
   disableFunding: '',
-  dataSdkIntegration: 'eventraisehub'
+  dataSdkIntegration: 'eventraisehub',
+  style: {
+    layout: 'vertical',
+    color: 'blue',
+    shape: 'rect',
+    label: 'paypal',
+    height: 45,
+    tagline: false
+  }
 }
 
 // PayPal button component for donations
@@ -98,7 +106,8 @@ export function PayPalDonationButton({
           color: 'blue',
           shape: 'rect',
           label: 'paypal',
-          height: 45
+          height: 45,
+          tagline: false
         }}
       />
     </PayPalScriptProvider>
@@ -198,7 +207,8 @@ export function PayPalTicketButton({
           color: 'blue',
           shape: 'rect',
           label: 'paypal',
-          height: 45
+          height: 45,
+          tagline: false
         }}
       />
     </PayPalScriptProvider>
