@@ -45,7 +45,9 @@ export default function EventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/events')
+        const qs = new URLSearchParams()
+        if (filterType && filterType !== 'all') qs.set('type', filterType)
+        const response = await fetch(`/api/events${qs.toString() ? `?${qs.toString()}` : ''}`)
         if (response.ok) {
           const data = await response.json()
           setEvents(data.events || [])
@@ -62,7 +64,7 @@ export default function EventsPage() {
     }
 
     fetchEvents()
-  }, [])
+  }, [filterType])
 
   const filteredEvents = events.filter(event => {
     const title = (event.title || '').toLowerCase()
