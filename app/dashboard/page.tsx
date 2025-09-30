@@ -82,7 +82,7 @@ export default function DashboardPage() {
           <Card className="hover:shadow-md transition-all duration-200">
             <CardHeader>
               <CardTitle className="text-gray-900">Quick Actions</CardTitle>
-              <CardDescription className="text-gray-800">Start a new campaign or jump back into your work</CardDescription>
+              <CardDescription className="text-gray-800">Start a new event or jump back into your work</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link href="/events/create">
@@ -109,7 +109,7 @@ export default function DashboardPage() {
           <Card className="hover:shadow-md transition-all duration-200">
             <CardHeader>
               <CardTitle className="text-gray-900">Getting Started</CardTitle>
-              <CardDescription className="text-gray-800">Learn how to create effective campaigns</CardDescription>
+              <CardDescription className="text-gray-800">Learn how to create effective events</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

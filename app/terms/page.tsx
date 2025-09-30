@@ -31,7 +31,7 @@ export default function TermsOfServicePage() {
               <p className="text-gray-700 leading-relaxed">
                 By accessing and using Event Raise (&quot;the Platform&quot;), you agree to be bound by these Terms of Service. 
                 If you do not agree to these terms, please do not use our platform. These terms apply to all users, 
-                including campaign creators, donors, and event participants.
+                including event creators, donors, and event participants.
               </p>
             </CardContent>
           </Card>
@@ -80,7 +80,7 @@ export default function TermsOfServicePage() {
               <div>
                 <h3 className="text-lg font-semibold text-blue-700 mb-3">Content Guidelines</h3>
                 <ul className="text-gray-700 space-y-2">
-                  <li>• Provide truthful and accurate information in campaigns and events</li>
+                  <li>• Provide truthful and accurate information in events</li>
                   <li>• Respect intellectual property rights of others</li>
                   <li>• Do not post offensive, illegal, or harmful content</li>
                   <li>• Comply with all applicable laws and regulations</li>
@@ -100,7 +100,7 @@ export default function TermsOfServicePage() {
             <CardContent>
               <p className="text-gray-700 mb-4">The following activities are strictly prohibited:</p>
               <ul className="text-gray-700 space-y-2">
-                <li>• Creating fraudulent or misleading campaigns</li>
+                <li>• Creating fraudulent or misleading events</li>
                 <li>• Using the platform for illegal activities</li>
                 <li>• Harassing, threatening, or abusing other users</li>
                 <li>• Attempting to circumvent platform security measures</li>
@@ -131,12 +131,12 @@ export default function TermsOfServicePage() {
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-orange-700 mb-3">Campaign Funds</h3>
+                <h3 className="text-lg font-semibold text-orange-700 mb-3">Event Funds</h3>
                 <ul className="text-gray-700 space-y-2">
-                  <li>• Campaign organizers are responsible for using funds as described</li>
+                  <li>• Event organizers are responsible for using funds as described</li>
                   <li>• We reserve the right to investigate misuse of funds</li>
-                  <li>• Campaign creators must provide updates on fund usage</li>
-                  <li>• Refunds are at the discretion of campaign organizers</li>
+                  <li>• Event creators must provide updates on fund usage</li>
+                  <li>• Refunds are at the discretion of event organizers</li>
                 </ul>
               </div>
             </CardContent>
@@ -159,7 +159,7 @@ export default function TermsOfServicePage() {
                   </ul>
                 </div>
                 <p className="text-sm text-gray-400">
-                  Fee structure is subject to change with 30 days notice. Current fees are displayed at the time of campaign creation.
+                  Fee structure is subject to change with 30 days notice. Current fees are displayed at the time of event creation.
                 </p>
               </div>
             </CardContent>
@@ -183,10 +183,10 @@ export default function TermsOfServicePage() {
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-red-700 mb-3">Campaign Responsibility</h3>
+                <h3 className="text-lg font-semibold text-red-700 mb-3">Event Responsibility</h3>
                 <p className="text-gray-700">
-                  Event Raise is not responsible for the success or failure of campaigns, the accuracy of campaign information, 
-                  or the use of donated funds. Campaign creators are solely responsible for their campaigns and fund usage.
+                  Event Raise is not responsible for the success or failure of events, the accuracy of event information, 
+                  or the use of donated funds. Event creators are solely responsible for their events and fund usage.
                 </p>
               </div>
               

@@ -191,7 +191,7 @@ export default function AdminPayoutsPage() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Filters</CardTitle>
-            <CardDescription>Filter by event or campaign, and settlement status</CardDescription>
+            <CardDescription>Filter by event and settlement status</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
@@ -200,8 +200,8 @@ export default function AdminPayoutsPage() {
                 <Input value={eventId} onChange={(e) => setEventId(e.target.value)} placeholder="event uuid" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Campaign ID</label>
-                <Input value={campaignId} onChange={(e) => setCampaignId(e.target.value)} placeholder="campaign uuid" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Event ID</label>
+                <Input value={campaignId} onChange={(e) => setCampaignId(e.target.value)} placeholder="event uuid" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Settlement</label>
