@@ -35,19 +35,19 @@ export default function HomePage() {
               <span className="text-blue-600">Celebrate Together.</span>
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
-              The ultimate EventraiseHUB platform for creating direct donation campaigns, 
-              tracking progress, and building stronger communities with energy and impact.
+              EventraiseHub helps you create and manage all kinds of events — donation drives, ticketed experiences,
+              RSVPs, volunteer signups, and sponsorships — with built‑in payments, registrations, and analytics.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
               <Link href="/auth/register" className="w-full sm:w-auto">
                 <Button size="mobile">
-                  Start Your First Campaign
+                  Create Your First Event
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
               <Link href="/events" className="w-full sm:w-auto">
                 <Button variant="outline" size="mobile">
-                  Browse Campaigns
+                  Browse Events
                 </Button>
               </Link>
             </div>
@@ -289,21 +289,21 @@ export default function HomePage() {
       <section className="py-12 sm:py-20">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-            Ready to Start Your Campaign?
+            Ready to Launch Your Next Event?
           </h2>
           <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 px-4">
-            Join thousands of organizations already using EventraiseHUB to create amazing fundraising experiences.
+            Join teams and organizers using EventraiseHub for donations, ticketing, RSVPs, volunteers, and more.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link href="/auth/register" className="w-full sm:w-auto">
               <Button size="mobile">
-                Start Your First Campaign
+                Create Your First Event
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
             <Link href="/events" className="w-full sm:w-auto">
               <Button variant="outline" size="mobile">
-                Browse Campaigns
+                Browse Events
               </Button>
             </Link>
           </div>
