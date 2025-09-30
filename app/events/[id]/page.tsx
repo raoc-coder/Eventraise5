@@ -75,6 +75,9 @@ export default function EventDetailPage() {
   const [publishing, setPublishing] = useState(false)
   const [registrations, setRegistrations] = useState<any[] | null>(null)
   const [regLoading, setRegLoading] = useState(false)
+  const [regPage, setRegPage] = useState(1)
+  const [regTotal, setRegTotal] = useState(0)
+  const [regPageSize, setRegPageSize] = useState(25)
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -187,16 +190,27 @@ export default function EventDetailPage() {
     }
   }
 
-  const fetchRegistrations = async () => {
+  const fetchRegistrations = async (page = 1, pageSize = 25, filters: any = {}) => {
     if (!event) return
     setRegLoading(true)
     try {
-      const res = await fetch(`/api/events/${event.id}/registrations`)
+      const sp = new URLSearchParams()
+      if (filters.type) sp.set('type', filters.type)
+      if (filters.from) sp.set('from', filters.from)
+      if (filters.to) sp.set('to', filters.to)
+      sp.set('page', String(page))
+      sp.set('pageSize', String(pageSize))
+      const res = await fetch(`/api/events/${event.id}/registrations?${sp.toString()}`)
       const json = await res.json()
       if (!res.ok) throw new Error(json.error || 'Failed to load registrations')
       setRegistrations(json.registrations || [])
+      setRegTotal(json.total || 0)
+      setRegPage(json.page || 1)
+      setRegPageSize(json.pageSize || 25)
     } catch (e:any) {
       setRegistrations([])
+      setRegTotal(0)
+      setRegPage(1)
     } finally {
       setRegLoading(false)
     }
@@ -671,28 +685,31 @@ export default function EventDetailPage() {
                           const fromEl = document.getElementById('regFrom') as HTMLInputElement | null
                           const toEl = document.getElementById('regTo') as HTMLInputElement | null
                           const sizeEl = document.getElementById('regPageSize') as HTMLInputElement | null
-                          const sp = new URLSearchParams()
-                          if (typeEl?.value) sp.set('type', typeEl.value)
-                          if (fromEl?.value) sp.set('from', fromEl.value)
-                          if (toEl?.value) sp.set('to', toEl.value)
-                          if (sizeEl?.value) sp.set('pageSize', String(Math.max(1, Math.min(100, Number(sizeEl.value)))))
-                          setRegLoading(true)
-                          try {
-                            const res = await fetch(`/api/events/${event?.id}/registrations${sp.toString()?`?${sp.toString()}`:''}`)
-                            const json = await res.json()
-                            if (!res.ok) throw new Error(json.error || 'Failed to load registrations')
-                            setRegistrations(json.registrations || [])
-                          } catch {
-                            setRegistrations([])
-                          } finally {
-                            setRegLoading(false)
+                          const filters = {
+                            type: typeEl?.value || '',
+                            from: fromEl?.value || '',
+                            to: toEl?.value || '',
                           }
+                          const pageSize = Math.max(1, Math.min(100, Number(sizeEl?.value || 25)))
+                          await fetchRegistrations(1, pageSize, filters)
                         }}>{regLoading ? 'Loading…' : 'Apply'}</Button>
-                        <Button variant="outline" size="sm" onClick={fetchRegistrations} disabled={regLoading}>Refresh</Button>
+                        <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage, regPageSize)} disabled={regLoading}>Refresh</Button>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">{Array.isArray(registrations) ? registrations.length : 0} shown</span>
+                      <span className="text-sm text-gray-600">
+                        {Array.isArray(registrations) ? registrations.length : 0} shown of {regTotal} total
+                        {Array.isArray(registrations) && registrations.length > 0 && (
+                          <span className="ml-2">
+                            ({registrations.filter((r:any)=>r.type==='rsvp').length} RSVP, {registrations.filter((r:any)=>r.type==='ticket').length} tickets)
+                          </span>
+                        )}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(Math.max(1, regPage-1), regPageSize)} disabled={regLoading || regPage <= 1}>Prev</Button>
+                        <span className="text-sm text-gray-600">Page {regPage}</span>
+                        <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage+1, regPageSize)} disabled={regLoading || (regPage * regPageSize) >= regTotal}>Next</Button>
+                      </div>
                     </div>
                   </div>
                   <div className="overflow-x-auto">
