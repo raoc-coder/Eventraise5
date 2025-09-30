@@ -42,9 +42,9 @@ export async function GET(req: NextRequest) {
     }
     
     // TEMPORARY: Skip admin check for testing
-    console.log('User authenticated:', user.email)
-    console.log('User metadata:', user.user_metadata)
-    console.log('App metadata:', user.app_metadata)
+    console.log('User authenticated:', user?.email || 'No user')
+    console.log('User metadata:', user?.user_metadata)
+    console.log('App metadata:', user?.app_metadata)
     
     // const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
     // if (!isAdmin) {
