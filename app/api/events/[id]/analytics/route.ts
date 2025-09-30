@@ -59,28 +59,28 @@ export async function GET(req: NextRequest, { params }: any) {
 
     // Calculate analytics
     const totalRegistrations = registrations?.length || 0
-    const totalAttendees = registrations?.reduce((sum, r) => sum + (r.quantity || 1), 0) || 0
-    const rsvpCount = registrations?.filter(r => r.type === 'rsvp').length || 0
-    const ticketCount = registrations?.filter(r => r.type === 'ticket').length || 0
-    const confirmedCount = registrations?.filter(r => r.status === 'confirmed').length || 0
+    const totalAttendees = registrations?.reduce((sum: number, r: any) => sum + (r.quantity || 1), 0) || 0
+    const rsvpCount = registrations?.filter((r: any) => r.type === 'rsvp').length || 0
+    const ticketCount = registrations?.filter((r: any) => r.type === 'ticket').length || 0
+    const confirmedCount = registrations?.filter((r: any) => r.status === 'confirmed').length || 0
 
     // Revenue analytics
-    const totalDonations = donations?.reduce((sum, d) => sum + (d.amount_cents || 0), 0) || 0
-    const totalFees = donations?.reduce((sum, d) => sum + (d.fee_cents || 0), 0) || 0
-    const totalNet = donations?.reduce((sum, d) => sum + (d.net_cents || 0), 0) || 0
+    const totalDonations = donations?.reduce((sum: number, d: any) => sum + (d.amount_cents || 0), 0) || 0
+    const totalFees = donations?.reduce((sum: number, d: any) => sum + (d.fee_cents || 0), 0) || 0
+    const totalNet = donations?.reduce((sum: number, d: any) => sum + (d.net_cents || 0), 0) || 0
 
     // Ticket revenue
     const ticketRevenue = registrations
-      ?.filter(r => r.type === 'ticket' && r.status === 'confirmed')
-      .reduce((sum, r) => sum + (r.fee_cents || 0) + (r.net_cents || 0), 0) || 0
+      ?.filter((r: any) => r.type === 'ticket' && r.status === 'confirmed')
+      .reduce((sum: number, r: any) => sum + (r.fee_cents || 0) + (r.net_cents || 0), 0) || 0
 
     // Daily registration trends (last 30 days)
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
     
     const dailyTrends = registrations
-      ?.filter(r => new Date(r.created_at) >= thirtyDaysAgo)
-      .reduce((acc, r) => {
+      ?.filter((r: any) => new Date(r.created_at) >= thirtyDaysAgo)
+      .reduce((acc: Record<string, number>, r: any) => {
         const date = new Date(r.created_at).toISOString().split('T')[0]
         acc[date] = (acc[date] || 0) + (r.quantity || 1)
         return acc

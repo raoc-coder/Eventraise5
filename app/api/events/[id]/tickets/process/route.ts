@@ -13,6 +13,10 @@ export async function POST(req: NextRequest, { params }: any) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database client not initialized' }, { status: 500 })
+    }
+
     // Fetch registration
     const { data: registration, error: regErr } = await supabaseAdmin
       .from('event_registrations')

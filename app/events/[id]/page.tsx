@@ -454,10 +454,10 @@ export default function EventDetailPage() {
                             <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors">
                               {(event as any).is_published ? 'Unpublish' : 'Publish'}
                             </Button>
-                            <Button variant="outline" onClick={fetchRegistrations} className="hover:bg-gray-50 transition-colors">
+                            <Button variant="outline" onClick={() => fetchRegistrations()} className="hover:bg-gray-50 transition-colors">
                               View Registrations
                             </Button>
-                            <Button variant="outline" onClick={fetchAnalytics} className="hover:bg-gray-50 transition-colors">
+                            <Button variant="outline" onClick={() => fetchAnalytics()} className="hover:bg-gray-50 transition-colors">
                               Analytics
                             </Button>
                           </div>

@@ -13,6 +13,10 @@ export async function POST(req: NextRequest, { params }: any) {
       return NextResponse.json({ error: 'Invalid ticket_id or quantity' }, { status: 400 })
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database client not initialized' }, { status: 500 })
+    }
+
     // Fetch ticket details
     const { data: ticket, error: ticketErr } = await supabaseAdmin
       .from('event_tickets')
