@@ -78,6 +78,9 @@ export default function EventDetailPage() {
   const [regPage, setRegPage] = useState(1)
   const [regTotal, setRegTotal] = useState(0)
   const [regPageSize, setRegPageSize] = useState(25)
+  const [analytics, setAnalytics] = useState<any>(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
+  const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>([])
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -213,6 +216,43 @@ export default function EventDetailPage() {
       setRegPage(1)
     } finally {
       setRegLoading(false)
+    }
+  }
+
+  const fetchAnalytics = async () => {
+    if (!event) return
+    setAnalyticsLoading(true)
+    try {
+      const res = await fetch(`/api/events/${event.id}/analytics`)
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Failed to load analytics')
+      setAnalytics(json)
+    } catch (e:any) {
+      setAnalytics(null)
+    } finally {
+      setAnalyticsLoading(false)
+    }
+  }
+
+  const bulkUpdateStatus = async (status: string) => {
+    if (!event || selectedRegistrations.length === 0) return
+    try {
+      const res = await fetch(`/api/events/${event.id}/registrations/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'update_status', 
+          registration_ids: selectedRegistrations, 
+          status 
+        })
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Bulk update failed')
+      toast.success(`Updated ${selectedRegistrations.length} registrations`)
+      setSelectedRegistrations([])
+      fetchRegistrations(regPage, regPageSize)
+    } catch (e:any) {
+      toast.error(e.message || 'Bulk update failed')
     }
   }
 
@@ -416,6 +456,9 @@ export default function EventDetailPage() {
                             </Button>
                             <Button variant="outline" onClick={fetchRegistrations} className="hover:bg-gray-50 transition-colors">
                               View Registrations
+                            </Button>
+                            <Button variant="outline" onClick={fetchAnalytics} className="hover:bg-gray-50 transition-colors">
+                              Analytics
                             </Button>
                           </div>
                         )}
@@ -650,6 +693,43 @@ export default function EventDetailPage() {
               </Card>
             )}
 
+            {/* Analytics Dashboard */}
+            {user && event && (user.id === (event.organizer_id || event.created_by)) && analytics && (
+              <Card className="event-card">
+                <CardHeader>
+                  <CardTitle className="text-gray-900">Event Analytics</CardTitle>
+                  <CardDescription className="text-gray-600">Performance metrics and insights</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="font-semibold text-blue-900">Total Registrations</h3>
+                      <p className="text-2xl font-bold text-blue-600">{analytics.registrations?.total || 0}</p>
+                      <p className="text-sm text-blue-700">{analytics.registrations?.attendees || 0} attendees</p>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg">
+                      <h3 className="font-semibold text-green-900">Revenue</h3>
+                      <p className="text-2xl font-bold text-green-600">${(analytics.revenue?.total || 0).toFixed(2)}</p>
+                      <p className="text-sm text-green-700">${(analytics.revenue?.donations?.net || 0).toFixed(2)} net</p>
+                    </div>
+                    <div className="bg-purple-50 p-4 rounded-lg">
+                      <h3 className="font-semibold text-purple-900">Breakdown</h3>
+                      <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.rsvp || 0} RSVP</p>
+                      <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.ticket || 0} Tickets</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={fetchAnalytics} disabled={analyticsLoading}>
+                      {analyticsLoading ? 'Loading…' : 'Refresh'}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={()=>setAnalytics(null)}>
+                      Close
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Owner registrations table */}
             {user && event && (user.id === (event.organizer_id || event.created_by)) && (
               <Card className="event-card">
@@ -712,10 +792,41 @@ export default function EventDetailPage() {
                       </div>
                     </div>
                   </div>
+                  {selectedRegistrations.length > 0 && (
+                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-blue-700">{selectedRegistrations.length} selected</span>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={()=>bulkUpdateStatus('confirmed')}>
+                            Mark Confirmed
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={()=>bulkUpdateStatus('cancelled')}>
+                            Mark Cancelled
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={()=>setSelectedRegistrations([])}>
+                            Clear
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-sm">
                       <thead>
                         <tr className="text-left text-gray-700">
+                          <th className="py-2 pr-4">
+                            <input 
+                              type="checkbox" 
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedRegistrations((registrations || []).map((r:any) => r.id))
+                                } else {
+                                  setSelectedRegistrations([])
+                                }
+                              }}
+                              checked={selectedRegistrations.length === (registrations || []).length && (registrations || []).length > 0}
+                            />
+                          </th>
                           <th className="py-2 pr-4">Created</th>
                           <th className="py-2 pr-4">Name</th>
                           <th className="py-2 pr-4">Email</th>
@@ -727,6 +838,19 @@ export default function EventDetailPage() {
                       <tbody>
                         {(registrations || []).map((r:any) => (
                           <tr key={r.id} className="border-t border-gray-200 text-gray-800">
+                            <td className="py-2 pr-4">
+                              <input 
+                                type="checkbox" 
+                                checked={selectedRegistrations.includes(r.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedRegistrations([...selectedRegistrations, r.id])
+                                  } else {
+                                    setSelectedRegistrations(selectedRegistrations.filter(id => id !== r.id))
+                                  }
+                                }}
+                              />
+                            </td>
                             <td className="py-2 pr-4">{new Date(r.created_at).toLocaleString()}</td>
                             <td className="py-2 pr-4">{r.name || r.participant_name || '—'}</td>
                             <td className="py-2 pr-4">{r.email || r.participant_email || '—'}</td>
@@ -737,7 +861,7 @@ export default function EventDetailPage() {
                         ))}
                         {Array.isArray(registrations) && registrations.length === 0 && (
                           <tr>
-                            <td colSpan={6} className="py-6 text-center text-gray-600">No registrations yet</td>
+                            <td colSpan={7} className="py-6 text-center text-gray-600">No registrations yet</td>
                           </tr>
                         )}
                       </tbody>
