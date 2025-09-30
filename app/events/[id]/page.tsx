@@ -316,8 +316,17 @@ export default function EventDetailPage() {
                       </div>
                     ) : (
                       <>
-                        <CardTitle className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{event.title}</CardTitle>
-                        <div className="h-2 mb-4" />
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <CardTitle className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">{event.title}</CardTitle>
+                          {('is_published' in (event as any)) && (
+                            (event as any).is_published ? (
+                              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">Published</span>
+                            ) : (
+                              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-semibold">Draft</span>
+                            )
+                          )}
+                        </div>
+                        <div className="h-2 mb-2" />
                       </>
                     )}
                     {event.goal_amount && (
