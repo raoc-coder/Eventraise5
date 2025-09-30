@@ -645,13 +645,55 @@ export default function EventDetailPage() {
                       <CardTitle className="text-gray-900">Registrations</CardTitle>
                       <CardDescription className="text-gray-600">Owner-only view</CardDescription>
                     </div>
-                    <a href={`/api/events/${event.id}/registrations/csv`} className="text-sm text-blue-600 hover:underline">Export CSV</a>
+                    <div className="flex items-center gap-2">
+                      <a href={`/api/events/${event.id}/registrations/csv${(() => {
+                        const sp = new URLSearchParams()
+                        // future: include applied filters
+                        return sp.toString() ? `?${sp.toString()}` : ''
+                      })()}`} className="text-sm text-blue-600 hover:underline">Export CSV</a>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between mb-3">
-                    <Button variant="outline" size="sm" onClick={fetchRegistrations} disabled={regLoading}>{regLoading ? 'Loading…' : 'Refresh'}</Button>
-                    <span className="text-sm text-gray-600">{Array.isArray(registrations) ? registrations.length : 0} total</span>
+                  <div className="space-y-3 mb-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                      <select id="regType" className="border border-gray-300 rounded px-2 py-2 text-sm">
+                        <option value="">All Types</option>
+                        <option value="rsvp">RSVP</option>
+                        <option value="ticket">Ticket</option>
+                      </select>
+                      <input id="regFrom" type="date" className="border border-gray-300 rounded px-2 py-2 text-sm" />
+                      <input id="regTo" type="date" className="border border-gray-300 rounded px-2 py-2 text-sm" />
+                      <input id="regPageSize" type="number" min={1} max={100} defaultValue={25} className="border border-gray-300 rounded px-2 py-2 text-sm" />
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={async()=>{
+                          const typeEl = document.getElementById('regType') as HTMLSelectElement | null
+                          const fromEl = document.getElementById('regFrom') as HTMLInputElement | null
+                          const toEl = document.getElementById('regTo') as HTMLInputElement | null
+                          const sizeEl = document.getElementById('regPageSize') as HTMLInputElement | null
+                          const sp = new URLSearchParams()
+                          if (typeEl?.value) sp.set('type', typeEl.value)
+                          if (fromEl?.value) sp.set('from', fromEl.value)
+                          if (toEl?.value) sp.set('to', toEl.value)
+                          if (sizeEl?.value) sp.set('pageSize', String(Math.max(1, Math.min(100, Number(sizeEl.value)))))
+                          setRegLoading(true)
+                          try {
+                            const res = await fetch(`/api/events/${event?.id}/registrations${sp.toString()?`?${sp.toString()}`:''}`)
+                            const json = await res.json()
+                            if (!res.ok) throw new Error(json.error || 'Failed to load registrations')
+                            setRegistrations(json.registrations || [])
+                          } catch {
+                            setRegistrations([])
+                          } finally {
+                            setRegLoading(false)
+                          }
+                        }}>{regLoading ? 'Loading…' : 'Apply'}</Button>
+                        <Button variant="outline" size="sm" onClick={fetchRegistrations} disabled={regLoading}>Refresh</Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">{Array.isArray(registrations) ? registrations.length : 0} shown</span>
+                    </div>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-sm">

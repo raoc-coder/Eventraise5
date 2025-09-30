@@ -23,6 +23,10 @@ export async function GET(req: NextRequest, { params }: any) {
   try {
     const { id } = await params
     if (!id) return new NextResponse('Missing id', { status: 400 })
+    const { searchParams } = new URL(req.url)
+    const type = (searchParams.get('type') || '').trim()
+    const from = (searchParams.get('from') || '').trim()
+    const to = (searchParams.get('to') || '').trim()
 
     // Auth
     let db: any
@@ -54,11 +58,20 @@ export async function GET(req: NextRequest, { params }: any) {
     const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
     if (!isOwner && !isAdmin) return new NextResponse('Forbidden', { status: 403 })
 
-    const { data, error } = await db
+    let query = db
       .from('event_registrations')
       .select('id, created_at, type, quantity, status, name, email, participant_name, participant_email')
       .eq('event_id', id)
-      .order('created_at', { ascending: false })
+
+    if (type) query = query.eq('type', type)
+    if (from) query = query.gte('created_at', new Date(from).toISOString())
+    if (to) {
+      const toDate = new Date(to)
+      const toIso = isNaN(toDate.getTime()) ? new Date(to).toISOString() : new Date(toDate.getTime() + 24*60*60*1000).toISOString()
+      query = query.lt('created_at', toIso)
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false })
     if (error) return new NextResponse(error.message, { status: 400 })
 
     const csv = toCsv(data || [])
