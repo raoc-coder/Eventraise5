@@ -9,7 +9,7 @@ type ColumnCheck = {
 async function checkColumnExists(table: string, column: string) {
   try {
     // Try selecting just this column; if the column doesn't exist, PostgREST returns 42703
-    const { error } = await supabaseAdmin
+    const { error } = await (supabaseAdmin as any)
       .from(table)
       .select(`${column}`)
       .limit(1)
