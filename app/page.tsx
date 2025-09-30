@@ -60,10 +60,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-4">
-              Everything You Need for Direct Donation Campaigns
+              Everything You Need for Event Management
             </h2>
             <p className="text-base sm:text-lg text-gray-800 max-w-2xl mx-auto px-4">
-              From campaign creation to secure payment processing, we&apos;ve got you covered.
+              From event planning to secure payment processing, we&apos;ve got you covered.
             </p>
           </div>
 
@@ -73,9 +73,9 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-gray-900">Campaign Creation</CardTitle>
+                <CardTitle className="text-gray-900">Event Creation</CardTitle>
                 <CardDescription className="text-gray-600">
-                  Create and manage direct donation campaigns with ease
+                  Create and manage all types of events with ease
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -131,7 +131,7 @@ export default function HomePage() {
                 </div>
                 <CardTitle className="text-gray-900">Easy Sharing</CardTitle>
                 <CardDescription className="text-gray-600">
-                  Share your campaigns across multiple channels
+                  Share your events across multiple channels
                 </CardDescription>
               </CardHeader>
               <CardContent>

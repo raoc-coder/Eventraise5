@@ -49,9 +49,9 @@ export default function TermsOfServicePage() {
                 Event Raise is a crowdfunding and event management platform that enables users to:
               </p>
               <ul className="text-gray-700 space-y-2">
-                <li>• Create and manage fundraising campaigns</li>
+                <li>• Create and manage events of all types</li>
                 <li>• Organize and promote events</li>
-                <li>• Make secure donations to campaigns</li>
+                <li>• Make secure donations to events</li>
                 <li>• Register for events and activities</li>
                 <li>• Connect with like-minded individuals and organizations</li>
               </ul>

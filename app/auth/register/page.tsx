@@ -130,7 +130,7 @@ export default function RegisterPage() {
           </div>
           <CardTitle className="text-2xl">Create Account</CardTitle>
           <CardDescription className="text-gray-600">
-            Start your fundraising journey today
+            Start your event management journey today
           </CardDescription>
         </CardHeader>
         <CardContent>

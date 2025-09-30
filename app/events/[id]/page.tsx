@@ -329,8 +329,8 @@ export default function EventDetailPage() {
         {showCreatedBanner && (
           <div className="mb-6 p-4 rounded-lg border-2 border-green-200 bg-green-50 flex items-start justify-between">
             <div>
-              <p className="text-green-800 font-semibold">Your campaign is live!</p>
-              <p className="text-green-700 text-sm">Share the link below to start accepting donations.</p>
+              <p className="text-green-800 font-semibold">Your event is live!</p>
+              <p className="text-green-700 text-sm">Share the link below to start accepting registrations and donations.</p>
             </div>
             <div className="flex gap-2">
               <Button onClick={handleShare} variant="outline" className="border-2">Share</Button>
@@ -341,13 +341,13 @@ export default function EventDetailPage() {
         {showCreatedBanner && (
           <div className="mb-6 alert-success flex items-center justify-between">
             <div>
-              <p className="font-semibold text-green-800">Your campaign is live!</p>
-              <p className="text-green-700 text-sm">Share it now or manage it from My Campaigns.</p>
+              <p className="font-semibold text-green-800">Your event is live!</p>
+              <p className="text-green-700 text-sm">Share it now or manage it from My Events.</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={handleShare} className="border-green-600 text-green-700 hover:bg-green-50">Share</Button>
               <Link href="/events/mine">
-                <Button>My Campaigns</Button>
+                <Button>My Events</Button>
               </Link>
               <Button variant="outline" onClick={()=>setShowCreatedBanner(false)} className="border-green-600 text-green-700 hover:bg-green-50">Dismiss</Button>
             </div>

@@ -7,8 +7,8 @@ export default function MarketplacePage() {
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Fundraising Hub</h1>
-          <p className="text-gray-600">Discover verified campaigns by cause, location, and urgency</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Event Marketplace</h1>
+          <p className="text-gray-600">Discover verified events by cause, location, and urgency</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

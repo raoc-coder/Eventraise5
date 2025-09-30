@@ -55,7 +55,7 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-800">Create, share, and manage your direct donation campaigns</p>
+          <p className="text-gray-800">Create, share, and manage your events</p>
         </div>
 
         {/* Welcome Message */}
@@ -65,11 +65,11 @@ export default function DashboardPage() {
               <div className="text-center">
                 <Heart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
                 <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Welcome to EventraiseHub</h2>
-                <p className="text-gray-800 mb-4">Create and manage your direct donation campaigns</p>
+                <p className="text-gray-800 mb-4">Create and manage your events</p>
                 <Link href="/events/create">
                   <Button>
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Your First Campaign
+                    Create Your First Event
                   </Button>
                 </Link>
               </div>
@@ -117,7 +117,7 @@ export default function DashboardPage() {
                   <Target className="h-5 w-5 text-blue-600" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-900">Set Clear Goals</p>
-                    <p className="text-sm text-gray-800">Define specific fundraising targets for your campaign</p>
+                    <p className="text-sm text-gray-800">Define specific goals and targets for your event</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 p-3 rounded-lg bg-orange-50 border border-orange-200">

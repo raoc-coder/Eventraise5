@@ -169,25 +169,25 @@ export default function CreateEventPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">Create New Campaign</h1>
-          <p className="text-gray-300 text-sm sm:text-base">Set up your fundraising campaign</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Create New Event</h1>
+          <p className="text-gray-300 text-sm sm:text-base">Set up your event</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {/* Form */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">Campaign Details</CardTitle>
-              <CardDescription className="text-sm sm:text-base">Provide information about your campaign</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">Event Details</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Provide information about your event</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Campaign Title *</Label>
+                  <Label htmlFor="title">Event Title *</Label>
                   <Input
                     id="title"
-                    placeholder="Enter campaign title"
+                    placeholder="Enter event title"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     aria-invalid={!!errors.title}
@@ -237,7 +237,7 @@ export default function CreateEventPage() {
                 <Label htmlFor="description">Description *</Label>
                 <textarea
                   id="description"
-                  placeholder="Describe your fundraising campaign and its purpose"
+                  placeholder="Describe your event and its purpose"
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[100px]"
@@ -298,7 +298,7 @@ export default function CreateEventPage() {
                     onChange={(e) => handleInputChange('is_public', e.target.checked)}
                     className="rounded border-gray-300"
                   />
-                     <Label htmlFor="is_public">Make this campaign public (visible to everyone)</Label>
+                     <Label htmlFor="is_public">Make this event public (visible to everyone)</Label>
                 </div>
                 <p className="text-xs text-gray-500">Uncheck to make it private and invite only specific people.</p>
 
@@ -313,7 +313,7 @@ export default function CreateEventPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[80px]"
                     />
                     <p className="text-sm text-gray-500">
-                      For private events, you can invite specific people by email. They&#39;ll receive a direct link to your campaign.
+                      For private events, you can invite specific people by email. They&#39;ll receive a direct link to your event.
                     </p>
                   </div>
                 )}
@@ -335,7 +335,7 @@ export default function CreateEventPage() {
           <Card className="event-card">
             <CardHeader>
               <CardTitle className="text-gray-900">Preview</CardTitle>
-              <CardDescription className="text-gray-600">This is how your campaign will look</CardDescription>
+              <CardDescription className="text-gray-600">This is how your event will look</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -391,7 +391,7 @@ export default function CreateEventPage() {
                 </div>
 
                 <div className="rounded-lg bg-gray-50 p-4">
-                  <p className="text-gray-700 whitespace-pre-line">{formData.description || 'Describe your fundraising campaign and its purpose.'}</p>
+                  <p className="text-gray-700 whitespace-pre-line">{formData.description || 'Describe your event and its purpose.'}</p>
                 </div>
 
                 <div>
