@@ -198,7 +198,7 @@ export default function CreateEventPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="event_type">Event Type *</nLabel>
+                  <Label htmlFor="event_type">Event Type *</Label>
                   <select
                     id="event_type"
                     value={formData.event_type}
