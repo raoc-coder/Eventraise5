@@ -392,7 +392,18 @@ export default function EventDetailPage() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-purple-700 uppercase tracking-wide">Campaign Type</p>
-                      <p className="text-purple-900 font-bold text-lg">Direct Donation</p>
+                      <p className="text-purple-900 font-bold text-lg">
+                        {(() => {
+                          const map: Record<string, string> = {
+                            walkathon: 'Walk-a-thon',
+                            auction: 'Auction',
+                            product_sale: 'Product Sale',
+                            direct_donation: 'Direct Donation',
+                            raffle: 'Raffle',
+                          }
+                          return map[event.event_type] || 'Event'
+                        })()}
+                      </p>
                     </div>
                   </div>
                   </div>

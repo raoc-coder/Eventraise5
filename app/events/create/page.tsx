@@ -198,6 +198,25 @@ export default function CreateEventPage() {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="event_type">Event Type *</nLabel>
+                  <select
+                    id="event_type"
+                    value={formData.event_type}
+                    onChange={(e) => handleInputChange('event_type', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+                    aria-invalid={!!errors.event_type}
+                    required
+                  >
+                    <option value="direct_donation">Direct Donation</option>
+                    <option value="walkathon">Walk-a-thon</option>
+                    <option value="auction">Auction</option>
+                    <option value="product_sale">Product Sale</option>
+                    <option value="raffle">Raffle</option>
+                  </select>
+                  {errors.event_type && <p className="text-red-500 text-sm">{errors.event_type}</p>}
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="goal_amount">Fundraising Goal ($) *</Label>
                   <Input
                     id="goal_amount"
@@ -322,7 +341,18 @@ export default function CreateEventPage() {
               <div className="space-y-4">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-1">{formData.title || 'Your Event Title'}</h2>
-                  <p className="text-blue-600 font-semibold">Direct Donation Campaign</p>
+                  <p className="text-blue-600 font-semibold">
+                    {(() => {
+                      const map: Record<string, string> = {
+                        walkathon: 'Walk-a-thon',
+                        auction: 'Auction',
+                        product_sale: 'Product Sale',
+                        direct_donation: 'Direct Donation',
+                        raffle: 'Raffle',
+                      }
+                      return map[formData.event_type] || 'Event'
+                    })()}
+                  </p>
                 </div>
 
                 {formData.goal_amount && (
