@@ -141,12 +141,16 @@ export default function EventDetailPage() {
   const fetchDonationTotal = async () => {
     if (!event?.id) return
     try {
-      const response = await fetch(`/api/events/${event.id}/analytics`)
+      const response = await fetch(`/api/events/${event.id}/analytics`, { credentials: 'include' })
       if (response.ok) {
         const data = await response.json()
         if (data.revenue?.total) {
           setDonationTotal(data.revenue.total)
         }
+      } else if (response.status === 401) {
+        toast.error('Please log in to view analytics')
+      } else if (response.status === 403) {
+        toast.error('You must be the event owner or admin to view analytics')
       }
     } catch (error) {
       console.error('Failed to fetch donation total:', error)
@@ -244,9 +248,16 @@ export default function EventDetailPage() {
     if (!event?.id) return
     setAnalyticsLoading(true)
     try {
-      const res = await fetch(`/api/events/${event.id}/analytics`)
+      const res = await fetch(`/api/events/${event.id}/analytics`, { credentials: 'include' })
       const json = await res.json()
-      if (!res.ok) throw new Error(json.error || 'Failed to load analytics')
+      if (!res.ok) {
+        if (res.status === 401) {
+          toast.error('Please log in to view analytics')
+        } else if (res.status === 403) {
+          toast.error('You must be the event owner or admin to view analytics')
+        }
+        throw new Error(json.error || 'Failed to load analytics')
+      }
       setAnalytics(json)
     } catch (e:any) {
       setAnalytics(null)
