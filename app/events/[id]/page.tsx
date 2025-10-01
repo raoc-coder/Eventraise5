@@ -1003,7 +1003,7 @@ export default function EventDetailPage() {
                     </div>
                   )}
                   <div className="table-responsive overflow-y-visible no-overflow">
-                    <table className="min-w-full text-sm">
+                    <table className="min-w-full table-fixed text-xs sm:text-sm">
                       <thead>
                         <tr className="text-left text-gray-700">
                           <th className="py-2 pr-4">
@@ -1019,9 +1019,9 @@ export default function EventDetailPage() {
                               checked={selectedRegistrations.length === (registrations || []).length && (registrations || []).length > 0}
                             />
                           </th>
-                          <th className="py-2 pr-4">Created</th>
+                          <th className="py-2 pr-4 hidden sm:table-cell w-[160px]">Created</th>
                           <th className="py-2 pr-4">Name</th>
-                          <th className="py-2 pr-4">Email</th>
+                          <th className="py-2 pr-4 hidden sm:table-cell">Email</th>
                           <th className="py-2 pr-4">Type</th>
                           <th className="py-2 pr-4">Qty</th>
                           <th className="py-2 pr-4">Status</th>
@@ -1043,9 +1043,9 @@ export default function EventDetailPage() {
                                 }}
                               />
                             </td>
-                            <td className="py-2 pr-4">{new Date(r.created_at).toLocaleString()}</td>
-                            <td className="py-2 pr-4 break-words truncate-soft max-w-[180px] sm:max-w-none">{r.name || r.participant_name || '—'}</td>
-                            <td className="py-2 pr-4 break-words truncate-soft max-w-[220px] sm:max-w-none">{r.email || r.participant_email || '—'}</td>
+                            <td className="py-2 pr-4 hidden sm:table-cell">{new Date(r.created_at).toLocaleString()}</td>
+                            <td className="py-2 pr-4 break-words truncate-soft max-w-[140px] sm:max-w-[220px]">{r.name || r.participant_name || '—'}</td>
+                            <td className="py-2 pr-4 break-words truncate-soft hidden sm:table-cell max-w-[260px]">{r.email || r.participant_email || '—'}</td>
                             <td className="py-2 pr-4">{r.type}</td>
                             <td className="py-2 pr-4">{r.quantity}</td>
                             <td className="py-2 pr-4">{r.status}</td>
