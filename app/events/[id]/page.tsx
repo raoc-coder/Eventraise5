@@ -428,7 +428,7 @@ export default function EventDetailPage() {
             </div>
           </div>
         )}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 no-overflow">
           {/* Event Info */}
           <div className="lg:col-span-2 space-y-6">
               <Card className="event-card" id="donate">
@@ -517,22 +517,22 @@ export default function EventDetailPage() {
                     {editMode ? null : (
                       <>
                         {user && event && (user.id === (event.organizer_id || event.created_by)) && (
-                          <div className="flex gap-2 ml-auto">
-                            <Button variant="outline" onClick={()=>setEditMode(true)} className="hover:bg-gray-50 transition-colors">
+                          <div className="flex flex-col sm:flex-row gap-2 ml-auto w-full sm:w-auto">
+                            <Button variant="outline" onClick={()=>setEditMode(true)} className="hover:bg-gray-50 transition-colors btn-mobile">
                               <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
-                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors">
+                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors btn-mobile">
                               <Trash2 className="h-4 w-4 mr-2" />
                               Delete
                             </Button>
-                            <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors">
+                            <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors btn-mobile">
                               {(event as any).is_published ? 'Unpublish' : 'Publish'}
                             </Button>
-                            <Button variant="outline" onClick={() => fetchRegistrations()} className="hover:bg-gray-50 transition-colors">
+                            <Button variant="outline" onClick={() => fetchRegistrations()} className="hover:bg-gray-50 transition-colors btn-mobile">
                               View Registrations
                             </Button>
-                            <Button variant="outline" onClick={() => fetchAnalytics()} className="hover:bg-gray-50 transition-colors">
+                            <Button variant="outline" onClick={() => fetchAnalytics()} className="hover:bg-gray-50 transition-colors btn-mobile">
                               Analytics
                             </Button>
                           </div>
