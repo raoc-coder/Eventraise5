@@ -5,6 +5,7 @@ import { getAppUrl } from '@/lib/config'
 export async function POST(req: NextRequest) {
   try {
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
+    const db = supabaseAdmin
     const body = await req.json().catch(() => ({}))
     const amount = Number(body?.amount)
     const eventId = (body?.eventId as string) || null
@@ -12,11 +13,8 @@ export async function POST(req: NextRequest) {
     const donor_email = body?.donor_email as string | undefined
     if (!amount || amount <= 0) return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
 
-    // Check if Braintree is configured
-    if (!process.env.BRAINTREE_MERCHANT_ID) {
-      console.error('[donations/checkout] Missing BRAINTREE_MERCHANT_ID')
-      return NextResponse.json({ error: 'Braintree not configured' }, { status: 500 })
-    }
+    // Legacy endpoint no longer supported (migrated to PayPal)
+    return NextResponse.json({ error: 'Legacy checkout is no longer supported. Use PayPal flow.' }, { status: 410 })
 
     const amountCents = Math.round(amount * 100)
     const feeCents = Math.floor(amountCents * 0.0899)
@@ -36,7 +34,7 @@ export async function POST(req: NextRequest) {
     }
     if (eventId) baseInsert.event_id = eventId
 
-    let { data: dr, error: drErr } = await supabaseAdmin
+    let { data: dr, error: drErr } = await db
       .from('donation_requests')
       .insert(baseInsert)
       .select()
@@ -47,7 +45,7 @@ export async function POST(req: NextRequest) {
       if (code === 'PGRST204' || code === '42703' || msg.includes('event_id')) {
         // Retry without event_id on schema variants
         delete baseInsert.event_id
-        ;({ data: dr, error: drErr } = await supabaseAdmin
+        ;({ data: dr, error: drErr } = await db
           .from('donation_requests')
           .insert(baseInsert)
           .select()
@@ -60,7 +58,7 @@ export async function POST(req: NextRequest) {
           delete (baseInsert as any).fee_cents
           delete (baseInsert as any).net_cents
           delete (baseInsert as any).settlement_status
-          ;({ data: dr, error: drErr } = await supabaseAdmin
+          ;({ data: dr, error: drErr } = await db
             .from('donation_requests')
             .insert(baseInsert)
             .select()
@@ -73,13 +71,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to persist donation' }, { status: 500 })
     }
 
-    const appUrl = getAppUrl()
-    
-    // For Braintree, we'll redirect to the Braintree payment page
-    const eventQuery = eventId ? `&eventId=${encodeURIComponent(eventId)}` : ''
-    const braintreeUrl = `${appUrl}/payment/braintree?request_id=${dr.id}&amount=${amount}${eventQuery}`
-    
-    return NextResponse.json({ url: braintreeUrl })
+    // Unreachable with 410 above, but keeping function structure intact
+    // for any future extension.
   } catch (e: any) {
     console.error('[donations/checkout] Error', e?.message || e)
     return NextResponse.json({ error: e?.message || 'Failed to start checkout' }, { status: 500 })

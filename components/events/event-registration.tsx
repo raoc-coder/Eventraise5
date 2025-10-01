@@ -147,7 +147,8 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
         // Redirect to Braintree payment
         toast.loading('Redirecting to secure payment...', { duration: 2000 })
         // For Braintree, we'll redirect to a payment page with Drop-in UI
-        window.location.href = `/payment/braintree?request_id=${paymentData.donationRequestId}&amount=${totalAmount}`
+        // Legacy Braintree route removed; switch to PayPal donations/new route
+        window.location.href = `/donations/new?eventId=${encodeURIComponent(event.id)}&amount=${totalAmount}`
       } else {
         // Free event - confirm registration
         setRegistrationId(data.registration_id)
