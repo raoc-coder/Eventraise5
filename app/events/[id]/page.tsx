@@ -139,8 +139,9 @@ export default function EventDetailPage() {
   }
 
   const fetchDonationTotal = async () => {
+    if (!event?.id) return
     try {
-      const response = await fetch(`/api/events/${event?.id}/analytics`)
+      const response = await fetch(`/api/events/${event.id}/analytics`)
       if (response.ok) {
         const data = await response.json()
         if (data.revenue?.total) {
@@ -240,7 +241,7 @@ export default function EventDetailPage() {
   }
 
   const fetchAnalytics = async () => {
-    if (!event) return
+    if (!event?.id) return
     setAnalyticsLoading(true)
     try {
       const res = await fetch(`/api/events/${event.id}/analytics`)
