@@ -56,17 +56,17 @@ export default function MyEventsPage() {
         ) : events.length === 0 ? (
           <p className="text-gray-700">You haven&apos;t created any events yet.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-overflow">
             {events.map((ev) => (
-              <Card key={ev.id} className="event-card">
+              <Card key={ev.id} className="event-card responsive-media">
                 <CardHeader>
-                  <CardTitle className="text-xl font-semibold text-gray-900">{ev.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold text-gray-900 break-words truncate-soft">{ev.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-800 mb-3">{ev.description || 'No description'}</p>
-                  <div className="flex justify-between">
-                    <span className="text-blue-700 text-xs px-2 py-1 bg-blue-50 rounded-full font-medium">{ev.event_type || 'direct_donation'}</span>
-                    <Link href={`/events/${ev.id}`} className="text-sm text-blue-600 hover:underline">Manage</Link>
+                  <p className="text-gray-800 mb-3 break-words truncate-soft">{ev.description || 'No description'}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-blue-700 text-xs px-2 py-1 bg-blue-50 rounded-full font-medium truncate-soft max-w-[50%]">{ev.event_type || 'direct_donation'}</span>
+                    <Link href={`/events/${ev.id}`} className="text-sm text-blue-600 hover:underline truncate-soft">Manage</Link>
                   </div>
                 </CardContent>
               </Card>
