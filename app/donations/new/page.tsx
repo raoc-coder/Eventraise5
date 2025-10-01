@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'next/navigation'
 import { Heart, DollarSign } from 'lucide-react'
+import { PayPalDonationButton } from '@/lib/paypal-client'
 
 function DonationForm() {
   const searchParams = useSearchParams()
@@ -23,35 +24,7 @@ function DonationForm() {
     window.location.href = `/payment/success?transaction_id=${transactionId}&amount=${amount}`
   }
 
-  const handleCheckout = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch('/api/donations/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: amount,
-          eventId: eventId,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to start checkout')
-      }
-
-      // Redirect to Braintree payment page
-      window.location.href = data.url
-    } catch (error) {
-      console.error('Checkout error:', error)
-      toast.error(error instanceof Error ? error.message : 'Failed to process payment')
-    } finally {
-      setLoading(false)
-    }
-  }
+  // PayPal flow handled by PayPalDonationButton
 
   if (paymentComplete) {
     return (
@@ -151,40 +124,25 @@ function DonationForm() {
           </div>
           
           <div className="text-xs text-gray-600 text-center leading-relaxed">
-            Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus Braintree processing fees).
+            Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus PayPal processing fees).
           </div>
         </div>
       )}
 
-      {/* Payment Button */}
+      {/* PayPal Buttons */}
       {amount > 0 && (
         <div className="space-y-4">
           <div className="text-center">
-            <p className="text-sm text-gray-500 mb-2">
-              Secure payment powered by Braintree
-            </p>
-            <p className="text-xs text-gray-400">
-              Supports PayPal, Venmo, Apple Pay, Google Pay
-            </p>
+            <p className="text-sm text-gray-500 mb-2">Secure payment powered by PayPal</p>
+            <img alt="PayPal" src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" className="h-8 mx-auto" />
           </div>
-          
-          <Button 
-            onClick={handleCheckout}
-            className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-            disabled={loading}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Processing...
-              </div>
-            ) : (
-              <div className="flex items-center justify-center">
-                <Heart className="h-5 w-5 mr-2" />
-                Donate ${amount.toFixed(2)}
-              </div>
-            )}
-          </Button>
+          <PayPalDonationButton
+            amount={amount}
+            eventId={eventId || ''}
+            onSuccess={() => handlePaymentSuccess('paypal')}
+            onError={(err) => toast.error(err)}
+            disabled={loading || amount < 1}
+          />
         </div>
       )}
     </div>
