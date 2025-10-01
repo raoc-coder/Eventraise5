@@ -1002,7 +1002,7 @@ export default function EventDetailPage() {
                       </div>
                     </div>
                   )}
-                  <div className="overflow-x-auto overflow-y-visible">
+                  <div className="table-responsive overflow-y-visible no-overflow">
                     <table className="min-w-full text-sm">
                       <thead>
                         <tr className="text-left text-gray-700">
@@ -1044,8 +1044,8 @@ export default function EventDetailPage() {
                               />
                             </td>
                             <td className="py-2 pr-4">{new Date(r.created_at).toLocaleString()}</td>
-                            <td className="py-2 pr-4">{r.name || r.participant_name || '—'}</td>
-                            <td className="py-2 pr-4">{r.email || r.participant_email || '—'}</td>
+                            <td className="py-2 pr-4 break-words truncate-soft max-w-[180px] sm:max-w-none">{r.name || r.participant_name || '—'}</td>
+                            <td className="py-2 pr-4 break-words truncate-soft max-w-[220px] sm:max-w-none">{r.email || r.participant_email || '—'}</td>
                             <td className="py-2 pr-4">{r.type}</td>
                             <td className="py-2 pr-4">{r.quantity}</td>
                             <td className="py-2 pr-4">{r.status}</td>
