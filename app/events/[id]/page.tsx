@@ -659,35 +659,9 @@ export default function EventDetailPage() {
                         disabled={donationAmount < 1}
                       />
                       
-                      <div className="text-center">
-                        <Button 
-                          variant="outline"
-                          onClick={async()=>{
-                            try {
-                              const res = await fetch('/api/donations/checkout', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ 
-                                  amount: donationAmount, 
-                                  eventId: (params as any)?.id,
-                                  donor_name: donorName,
-                                  donor_email: donorEmail,
-                                  message: donorMessage
-                                }),
-                              })
-                              const json = await res.json()
-                              if (!res.ok) throw new Error(json.error || 'Failed to start checkout')
-                              window.location.href = json.url
-                            } catch (e:any) {
-                              toast.error(e.message || 'Unable to start checkout')
-                            }
-                          }}
-                          className="w-full"
-                        >
-                          <Heart className="h-4 w-4 mr-2" />
-                          Donate ${'{'}donationAmount{'}'} (Legacy)
-                        </Button>
-                        <p className="text-xs text-gray-500 mt-2">Legacy Braintree payment method</p>
+                      {/* PayPal Marks for branding */}
+                      <div className="flex items-center justify-center">
+                        <img alt="Powered by PayPal" src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png" className="h-6" />
                       </div>
                     </div>
                   </div>
@@ -853,7 +827,7 @@ export default function EventDetailPage() {
                             <Heart className="h-4 w-4 mr-2" />
                             Donate ${donationAmount} (Legacy)
                           </Button>
-                          <p className="text-xs text-gray-500 mt-2">Legacy Braintree payment method</p>
+                          {/* Removed legacy Braintree method */}
                         </div>
                       </div>
                     </div>

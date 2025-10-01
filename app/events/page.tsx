@@ -228,6 +228,11 @@ export default function EventsPage() {
                     <Link href={`/events/${event.id}`} className="flex-1">
                       <Button className="w-full">View Details</Button>
                     </Link>
+                    {(event.event_type === 'direct_donation') && (
+                      <Link href={`/events/${event.id}#donate`}>
+                        <Button variant="secondary" className="whitespace-nowrap">Donate</Button>
+                      </Link>
+                    )}
                     <Button variant="outline" size="sm" className="text-gray-700">
                       <Heart className="h-4 w-4" />
                     </Button>
