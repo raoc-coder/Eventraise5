@@ -376,7 +376,7 @@ export default function EventDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Event Info */}
           <div className="lg:col-span-2 space-y-6">
-            <Card className="event-card">
+              <Card className="event-card" id="donate">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -546,7 +546,7 @@ export default function EventDetailPage() {
           {/* Right rail: type-specific CTAs */}
           <div className="space-y-6">
             {event.event_type === 'direct_donation' ? (
-              <Card className="event-card">
+              <Card className="event-card" id="donate">
                 <CardHeader>
                   <CardTitle className="text-gray-900">Make a Donation</CardTitle>
                   <CardDescription className="text-gray-600">
@@ -825,7 +825,7 @@ export default function EventDetailPage() {
                             className="w-full"
                           >
                             <Heart className="h-4 w-4 mr-2" />
-                            Donate ${donationAmount} (Legacy)
+                          Donate ${donationAmount}
                           </Button>
                           {/* Removed legacy Braintree method */}
                         </div>
@@ -838,7 +838,7 @@ export default function EventDetailPage() {
 
             {/* Analytics Dashboard */}
             {user && event && (user.id === (event.organizer_id || event.created_by)) && analytics && (
-              <Card className="event-card">
+              <Card className="event-card" id="donate">
                 <CardHeader>
                   <CardTitle className="text-gray-900">Event Analytics</CardTitle>
                   <CardDescription className="text-gray-600">Performance metrics and insights</CardDescription>
@@ -875,7 +875,7 @@ export default function EventDetailPage() {
 
             {/* Owner registrations table */}
             {user && event && (user.id === (event.organizer_id || event.created_by)) && (
-              <Card className="event-card">
+              <Card className="event-card" id="donate">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
@@ -893,7 +893,7 @@ export default function EventDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3 mb-3">
-                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 overflow-visible">
                       <select id="regType" className="border border-gray-300 rounded px-2 py-2 text-sm">
                         <option value="">All Types</option>
                         <option value="rsvp">RSVP</option>
@@ -953,7 +953,7 @@ export default function EventDetailPage() {
                       </div>
                     </div>
                   )}
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto overflow-y-visible">
                     <table className="min-w-full text-sm">
                       <thead>
                         <tr className="text-left text-gray-700">
