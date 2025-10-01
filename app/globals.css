@@ -194,6 +194,26 @@
     box-shadow: var(--shadow-elevated);
   }
   
+  /* Responsive media and text to avoid overflow */
+  .responsive-media img,
+  .responsive-media video,
+  .responsive-media iframe {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .break-words {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Responsive table container */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
   .input {
     @apply flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
@@ -475,6 +495,22 @@
   .no-overflow {
     overflow-x: hidden;
     max-width: 100vw;
+  }
+
+  /* Clamp long strings like emails/IDs in tight spaces */
+  .truncate-soft {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Helper for sticky mobile footers/actions */
+  .sticky-bottom {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #E5E7EB;
+    z-index: 40;
   }
   
   /* Navigation container fixes */
