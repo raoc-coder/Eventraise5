@@ -566,7 +566,7 @@ export default function EventDetailPage() {
                           onClick={()=>setDonationAmount(v)}
                           className="min-h-[44px] px-4"
                         >
-                          ${'{'}v{'}'}
+                          ${v}
                         </Button>
                       ))}
                       <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -626,17 +626,17 @@ export default function EventDetailPage() {
                     <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-gray-700 font-medium">Donation Amount</span>
-                        <span className="text-gray-900 font-semibold">${'{'}donationAmount{'}'}</span>
+                        <span className="text-gray-900 font-semibold">${donationAmount}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-700 font-medium">Platform Fee (8.99%)</span>
-                        <span className="text-gray-900 font-semibold">${'{'}(donationAmount * 0.0899).toFixed(2){'}'}</span>
+                        <span className="text-gray-900 font-semibold">${(donationAmount * 0.0899).toFixed(2)}</span>
                       </div>
                       <div className="border-t border-blue-300 mt-2 pt-2">
                         <div className="flex justify-between items-center">
                           <span className="text-gray-900 font-bold">Total Charged</span>
                           <span className="text-blue-600 font-bold text-lg">
-                    ${'{'}(donationAmount + (donationAmount * 0.0899)).toFixed(2){'}'}
+                    ${(donationAmount + (donationAmount * 0.0899)).toFixed(2)}
                           </span>
                         </div>
                       </div>
