@@ -52,7 +52,11 @@ export function calculatePlatformFee(amount: number): {
 // Create PayPal order for donation
 export async function createDonationOrder(eventId: string, amount: number, donorName?: string, donorEmail?: string) {
   const fees = calculatePlatformFee(amount)
-  
+
+  // Important: Charge exactly the entered amount at PayPal.
+  // Platform and PayPal fees are internal accounting and should NOT be added
+  // to the PayPal order amount or its breakdown, otherwise PayPal may reject
+  // the request or the charged amount will not match the UI expectation.
   const orderRequest = {
     intent: 'CAPTURE',
     purchase_units: [
@@ -60,29 +64,9 @@ export async function createDonationOrder(eventId: string, amount: number, donor
         reference_id: `donation_${eventId}_${Date.now()}`,
         amount: {
           currency_code: 'USD',
-          value: amount.toFixed(2),
-          breakdown: {
-            item_total: {
-              currency_code: 'USD',
-              value: amount.toFixed(2)
-            },
-            handling: {
-              currency_code: 'USD',
-              value: fees.totalFees.toFixed(2)
-            }
-          }
+          value: amount.toFixed(2)
         },
-        items: [
-          {
-            name: 'Event Donation',
-            description: `Donation for event ${eventId}`,
-            quantity: '1',
-            unit_amount: {
-              currency_code: 'USD',
-              value: amount.toFixed(2)
-            }
-          }
-        ],
+        // Keep items optional; not required for a simple donation
         custom_id: `donation_${eventId}`,
         soft_descriptor: 'EventraiseHub'
       }

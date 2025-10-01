@@ -105,26 +105,22 @@ function DonationForm() {
           <div className="text-center">
             <h3 className="font-semibold text-gray-900 mb-3">Payment Summary</h3>
           </div>
-          
+
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-gray-700">Donation Amount</span>
               <span className="font-semibold text-gray-900">${amount.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-700">Platform Fee (8.99%)</span>
-              <span className="font-semibold text-gray-900">${(amount * 0.0899).toFixed(2)}</span>
-            </div>
             <div className="border-t border-blue-300 pt-2">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold text-gray-900">Total Charged</span>
-                <span className="text-xl font-bold text-blue-600">${(amount * 1.0899).toFixed(2)}</span>
+                <span className="text-lg font-bold text-gray-900">You’ll Be Charged</span>
+                <span className="text-xl font-bold text-blue-600">${amount.toFixed(2)}</span>
               </div>
             </div>
           </div>
-          
+
           <div className="text-xs text-gray-600 text-center leading-relaxed">
-            Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus PayPal processing fees).
+            Fees are deducted from your donation so the organizer receives the net amount.
           </div>
         </div>
       )}
