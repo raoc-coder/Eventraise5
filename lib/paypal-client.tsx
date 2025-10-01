@@ -10,15 +10,7 @@ export const paypalClientConfig = {
   components: 'buttons',
   enableFunding: 'paylater,venmo,card,credit,paypal',
   disableFunding: '',
-  dataSdkIntegration: 'eventraisehub',
-  style: {
-    layout: 'vertical',
-    color: 'blue',
-    shape: 'rect',
-    label: 'paypal',
-    height: 45,
-    tagline: false
-  }
+  dataSdkIntegration: 'eventraisehub'
 }
 
 // PayPal button component for donations
@@ -101,14 +93,7 @@ export function PayPalDonationButton({
         onApprove={onApprove}
         onError={handlePayPalError}
         disabled={disabled}
-        style={{
-          layout: 'vertical',
-          color: 'blue',
-          shape: 'rect',
-          label: 'paypal',
-          height: 45,
-          tagline: false
-        }}
+        style={{ layout: 'vertical', label: 'paypal' }}
       />
     </PayPalScriptProvider>
   )
@@ -202,14 +187,7 @@ export function PayPalTicketButton({
         onApprove={onApprove}
         onError={handlePayPalError}
         disabled={disabled}
-        style={{
-          layout: 'vertical',
-          color: 'blue',
-          shape: 'rect',
-          label: 'paypal',
-          height: 45,
-          tagline: false
-        }}
+        style={{ layout: 'vertical', label: 'paypal' }}
       />
     </PayPalScriptProvider>
   )
