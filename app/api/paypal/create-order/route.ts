@@ -41,7 +41,11 @@ export async function POST(req: NextRequest) {
     const orderResult = await createDonationOrder(eventId, amount)
 
     if (!orderResult.success) {
-      return NextResponse.json({ error: orderResult.error }, { status: 500 })
+      // Propagate a clearer error with 4xx when it's likely a request/config issue
+      const message = orderResult.error || 'Failed to create PayPal order'
+      const status = /\(4\d\d\)/.test(message) ? 400 : 500
+      console.error('Create-order failure:', message)
+      return NextResponse.json({ error: message }, { status })
     }
 
     // Store order details in database for tracking

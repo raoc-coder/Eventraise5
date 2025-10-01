@@ -21,7 +21,27 @@ async function getPayPalAccessToken(): Promise<string> {
     body: 'grant_type=client_credentials'
   })
 
-  const data = await response.json()
+  const text = await response.text()
+  if (!response.ok) {
+    console.error('PayPal token error:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: text?.slice(0, 1000)
+    })
+    throw new Error(`Failed to obtain PayPal access token (${response.status})`)
+  }
+
+  let data: any
+  try {
+    data = JSON.parse(text)
+  } catch (e) {
+    console.error('PayPal token JSON parse error:', text)
+    throw new Error('Invalid PayPal token response')
+  }
+  if (!data?.access_token) {
+    console.error('PayPal token missing access_token:', data)
+    throw new Error('Missing access token from PayPal')
+  }
   return data.access_token
 }
 
@@ -92,10 +112,26 @@ export async function createDonationOrder(eventId: string, amount: number, donor
       body: JSON.stringify(orderRequest)
     })
 
-    const order = await response.json()
-    
+    const raw = await response.text()
+    let order: any = null
+    try {
+      order = raw ? JSON.parse(raw) : null
+    } catch (e) {
+      // leave as text
+    }
+
     if (!response.ok) {
-      throw new Error(order.message || 'Failed to create PayPal order')
+      console.error('PayPal create order error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: raw?.slice(0, 2000)
+      })
+      const details = order?.details?.map((d: any) => `${d.issue}: ${d.description}`).join('; ')
+      const name = order?.name
+      return {
+        success: false as const,
+        error: `PayPal create order failed (${response.status}) ${name ? '[' + name + ']' : ''} ${details || order?.message || ''}`.trim()
+      }
     }
 
     return {
@@ -125,10 +161,21 @@ export async function captureOrder(orderId: string) {
       }
     })
 
-    const capture = await response.json()
+    const raw = await response.text()
+    let capture: any = null
+    try {
+      capture = raw ? JSON.parse(raw) : null
+    } catch (e) {
+      // leave as text
+    }
     
     if (!response.ok) {
-      throw new Error(capture.message || 'Failed to capture PayPal order')
+      console.error('PayPal capture error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: raw?.slice(0, 2000)
+      })
+      throw new Error(capture?.message || `Failed to capture PayPal order (${response.status})`)
     }
 
     return {
