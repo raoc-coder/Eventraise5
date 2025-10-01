@@ -37,6 +37,7 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/app/providers'
 import { DonationConfirmation } from '@/components/payments/donation-confirmation'
+import { createClient } from '@supabase/supabase-js'
 import { EventRegistration } from '@/components/events/event-registration'
 import { VolunteerShifts } from '@/components/events/volunteer-shifts'
 
@@ -148,6 +149,27 @@ export default function EventDetailPage() {
           setDonationTotal(data.revenue.total)
         }
       } else if (response.status === 401) {
+        // Try again with explicit Authorization header from Supabase session
+        try {
+          const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
+          const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
+          if (url && key) {
+            const sb = createClient(url, key)
+            const { data } = await sb.auth.getSession()
+            const token = data.session?.access_token
+            if (token) {
+              const retry = await fetch(`/api/events/${event.id}/analytics`, {
+                credentials: 'include',
+                headers: { Authorization: `Bearer ${token}` }
+              })
+              if (retry.ok) {
+                const j = await retry.json()
+                if (j.revenue?.total) setDonationTotal(j.revenue.total)
+                return
+              }
+            }
+          }
+        } catch {}
         toast.error('Please log in to view analytics')
       } else if (response.status === 403) {
         toast.error('You must be the event owner or admin to view analytics')
@@ -252,6 +274,27 @@ export default function EventDetailPage() {
       const json = await res.json()
       if (!res.ok) {
         if (res.status === 401) {
+          // Retry with Authorization bearer from Supabase session
+          try {
+            const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
+            const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
+            if (url && key) {
+              const sb = createClient(url, key)
+              const { data } = await sb.auth.getSession()
+              const token = data.session?.access_token
+              if (token) {
+                const retry = await fetch(`/api/events/${event.id}/analytics`, {
+                  credentials: 'include',
+                  headers: { Authorization: `Bearer ${token}` }
+                })
+                const rj = await retry.json()
+                if (retry.ok) {
+                  setAnalytics(rj)
+                  return
+                }
+              }
+            }
+          } catch {}
           toast.error('Please log in to view analytics')
         } else if (res.status === 403) {
           toast.error('You must be the event owner or admin to view analytics')
