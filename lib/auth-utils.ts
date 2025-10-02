@@ -63,7 +63,15 @@ export async function checkEventAccess(db: any, userId: string, eventId: string)
   }
   
   const isOwner = userId === (ev.organizer_id ?? ev.created_by)
-  const isAdmin = false // Will be determined by user metadata if needed
+  
+  // Check if user is admin
+  const { data: profile } = await db
+    .from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .single()
+  
+  const isAdmin = profile?.role === 'admin'
   
   return { isOwner, isAdmin, event: ev }
 }
@@ -102,8 +110,14 @@ export async function requireEventAccess(req: NextRequest, eventId: string): Pro
 export async function requireAdminAuth(req: NextRequest): Promise<AuthResult> {
   const auth = await requireAuth(req)
   
-  const isAdmin = auth.user.user_metadata?.role === 'admin' || auth.user.app_metadata?.role === 'admin'
-  if (!isAdmin) {
+  // Check admin role in profiles table
+  const { data: profile, error } = await auth.db
+    .from('profiles')
+    .select('role')
+    .eq('id', auth.user.id)
+    .single()
+  
+  if (error || !profile || profile.role !== 'admin') {
     throw new Error('Admin access required')
   }
   
