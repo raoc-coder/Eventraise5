@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { getBraintreeGateway } from '@/lib/braintree-server'
+import { captureOrder } from '@/lib/paypal'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
     const { id } = await params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
     const body = await req.json().catch(() => ({}))
-    const { registration_id, payment_method_nonce, amount } = body
+    const { registration_id, paypal_order_id, amount } = body
 
-    if (!registration_id || !payment_method_nonce || !amount) {
+    if (!registration_id || !paypal_order_id || !amount) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
@@ -27,24 +27,16 @@ export async function POST(req: NextRequest, { params }: any) {
 
     if (regErr || !registration) return NextResponse.json({ error: 'Registration not found' }, { status: 404 })
 
-    // Process payment with Braintree
-    const gateway = await getBraintreeGateway()
-    const result = await gateway.transaction.sale({
-      amount: String(amount),
-      paymentMethodNonce: payment_method_nonce,
-      options: {
-        submitForSettlement: true
-      }
-    })
-
-    if (!result.success) {
+    // Process payment with PayPal
+    const captureResult = await captureOrder(paypal_order_id)
+    
+    if (!captureResult.success) {
       return NextResponse.json({ 
-        error: 'Payment failed', 
-        details: result.transaction?.processorResponseText || 'Unknown error' 
+        error: 'Payment capture failed', 
+        details: captureResult.error || 'Unknown error' 
       }, { status: 400 })
     }
-
-    const transaction = result.transaction!
+    
     const amountCents = Math.round(amount * 100)
     const feeCents = Math.floor(amountCents * 0.0899)
     const netCents = amountCents - feeCents
@@ -54,7 +46,7 @@ export async function POST(req: NextRequest, { params }: any) {
       .from('event_registrations')
       .update({
         status: 'confirmed',
-        braintree_transaction_id: transaction.id,
+        paypal_order_id: paypal_order_id,
         fee_cents: feeCents,
         net_cents: netCents,
         settlement_status: 'pending',

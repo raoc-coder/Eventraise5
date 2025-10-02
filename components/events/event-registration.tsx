@@ -122,32 +122,9 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
       }
 
       if (event.ticket_price > 0) {
-        // Redirect to payment if ticket has a price
-        const paymentResponse = await fetch('/api/braintree/checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: totalAmount,
-            campaign_id: event.id,
-            donor_name: participantName.trim(),
-            donor_email: participantEmail.trim(),
-            success_url: `${window.location.origin}/events/${event.id}/success?registration_id=${data.registration_id}`,
-            cancel_url: `${window.location.origin}/events/${event.id}`,
-          }),
-        })
-
-        const paymentData = await paymentResponse.json()
-
-        if (!paymentResponse.ok) {
-          throw new Error(paymentData.error || 'Failed to create payment session')
-        }
-
-        // Redirect to Braintree payment
+        // Redirect to PayPal payment if ticket has a price
         toast.loading('Redirecting to secure payment...', { duration: 2000 })
-        // For Braintree, we'll redirect to a payment page with Drop-in UI
-        // Legacy Braintree route removed; switch to PayPal donations/new route
+        // Redirect to PayPal donation flow
         window.location.href = `/donations/new?eventId=${encodeURIComponent(event.id)}&amount=${totalAmount}`
       } else {
         // Free event - confirm registration

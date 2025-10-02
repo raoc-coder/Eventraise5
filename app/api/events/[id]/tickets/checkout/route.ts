@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { getBraintreeGateway } from '@/lib/braintree-server'
+import { createDonationOrder } from '@/lib/paypal'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
@@ -69,21 +69,23 @@ export async function POST(req: NextRequest, { params }: any) {
 
     if (regErr) return NextResponse.json({ error: regErr.message }, { status: 400 })
 
-    // Generate Braintree client token
-    const gateway = await getBraintreeGateway()
-    const { clientToken } = await gateway.clientToken.generate({})
+    // Create PayPal order for ticket purchase
+    const totalAmount = totalCents / 100
+    const paypalOrder = await createDonationOrder({
+      amount: totalAmount,
+      eventId: id,
+      description: `Ticket: ${ticket.name} (${quantity}x)`
+    })
 
     return NextResponse.json({
       registration_id: registration.id,
-      client_token: clientToken,
-      amount: totalCents / 100,
-      fee_cents: feeCents,
-      net_cents: netCents,
+      paypal_order_id: paypalOrder.id,
+      amount: totalAmount,
       ticket: {
         id: ticket.id,
         name: ticket.name,
-        price_cents: ticket.price_cents,
-        currency: ticket.currency,
+        price: ticket.price_cents / 100,
+        quantity: quantity
       }
     })
   } catch (e) {

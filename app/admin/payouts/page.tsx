@@ -20,7 +20,7 @@ interface Donation {
   created_at: string
   event_id?: string | null
   campaign_id?: string | null
-  braintree_transaction_id?: string | null
+  paypal_order_id?: string | null
 }
 
 export default function AdminPayoutsPage() {
@@ -154,7 +154,7 @@ export default function AdminPayoutsPage() {
       ((d.net_cents||0)/100).toFixed(2),
       d.status,
       d.settlement_status || '',
-      d.braintree_transaction_id || '',
+      d.paypal_order_id || '',
       d.event_id || '',
       d.campaign_id || ''
     ])
@@ -289,7 +289,7 @@ export default function AdminPayoutsPage() {
                       <td className="py-2 pr-4">{toUSD(d.net_cents)}</td>
                       <td className="py-2 pr-4">{d.status}</td>
                       <td className="py-2 pr-4">{d.settlement_status || ''}</td>
-                      <td className="py-2 pr-4 truncate max-w-[160px]">{d.braintree_transaction_id || ''}</td>
+                      <td className="py-2 pr-4 truncate max-w-[160px]">{d.paypal_order_id || ''}</td>
                     </tr>
                   ))}
                   {donations.length === 0 && (

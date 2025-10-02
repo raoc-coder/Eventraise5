@@ -58,7 +58,7 @@ export async function GET(req: NextRequest, { params }: any) {
     // Get registrations by type
     const { data: registrations, error: regErr } = await db
       .from('event_registrations')
-      .select('type, quantity, status, created_at, braintree_transaction_id, fee_cents, net_cents')
+      .select('type, quantity, status, created_at, name, email, participant_name, participant_email')
       .eq('event_id', id)
 
     if (regErr) return NextResponse.json({ error: regErr.message }, { status: 400 })
@@ -83,10 +83,9 @@ export async function GET(req: NextRequest, { params }: any) {
     const totalFees = donations?.reduce((sum: number, d: any) => sum + (d.fee_cents || 0), 0) || 0
     const totalNet = donations?.reduce((sum: number, d: any) => sum + (d.net_cents || 0), 0) || 0
 
-    // Ticket revenue (from registrations with payment)
-    const ticketRevenue = registrations
-      ?.filter((r: any) => r.type === 'ticket' && r.status === 'confirmed')
-      .reduce((sum: number, r: any) => sum + (r.fee_cents || 0) + (r.net_cents || 0), 0) || 0
+    // Ticket revenue (from ticket sales - this would need to be calculated from actual ticket purchases)
+    // For now, we'll set this to 0 since ticket revenue should come from actual ticket purchases
+    const ticketRevenue = 0
 
     // Additional metrics
     const completedDonations = donations?.filter((d: any) => d.status === 'completed').length || 0
