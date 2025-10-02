@@ -40,6 +40,7 @@ import { DonationConfirmation } from '@/components/payments/donation-confirmatio
 import { createClient } from '@supabase/supabase-js'
 import { EventRegistration } from '@/components/events/event-registration'
 import { VolunteerShifts } from '@/components/events/volunteer-shifts'
+import { TicketPurchase } from '@/components/events/ticket-purchase'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -89,6 +90,8 @@ export default function EventDetailPage() {
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
   const [donationTotal, setDonationTotal] = useState<number>(0)
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>([])
+  const [tickets, setTickets] = useState<any[]>([])
+  const [ticketsLoading, setTicketsLoading] = useState(false)
 
   // Handle escape key to close modals
   useEffect(() => {
@@ -121,8 +124,11 @@ export default function EventDetailPage() {
             start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
-          // Fetch donation total after event is loaded
-          setTimeout(() => fetchDonationTotal(), 100)
+          // Fetch donation total and tickets after event is loaded
+          setTimeout(() => {
+            fetchDonationTotal()
+            fetchTickets()
+          }, 100)
           if (searchParams?.get('created') === '1') {
             setShowCreatedBanner(true)
             toast.success('Your event is live! Share it with your community.')
@@ -202,6 +208,25 @@ export default function EventDetailPage() {
     }
   }
 
+  const fetchTickets = async () => {
+    if (!event?.id) return
+    setTicketsLoading(true)
+    try {
+      const response = await fetch(`/api/events/${event.id}/tickets`)
+      if (response.ok) {
+        const data = await response.json()
+        setTickets(data.tickets || [])
+      } else {
+        console.error('Failed to fetch tickets:', response.statusText)
+        setTickets([])
+      }
+    } catch (error) {
+      console.error('Error fetching tickets:', error)
+      setTickets([])
+    } finally {
+      setTicketsLoading(false)
+    }
+  }
 
   const handleShare = () => {
     if (navigator.share) {
@@ -796,6 +821,35 @@ export default function EventDetailPage() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Ticket Purchase Section */}
+                {tickets.length > 0 && (
+                  <Card className="event-card">
+                    <CardHeader>
+                      <CardTitle className="text-gray-900">Purchase Tickets</CardTitle>
+                      <CardDescription className="text-gray-600">
+                        Buy tickets for this event
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <TicketPurchase 
+                        event={{
+                          id: event.id,
+                          title: event.title,
+                          description: event.description,
+                          start_date: event.start_date,
+                          location: event.location,
+                          organizer_id: event.organizer_id || event.created_by || ''
+                        }}
+                        tickets={tickets}
+                        onSuccess={() => {
+                          toast.success('Tickets purchased successfully!')
+                          fetchTickets() // Refresh tickets to update quantities
+                        }}
+                      />
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Optional Donation Card */}
                 <Card className="event-card">
