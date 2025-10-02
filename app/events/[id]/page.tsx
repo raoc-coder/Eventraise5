@@ -1048,13 +1048,45 @@ export default function EventDetailPage() {
                     <Users className="h-4 w-4 mr-2" />
                     {regLoading ? 'Loading…' : 'Refresh'}
                   </Button>
-                  <a href={`/api/events/${event.id}/registrations/csv${(() => {
-                    const sp = new URLSearchParams()
-                    return sp.toString() ? `?${sp.toString()}` : ''
-                  })()}`} className="text-sm text-blue-600 hover:underline flex items-center">
+                  <button 
+                    onClick={async () => {
+                      try {
+                        const { data: { session } } = await supabase.auth.getSession()
+                        if (!session) {
+                          toast.error('Please log in to export data')
+                          return
+                        }
+                        
+                        const response = await fetch(`/api/events/${event.id}/registrations/csv`, {
+                          headers: {
+                            'Authorization': `Bearer ${session.access_token}`
+                          }
+                        })
+                        
+                        if (!response.ok) {
+                          throw new Error('Export failed')
+                        }
+                        
+                        const blob = await response.blob()
+                        const url = window.URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = `registrations_${event.title?.replace(/[^a-z0-9]+/gi,'_').toLowerCase() || 'event'}_${new Date().toISOString().slice(0,10)}.csv`
+                        document.body.appendChild(a)
+                        a.click()
+                        window.URL.revokeObjectURL(url)
+                        document.body.removeChild(a)
+                        toast.success('CSV exported successfully')
+                      } catch (error) {
+                        console.error('Export error:', error)
+                        toast.error('Failed to export CSV')
+                      }
+                    }}
+                    className="text-sm text-blue-600 hover:underline flex items-center"
+                  >
                     <ExternalLink className="h-4 w-4 mr-1" />
                     Export CSV
-                  </a>
+                  </button>
                   <Button variant="outline" size="sm" onClick={()=>setRegistrations(null)}>
                     Close
                   </Button>
