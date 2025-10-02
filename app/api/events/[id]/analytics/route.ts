@@ -67,10 +67,10 @@ export async function GET(req: NextRequest, { params }: any) {
 
     return NextResponse.json({
       event: {
-        id: ev.id,
-        title: ev.title,
-        start_date: ev.start_date,
-        end_date: ev.end_date
+        id: event.id,
+        title: event.title,
+        start_date: event.start_date,
+        end_date: event.end_date
       },
       registrations: {
         total: totalRegistrations,
