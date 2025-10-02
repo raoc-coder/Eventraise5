@@ -1056,6 +1056,7 @@ export default function EventDetailPage() {
                   <button 
                     onClick={async () => {
                       try {
+                        // Get fresh session token like we do for analytics
                         const { data: { session } } = await supabase.auth.getSession()
                         if (!session) {
                           toast.error('Please log in to export data')
@@ -1063,10 +1064,15 @@ export default function EventDetailPage() {
                         }
                         
                         console.log('Starting CSV export for event:', event.id)
+                        console.log('Session token present:', !!session.access_token)
+                        
                         const response = await fetch(`/api/events/${event.id}/registrations/csv`, {
+                          method: 'GET',
                           headers: {
-                            'Authorization': `Bearer ${session.access_token}`
-                          }
+                            'Authorization': `Bearer ${session.access_token}`,
+                            'Content-Type': 'application/json'
+                          },
+                          credentials: 'include'
                         })
                         
                         console.log('CSV export response:', response.status, response.statusText)
