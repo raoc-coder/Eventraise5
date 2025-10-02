@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createDonationOrder } from '@/lib/paypal'
+import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
     const { id } = await params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+    
+    // Use standardized authentication
+    const { user, db, event } = await requireEventAccess(req, id)
+    
     const body = await req.json().catch(() => ({}))
     const { ticket_id, quantity, name, email } = body
 

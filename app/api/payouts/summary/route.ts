@@ -1,55 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
+import { requireAdminAuth } from '@/lib/auth-utils'
 
 export async function GET(req: NextRequest) {
   try {
     console.log('🔍 [payouts/summary] Starting authentication check...')
     
-    // Check admin authentication - try both cookie and header auth
-    let user = null
-    
-    // Try cookie-based auth first
-    try {
-      console.log('🍪 [payouts/summary] Trying cookie auth...')
-      const cookieStore = cookies()
-      const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-      const { data: { user: cookieUser } } = await supabase.auth.getUser()
-      user = cookieUser
-      console.log('✅ [payouts/summary] Cookie auth successful:', !!user)
-    } catch (e) {
-      console.log('❌ [payouts/summary] Cookie auth failed:', e instanceof Error ? e.message : String(e))
-      // If cookie auth fails, try header auth
-      const authHeader = req.headers.get('authorization')
-      console.log('🔑 [payouts/summary] Auth header:', authHeader ? 'Present' : 'Missing')
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.substring(7)
-        console.log('🎫 [payouts/summary] Token length:', token.length)
-        const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-        const { data: { user: headerUser } } = await supabase.auth.getUser(token)
-        user = headerUser
-        console.log('✅ [payouts/summary] Header auth successful:', !!user)
-      }
-    }
-    
-    if (!user) {
-      console.log('❌ [payouts/summary] No user found, returning 401')
-      // TEMPORARY: Skip authentication for testing
-      console.log('🚧 [payouts/summary] TEMPORARY: Skipping authentication for testing')
-      // return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-    }
-    
-    // TEMPORARY: Skip admin check for testing
-    console.log('User authenticated:', user?.email || 'No user')
-    console.log('User metadata:', user?.user_metadata)
-    console.log('App metadata:', user?.app_metadata)
-    
-    // const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
-    // if (!isAdmin) {
-    //   return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
-    // }
+    // Use standardized admin authentication
+    const { user, db } = await requireAdminAuth(req)
+    console.log('✅ [payouts/summary] Admin authentication successful:', user.email)
     
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
     const { searchParams } = new URL(req.url)

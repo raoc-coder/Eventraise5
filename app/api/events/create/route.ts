@@ -3,9 +3,7 @@ import { ok, fail } from '@/lib/api'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { createEventSchema } from '@/lib/validators'
 import { getClientKeyFromHeaders, rateLimit } from '@/lib/rate-limit'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
+import { requireAuth } from '@/lib/auth-utils'
 
 function toIsoDate(dateStr: string) {
   // Expect YYYY-MM-DD; store start of day UTC
@@ -14,29 +12,8 @@ function toIsoDate(dateStr: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    // Create authenticated Supabase client
-    const cookieStore = cookies()
-    const authHeader = req.headers.get('authorization') || req.headers.get('Authorization') || ''
-    const bearerMatch = authHeader.match(/^Bearer\s+(.+)$/i)
-
-    let db: any
-    if (bearerMatch) {
-      // Fallback: build client scoped to the provided access token (for curl/Postman)
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-      if (!supabaseUrl || !supabaseAnonKey) return fail('Server misconfigured', 500)
-      db = createClient(supabaseUrl, supabaseAnonKey, {
-        global: {
-          headers: {
-            Authorization: `Bearer ${bearerMatch[1]}`
-          }
-        }
-      })
-    } else {
-      // Normal path: use cookie-based auth
-      db = createRouteHandlerClient({ cookies: () => cookieStore })
-    }
-    if (!db) return fail('Database unavailable', 500)
+    // Use standardized authentication
+    const { user, db } = await requireAuth(req)
 
     const clientKey = getClientKeyFromHeaders(req.headers as any)
     if (!rateLimit(`evt-create:${clientKey}`, 10)) return fail('Too many requests', 429)
