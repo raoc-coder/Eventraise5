@@ -6,9 +6,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.text()
     const headers = Object.fromEntries(req.headers.entries())
-
+    
     // Verify webhook signature
-    if (!verifyWebhookSignature(headers, body)) {
+    if (!(await verifyWebhookSignature(headers, body))) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 

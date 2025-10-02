@@ -194,13 +194,51 @@ export async function captureOrder(orderId: string) {
 }
 
 // Verify PayPal webhook signature
-export function verifyWebhookSignature(headers: any, body: string): boolean {
-  // This would need to be implemented with PayPal's webhook verification
-  // For now, we'll return true in development
+export async function verifyWebhookSignature(headers: any, body: string): Promise<boolean> {
+  // Skip verification in development
   if (process.env.NODE_ENV === 'development') {
     return true
   }
   
-  // TODO: Implement proper webhook signature verification
-  return true
+  try {
+    const authHeader = headers['paypal-auth-algo']
+    const certId = headers['paypal-cert-id']
+    const transmissionId = headers['paypal-transmission-id']
+    const transmissionSig = headers['paypal-transmission-sig']
+    const transmissionTime = headers['paypal-transmission-time']
+    
+    if (!authHeader || !certId || !transmissionId || !transmissionSig || !transmissionTime) {
+      console.error('Missing PayPal webhook headers')
+      return false
+    }
+    
+    // Get PayPal's public certificate
+    const certUrl = `https://api.paypal.com/v1/notifications/certs/${certId}`
+    const certResponse = await fetch(certUrl)
+    if (!certResponse.ok) {
+      console.error('Failed to fetch PayPal certificate')
+      return false
+    }
+    
+    const cert = await certResponse.text()
+    
+    // Create the signature string
+    const signatureString = `${transmissionId}|${transmissionTime}|${process.env.PAYPAL_WEBHOOK_ID}|${body}`
+    
+    // Verify signature using Node.js crypto
+    const crypto = require('crypto')
+    const verifier = crypto.createVerify('RSA-SHA256')
+    verifier.update(signatureString)
+    
+    const isValid = verifier.verify(cert, transmissionSig, 'base64')
+    
+    if (!isValid) {
+      console.error('PayPal webhook signature verification failed')
+    }
+    
+    return isValid
+  } catch (error) {
+    console.error('PayPal webhook verification error:', error)
+    return false
+  }
 }
