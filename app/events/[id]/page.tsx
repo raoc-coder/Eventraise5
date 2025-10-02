@@ -85,6 +85,17 @@ export default function EventDetailPage() {
   const [donationTotal, setDonationTotal] = useState<number>(0)
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>([])
 
+  // Handle escape key to close analytics modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && analytics) {
+      setAnalytics(null)
+    }
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [analytics])
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -899,104 +910,6 @@ export default function EventDetailPage() {
               </div>
             )}
 
-            {/* Analytics Dashboard */}
-            {user && event && (user.id === (event.organizer_id || event.created_by)) && analytics && (
-              <Card className="event-card" id="analytics">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-gray-900">Event Analytics</CardTitle>
-                      <CardDescription className="text-gray-600">Performance metrics and insights</CardDescription>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={fetchAnalytics} disabled={analyticsLoading}>
-                        {analyticsLoading ? 'Loading…' : 'Refresh'}
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={()=>setAnalytics(null)}>
-                        Close
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                      <div className="flex items-center mb-2">
-                        <Users className="h-5 w-5 text-blue-600 mr-2" />
-                        <h3 className="font-semibold text-blue-900">Registrations</h3>
-                      </div>
-                      <p className="text-2xl font-bold text-blue-600">{analytics.registrations?.total || 0}</p>
-                      <p className="text-sm text-blue-700">{analytics.registrations?.attendees || 0} total attendees</p>
-                    </div>
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                      <div className="flex items-center mb-2">
-                        <Target className="h-5 w-5 text-green-600 mr-2" />
-                        <h3 className="font-semibold text-green-900">Revenue</h3>
-                      </div>
-                      <p className="text-2xl font-bold text-green-600">${(analytics.revenue?.total || 0).toFixed(2)}</p>
-                      <p className="text-sm text-green-700">${(analytics.revenue?.donations?.net || 0).toFixed(2)} net after fees</p>
-                    </div>
-                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                      <div className="flex items-center mb-2">
-                        <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
-                        <h3 className="font-semibold text-purple-900">Breakdown</h3>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.rsvp || 0} RSVP</p>
-                        <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.ticket || 0} Tickets</p>
-                        <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.confirmed || 0} Confirmed</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Additional metrics row */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-gray-900 mb-2">Donation Details</h4>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Gross Donations:</span>
-                          <span className="font-medium">${(analytics.revenue?.donations?.gross || 0).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Platform Fees:</span>
-                          <span className="font-medium">${(analytics.revenue?.donations?.fees || 0).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between border-t pt-1">
-                          <span className="text-gray-900 font-medium">Net to You:</span>
-                          <span className="font-bold text-green-600">${(analytics.revenue?.donations?.net || 0).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-xs text-gray-500 mt-2">
-                          <span>Completed: {analytics.revenue?.donations?.count || 0}</span>
-                          <span>Pending: {analytics.revenue?.donations?.pending || 0}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-gray-900 mb-2">Event Status</h4>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Event Type:</span>
-                          <span className="font-medium capitalize">{event.event_type?.replace('_', ' ')}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Status:</span>
-                          <span className={`font-medium ${(event as any).is_published ? 'text-green-600' : 'text-yellow-600'}`}>
-                            {(event as any).is_published ? 'Published' : 'Draft'}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Goal:</span>
-                          <span className="font-medium">
-                            {event.goal_amount ? `$${event.goal_amount.toLocaleString()}` : 'No goal set'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {/* Owner registrations table */}
             {user && event && (user.id === (event.organizer_id || event.created_by)) && (
@@ -1007,7 +920,7 @@ export default function EventDetailPage() {
                       <CardTitle className="text-gray-900">Registrations</CardTitle>
                       <CardDescription className="text-gray-600">Manage event registrations and attendees</CardDescription>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <Button variant="outline" size="sm" onClick={() => fetchRegistrations()} disabled={regLoading}>
                         <Users className="h-4 w-4 mr-2" />
                         {regLoading ? 'Loading…' : 'Load'}
@@ -1104,11 +1017,11 @@ export default function EventDetailPage() {
                       </div>
                     </div>
                   )}
-                  <div className="table-responsive overflow-y-visible no-overflow">
-                    <table className="min-w-full table-fixed text-xs sm:text-sm">
+                  <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                    <table className="min-w-full text-xs sm:text-sm">
                       <thead>
                         <tr className="text-left text-gray-700 bg-gray-50">
-                          <th className="py-3 px-3">
+                          <th className="py-3 px-3 w-12">
                             <input 
                               type="checkbox" 
                               onChange={(e) => {
@@ -1122,18 +1035,18 @@ export default function EventDetailPage() {
                               className="rounded border-gray-300"
                             />
                           </th>
-                          <th className="py-3 px-3 hidden md:table-cell w-[180px] font-medium">Created</th>
-                          <th className="py-3 px-3 w-[40%] sm:w-auto font-medium">Name</th>
-                          <th className="py-3 px-3 hidden lg:table-cell w-[30%] font-medium">Email</th>
-                          <th className="py-3 px-3 w-[80px] font-medium">Type</th>
-                          <th className="py-3 px-3 w-[60px] font-medium">Qty</th>
-                          <th className="py-3 px-3 w-[100px] font-medium">Status</th>
+                          <th className="py-3 px-3 hidden md:table-cell font-medium min-w-[120px]">Created</th>
+                          <th className="py-3 px-3 font-medium min-w-[150px]">Name</th>
+                          <th className="py-3 px-3 hidden lg:table-cell font-medium min-w-[200px]">Email</th>
+                          <th className="py-3 px-3 font-medium min-w-[80px]">Type</th>
+                          <th className="py-3 px-3 font-medium min-w-[60px]">Qty</th>
+                          <th className="py-3 px-3 font-medium min-w-[100px]">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {(registrations || []).map((r:any) => (
                           <tr key={r.id} className="border-t border-gray-200 text-gray-800 hover:bg-gray-50">
-                            <td className="py-3 px-3">
+                            <td className="py-3 px-3 w-12">
                               <input 
                                 type="checkbox" 
                                 checked={selectedRegistrations.includes(r.id)}
@@ -1147,16 +1060,20 @@ export default function EventDetailPage() {
                                 className="rounded border-gray-300"
                               />
                             </td>
-                            <td className="py-3 px-3 hidden md:table-cell text-gray-600">
+                            <td className="py-3 px-3 hidden md:table-cell text-gray-600 min-w-[120px]">
                               {new Date(r.created_at).toLocaleDateString()}
                             </td>
-                            <td className="py-3 px-3 break-words truncate-soft font-medium">
-                              {r.name || r.participant_name || '—'}
+                            <td className="py-3 px-3 font-medium min-w-[150px]">
+                              <div className="truncate" title={r.name || r.participant_name || '—'}>
+                                {r.name || r.participant_name || '—'}
+                              </div>
                             </td>
-                            <td className="py-3 px-3 break-words truncate-soft hidden lg:table-cell text-gray-600">
-                              {r.email || r.participant_email || '—'}
+                            <td className="py-3 px-3 hidden lg:table-cell text-gray-600 min-w-[200px]">
+                              <div className="truncate" title={r.email || r.participant_email || '—'}>
+                                {r.email || r.participant_email || '—'}
+                              </div>
                             </td>
-                            <td className="py-3 px-3 whitespace-nowrap">
+                            <td className="py-3 px-3 whitespace-nowrap min-w-[80px]">
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 r.type === 'rsvp' ? 'bg-blue-100 text-blue-800' : 
                                 r.type === 'ticket' ? 'bg-green-100 text-green-800' : 
@@ -1165,10 +1082,10 @@ export default function EventDetailPage() {
                                 {r.type}
                               </span>
                             </td>
-                            <td className="py-3 px-3 whitespace-nowrap text-center font-medium">
+                            <td className="py-3 px-3 whitespace-nowrap text-center font-medium min-w-[60px]">
                               {r.quantity}
                             </td>
-                            <td className="py-3 px-3 whitespace-nowrap">
+                            <td className="py-3 px-3 whitespace-nowrap min-w-[100px]">
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 r.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
                                 r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
@@ -1200,6 +1117,113 @@ export default function EventDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Analytics Modal */}
+      {user && event && (user.id === (event.organizer_id || event.created_by)) && analytics && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setAnalytics(null)
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Event Analytics</h2>
+                  <p className="text-gray-600">Performance metrics and insights for {event.title}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={fetchAnalytics} disabled={analyticsLoading}>
+                    {analyticsLoading ? 'Loading…' : 'Refresh'}
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={()=>setAnalytics(null)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <div className="flex items-center mb-2">
+                    <Users className="h-5 w-5 text-blue-600 mr-2" />
+                    <h3 className="font-semibold text-blue-900">Registrations</h3>
+                  </div>
+                  <p className="text-2xl font-bold text-blue-600">{analytics.registrations?.total || 0}</p>
+                  <p className="text-sm text-blue-700">{analytics.registrations?.attendees || 0} total attendees</p>
+                </div>
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <div className="flex items-center mb-2">
+                    <Target className="h-5 w-5 text-green-600 mr-2" />
+                    <h3 className="font-semibold text-green-900">Revenue</h3>
+                  </div>
+                  <p className="text-2xl font-bold text-green-600">${(analytics.revenue?.total || 0).toFixed(2)}</p>
+                  <p className="text-sm text-green-700">${(analytics.revenue?.donations?.net || 0).toFixed(2)} net after fees</p>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                  <div className="flex items-center mb-2">
+                    <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
+                    <h3 className="font-semibold text-purple-900">Breakdown</h3>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.rsvp || 0} RSVP</p>
+                    <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.ticket || 0} Tickets</p>
+                    <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.confirmed || 0} Confirmed</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Additional metrics row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h4 className="font-semibold text-gray-900 mb-2">Donation Details</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Gross Donations:</span>
+                      <span className="font-medium">${(analytics.revenue?.donations?.gross || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Platform Fees:</span>
+                      <span className="font-medium">${(analytics.revenue?.donations?.fees || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-1">
+                      <span className="text-gray-900 font-medium">Net to You:</span>
+                      <span className="font-bold text-green-600">${(analytics.revenue?.donations?.net || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-500 mt-2">
+                      <span>Completed: {analytics.revenue?.donations?.count || 0}</span>
+                      <span>Pending: {analytics.revenue?.donations?.pending || 0}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h4 className="font-semibold text-gray-900 mb-2">Event Status</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Event Type:</span>
+                      <span className="font-medium capitalize">{event.event_type?.replace('_', ' ')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Status:</span>
+                      <span className={`font-medium ${(event as any).is_published ? 'text-green-600' : 'text-yellow-600'}`}>
+                        {(event as any).is_published ? 'Published' : 'Draft'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Goal:</span>
+                      <span className="font-medium">
+                        {event.goal_amount ? `$${event.goal_amount.toLocaleString()}` : 'No goal set'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
