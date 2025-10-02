@@ -142,34 +142,37 @@ export default function EventDetailPage() {
   const fetchDonationTotal = async () => {
     if (!event?.id) return
     try {
-      const response = await fetch(`/api/events/${event.id}/analytics`, { credentials: 'include' })
+      // Always try to get auth token first
+      let authToken: string | null = null
+      try {
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
+        if (url && key) {
+          const sb = createClient(url, key)
+          const { data } = await sb.auth.getSession()
+          authToken = data.session?.access_token || null
+        }
+      } catch (authError) {
+        console.warn('Failed to get auth token:', authError)
+      }
+
+      // Make request with auth token if available
+      const headers: HeadersInit = { 'Content-Type': 'application/json' }
+      if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`
+      }
+
+      const response = await fetch(`/api/events/${event.id}/analytics`, { 
+        credentials: 'include',
+        headers
+      })
+      
       if (response.ok) {
         const data = await response.json()
         if (data.revenue?.total) {
           setDonationTotal(data.revenue.total)
         }
       } else if (response.status === 401) {
-        // Try again with explicit Authorization header from Supabase session
-        try {
-          const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
-          const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
-          if (url && key) {
-            const sb = createClient(url, key)
-            const { data } = await sb.auth.getSession()
-            const token = data.session?.access_token
-            if (token) {
-              const retry = await fetch(`/api/events/${event.id}/analytics`, {
-                credentials: 'include',
-                headers: { Authorization: `Bearer ${token}` }
-              })
-              if (retry.ok) {
-                const j = await retry.json()
-                if (j.revenue?.total) setDonationTotal(j.revenue.total)
-                return
-              }
-            }
-          }
-        } catch {}
         toast.error('Please log in to view analytics')
       } else if (response.status === 403) {
         toast.error('You must be the event owner or admin to view analytics')
@@ -270,29 +273,30 @@ export default function EventDetailPage() {
     if (!event?.id) return
     setAnalyticsLoading(true)
     try {
-      // First try with credentials
-      let res = await fetch(`/api/events/${event.id}/analytics`, { credentials: 'include' })
-      
-      // If 401, try with explicit auth token
-      if (res.status === 401) {
-        try {
-          const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
-          const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
-          if (url && key) {
-            const sb = createClient(url, key)
-            const { data } = await sb.auth.getSession()
-            const token = data.session?.access_token
-            if (token) {
-              res = await fetch(`/api/events/${event.id}/analytics`, {
-                credentials: 'include',
-                headers: { Authorization: `Bearer ${token}` }
-              })
-            }
-          }
-        } catch (authError) {
-          console.warn('Auth retry failed:', authError)
+      // Always try to get auth token first
+      let authToken: string | null = null
+      try {
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
+        if (url && key) {
+          const sb = createClient(url, key)
+          const { data } = await sb.auth.getSession()
+          authToken = data.session?.access_token || null
         }
+      } catch (authError) {
+        console.warn('Failed to get auth token:', authError)
       }
+
+      // Make request with auth token if available
+      const headers: HeadersInit = { 'Content-Type': 'application/json' }
+      if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`
+      }
+
+      const res = await fetch(`/api/events/${event.id}/analytics`, { 
+        credentials: 'include',
+        headers
+      })
       
       const json = await res.json()
       if (!res.ok) {
