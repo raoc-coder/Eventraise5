@@ -46,11 +46,7 @@ export async function POST(req: NextRequest) {
       insertPayload.goal_amount = Number(goal_amount)
     }
 
-    // Get the authenticated user
-    const { data: { user }, error: authError } = await db.auth.getUser()
-    if (authError || !user) {
-      return fail('Authentication required', 401)
-    }
+    // User is already authenticated via requireAuth above
 
     // Set created_by to the authenticated user's ID
     insertPayload.created_by = user.id
