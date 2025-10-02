@@ -29,7 +29,7 @@ interface Event {
   organizer_id: string
 }
 
-export default function EventTicketsPage({ params }: { params: { id: string } }) {
+export default function EventTicketsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [supabase, setSupabase] = useState<any>(null)
   const [user, setUser] = useState<any>(null)
@@ -48,14 +48,14 @@ export default function EventTicketsPage({ params }: { params: { id: string } })
     sales_end_at: ''
   })
 
-  const fetchData = async () => {
+  const fetchData = async (eventId: string) => {
     setLoading(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('No active session')
 
       // Fetch event details
-      const eventResponse = await fetch(`/api/events/${params.id}`)
+      const eventResponse = await fetch(`/api/events/${eventId}`)
       if (!eventResponse.ok) throw new Error('Failed to fetch event')
       const eventData = await eventResponse.json()
       setEvent(eventData.event)
@@ -66,7 +66,7 @@ export default function EventTicketsPage({ params }: { params: { id: string } })
       }
 
       // Fetch tickets
-      const ticketsResponse = await fetch(`/api/events/${params.id}/tickets`, {
+      const ticketsResponse = await fetch(`/api/events/${eventId}/tickets`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
@@ -93,7 +93,8 @@ export default function EventTicketsPage({ params }: { params: { id: string } })
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('No active session')
 
-      const response = await fetch(`/api/events/${params.id}/tickets`, {
+      const { id: createEventId } = await params
+      const response = await fetch(`/api/events/${createEventId}/tickets`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -111,7 +112,8 @@ export default function EventTicketsPage({ params }: { params: { id: string } })
 
       if (!response.ok) throw new Error('Failed to create ticket')
 
-      await fetchData()
+      const { id: refreshEventId } = await params
+      await fetchData(refreshEventId)
       setShowCreateForm(false)
       setFormData({
         name: '',
@@ -135,7 +137,8 @@ export default function EventTicketsPage({ params }: { params: { id: string } })
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('No active session')
 
-      const response = await fetch(`/api/events/${params.id}/tickets/${ticketId}`, {
+      const { id: deleteEventId } = await params
+      const response = await fetch(`/api/events/${deleteEventId}/tickets/${ticketId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -145,7 +148,8 @@ export default function EventTicketsPage({ params }: { params: { id: string } })
 
       if (!response.ok) throw new Error('Failed to delete ticket')
 
-      await fetchData()
+      const { id: refreshEventId2 } = await params
+      await fetchData(refreshEventId2)
     } catch (error) {
       console.error('Error deleting ticket:', error)
     }
@@ -158,15 +162,19 @@ export default function EventTicketsPage({ params }: { params: { id: string } })
     )
     setSupabase(supabaseClient)
 
-    supabaseClient.auth.getUser().then(({ data: { user } }) => {
+    const initializeData = async () => {
+      const resolvedParams = await params
+      const { data: { user } } = await supabaseClient.auth.getUser()
       if (!user) {
         router.push('/login')
         return
       }
       setUser(user)
-      fetchData()
-    })
-  }, [params.id, router])
+      fetchData(resolvedParams.id)
+    }
+
+    initializeData()
+  }, [params, router])
 
   if (!user || !event) return <div>Loading...</div>
 

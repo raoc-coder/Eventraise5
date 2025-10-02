@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -108,45 +108,6 @@ export default function EventDetailPage() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [analytics, registrations])
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const id = typeof params?.id === 'string' ? params.id : ''
-        if (!id) return
-        const response = await fetch(`/api/events/${id}`)
-        if (response.ok) {
-          const data = await response.json()
-          setEvent(data.event)
-          setDraft({
-            title: data.event?.title || '',
-            description: data.event?.description || '',
-            location: data.event?.location || '',
-            start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
-            end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
-          })
-          // Fetch donation total and tickets after event is loaded
-          setTimeout(() => {
-            fetchDonationTotal()
-            fetchTickets()
-          }, 100)
-          if (searchParams?.get('created') === '1') {
-            setShowCreatedBanner(true)
-            toast.success('Your event is live! Share it with your community.')
-          }
-        } else {
-          console.error('Failed to fetch event:', response.statusText)
-          setEvent(null)
-        }
-      } catch (error) {
-        console.error('Error fetching event:', error)
-        setEvent(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchEvent()
-  }, [params, searchParams])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -165,7 +126,7 @@ export default function EventDetailPage() {
     return isNaN(num) ? 0 : num
   }
 
-  const fetchDonationTotal = async () => {
+  const fetchDonationTotal = useCallback(async () => {
     if (!event?.id) return
     try {
       // Always try to get auth token first
@@ -206,9 +167,9 @@ export default function EventDetailPage() {
     } catch (error) {
       console.error('Failed to fetch donation total:', error)
     }
-  }
+  }, [event?.id])
 
-  const fetchTickets = async () => {
+  const fetchTickets = useCallback(async () => {
     if (!event?.id) return
     setTicketsLoading(true)
     try {
@@ -226,7 +187,47 @@ export default function EventDetailPage() {
     } finally {
       setTicketsLoading(false)
     }
-  }
+  }, [event?.id])
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const id = typeof params?.id === 'string' ? params.id : ''
+        if (!id) return
+        const response = await fetch(`/api/events/${id}`)
+        if (response.ok) {
+          const data = await response.json()
+          setEvent(data.event)
+          setDraft({
+            title: data.event?.title || '',
+            description: data.event?.description || '',
+            location: data.event?.location || '',
+            start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
+            end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
+          })
+          // Fetch donation total and tickets after event is loaded
+          setTimeout(() => {
+            fetchDonationTotal()
+            fetchTickets()
+          }, 100)
+          if (searchParams?.get('created') === '1') {
+            setShowCreatedBanner(true)
+            toast.success('Your event is live! Share it with your community.')
+          }
+        } else {
+          console.error('Failed to fetch event:', response.statusText)
+          setEvent(null)
+        }
+      } catch (error) {
+        console.error('Error fetching event:', error)
+        setEvent(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvent()
+  }, [params, searchParams, fetchDonationTotal, fetchTickets])
 
   const handleShare = () => {
     if (navigator.share) {

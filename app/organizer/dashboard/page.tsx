@@ -94,7 +94,7 @@ export default function OrganizerDashboard() {
       setUser(user)
       fetchDashboardData()
     })
-  }, [router])
+  }, [router, fetchDashboardData])
 
   const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()
