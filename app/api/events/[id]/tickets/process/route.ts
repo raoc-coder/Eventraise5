@@ -58,7 +58,7 @@ export async function POST(req: NextRequest, { params }: any) {
       // Payment succeeded but DB update failed - this is a critical error
       return NextResponse.json({ 
         error: 'Payment processed but failed to update registration',
-        transaction_id: transaction.id 
+        transaction_id: captureResult.captureId 
       }, { status: 500 })
     }
 
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest, { params }: any) {
 
     return NextResponse.json({
       success: true,
-      transaction_id: transaction.id,
+      transaction_id: captureResult.captureId,
       registration_id: registration_id,
       amount: amount,
       fee_cents: feeCents,
