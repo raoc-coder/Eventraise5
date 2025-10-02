@@ -638,7 +638,7 @@ export default function EventDetailPage() {
                     </div>
                   </div>
                   
-                  <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus PayPal processing fees).</p>
+                  <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received.</p>
                   
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -801,7 +801,7 @@ export default function EventDetailPage() {
                       </div>
                     </div>
                     
-                    <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received (plus PayPal processing fees).</p>
+                    <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received.</p>
                     
                     <div className="space-y-4">
                       <div className="space-y-2">

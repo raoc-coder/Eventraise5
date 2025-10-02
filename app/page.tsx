@@ -118,7 +118,7 @@ export default function HomePage() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Transparent Fees (8.99% platform + PayPal)
+                    Transparent Fees (8.99% platform)
                   </li>
                 </ul>
               </CardContent>
@@ -239,8 +239,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Success Stories */}
-      <section className="py-20 bg-gray-50">
+      {/* Discover / Trusted by */}
+      <section className="py-20 bg-gray-50" id="discover">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
