@@ -270,34 +270,38 @@ export default function EventDetailPage() {
     if (!event?.id) return
     setAnalyticsLoading(true)
     try {
-      const res = await fetch(`/api/events/${event.id}/analytics`, { credentials: 'include' })
+      // First try with credentials
+      let res = await fetch(`/api/events/${event.id}/analytics`, { credentials: 'include' })
+      
+      // If 401, try with explicit auth token
+      if (res.status === 401) {
+        try {
+          const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
+          const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
+          if (url && key) {
+            const sb = createClient(url, key)
+            const { data } = await sb.auth.getSession()
+            const token = data.session?.access_token
+            if (token) {
+              res = await fetch(`/api/events/${event.id}/analytics`, {
+                credentials: 'include',
+                headers: { Authorization: `Bearer ${token}` }
+              })
+            }
+          }
+        } catch (authError) {
+          console.warn('Auth retry failed:', authError)
+        }
+      }
+      
       const json = await res.json()
       if (!res.ok) {
         if (res.status === 401) {
-          // Retry with Authorization bearer from Supabase session
-          try {
-            const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
-            const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
-            if (url && key) {
-              const sb = createClient(url, key)
-              const { data } = await sb.auth.getSession()
-              const token = data.session?.access_token
-              if (token) {
-                const retry = await fetch(`/api/events/${event.id}/analytics`, {
-                  credentials: 'include',
-                  headers: { Authorization: `Bearer ${token}` }
-                })
-                const rj = await retry.json()
-                if (retry.ok) {
-                  setAnalytics(rj)
-                  return
-                }
-              }
-            }
-          } catch {}
           toast.error('Please log in to view analytics')
         } else if (res.status === 403) {
           toast.error('You must be the event owner or admin to view analytics')
+        } else {
+          toast.error(json.error || 'Failed to load analytics')
         }
         throw new Error(json.error || 'Failed to load analytics')
       }
@@ -518,22 +522,28 @@ export default function EventDetailPage() {
                       <>
                         {user && event && (user.id === (event.organizer_id || event.created_by)) && (
                           <div className="flex flex-col sm:flex-row gap-2 ml-auto w-full sm:w-auto">
-                            <Button variant="outline" onClick={()=>setEditMode(true)} className="hover:bg-gray-50 transition-colors btn-mobile">
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </Button>
-                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors btn-mobile">
+                            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                              <Button variant="outline" onClick={()=>setEditMode(true)} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit
+                              </Button>
+                              <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                                {(event as any).is_published ? 'Unpublish' : 'Publish'}
+                              </Button>
+                            </div>
+                            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                              <Button variant="outline" onClick={() => fetchRegistrations()} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                                <Users className="h-4 w-4 mr-2" />
+                                Registrations
+                              </Button>
+                              <Button variant="outline" onClick={() => fetchAnalytics()} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                                <Target className="h-4 w-4 mr-2" />
+                                Analytics
+                              </Button>
+                            </div>
+                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors btn-mobile w-full sm:w-auto">
                               <Trash2 className="h-4 w-4 mr-2" />
                               Delete
-                            </Button>
-                            <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors btn-mobile">
-                              {(event as any).is_published ? 'Unpublish' : 'Publish'}
-                            </Button>
-                            <Button variant="outline" onClick={() => fetchRegistrations()} className="hover:bg-gray-50 transition-colors btn-mobile">
-                              View Registrations
-                            </Button>
-                            <Button variant="outline" onClick={() => fetchAnalytics()} className="hover:bg-gray-50 transition-colors btn-mobile">
-                              Analytics
                             </Button>
                           </div>
                         )}
@@ -887,36 +897,98 @@ export default function EventDetailPage() {
 
             {/* Analytics Dashboard */}
             {user && event && (user.id === (event.organizer_id || event.created_by)) && analytics && (
-              <Card className="event-card" id="donate">
+              <Card className="event-card" id="analytics">
                 <CardHeader>
-                  <CardTitle className="text-gray-900">Event Analytics</CardTitle>
-                  <CardDescription className="text-gray-600">Performance metrics and insights</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-blue-900">Total Registrations</h3>
-                      <p className="text-2xl font-bold text-blue-600">{analytics.registrations?.total || 0}</p>
-                      <p className="text-sm text-blue-700">{analytics.registrations?.attendees || 0} attendees</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-gray-900">Event Analytics</CardTitle>
+                      <CardDescription className="text-gray-600">Performance metrics and insights</CardDescription>
                     </div>
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-green-900">Revenue</h3>
-                      <p className="text-2xl font-bold text-green-600">${(analytics.revenue?.total || 0).toFixed(2)}</p>
-                      <p className="text-sm text-green-700">${(analytics.revenue?.donations?.net || 0).toFixed(2)} net</p>
-                    </div>
-                    <div className="bg-purple-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-purple-900">Breakdown</h3>
-                      <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.rsvp || 0} RSVP</p>
-                      <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.ticket || 0} Tickets</p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={fetchAnalytics} disabled={analyticsLoading}>
+                        {analyticsLoading ? 'Loading…' : 'Refresh'}
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={()=>setAnalytics(null)}>
+                        Close
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={fetchAnalytics} disabled={analyticsLoading}>
-                      {analyticsLoading ? 'Loading…' : 'Refresh'}
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={()=>setAnalytics(null)}>
-                      Close
-                    </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                      <div className="flex items-center mb-2">
+                        <Users className="h-5 w-5 text-blue-600 mr-2" />
+                        <h3 className="font-semibold text-blue-900">Registrations</h3>
+                      </div>
+                      <p className="text-2xl font-bold text-blue-600">{analytics.registrations?.total || 0}</p>
+                      <p className="text-sm text-blue-700">{analytics.registrations?.attendees || 0} total attendees</p>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                      <div className="flex items-center mb-2">
+                        <Target className="h-5 w-5 text-green-600 mr-2" />
+                        <h3 className="font-semibold text-green-900">Revenue</h3>
+                      </div>
+                      <p className="text-2xl font-bold text-green-600">${(analytics.revenue?.total || 0).toFixed(2)}</p>
+                      <p className="text-sm text-green-700">${(analytics.revenue?.donations?.net || 0).toFixed(2)} net after fees</p>
+                    </div>
+                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                      <div className="flex items-center mb-2">
+                        <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
+                        <h3 className="font-semibold text-purple-900">Breakdown</h3>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.rsvp || 0} RSVP</p>
+                        <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.ticket || 0} Tickets</p>
+                        <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.confirmed || 0} Confirmed</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Additional metrics row */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-2">Donation Details</h4>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Gross Donations:</span>
+                          <span className="font-medium">${(analytics.revenue?.donations?.gross || 0).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Platform Fees:</span>
+                          <span className="font-medium">${(analytics.revenue?.donations?.fees || 0).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between border-t pt-1">
+                          <span className="text-gray-900 font-medium">Net to You:</span>
+                          <span className="font-bold text-green-600">${(analytics.revenue?.donations?.net || 0).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-500 mt-2">
+                          <span>Completed: {analytics.revenue?.donations?.count || 0}</span>
+                          <span>Pending: {analytics.revenue?.donations?.pending || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-2">Event Status</h4>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Event Type:</span>
+                          <span className="font-medium capitalize">{event.event_type?.replace('_', ' ')}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Status:</span>
+                          <span className={`font-medium ${(event as any).is_published ? 'text-green-600' : 'text-yellow-600'}`}>
+                            {(event as any).is_published ? 'Published' : 'Draft'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Goal:</span>
+                          <span className="font-medium">
+                            {event.goal_amount ? `$${event.goal_amount.toLocaleString()}` : 'No goal set'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -924,48 +996,74 @@ export default function EventDetailPage() {
 
             {/* Owner registrations table */}
             {user && event && (user.id === (event.organizer_id || event.created_by)) && (
-              <Card className="event-card" id="donate">
+              <Card className="event-card" id="registrations">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-gray-900">Registrations</CardTitle>
-                      <CardDescription className="text-gray-600">Owner-only view</CardDescription>
+                      <CardDescription className="text-gray-600">Manage event registrations and attendees</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => fetchRegistrations()} disabled={regLoading}>
+                        <Users className="h-4 w-4 mr-2" />
+                        {regLoading ? 'Loading…' : 'Load'}
+                      </Button>
                       <a href={`/api/events/${event.id}/registrations/csv${(() => {
                         const sp = new URLSearchParams()
                         // future: include applied filters
                         return sp.toString() ? `?${sp.toString()}` : ''
-                      })()}`} className="text-sm text-blue-600 hover:underline">Export CSV</a>
+                      })()}`} className="text-sm text-blue-600 hover:underline flex items-center">
+                        <ExternalLink className="h-4 w-4 mr-1" />
+                        Export CSV
+                      </a>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3 mb-3">
-                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 overflow-visible">
-                      <select id="regType" className="border border-gray-300 rounded px-2 py-2 text-sm">
-                        <option value="">All Types</option>
-                        <option value="rsvp">RSVP</option>
-                        <option value="ticket">Ticket</option>
-                      </select>
-                      <input id="regFrom" type="date" className="border border-gray-300 rounded px-2 py-2 text-sm" />
-                      <input id="regTo" type="date" className="border border-gray-300 rounded px-2 py-2 text-sm" />
-                      <input id="regPageSize" type="number" min={1} max={100} defaultValue={25} className="border border-gray-300 rounded px-2 py-2 text-sm" />
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={async()=>{
-                          const typeEl = document.getElementById('regType') as HTMLSelectElement | null
-                          const fromEl = document.getElementById('regFrom') as HTMLInputElement | null
-                          const toEl = document.getElementById('regTo') as HTMLInputElement | null
-                          const sizeEl = document.getElementById('regPageSize') as HTMLInputElement | null
-                          const filters = {
-                            type: typeEl?.value || '',
-                            from: fromEl?.value || '',
-                            to: toEl?.value || '',
-                          }
-                          const pageSize = Math.max(1, Math.min(100, Number(sizeEl?.value || 25)))
-                          await fetchRegistrations(1, pageSize, filters)
-                        }}>{regLoading ? 'Loading…' : 'Apply'}</Button>
-                        <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage, regPageSize)} disabled={regLoading}>Refresh</Button>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 overflow-visible">
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-700">Type</label>
+                        <select id="regType" className="w-full border border-gray-300 rounded px-2 py-2 text-sm">
+                          <option value="">All Types</option>
+                          <option value="rsvp">RSVP</option>
+                          <option value="ticket">Ticket</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-700">From Date</label>
+                        <input id="regFrom" type="date" className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-700">To Date</label>
+                        <input id="regTo" type="date" className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-700">Page Size</label>
+                        <input id="regPageSize" type="number" min={1} max={100} defaultValue={25} className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-700 invisible">Actions</label>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={async()=>{
+                            const typeEl = document.getElementById('regType') as HTMLSelectElement | null
+                            const fromEl = document.getElementById('regFrom') as HTMLInputElement | null
+                            const toEl = document.getElementById('regTo') as HTMLInputElement | null
+                            const sizeEl = document.getElementById('regPageSize') as HTMLInputElement | null
+                            const filters = {
+                              type: typeEl?.value || '',
+                              from: fromEl?.value || '',
+                              to: toEl?.value || '',
+                            }
+                            const pageSize = Math.max(1, Math.min(100, Number(sizeEl?.value || 25)))
+                            await fetchRegistrations(1, pageSize, filters)
+                          }} className="flex-1">
+                            {regLoading ? 'Loading…' : 'Apply'}
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage, regPageSize)} disabled={regLoading} className="flex-1">
+                            Refresh
+                          </Button>
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
@@ -1005,8 +1103,8 @@ export default function EventDetailPage() {
                   <div className="table-responsive overflow-y-visible no-overflow">
                     <table className="min-w-full table-fixed text-xs sm:text-sm">
                       <thead>
-                        <tr className="text-left text-gray-700">
-                          <th className="py-2 pr-4">
+                        <tr className="text-left text-gray-700 bg-gray-50">
+                          <th className="py-3 px-3">
                             <input 
                               type="checkbox" 
                               onChange={(e) => {
@@ -1017,20 +1115,21 @@ export default function EventDetailPage() {
                                 }
                               }}
                               checked={selectedRegistrations.length === (registrations || []).length && (registrations || []).length > 0}
+                              className="rounded border-gray-300"
                             />
                           </th>
-                          <th className="py-2 pr-4 hidden md:table-cell w-[180px]">Created</th>
-                          <th className="py-2 pr-4 w-[40%] sm:w-auto">Name</th>
-                          <th className="py-2 pr-4 hidden lg:table-cell w-[30%]">Email</th>
-                          <th className="py-2 pr-4 w-[80px]">Type</th>
-                          <th className="py-2 pr-4 w-[60px]">Qty</th>
-                          <th className="py-2 pr-4 w-[100px]">Status</th>
+                          <th className="py-3 px-3 hidden md:table-cell w-[180px] font-medium">Created</th>
+                          <th className="py-3 px-3 w-[40%] sm:w-auto font-medium">Name</th>
+                          <th className="py-3 px-3 hidden lg:table-cell w-[30%] font-medium">Email</th>
+                          <th className="py-3 px-3 w-[80px] font-medium">Type</th>
+                          <th className="py-3 px-3 w-[60px] font-medium">Qty</th>
+                          <th className="py-3 px-3 w-[100px] font-medium">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {(registrations || []).map((r:any) => (
-                          <tr key={r.id} className="border-t border-gray-200 text-gray-800">
-                            <td className="py-2 pr-4">
+                          <tr key={r.id} className="border-t border-gray-200 text-gray-800 hover:bg-gray-50">
+                            <td className="py-3 px-3">
                               <input 
                                 type="checkbox" 
                                 checked={selectedRegistrations.includes(r.id)}
@@ -1041,19 +1140,51 @@ export default function EventDetailPage() {
                                     setSelectedRegistrations(selectedRegistrations.filter(id => id !== r.id))
                                   }
                                 }}
+                                className="rounded border-gray-300"
                               />
                             </td>
-                            <td className="py-2 pr-4 hidden md:table-cell">{new Date(r.created_at).toLocaleString()}</td>
-                            <td className="py-2 pr-4 break-words truncate-soft">{r.name || r.participant_name || '—'}</td>
-                            <td className="py-2 pr-4 break-words truncate-soft hidden lg:table-cell">{r.email || r.participant_email || '—'}</td>
-                            <td className="py-2 pr-4 whitespace-nowrap">{r.type}</td>
-                            <td className="py-2 pr-4 whitespace-nowrap">{r.quantity}</td>
-                            <td className="py-2 pr-4 whitespace-nowrap">{r.status}</td>
+                            <td className="py-3 px-3 hidden md:table-cell text-gray-600">
+                              {new Date(r.created_at).toLocaleDateString()}
+                            </td>
+                            <td className="py-3 px-3 break-words truncate-soft font-medium">
+                              {r.name || r.participant_name || '—'}
+                            </td>
+                            <td className="py-3 px-3 break-words truncate-soft hidden lg:table-cell text-gray-600">
+                              {r.email || r.participant_email || '—'}
+                            </td>
+                            <td className="py-3 px-3 whitespace-nowrap">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                r.type === 'rsvp' ? 'bg-blue-100 text-blue-800' : 
+                                r.type === 'ticket' ? 'bg-green-100 text-green-800' : 
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {r.type}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3 whitespace-nowrap text-center font-medium">
+                              {r.quantity}
+                            </td>
+                            <td className="py-3 px-3 whitespace-nowrap">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                r.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
+                                r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                r.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {r.status}
+                              </span>
+                            </td>
                           </tr>
                         ))}
                         {Array.isArray(registrations) && registrations.length === 0 && (
                           <tr>
-                            <td colSpan={7} className="py-6 text-center text-gray-600">No registrations yet</td>
+                            <td colSpan={7} className="py-8 text-center text-gray-500">
+                              <div className="flex flex-col items-center">
+                                <Users className="h-8 w-8 text-gray-400 mb-2" />
+                                <p className="text-sm">No registrations yet</p>
+                                <p className="text-xs text-gray-400">Registrations will appear here once people start signing up</p>
+                              </div>
+                            </td>
                           </tr>
                         )}
                       </tbody>

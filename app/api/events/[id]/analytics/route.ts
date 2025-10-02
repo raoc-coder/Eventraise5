@@ -69,10 +69,14 @@ export async function GET(req: NextRequest, { params }: any) {
     const totalFees = donations?.reduce((sum: number, d: any) => sum + (d.fee_cents || 0), 0) || 0
     const totalNet = donations?.reduce((sum: number, d: any) => sum + (d.net_cents || 0), 0) || 0
 
-    // Ticket revenue
+    // Ticket revenue (from registrations with payment)
     const ticketRevenue = registrations
       ?.filter((r: any) => r.type === 'ticket' && r.status === 'confirmed')
       .reduce((sum: number, r: any) => sum + (r.fee_cents || 0) + (r.net_cents || 0), 0) || 0
+
+    // Additional metrics
+    const completedDonations = donations?.filter((d: any) => d.status === 'completed').length || 0
+    const pendingDonations = donations?.filter((d: any) => d.status === 'pending').length || 0
 
     // Daily registration trends (last 30 days)
     const thirtyDaysAgo = new Date()
@@ -110,7 +114,9 @@ export async function GET(req: NextRequest, { params }: any) {
         donations: {
           gross: totalDonations / 100,
           fees: totalFees / 100,
-          net: totalNet / 100
+          net: totalNet / 100,
+          count: completedDonations,
+          pending: pendingDonations
         },
         tickets: {
           gross: ticketRevenue / 100
