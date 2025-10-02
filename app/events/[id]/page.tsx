@@ -85,16 +85,20 @@ export default function EventDetailPage() {
   const [donationTotal, setDonationTotal] = useState<number>(0)
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>([])
 
-  // Handle escape key to close analytics modal
+  // Handle escape key to close modals
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && analytics) {
-      setAnalytics(null)
-    }
+      if (e.key === 'Escape') {
+        if (analytics) {
+          setAnalytics(null)
+        } else if (registrations) {
+          setRegistrations(null)
+        }
+      }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [analytics])
+  }, [analytics, registrations])
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -911,209 +915,6 @@ export default function EventDetailPage() {
             )}
 
 
-            {/* Owner registrations table */}
-            {user && event && (user.id === (event.organizer_id || event.created_by)) && (
-              <Card className="event-card" id="registrations">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-gray-900">Registrations</CardTitle>
-                      <CardDescription className="text-gray-600">Manage event registrations and attendees</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Button variant="outline" size="sm" onClick={() => fetchRegistrations()} disabled={regLoading}>
-                        <Users className="h-4 w-4 mr-2" />
-                        {regLoading ? 'Loading…' : 'Load'}
-                      </Button>
-                      <a href={`/api/events/${event.id}/registrations/csv${(() => {
-                        const sp = new URLSearchParams()
-                        // future: include applied filters
-                        return sp.toString() ? `?${sp.toString()}` : ''
-                      })()}`} className="text-sm text-blue-600 hover:underline flex items-center">
-                        <ExternalLink className="h-4 w-4 mr-1" />
-                        Export CSV
-                      </a>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 mb-3">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 overflow-visible">
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-700">Type</label>
-                        <select id="regType" className="w-full border border-gray-300 rounded px-2 py-2 text-sm">
-                          <option value="">All Types</option>
-                          <option value="rsvp">RSVP</option>
-                          <option value="ticket">Ticket</option>
-                        </select>
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-700">From Date</label>
-                        <input id="regFrom" type="date" className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-700">To Date</label>
-                        <input id="regTo" type="date" className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-700">Page Size</label>
-                        <input id="regPageSize" type="number" min={1} max={100} defaultValue={25} className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-700 invisible">Actions</label>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={async()=>{
-                            const typeEl = document.getElementById('regType') as HTMLSelectElement | null
-                            const fromEl = document.getElementById('regFrom') as HTMLInputElement | null
-                            const toEl = document.getElementById('regTo') as HTMLInputElement | null
-                            const sizeEl = document.getElementById('regPageSize') as HTMLInputElement | null
-                            const filters = {
-                              type: typeEl?.value || '',
-                              from: fromEl?.value || '',
-                              to: toEl?.value || '',
-                            }
-                            const pageSize = Math.max(1, Math.min(100, Number(sizeEl?.value || 25)))
-                            await fetchRegistrations(1, pageSize, filters)
-                          }} className="flex-1">
-                            {regLoading ? 'Loading…' : 'Apply'}
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage, regPageSize)} disabled={regLoading} className="flex-1">
-                            Refresh
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">
-                        {Array.isArray(registrations) ? registrations.length : 0} shown of {regTotal} total
-                        {Array.isArray(registrations) && registrations.length > 0 && (
-                          <span className="ml-2">
-                            ({registrations.filter((r:any)=>r.type==='rsvp').length} RSVP, {registrations.filter((r:any)=>r.type==='ticket').length} tickets)
-                          </span>
-                        )}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(Math.max(1, regPage-1), regPageSize)} disabled={regLoading || regPage <= 1}>Prev</Button>
-                        <span className="text-sm text-gray-600">Page {regPage}</span>
-                        <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage+1, regPageSize)} disabled={regLoading || (regPage * regPageSize) >= regTotal}>Next</Button>
-                      </div>
-                    </div>
-                  </div>
-                  {selectedRegistrations.length > 0 && (
-                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-blue-700">{selectedRegistrations.length} selected</span>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={()=>bulkUpdateStatus('confirmed')}>
-                            Mark Confirmed
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={()=>bulkUpdateStatus('cancelled')}>
-                            Mark Cancelled
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={()=>setSelectedRegistrations([])}>
-                            Clear
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="overflow-x-auto border border-gray-200 rounded-lg">
-                    <table className="min-w-full text-xs sm:text-sm">
-                      <thead>
-                        <tr className="text-left text-gray-700 bg-gray-50">
-                          <th className="py-3 px-3 w-12">
-                            <input 
-                              type="checkbox" 
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedRegistrations((registrations || []).map((r:any) => r.id))
-                                } else {
-                                  setSelectedRegistrations([])
-                                }
-                              }}
-                              checked={selectedRegistrations.length === (registrations || []).length && (registrations || []).length > 0}
-                              className="rounded border-gray-300"
-                            />
-                          </th>
-                          <th className="py-3 px-3 hidden md:table-cell font-medium min-w-[120px]">Created</th>
-                          <th className="py-3 px-3 font-medium min-w-[150px]">Name</th>
-                          <th className="py-3 px-3 hidden lg:table-cell font-medium min-w-[200px]">Email</th>
-                          <th className="py-3 px-3 font-medium min-w-[80px]">Type</th>
-                          <th className="py-3 px-3 font-medium min-w-[60px]">Qty</th>
-                          <th className="py-3 px-3 font-medium min-w-[100px]">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(registrations || []).map((r:any) => (
-                          <tr key={r.id} className="border-t border-gray-200 text-gray-800 hover:bg-gray-50">
-                            <td className="py-3 px-3 w-12">
-                              <input 
-                                type="checkbox" 
-                                checked={selectedRegistrations.includes(r.id)}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedRegistrations([...selectedRegistrations, r.id])
-                                  } else {
-                                    setSelectedRegistrations(selectedRegistrations.filter(id => id !== r.id))
-                                  }
-                                }}
-                                className="rounded border-gray-300"
-                              />
-                            </td>
-                            <td className="py-3 px-3 hidden md:table-cell text-gray-600 min-w-[120px]">
-                              {new Date(r.created_at).toLocaleDateString()}
-                            </td>
-                            <td className="py-3 px-3 font-medium min-w-[150px]">
-                              <div className="truncate" title={r.name || r.participant_name || '—'}>
-                                {r.name || r.participant_name || '—'}
-                              </div>
-                            </td>
-                            <td className="py-3 px-3 hidden lg:table-cell text-gray-600 min-w-[200px]">
-                              <div className="truncate" title={r.email || r.participant_email || '—'}>
-                                {r.email || r.participant_email || '—'}
-                              </div>
-                            </td>
-                            <td className="py-3 px-3 whitespace-nowrap min-w-[80px]">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                r.type === 'rsvp' ? 'bg-blue-100 text-blue-800' : 
-                                r.type === 'ticket' ? 'bg-green-100 text-green-800' : 
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {r.type}
-                              </span>
-                            </td>
-                            <td className="py-3 px-3 whitespace-nowrap text-center font-medium min-w-[60px]">
-                              {r.quantity}
-                            </td>
-                            <td className="py-3 px-3 whitespace-nowrap min-w-[100px]">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                r.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
-                                r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                r.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {r.status}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                        {Array.isArray(registrations) && registrations.length === 0 && (
-                          <tr>
-                            <td colSpan={7} className="py-8 text-center text-gray-500">
-                              <div className="flex flex-col items-center">
-                                <Users className="h-8 w-8 text-gray-400 mb-2" />
-                                <p className="text-sm">No registrations yet</p>
-                                <p className="text-xs text-gray-400">Registrations will appear here once people start signing up</p>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
         </div>
       </div>
@@ -1219,6 +1020,225 @@ export default function EventDetailPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Registrations Modal */}
+      {user && event && (user.id === (event.organizer_id || event.created_by)) && registrations && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setRegistrations(null)
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Event Registrations</h2>
+                  <p className="text-gray-600">Manage registrations and attendees for {event.title}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => fetchRegistrations()} disabled={regLoading}>
+                    <Users className="h-4 w-4 mr-2" />
+                    {regLoading ? 'Loading…' : 'Refresh'}
+                  </Button>
+                  <a href={`/api/events/${event.id}/registrations/csv${(() => {
+                    const sp = new URLSearchParams()
+                    return sp.toString() ? `?${sp.toString()}` : ''
+                  })()}`} className="text-sm text-blue-600 hover:underline flex items-center">
+                    <ExternalLink className="h-4 w-4 mr-1" />
+                    Export CSV
+                  </a>
+                  <Button variant="outline" size="sm" onClick={()=>setRegistrations(null)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Filters */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Type</label>
+                  <select id="regType" className="w-full border border-gray-300 rounded px-2 py-2 text-sm">
+                    <option value="">All Types</option>
+                    <option value="rsvp">RSVP</option>
+                    <option value="ticket">Ticket</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">From Date</label>
+                  <input id="regFrom" type="date" className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">To Date</label>
+                  <input id="regTo" type="date" className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Page Size</label>
+                  <input id="regPageSize" type="number" min={1} max={100} defaultValue={25} className="w-full border border-gray-300 rounded px-2 py-2 text-sm" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700 invisible">Actions</label>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={async()=>{
+                      const typeEl = document.getElementById('regType') as HTMLSelectElement | null
+                      const fromEl = document.getElementById('regFrom') as HTMLInputElement | null
+                      const toEl = document.getElementById('regTo') as HTMLInputElement | null
+                      const sizeEl = document.getElementById('regPageSize') as HTMLInputElement | null
+                      const filters = {
+                        type: typeEl?.value || '',
+                        from: fromEl?.value || '',
+                        to: toEl?.value || '',
+                      }
+                      const pageSize = Math.max(1, Math.min(100, Number(sizeEl?.value || 25)))
+                      await fetchRegistrations(1, pageSize, filters)
+                    }} className="flex-1">
+                      {regLoading ? 'Loading…' : 'Apply'}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage, regPageSize)} disabled={regLoading} className="flex-1">
+                      Refresh
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Summary */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm text-gray-600">
+                  {Array.isArray(registrations) ? registrations.length : 0} shown of {regTotal} total
+                  {Array.isArray(registrations) && registrations.length > 0 && (
+                    <span className="ml-2">
+                      ({registrations.filter((r:any)=>r.type==='rsvp').length} RSVP, {registrations.filter((r:any)=>r.type==='ticket').length} tickets)
+                    </span>
+                  )}
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(Math.max(1, regPage-1), regPageSize)} disabled={regLoading || regPage <= 1}>Prev</Button>
+                  <span className="text-sm text-gray-600">Page {regPage}</span>
+                  <Button variant="outline" size="sm" onClick={()=>fetchRegistrations(regPage+1, regPageSize)} disabled={regLoading || (regPage * regPageSize) >= regTotal}>Next</Button>
+                </div>
+              </div>
+
+              {/* Bulk Actions */}
+              {selectedRegistrations.length > 0 && (
+                <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-blue-700">{selectedRegistrations.length} selected</span>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={()=>bulkUpdateStatus('confirmed')}>
+                        Mark Confirmed
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={()=>bulkUpdateStatus('cancelled')}>
+                        Mark Cancelled
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={()=>setSelectedRegistrations([])}>
+                        Clear
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Table */}
+              <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                <table className="min-w-full text-xs sm:text-sm">
+                  <thead>
+                    <tr className="text-left text-gray-700 bg-gray-50">
+                      <th className="py-3 px-3 w-12">
+                        <input 
+                          type="checkbox" 
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedRegistrations((registrations || []).map((r:any) => r.id))
+                            } else {
+                              setSelectedRegistrations([])
+                            }
+                          }}
+                          checked={selectedRegistrations.length === (registrations || []).length && (registrations || []).length > 0}
+                          className="rounded border-gray-300"
+                        />
+                      </th>
+                      <th className="py-3 px-3 hidden md:table-cell font-medium min-w-[120px]">Created</th>
+                      <th className="py-3 px-3 font-medium min-w-[150px]">Name</th>
+                      <th className="py-3 px-3 hidden lg:table-cell font-medium min-w-[200px]">Email</th>
+                      <th className="py-3 px-3 font-medium min-w-[80px]">Type</th>
+                      <th className="py-3 px-3 font-medium min-w-[60px]">Qty</th>
+                      <th className="py-3 px-3 font-medium min-w-[100px]">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(registrations || []).map((r:any) => (
+                      <tr key={r.id} className="border-t border-gray-200 text-gray-800 hover:bg-gray-50">
+                        <td className="py-3 px-3 w-12">
+                          <input 
+                            type="checkbox" 
+                            checked={selectedRegistrations.includes(r.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedRegistrations([...selectedRegistrations, r.id])
+                              } else {
+                                setSelectedRegistrations(selectedRegistrations.filter(id => id !== r.id))
+                              }
+                            }}
+                            className="rounded border-gray-300"
+                          />
+                        </td>
+                        <td className="py-3 px-3 hidden md:table-cell text-gray-600 min-w-[120px]">
+                          {new Date(r.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="py-3 px-3 font-medium min-w-[150px]">
+                          <div className="truncate" title={r.name || r.participant_name || '—'}>
+                            {r.name || r.participant_name || '—'}
+                          </div>
+                        </td>
+                        <td className="py-3 px-3 hidden lg:table-cell text-gray-600 min-w-[200px]">
+                          <div className="truncate" title={r.email || r.participant_email || '—'}>
+                            {r.email || r.participant_email || '—'}
+                          </div>
+                        </td>
+                        <td className="py-3 px-3 whitespace-nowrap min-w-[80px]">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            r.type === 'rsvp' ? 'bg-blue-100 text-blue-800' : 
+                            r.type === 'ticket' ? 'bg-green-100 text-green-800' : 
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {r.type}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 whitespace-nowrap text-center font-medium min-w-[60px]">
+                          {r.quantity}
+                        </td>
+                        <td className="py-3 px-3 whitespace-nowrap min-w-[100px]">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            r.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
+                            r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                            r.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {r.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                    {Array.isArray(registrations) && registrations.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="py-8 text-center text-gray-500">
+                          <div className="flex flex-col items-center">
+                            <Users className="h-8 w-8 text-gray-400 mb-2" />
+                            <p className="text-sm">No registrations yet</p>
+                            <p className="text-xs text-gray-400">Registrations will appear here once people start signing up</p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
