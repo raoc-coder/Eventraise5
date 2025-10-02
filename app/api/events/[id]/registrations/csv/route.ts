@@ -22,6 +22,7 @@ function toCsv(rows: any[]) {
 export async function GET(req: NextRequest, { params }: any) {
   try {
     const { id } = await params
+    console.log('CSV export request for event:', id)
     if (!id) return new NextResponse('Missing id', { status: 400 })
     const { searchParams } = new URL(req.url)
     const type = (searchParams.get('type') || '').trim()
@@ -33,19 +34,23 @@ export async function GET(req: NextRequest, { params }: any) {
     try {
       const cookieStore = cookies()
       db = createRouteHandlerClient({ cookies: () => cookieStore })
+      console.log('Using cookie-based auth')
     } catch {
       db = null
     }
     if (!db) {
       const authHeader = req.headers.get('authorization') || ''
+      console.log('Auth header present:', !!authHeader)
       const match = authHeader.match(/^Bearer\s+(.+)$/i)
       if (!match) return new NextResponse('Authentication required', { status: 401 })
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
       const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       db = createClient(url, key, { global: { headers: { Authorization: `Bearer ${match[1]}` } } })
+      console.log('Using token-based auth')
     }
 
     const { data: { user } } = await db.auth.getUser()
+    console.log('User authenticated:', !!user, user?.id)
     if (!user) return new NextResponse('Authentication required', { status: 401 })
 
     const { data: ev, error: evErr } = await db
@@ -53,9 +58,11 @@ export async function GET(req: NextRequest, { params }: any) {
       .select('id, organizer_id, created_by, title')
       .eq('id', id)
       .single()
+    console.log('Event lookup result:', { ev, evErr })
     if (evErr || !ev) return new NextResponse('Event not found', { status: 404 })
     const isOwner = user.id === (ev.organizer_id ?? ev.created_by)
     const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
+    console.log('Access check:', { isOwner, isAdmin, userId: user.id, eventOwner: ev.organizer_id, eventCreator: ev.created_by })
     if (!isOwner && !isAdmin) return new NextResponse('Forbidden', { status: 403 })
 
     let query = db
@@ -72,10 +79,13 @@ export async function GET(req: NextRequest, { params }: any) {
     }
 
     const { data, error } = await query.order('created_at', { ascending: false })
+    console.log('Registrations query result:', { data: data?.length, error })
     if (error) return new NextResponse(error.message, { status: 400 })
 
     const csv = toCsv(data || [])
+    console.log('CSV generated, length:', csv.length)
     const filename = `registrations_${ev.title?.replace(/[^a-z0-9]+/gi,'_').toLowerCase() || 'event'}_${new Date().toISOString().slice(0,10)}.csv`
+    console.log('Returning CSV with filename:', filename)
     return new NextResponse(csv, {
       status: 200,
       headers: {

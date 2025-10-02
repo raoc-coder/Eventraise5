@@ -1062,17 +1062,28 @@ export default function EventDetailPage() {
                           return
                         }
                         
+                        console.log('Starting CSV export for event:', event.id)
                         const response = await fetch(`/api/events/${event.id}/registrations/csv`, {
                           headers: {
                             'Authorization': `Bearer ${session.access_token}`
                           }
                         })
                         
+                        console.log('CSV export response:', response.status, response.statusText)
+                        
                         if (!response.ok) {
-                          throw new Error('Export failed')
+                          const errorText = await response.text()
+                          console.error('CSV export failed:', errorText)
+                          throw new Error(`Export failed: ${response.status} ${response.statusText}`)
                         }
                         
                         const blob = await response.blob()
+                        console.log('CSV blob created, size:', blob.size)
+                        
+                        if (blob.size === 0) {
+                          throw new Error('Empty CSV file received')
+                        }
+                        
                         const url = window.URL.createObjectURL(blob)
                         const a = document.createElement('a')
                         a.href = url
@@ -1084,7 +1095,7 @@ export default function EventDetailPage() {
                         toast.success('CSV exported successfully')
                       } catch (error) {
                         console.error('Export error:', error)
-                        toast.error('Failed to export CSV')
+                        toast.error(`Failed to export CSV: ${error instanceof Error ? error.message : 'Unknown error'}`)
                       }
                     }}
                     className="text-sm text-blue-600 hover:underline flex items-center"
