@@ -71,11 +71,12 @@ export async function POST(req: NextRequest, { params }: any) {
 
     // Create PayPal order for ticket purchase
     const totalAmount = totalCents / 100
-    const paypalOrder = await createDonationOrder({
-      amount: totalAmount,
-      eventId: id,
-      description: `Ticket: ${ticket.name} (${quantity}x)`
-    })
+    const paypalOrder = await createDonationOrder(
+      id, // eventId
+      totalAmount, // amount
+      name, // donorName
+      email // donorEmail
+    )
 
     return NextResponse.json({
       registration_id: registration.id,
