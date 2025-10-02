@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
             donor_email: null, // Will be filled from PayPal data
             status: 'completed',
             settlement_status: 'pending',
-            paypal_order_id: orderId,
+            paypal_order_id: orderData.id, -- link to internal UUID
             paypal_capture_id: captureResult.captureId
           })
 
