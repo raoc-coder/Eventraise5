@@ -64,7 +64,8 @@ export function PayPalDonationButton({
         },
         body: JSON.stringify({
           orderId: data.orderID,
-          eventId
+          eventId,
+          type: 'donation'
         }),
       })
 
