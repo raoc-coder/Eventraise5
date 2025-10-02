@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { requireAdminAuth } from '@/lib/auth-utils'
+import { requireAuth } from '@/lib/auth-utils'
 
 export async function GET(req: NextRequest) {
   try {
-    // Use standardized admin authentication
-    const { user, db } = await requireAdminAuth(req)
+    // Use standardized authentication
+    const { user, db } = await requireAuth(req)
 
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
-    // Get all event payouts with event and organizer details
+    // Get payouts for this organizer
     const { data: payouts, error: payoutsError } = await supabaseAdmin
       .from('event_payouts')
       .select(`
         id,
         event_id,
-        organizer_id,
         total_gross_cents,
         total_fees_cents,
         total_net_cents,
@@ -26,27 +25,15 @@ export async function GET(req: NextRequest) {
         created_at,
         events!inner (
           id,
-          title,
-          organizer_id
+          title
         )
       `)
+      .eq('organizer_id', user.id)
       .order('created_at', { ascending: false })
 
     if (payoutsError) {
       console.error('Error fetching payouts:', payoutsError)
       return NextResponse.json({ error: 'Failed to fetch payouts' }, { status: 500 })
-    }
-
-    // Get organizer details for each payout
-    const organizerIds = Array.from(new Set(payouts.map(p => p.organizer_id)))
-    const { data: organizers, error: organizersError } = await supabaseAdmin
-      .from('profiles')
-      .select('id, full_name, email')
-      .in('id', organizerIds)
-
-    if (organizersError) {
-      console.error('Error fetching organizers:', organizersError)
-      return NextResponse.json({ error: 'Failed to fetch organizers' }, { status: 500 })
     }
 
     // Get donation counts for each payout
@@ -62,7 +49,6 @@ export async function GET(req: NextRequest) {
     }
 
     // Combine data
-    const organizerMap = new Map(organizers.map(o => [o.id, o]))
     const countMap = new Map()
     donationCounts.forEach(item => {
       countMap.set(item.payout_id, (countMap.get(item.payout_id) || 0) + 1)
@@ -72,9 +58,6 @@ export async function GET(req: NextRequest) {
       id: payout.id,
       event_id: payout.event_id,
       event_title: (payout.events as any).title,
-      organizer_id: payout.organizer_id,
-      organizer_name: organizerMap.get(payout.organizer_id)?.full_name || 'Unknown',
-      organizer_email: organizerMap.get(payout.organizer_id)?.email || 'Unknown',
       total_gross_cents: payout.total_gross_cents,
       total_fees_cents: payout.total_fees_cents,
       total_net_cents: payout.total_net_cents,
@@ -100,7 +83,7 @@ export async function GET(req: NextRequest) {
       totals
     })
   } catch (e) {
-    console.error('Error in admin payouts:', e)
+    console.error('Error in organizer payouts:', e)
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unknown error' }, { status: 500 })
   }
 }
