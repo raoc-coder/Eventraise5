@@ -1019,12 +1019,12 @@ export default function EventDetailPage() {
                               checked={selectedRegistrations.length === (registrations || []).length && (registrations || []).length > 0}
                             />
                           </th>
-                          <th className="py-2 pr-4 hidden sm:table-cell w-[160px]">Created</th>
-                          <th className="py-2 pr-4">Name</th>
-                          <th className="py-2 pr-4 hidden sm:table-cell">Email</th>
-                          <th className="py-2 pr-4">Type</th>
-                          <th className="py-2 pr-4">Qty</th>
-                          <th className="py-2 pr-4">Status</th>
+                          <th className="py-2 pr-4 hidden md:table-cell w-[180px]">Created</th>
+                          <th className="py-2 pr-4 w-[40%] sm:w-auto">Name</th>
+                          <th className="py-2 pr-4 hidden lg:table-cell w-[30%]">Email</th>
+                          <th className="py-2 pr-4 w-[80px]">Type</th>
+                          <th className="py-2 pr-4 w-[60px]">Qty</th>
+                          <th className="py-2 pr-4 w-[100px]">Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1043,12 +1043,12 @@ export default function EventDetailPage() {
                                 }}
                               />
                             </td>
-                            <td className="py-2 pr-4 hidden sm:table-cell">{new Date(r.created_at).toLocaleString()}</td>
-                            <td className="py-2 pr-4 break-words truncate-soft max-w-[140px] sm:max-w-[220px]">{r.name || r.participant_name || '—'}</td>
-                            <td className="py-2 pr-4 break-words truncate-soft hidden sm:table-cell max-w-[260px]">{r.email || r.participant_email || '—'}</td>
-                            <td className="py-2 pr-4">{r.type}</td>
-                            <td className="py-2 pr-4">{r.quantity}</td>
-                            <td className="py-2 pr-4">{r.status}</td>
+                            <td className="py-2 pr-4 hidden md:table-cell">{new Date(r.created_at).toLocaleString()}</td>
+                            <td className="py-2 pr-4 break-words truncate-soft">{r.name || r.participant_name || '—'}</td>
+                            <td className="py-2 pr-4 break-words truncate-soft hidden lg:table-cell">{r.email || r.participant_email || '—'}</td>
+                            <td className="py-2 pr-4 whitespace-nowrap">{r.type}</td>
+                            <td className="py-2 pr-4 whitespace-nowrap">{r.quantity}</td>
+                            <td className="py-2 pr-4 whitespace-nowrap">{r.status}</td>
                           </tr>
                         ))}
                         {Array.isArray(registrations) && registrations.length === 0 && (
