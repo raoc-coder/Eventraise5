@@ -5,27 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1-beta.2] - 2025-10-02
 
 ### Added
-- Comprehensive PR & release process with GitHub Actions
-- Semantic commit message validation with commitlint
-- Automated semantic versioning and release management
-- Branch protection rules and required status checks
-- Security vulnerability scanning with CodeQL
-- Dependency review and license compliance checks
-- Automated changelog generation
-- Git hooks for pre-commit validation
+- PayPal Live integration for donations (create/capture via REST API)
+- `paypal_orders` table and linkage to `donation_requests` (UUID reference)
+- Basic PayPal webhook signature verification and handlers
+- Global mobile-friendly CSS utilities to prevent overflows
 
 ### Changed
-- Enhanced CI/CD pipeline with comprehensive testing
-- Improved test coverage and validation
-- Updated package.json with new scripts for release management
+- Removed remaining Stripe/Braintree references from home, terms, privacy
+- Updated pricing copy to reflect 8.99% platform fee only
+- Unified My Events card design with Events; improved responsiveness
+- Owner registrations table made compact/responsive; no horizontal bleed
+- Event detail donation notes clarified
 
-### Security
-- Added security vulnerability reporting template
-- Implemented automated security scanning
-- Enhanced dependency review process
+### Fixed
+- Donation insert failing due to UUID mismatch; now stores internal UUID
+- CHECK constraint violation on donation status (uses table default)
+- Build/lint issues on My Events imports
+
+### Notes
+- Webhook verification is best‑effort and can be tightened further
+- Preview environments may still point to sandbox; production uses Live creds
 
 ## [0.1.0] - 2024-01-XX
 
