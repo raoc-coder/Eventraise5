@@ -1,4 +1,3 @@
-
 -- Event-Based Payout System
 -- This migration creates a proper per-event, per-organizer payout system
 
@@ -53,9 +52,9 @@ CREATE POLICY "Organizers can view own payouts" ON public.event_payouts
 CREATE POLICY "Admins can view all payouts" ON public.event_payouts
   FOR ALL USING (
     EXISTS (
-      SELECT 1 FROM auth.users 
-      WHERE auth.users.id = auth.uid() 
-      AND (auth.users.user_metadata->>'role' = 'admin' OR auth.users.app_metadata->>'role' = 'admin')
+      SELECT 1 FROM public.profiles 
+      WHERE public.profiles.id = auth.uid() 
+      AND public.profiles.role = 'admin'
     )
   );
 
@@ -68,9 +67,9 @@ CREATE POLICY "Payout items inherit parent permissions" ON public.payout_items
       AND (
         auth.uid() = public.event_payouts.organizer_id OR
         EXISTS (
-          SELECT 1 FROM auth.users 
-          WHERE auth.users.id = auth.uid() 
-          AND (auth.users.user_metadata->>'role' = 'admin' OR auth.users.app_metadata->>'role' = 'admin')
+          SELECT 1 FROM public.profiles 
+          WHERE public.profiles.id = auth.uid() 
+          AND public.profiles.role = 'admin'
         )
       )
     )
