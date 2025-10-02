@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { Navigation } from '@/components/layout/navigation'
@@ -38,7 +38,7 @@ export default function OrganizerPayoutsPage() {
     completed_payouts: 0 
   })
 
-  const fetchPayouts = async () => {
+  const fetchPayouts = useCallback(async () => {
     setLoading(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -61,7 +61,7 @@ export default function OrganizerPayoutsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase])
 
   useEffect(() => {
     const supabaseClient = createClient(
@@ -78,7 +78,7 @@ export default function OrganizerPayoutsPage() {
       setUser(user)
       fetchPayouts()
     })
-  }, [router])
+  }, [router, fetchPayouts])
 
   const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()
@@ -211,9 +211,9 @@ export default function OrganizerPayoutsPage() {
 
                 {payout.payout_status === 'pending' && (
                   <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
-                    <p className="text-sm text-yellow-800">
-                      Your payout is being processed. You'll receive an email notification once it's completed.
-                    </p>
+                <p className="text-sm text-yellow-800">
+                  Your payout is being processed. You&apos;ll receive an email notification once it&apos;s completed.
+                </p>
                   </div>
                 )}
               </CardContent>

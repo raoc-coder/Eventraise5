@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { Navigation } from '@/components/layout/navigation'
@@ -42,7 +42,7 @@ export default function EventPayoutsPage() {
     completed_payouts: 0 
   })
 
-  const fetchEventPayouts = async () => {
+  const fetchEventPayouts = useCallback(async () => {
     setLoading(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -65,7 +65,7 @@ export default function EventPayoutsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase])
 
   const updatePayoutStatus = async (payoutId: string, status: string, method?: string, reference?: string) => {
     try {
@@ -104,7 +104,7 @@ export default function EventPayoutsPage() {
       setUser(user)
       fetchEventPayouts()
     })
-  }, [router])
+  }, [router, fetchEventPayouts])
 
   const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()
