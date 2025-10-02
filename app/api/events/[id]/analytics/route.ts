@@ -17,6 +17,7 @@ export async function GET(req: NextRequest, { params }: any) {
       db = null
     }
 
+    // Attempt bearer token fallback if cookie-based client is unavailable
     if (!db) {
       const authHeader = req.headers.get('authorization') || ''
       const match = authHeader.match(/^Bearer\s+(.+)$/i)
@@ -26,7 +27,20 @@ export async function GET(req: NextRequest, { params }: any) {
       db = createClient(url, key, { global: { headers: { Authorization: `Bearer ${match[1]}` } } })
     }
 
-    const { data: { user } } = await db.auth.getUser()
+    // Try getting the user; if not found, but Authorization header provided, retry with that token explicitly
+    let { data: { user } } = await db.auth.getUser()
+    if (!user) {
+      const authHeader = req.headers.get('authorization') || ''
+      const match = authHeader.match(/^Bearer\s+(.+)$/i)
+      if (match) {
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        const tokenDb = createClient(url, key, { global: { headers: { Authorization: `Bearer ${match[1]}` } } })
+        const retry = await tokenDb.auth.getUser()
+        user = retry.data.user
+        db = tokenDb
+      }
+    }
     if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
 
     // Check if user is owner/admin
