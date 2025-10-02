@@ -124,8 +124,8 @@ export default function TermsOfServicePage() {
                 <h3 className="text-lg font-semibold text-purple-700 mb-3">Donations</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• All donations are final and non-refundable unless otherwise stated</li>
-                  <li>• Payment processing is handled securely through Braintree (PayPal)</li>
-                  <li>• Use of the platform is free. A platform fee of 8.99% applies to donations received (plus Braintree processing fees).</li>
+                  <li>• Payment processing is handled securely through PayPal</li>
+                  <li>• Use of the platform is free. A platform fee of 8.99% applies to donations received (plus PayPal processing fees).</li>
                   <li>• Donors will receive receipts for tax purposes</li>
                 </ul>
               </div>
@@ -155,7 +155,7 @@ export default function TermsOfServicePage() {
                     <li>• <strong>Donors:</strong> No fees charged to donors</li>
                     <li>• <strong>Campaign Creators:</strong> 2.9% + $0.30 per transaction</li>
                     <li>• <strong>Event Organizers:</strong> 3.5% + $0.30 per registration</li>
-                    <li>• <strong>Payment Processing:</strong> Handled by Braintree (additional fees may apply)</li>
+                    <li>• <strong>Payment Processing:</strong> Handled by PayPal (additional fees may apply)</li>
                   </ul>
                 </div>
                 <p className="text-sm text-gray-400">

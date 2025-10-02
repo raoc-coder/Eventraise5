@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
                 <ul className="text-gray-700 space-y-2">
                   <li>• Name and email address (required for account creation)</li>
                   <li>• Organization name (optional, for campaign creators)</li>
-                  <li>• Payment information (processed securely through Braintree)</li>
+                  <li>• Payment information (processed securely through PayPal)</li>
                   <li>• Profile information you choose to share</li>
                 </ul>
               </div>
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
                   <ul className="text-gray-700 space-y-2">
                     <li>• HTTPS encryption for all data transmission</li>
                     <li>• Secure database with Row Level Security (RLS)</li>
-                    <li>• PCI-compliant payment processing via Braintree</li>
+                    <li>• PCI-compliant payment processing via PayPal</li>
                     <li>• Regular security audits and updates</li>
                   </ul>
                 </div>
@@ -147,7 +147,7 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className="text-gray-700 space-y-2">
                 <li>• <strong>Campaign Organizers:</strong> Donor information (name, amount) for campaign management</li>
-                <li>• <strong>Payment Processing:</strong> Necessary information with Braintree for transaction processing</li>
+                <li>• <strong>Payment Processing:</strong> Necessary information with PayPal for transaction processing</li>
                 <li>• <strong>Legal Requirements:</strong> When required by law or to protect our rights</li>
                 <li>• <strong>Service Providers:</strong> Trusted partners who assist in platform operations</li>
               </ul>

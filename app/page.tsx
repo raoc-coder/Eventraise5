@@ -110,15 +110,15 @@ export default function HomePage() {
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Stripe Integration
+                    PayPal Payments (Cards, PayPal, Venmo, Pay Later)
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Instant Processing
+                    Instant Capture & Receipts
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Donation Receipts
+                    Transparent Fees (8.99% platform + PayPal)
                   </li>
                 </ul>
               </CardContent>
