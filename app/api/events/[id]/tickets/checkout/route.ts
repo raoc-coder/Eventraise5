@@ -80,7 +80,7 @@ export async function POST(req: NextRequest, { params }: any) {
 
     return NextResponse.json({
       registration_id: registration.id,
-      paypal_order_id: paypalOrder.id,
+      paypal_order_id: paypalOrder.orderId,
       amount: totalAmount,
       ticket: {
         id: ticket.id,
