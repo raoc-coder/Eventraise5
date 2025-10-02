@@ -95,3 +95,17 @@ export async function requireEventAccess(req: NextRequest, eventId: string): Pro
   
   return { ...auth, event }
 }
+
+/**
+ * Require admin authentication
+ */
+export async function requireAdminAuth(req: NextRequest): Promise<AuthResult> {
+  const auth = await requireAuth(req)
+  
+  const isAdmin = auth.user.user_metadata?.role === 'admin' || auth.user.app_metadata?.role === 'admin'
+  if (!isAdmin) {
+    throw new Error('Admin access required')
+  }
+  
+  return auth
+}

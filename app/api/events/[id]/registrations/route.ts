@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { createClient } from '@supabase/supabase-js'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function GET(req: NextRequest, { params }: any) {
   try {
@@ -14,38 +12,8 @@ export async function GET(req: NextRequest, { params }: any) {
     const page = Math.max(1, Number(searchParams.get('page') || '1'))
     const pageSize = Math.min(100, Math.max(1, Number(searchParams.get('pageSize') || '25')))
 
-    // Build authenticated client via cookie or header token
-    let db: any
-    try {
-      const cookieStore = cookies()
-      db = createRouteHandlerClient({ cookies: () => cookieStore })
-    } catch {
-      db = null
-    }
-
-    if (!db) {
-      const authHeader = req.headers.get('authorization') || ''
-      const match = authHeader.match(/^Bearer\s+(.+)$/i)
-      if (!match) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      db = createClient(url, key, { global: { headers: { Authorization: `Bearer ${match[1]}` } } })
-    }
-
-    // Identify user
-    const { data: { user } } = await db.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-
-    // Ensure the requester is owner/admin
-    const { data: ev, error: evErr } = await db
-      .from('events')
-      .select('id, organizer_id, created_by')
-      .eq('id', id)
-      .single()
-    if (evErr || !ev) return NextResponse.json({ error: 'Event not found' }, { status: 404 })
-    const isOwner = user.id === (ev.organizer_id ?? ev.created_by)
-    const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
-    if (!isOwner && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    // Use standardized authentication
+    const { user, db, event } = await requireEventAccess(req, id)
 
     // Build query with filters and pagination
     let query = db

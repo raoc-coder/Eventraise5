@@ -1,45 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { createClient } from '@supabase/supabase-js'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function GET(req: NextRequest, { params }: any) {
   try {
     const { id } = await params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
-    // Build authenticated client
-    let db: any
-    try {
-      const cookieStore = cookies()
-      db = createRouteHandlerClient({ cookies: () => cookieStore })
-    } catch {
-      db = null
-    }
-
-    if (!db) {
-      const authHeader = req.headers.get('authorization') || ''
-      const match = authHeader.match(/^Bearer\s+(.+)$/i)
-      if (!match) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      db = createClient(url, key, { global: { headers: { Authorization: `Bearer ${match[1]}` } } })
-    }
-
-    const { data: { user } } = await db.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-
-    // Check if user is owner/admin
-    const { data: ev, error: evErr } = await db
-      .from('events')
-      .select('id, organizer_id, created_by, is_published')
-      .eq('id', id)
-      .single()
-    if (evErr || !ev) return NextResponse.json({ error: 'Event not found' }, { status: 404 })
-    
-    const isOwner = user.id === (ev.organizer_id ?? ev.created_by)
-    const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
-    if (!isOwner && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    // Use standardized authentication
+    const { user, db, event } = await requireEventAccess(req, id)
 
     // Fetch tickets for this event
     const { data, error } = await db
@@ -62,38 +30,8 @@ export async function POST(req: NextRequest, { params }: any) {
     const body = await req.json().catch(() => ({}))
     const { name, price_cents, currency, quantity_total, sales_start_at, sales_end_at } = body
 
-    // Build authenticated client
-    let db: any
-    try {
-      const cookieStore = cookies()
-      db = createRouteHandlerClient({ cookies: () => cookieStore })
-    } catch {
-      db = null
-    }
-
-    if (!db) {
-      const authHeader = req.headers.get('authorization') || ''
-      const match = authHeader.match(/^Bearer\s+(.+)$/i)
-      if (!match) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      db = createClient(url, key, { global: { headers: { Authorization: `Bearer ${match[1]}` } } })
-    }
-
-    const { data: { user } } = await db.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-
-    // Check if user is owner/admin
-    const { data: ev, error: evErr } = await db
-      .from('events')
-      .select('id, organizer_id, created_by')
-      .eq('id', id)
-      .single()
-    if (evErr || !ev) return NextResponse.json({ error: 'Event not found' }, { status: 404 })
-    
-    const isOwner = user.id === (ev.organizer_id ?? ev.created_by)
-    const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
-    if (!isOwner && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    // Use standardized authentication
+    const { user, db, event } = await requireEventAccess(req, id)
 
     // Create ticket
     const { data, error } = await db

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { createClient } from '@supabase/supabase-js'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
@@ -14,38 +12,8 @@ export async function POST(req: NextRequest, { params }: any) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Build authenticated client
-    let db: any
-    try {
-      const cookieStore = cookies()
-      db = createRouteHandlerClient({ cookies: () => cookieStore })
-    } catch {
-      db = null
-    }
-
-    if (!db) {
-      const authHeader = req.headers.get('authorization') || ''
-      const match = authHeader.match(/^Bearer\s+(.+)$/i)
-      if (!match) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      db = createClient(url, key, { global: { headers: { Authorization: `Bearer ${match[1]}` } } })
-    }
-
-    const { data: { user } } = await db.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-
-    // Check if user is owner/admin
-    const { data: ev, error: evErr } = await db
-      .from('events')
-      .select('id, organizer_id, created_by')
-      .eq('id', id)
-      .single()
-    if (evErr || !ev) return NextResponse.json({ error: 'Event not found' }, { status: 404 })
-    
-    const isOwner = user.id === (ev.organizer_id ?? ev.created_by)
-    const isAdmin = user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
-    if (!isOwner && !isAdmin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    // Use standardized authentication
+    const { user, db, event } = await requireEventAccess(req, id)
 
     if (action === 'update_status') {
       if (!status) return NextResponse.json({ error: 'Status required' }, { status: 400 })
