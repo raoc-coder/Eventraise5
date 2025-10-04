@@ -45,40 +45,60 @@ export default function MyEventsPage() {
     })
   }
 
-  useEffect(() => {
-    (async () => {
+  const fetchEvents = async () => {
+    try {
+      setLoading(true)
+      // include user id header for ownership filtering
+      let headers: Record<string, string> = {}
       try {
-        // include user id header for ownership filtering
-        let headers: Record<string, string> = {}
-        try {
-          const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-          const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-          if (url && key) {
-            const client = createClient(url, key)
-            const { data } = await client.auth.getSession()
-            const uid = data?.session?.user?.id
-            const token = data?.session?.access_token
-            console.log('User session data:', { uid, hasToken: !!token })
-            if (uid) headers['x-user-id'] = uid
-            if (token) headers['Authorization'] = `Bearer ${token}`
-          }
-        } catch (error) {
-          console.error('Error getting user session:', error)
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        if (url && key) {
+          const client = createClient(url, key)
+          const { data } = await client.auth.getSession()
+          const uid = data?.session?.user?.id
+          const token = data?.session?.access_token
+          console.log('User session data:', { uid, hasToken: !!token })
+          if (uid) headers['x-user-id'] = uid
+          if (token) headers['Authorization'] = `Bearer ${token}`
         }
-        const res = await fetch('/api/events?mine=1', { headers, cache: 'no-store' as RequestCache })
-        const json = await res.json().catch(() => ({}))
-        console.log('API response:', { status: res.status, json })
-        if (!res.ok) {
-          console.error('Failed to fetch my events:', json)
-          setEvents([])
-        } else {
-          console.log('Setting events:', json.events?.length || 0)
-          setEvents(json.events || [])
-        }
-      } finally {
-        setLoading(false)
+      } catch (error) {
+        console.error('Error getting user session:', error)
       }
-    })()
+      const res = await fetch('/api/events?mine=1', { 
+        headers, 
+        cache: 'no-store' as RequestCache,
+        next: { revalidate: 0 }
+      })
+      const json = await res.json().catch(() => ({}))
+      console.log('API response:', { status: res.status, json })
+      if (!res.ok) {
+        console.error('Failed to fetch my events:', json)
+        setEvents([])
+      } else {
+        console.log('Setting events:', json.events?.length || 0)
+        setEvents(json.events || [])
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchEvents()
+  }, [])
+
+  // Listen for storage events (signout from other tabs)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'supabase.auth.token' && !e.newValue) {
+        // User signed out, refresh the page
+        window.location.reload()
+      }
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
   return (

@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { updateEventSchema } from '@/lib/validators'
 import { ok, fail } from '@/lib/api'
+import { requireAuth } from '@/lib/auth-utils'
 
 export async function GET(_req: Request, { params }: any) {
   // Use regular client for now
@@ -50,17 +51,44 @@ export async function PATCH(req: Request, { params }: any) {
   return ok({ event: data })
 }
 
-export async function DELETE(_req: Request, { params }: any) {
-  // Use regular client for now
-  const db = supabase
-  if (!db) return fail('Database unavailable', 500)
-  
-  // Await params in Next.js 15
-  const { id } = await params
-  
-  const { error } = await db.from('events').delete().eq('id', id)
-  if (error) return fail(error.message, 500, { code: (error as any).code })
-  return ok({ deleted: true })
+export async function DELETE(req: NextRequest, { params }: any) {
+  try {
+    // Use standardized authentication
+    const { user, db } = await requireAuth(req)
+    
+    // Await params in Next.js 15
+    const { id } = await params
+    
+    // First check if user owns this event
+    const { data: event, error: fetchError } = await db
+      .from('events')
+      .select('created_by, organizer_id')
+      .eq('id', id)
+      .single()
+    
+    if (fetchError) {
+      console.error('[api/events/delete] Error fetching event:', fetchError)
+      return fail('Event not found', 404)
+    }
+    
+    // Check if user is the owner (supports both created_by and organizer_id)
+    const isOwner = event.created_by === user.id || event.organizer_id === user.id
+    if (!isOwner) {
+      return fail('You can only delete your own events', 403)
+    }
+    
+    // Delete the event
+    const { error } = await db.from('events').delete().eq('id', id)
+    if (error) {
+      console.error('[api/events/delete] Delete error:', error)
+      return fail(error.message, 500, { code: (error as any).code })
+    }
+    
+    return ok({ deleted: true })
+  } catch (e: any) {
+    console.error('[api/events/delete] unexpected', e)
+    return fail(e?.message || 'Unexpected error', 500)
+  }
 }
 
 

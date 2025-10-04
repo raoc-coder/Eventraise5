@@ -389,11 +389,34 @@ export default function EventDetailPage() {
     if (!event) return
     if (!confirm('Delete this event? This action cannot be undone.')) return
     try {
-      const res = await fetch(`/api/events/${event.id}`, { method: 'DELETE' })
+      // Get auth token for the request
+      let authToken: string | null = null
+      try {
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
+        if (url && key) {
+          const sb = createClient(url, key)
+          const { data } = await sb.auth.getSession()
+          authToken = data.session?.access_token || null
+        }
+      } catch (authError) {
+        console.warn('Failed to get auth token:', authError)
+      }
+
+      const headers: HeadersInit = { 'Content-Type': 'application/json' }
+      if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`
+      }
+
+      const res = await fetch(`/api/events/${event.id}`, { 
+        method: 'DELETE',
+        headers
+      })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error || 'Failed to delete')
       toast.success('Event deleted')
-      window.location.href = '/events'
+      // Force refresh to clear cache
+      window.location.href = '/events/mine'
     } catch (e: any) {
       toast.error(e.message || 'Delete failed')
     }

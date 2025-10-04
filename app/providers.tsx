@@ -81,6 +81,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     if (supabase) {
       await supabase.auth.signOut()
+      // Clear user state immediately
+      setUser(null)
+      // Redirect to home page
+      if (typeof window !== 'undefined') {
+        window.location.href = '/'
+      }
     }
   }
 
