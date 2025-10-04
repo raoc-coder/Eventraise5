@@ -101,18 +101,6 @@ export default function MyEventsPage() {
     }
   }, [user, authLoading])
 
-  // Listen for storage events (signout from other tabs)
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'supabase.auth.token' && !e.newValue) {
-        // User signed out, refresh the page
-        window.location.reload()
-      }
-    }
-    
-    window.addEventListener('storage', handleStorageChange)
-    return () => window.removeEventListener('storage', handleStorageChange)
-  }, [])
 
   // Show loading while checking authentication
   if (authLoading) {

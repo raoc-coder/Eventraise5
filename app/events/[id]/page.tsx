@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -66,6 +66,7 @@ export default function EventDetailPage() {
   const params = useParams() as { id?: string } | null
   const { user } = useAuth()
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [showCreatedBanner, setShowCreatedBanner] = useState(false)
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
@@ -434,8 +435,10 @@ export default function EventDetailPage() {
       }
       
       toast.success('Event deleted successfully')
-      // Force refresh to clear cache
-      window.location.href = '/events/mine'
+      // Use router.push instead of window.location to avoid blinking
+      setTimeout(() => {
+        router.push('/events/mine')
+      }, 1000) // Small delay to show success message
     } catch (e: any) {
       console.error('Delete event error:', e)
       toast.error(e.message || 'Delete failed')
