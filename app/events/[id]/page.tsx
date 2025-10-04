@@ -177,14 +177,18 @@ export default function EventDetailPage() {
 
   const fetchTickets = useCallback(async () => {
     if (!event?.id) return
+    console.log('[fetchTickets] Fetching tickets for event:', event.id)
     setTicketsLoading(true)
     try {
       const response = await fetch(`/api/events/${event.id}/tickets`)
+      console.log('[fetchTickets] Response status:', response.status)
       if (response.ok) {
         const data = await response.json()
+        console.log('[fetchTickets] Tickets data:', data)
         setTickets(data.tickets || [])
       } else {
-        console.error('Failed to fetch tickets:', response.statusText)
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Failed to fetch tickets:', response.statusText, errorData)
         setTickets([])
       }
     } catch (error) {
@@ -203,6 +207,8 @@ export default function EventDetailPage() {
         const response = await fetch(`/api/events/${id}`)
         if (response.ok) {
           const data = await response.json()
+          console.log('[fetchEvent] Event data:', data.event)
+          console.log('[fetchEvent] Is ticketed:', data.event?.is_ticketed)
           setEvent(data.event)
           setDraft({
             title: data.event?.title || '',
@@ -885,7 +891,12 @@ export default function EventDetailPage() {
                 </Card>
 
                 {/* Ticket Purchase Section */}
-                {(event?.is_ticketed || tickets.length > 0) && (
+                {(() => {
+                  console.log('[TicketSection] Event is_ticketed:', event?.is_ticketed)
+                  console.log('[TicketSection] Tickets length:', tickets.length)
+                  console.log('[TicketSection] Tickets loading:', ticketsLoading)
+                  return (event?.is_ticketed || tickets.length > 0)
+                })() && (
                   <Card id="tickets" className="event-card">
                     <CardHeader>
                       <CardTitle className="text-gray-900">Purchase Tickets</CardTitle>

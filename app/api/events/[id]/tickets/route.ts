@@ -6,19 +6,27 @@ export async function GET(req: NextRequest, { params }: any) {
     const { id } = await params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
-    // Use standardized authentication
-    const { user, db, event } = await requireEventAccess(req, id)
+    // Use regular client for public ticket viewing
+    const { supabase } = await import('@/lib/supabase')
+    const db = supabase
+    if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
-    // Fetch tickets for this event
+    // Fetch tickets for this event (public access)
     const { data, error } = await db
       .from('event_tickets')
       .select('*')
       .eq('event_id', id)
       .order('created_at', { ascending: true })
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+    if (error) {
+      console.error('[api/events/tickets] Error fetching tickets:', error)
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
+    
+    console.log('[api/events/tickets] Fetched tickets:', data?.length || 0)
     return NextResponse.json({ tickets: data || [] })
   } catch (e) {
+    console.error('[api/events/tickets] Unexpected error:', e)
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Unknown error' }, { status: 500 })
   }
 }
