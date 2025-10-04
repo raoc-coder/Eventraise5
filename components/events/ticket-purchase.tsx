@@ -118,7 +118,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
           <div className="text-sm text-gray-500">
             <p>This could be because:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
-              <li>Ticket sales haven't started yet</li>
+              <li>Ticket sales haven&apos;t started yet</li>
               <li>All tickets have been sold</li>
               <li>Ticket sales have ended</li>
               <li>No tickets have been created for this event</li>
@@ -331,7 +331,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
                   </div>
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  We'll send your ticket confirmation to this email address.
+                  We&apos;ll send your ticket confirmation to this email address.
                 </p>
               </div>
             </CardContent>
