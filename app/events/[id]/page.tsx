@@ -388,6 +388,9 @@ export default function EventDetailPage() {
   const deleteEvent = async () => {
     if (!event) return
     if (!confirm('Delete this event? This action cannot be undone.')) return
+    
+    console.log('Starting delete event:', event.id)
+    
     try {
       // Get auth token for the request
       let authToken: string | null = null
@@ -398,26 +401,43 @@ export default function EventDetailPage() {
           const sb = createClient(url, key)
           const { data } = await sb.auth.getSession()
           authToken = data.session?.access_token || null
+          console.log('Auth token obtained:', !!authToken)
         }
       } catch (authError) {
-        console.warn('Failed to get auth token:', authError)
+        console.error('Failed to get auth token:', authError)
+        toast.error('Authentication failed. Please try logging in again.')
+        return
       }
 
-      const headers: HeadersInit = { 'Content-Type': 'application/json' }
-      if (authToken) {
-        headers.Authorization = `Bearer ${authToken}`
+      if (!authToken) {
+        toast.error('You must be logged in to delete events.')
+        return
       }
 
+      const headers: HeadersInit = { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
+
+      console.log('Making delete request to:', `/api/events/${event.id}`)
       const res = await fetch(`/api/events/${event.id}`, { 
         method: 'DELETE',
         headers
       })
+      
+      console.log('Delete response status:', res.status)
       const json = await res.json()
-      if (!res.ok) throw new Error(json.error || 'Failed to delete')
-      toast.success('Event deleted')
+      console.log('Delete response:', json)
+      
+      if (!res.ok) {
+        throw new Error(json.error || `Delete failed with status ${res.status}`)
+      }
+      
+      toast.success('Event deleted successfully')
       // Force refresh to clear cache
       window.location.href = '/events/mine'
     } catch (e: any) {
+      console.error('Delete event error:', e)
       toast.error(e.message || 'Delete failed')
     }
   }

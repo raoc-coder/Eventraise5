@@ -53,16 +53,20 @@ export async function PATCH(req: Request, { params }: any) {
 
 export async function DELETE(req: NextRequest, { params }: any) {
   try {
+    console.log('[api/events/delete] Starting delete request')
+    
     // Use standardized authentication
     const { user, db } = await requireAuth(req)
+    console.log('[api/events/delete] User authenticated:', user.id)
     
     // Await params in Next.js 15
     const { id } = await params
+    console.log('[api/events/delete] Deleting event:', id)
     
     // First check if user owns this event
     const { data: event, error: fetchError } = await db
       .from('events')
-      .select('created_by, organizer_id')
+      .select('created_by, organizer_id, title')
       .eq('id', id)
       .single()
     
@@ -71,22 +75,34 @@ export async function DELETE(req: NextRequest, { params }: any) {
       return fail('Event not found', 404)
     }
     
+    console.log('[api/events/delete] Event found:', { 
+      title: event.title, 
+      created_by: event.created_by, 
+      organizer_id: event.organizer_id,
+      user_id: user.id 
+    })
+    
     // Check if user is the owner (supports both created_by and organizer_id)
     const isOwner = event.created_by === user.id || event.organizer_id === user.id
+    console.log('[api/events/delete] Is owner:', isOwner)
+    
     if (!isOwner) {
+      console.log('[api/events/delete] Access denied - not owner')
       return fail('You can only delete your own events', 403)
     }
     
     // Delete the event
+    console.log('[api/events/delete] Proceeding with deletion')
     const { error } = await db.from('events').delete().eq('id', id)
     if (error) {
       console.error('[api/events/delete] Delete error:', error)
       return fail(error.message, 500, { code: (error as any).code })
     }
     
+    console.log('[api/events/delete] Event deleted successfully')
     return ok({ deleted: true })
   } catch (e: any) {
-    console.error('[api/events/delete] unexpected', e)
+    console.error('[api/events/delete] unexpected error:', e)
     return fail(e?.message || 'Unexpected error', 500)
   }
 }

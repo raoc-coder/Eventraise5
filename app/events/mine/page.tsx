@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Navigation } from '@/components/layout/navigation'
 import { createClient } from '@supabase/supabase-js'
+import { useAuth } from '@/app/providers'
 import { 
   Calendar, 
   MapPin, 
@@ -18,8 +20,17 @@ import {
 } from 'lucide-react'
 
 export default function MyEventsPage() {
+  const { user, loading: authLoading } = useAuth()
+  const router = useRouter()
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/login')
+    }
+  }, [user, authLoading, router])
 
   const getEventTypeLabel = (type: string) => {
     const labels: { [key: string]: string } = {
@@ -85,8 +96,10 @@ export default function MyEventsPage() {
   }
 
   useEffect(() => {
-    fetchEvents()
-  }, [])
+    if (user && !authLoading) {
+      fetchEvents()
+    }
+  }, [user, authLoading])
 
   // Listen for storage events (signout from other tabs)
   useEffect(() => {
@@ -100,6 +113,23 @@ export default function MyEventsPage() {
     window.addEventListener('storage', handleStorageChange)
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navigation />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <p className="text-gray-700">Loading…</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!user) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-white">
