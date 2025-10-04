@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -24,6 +24,7 @@ export default function MyEventsPage() {
   const router = useRouter()
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const fetchingRef = useRef(false)
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -56,8 +57,11 @@ export default function MyEventsPage() {
     })
   }
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
+    if (fetchingRef.current) return // Prevent multiple simultaneous calls
+    
     try {
+      fetchingRef.current = true
       setLoading(true)
       // include user id header for ownership filtering
       let headers: Record<string, string> = {}
@@ -92,14 +96,15 @@ export default function MyEventsPage() {
       }
     } finally {
       setLoading(false)
+      fetchingRef.current = false
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (user && !authLoading) {
       fetchEvents()
     }
-  }, [user, authLoading])
+  }, [user, authLoading, fetchEvents])
 
 
   // Show loading while checking authentication
