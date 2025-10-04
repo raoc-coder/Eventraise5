@@ -33,7 +33,8 @@ export default function MyEventsPage() {
     }
   }, [user, authLoading, router])
 
-  const getEventTypeLabel = (type: string) => {
+  const getEventTypeLabel = (type: string, isTicketed?: boolean) => {
+    if (isTicketed) return 'Ticketed Event'
     const labels: { [key: string]: string } = {
       walkathon: 'Walk-a-thon',
       auction: 'Auction',
@@ -159,8 +160,12 @@ export default function MyEventsPage() {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
-                        {getEventTypeLabel(ev.event_type || '')}
+                      <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                        ev.is_ticketed 
+                          ? 'bg-purple-100 text-purple-800' 
+                          : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {getEventTypeLabel(ev.event_type || '', ev.is_ticketed)}
                       </span>
                       {('is_published' in (ev as any)) && (
                         (ev as any).is_published ? (
@@ -177,8 +182,30 @@ export default function MyEventsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {/* Goal + Thermometer */}
-                    {(() => {
+                    {/* Goal + Thermometer or Ticket Info */}
+                    {ev.is_ticketed ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                            ${(ev.ticket_price || 0).toFixed(2)} {ev.ticket_currency?.toUpperCase() || 'USD'}
+                          </span>
+                          <span className="text-xs text-gray-700">
+                            {ev.tickets_sold || 0} sold
+                            {ev.ticket_quantity && ` • ${ev.ticket_quantity - (ev.tickets_sold || 0)} left`}
+                          </span>
+                        </div>
+                        {ev.ticket_quantity && (
+                          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div 
+                              className="h-2 bg-purple-600" 
+                              style={{ 
+                                width: `${Math.min(100, Math.max(0, ((ev.tickets_sold || 0) / ev.ticket_quantity) * 100))}%` 
+                              }} 
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ) : (() => {
                       const goal = Number((ev as any).goal_amount || 0)
                       const raisedRaw = (ev as any).total_raised ?? (ev as any).amount_raised ?? (ev as any).raised ?? 0
                       const raised = Number(raisedRaw) || 0

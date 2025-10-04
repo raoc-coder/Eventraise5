@@ -3,6 +3,27 @@ import { supabase, supabaseAdmin } from '@/lib/supabase'
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
+// Helper function to process events with ticket data
+function processEventsWithTickets(events: any[]) {
+  return events.map(event => {
+    if (event.event_tickets && event.event_tickets.length > 0) {
+      const ticket = event.event_tickets[0] // Get first ticket (assuming one ticket per event for now)
+      return {
+        ...event,
+        is_ticketed: true,
+        ticket_price: ticket.price_cents / 100, // Convert cents to dollars
+        ticket_currency: ticket.currency,
+        ticket_quantity: ticket.quantity_total,
+        tickets_sold: ticket.quantity_sold || 0
+      }
+    }
+    return {
+      ...event,
+      is_ticketed: false
+    }
+  })
+}
+
 export async function GET(req: NextRequest) {
   console.log('[api/events] GET request received')
   // Use regular client for now
@@ -18,7 +39,17 @@ export async function GET(req: NextRequest) {
   const to = from + pageSize - 1
 
   // Base query; prefer published only if column exists
-  let query = db.from('events').select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(from, to)
+  let query = db.from('events').select(`
+    *,
+    event_tickets!left(
+      id,
+      name,
+      price_cents,
+      currency,
+      quantity_total,
+      quantity_sold
+    )
+  `, { count: 'exact' }).order('created_at', { ascending: false }).range(from, to)
   if (type) {
     // Apply type filter; if column missing, it will be handled below
     query = query.eq('event_type', type)
@@ -32,7 +63,17 @@ export async function GET(req: NextRequest) {
     // First try created_by column
     ;({ data, error, count } = await db
       .from('events')
-      .select('*', { count: 'exact' })
+      .select(`
+        *,
+        event_tickets!left(
+          id,
+          name,
+          price_cents,
+          currency,
+          quantity_total,
+          quantity_sold
+        )
+      `, { count: 'exact' })
       .eq('created_by', userId)
       .order('created_at', { ascending: false })
       .range(from, to))
@@ -44,7 +85,17 @@ export async function GET(req: NextRequest) {
       console.log('[api/events] created_by column not found or no results, trying organizer_id')
       ;({ data, error, count } = await db
         .from('events')
-        .select('*', { count: 'exact' })
+        .select(`
+          *,
+          event_tickets!left(
+            id,
+            name,
+            price_cents,
+            currency,
+            quantity_total,
+            quantity_sold
+          )
+        `, { count: 'exact' })
         .eq('organizer_id', userId)
         .order('created_at', { ascending: false })
         .range(from, to))
@@ -64,8 +115,9 @@ export async function GET(req: NextRequest) {
     }
     
     console.log('[api/events] Returning events for user:', data?.length || 0)
-    console.log('[api/events] Events data:', data?.map(e => ({ id: e.id, title: e.title, created_by: e.created_by, organizer_id: e.organizer_id })))
-    return NextResponse.json({ events: data || [], page, pageSize, total: count || 0 })
+    const processedEvents = processEventsWithTickets(data || [])
+    console.log('[api/events] Events data:', processedEvents?.map(e => ({ id: e.id, title: e.title, is_ticketed: e.is_ticketed, ticket_price: e.ticket_price })))
+    return NextResponse.json({ events: processedEvents, page, pageSize, total: count || 0 })
   }
 
   // Execute the main query for all events
@@ -83,8 +135,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
   console.log('[api/events] Returning all events:', data?.length || 0)
-  console.log('[api/events] All events data:', data?.map(e => ({ id: e.id, title: e.title, created_by: e.created_by, organizer_id: e.organizer_id })))
-  return NextResponse.json({ events: data, page, pageSize, total: count })
+  const processedEvents = processEventsWithTickets(data || [])
+  console.log('[api/events] All events data:', processedEvents?.map(e => ({ id: e.id, title: e.title, is_ticketed: e.is_ticketed, ticket_price: e.ticket_price })))
+  return NextResponse.json({ events: processedEvents, page, pageSize, total: count })
 }
 
 

@@ -22,7 +22,8 @@ import {
   Gift,
   Target,
   Award,
-  Bell
+  Bell,
+  Ticket
 } from 'lucide-react'
 
 interface Event {
@@ -33,6 +34,11 @@ interface Event {
   start_date?: string
   end_date?: string
   location?: string
+  is_ticketed?: boolean
+  ticket_price?: number
+  ticket_currency?: string
+  ticket_quantity?: number
+  tickets_sold?: number
 }
 
 export default function EventsPage() {
@@ -70,11 +76,19 @@ export default function EventsPage() {
     const title = (event.title || '').toLowerCase()
     const desc = (event.description || '').toLowerCase()
     const matchesSearch = title.includes(searchTerm.toLowerCase()) || desc.includes(searchTerm.toLowerCase())
-    const matchesFilter = filterType === 'all' || (event.event_type || '') === filterType
+    
+    let matchesFilter = true
+    if (filterType === 'ticketed') {
+      matchesFilter = event.is_ticketed === true
+    } else if (filterType !== 'all') {
+      matchesFilter = (event.event_type || '') === filterType
+    }
+    
     return matchesSearch && matchesFilter
   })
 
-  const getEventTypeLabel = (type: string) => {
+  const getEventTypeLabel = (type: string, isTicketed?: boolean) => {
+    if (isTicketed) return 'Ticketed Event'
     const labels: { [key: string]: string } = {
       walkathon: 'Walk-a-thon',
       auction: 'Auction',
@@ -139,6 +153,7 @@ export default function EventsPage() {
               className="px-3 py-3 border border-gray-400 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base h-12"
             >
               <option value="all">All Types</option>
+              <option value="ticketed">Ticketed Events</option>
               <option value="walkathon">Walk-a-thon</option>
               <option value="auction">Auction</option>
               <option value="product_sale">Product Sale</option>
@@ -165,8 +180,12 @@ export default function EventsPage() {
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
-                      {getEventTypeLabel(event.event_type || '')}
+                    <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                      event.is_ticketed 
+                        ? 'bg-purple-100 text-purple-800' 
+                        : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {getEventTypeLabel(event.event_type || '', event.is_ticketed)}
                     </span>
                     {('is_published' in (event as any)) && (
                       (event as any).is_published ? (
@@ -183,8 +202,30 @@ export default function EventsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {/* Goal + Thermometer */}
-                  {(() => {
+                  {/* Goal + Thermometer or Ticket Info */}
+                  {event.is_ticketed ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                          ${(event.ticket_price || 0).toFixed(2)} {event.ticket_currency?.toUpperCase() || 'USD'}
+                        </span>
+                        <span className="text-xs text-gray-700">
+                          {event.tickets_sold || 0} sold
+                          {event.ticket_quantity && ` • ${event.ticket_quantity - (event.tickets_sold || 0)} left`}
+                        </span>
+                      </div>
+                      {event.ticket_quantity && (
+                        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                          <div 
+                            className="h-2 bg-purple-600" 
+                            style={{ 
+                              width: `${Math.min(100, Math.max(0, ((event.tickets_sold || 0) / event.ticket_quantity) * 100))}%` 
+                            }} 
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ) : (() => {
                     const goal = Number((event as any).goal_amount || 0)
                     const raisedRaw = (event as any).total_raised ?? (event as any).amount_raised ?? (event as any).raised ?? 0
                     const raised = Number(raisedRaw) || 0
@@ -228,7 +269,14 @@ export default function EventsPage() {
                     <Link href={`/events/${event.id}`} className="flex-1">
                       <Button className="w-full">View Details</Button>
                     </Link>
-                    {(event.event_type === 'direct_donation') && (
+                    {event.is_ticketed ? (
+                      <Link href={`/events/${event.id}#tickets`}>
+                        <Button variant="secondary" className="whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white">
+                          <Ticket className="h-4 w-4 mr-1" />
+                          Buy Tickets
+                        </Button>
+                      </Link>
+                    ) : (event.event_type === 'direct_donation') && (
                       <Link href={`/events/${event.id}#donate`}>
                         <Button variant="secondary" className="whitespace-nowrap">Donate</Button>
                       </Link>
