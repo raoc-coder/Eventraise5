@@ -49,10 +49,13 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
     sales_end_at: ''
   })
 
-  const fetchData = async (eventId: string) => {
+  const fetchData = async (eventId: string, supabaseClient?: any) => {
     setLoading(true)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const client = supabaseClient || supabase
+      if (!client) throw new Error('Supabase client not initialized')
+      
+      const { data: { session } } = await client.auth.getSession()
       if (!session) throw new Error('No active session')
 
       // Fetch event details
@@ -101,6 +104,8 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
     setError('')
 
     try {
+      if (!supabase) throw new Error('Supabase client not initialized')
+      
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('No active session')
 
@@ -127,7 +132,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
       }
 
       const { id: refreshEventId } = await params
-      await fetchData(refreshEventId)
+      await fetchData(refreshEventId, supabase)
       setShowCreateForm(false)
       setFormData({
         name: '',
@@ -149,6 +154,8 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
     if (!confirm('Are you sure you want to delete this ticket?')) return
 
     try {
+      if (!supabase) throw new Error('Supabase client not initialized')
+      
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('No active session')
 
@@ -164,7 +171,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
       if (!response.ok) throw new Error('Failed to delete ticket')
 
       const { id: refreshEventId2 } = await params
-      await fetchData(refreshEventId2)
+      await fetchData(refreshEventId2, supabase)
     } catch (error) {
       console.error('Error deleting ticket:', error)
     }
@@ -185,7 +192,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
         return
       }
       setUser(user)
-      fetchData(resolvedParams.id)
+      fetchData(resolvedParams.id, supabaseClient)
     }
 
     initializeData()
