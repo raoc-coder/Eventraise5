@@ -57,6 +57,11 @@ export default function CreateEventPage() {
     location: '',
     is_public: true,
     invite_emails: '',
+    // Ticketing fields
+    is_ticketed: false,
+    ticket_price: '',
+    ticket_currency: 'usd',
+    ticket_quantity: '',
   })
 
   const handleInputChange = (field: string, value: any) => {
@@ -110,6 +115,11 @@ export default function CreateEventPage() {
         goal_amount: formData.goal_amount || undefined,
         location: formData.location,
         is_public: formData.is_public,
+        // Ticketing data
+        is_ticketed: formData.is_ticketed,
+        ticket_price: formData.is_ticketed ? parseFloat(formData.ticket_price) : undefined,
+        ticket_currency: formData.is_ticketed ? formData.ticket_currency : undefined,
+        ticket_quantity: formData.is_ticketed && formData.ticket_quantity ? parseInt(formData.ticket_quantity) : undefined,
       }
       // Try to include user JWT to satisfy RLS (authenticated role)
       let authHeader: Record<string, string> = {}
@@ -315,6 +325,67 @@ export default function CreateEventPage() {
                     <p className="text-sm text-gray-500">
                       For private events, you can invite specific people by email. They&#39;ll receive a direct link to your event.
                     </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Ticketing Section */}
+              <div className="space-y-4 border-t pt-6">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="is_ticketed"
+                    checked={formData.is_ticketed}
+                    onChange={(e) => handleInputChange('is_ticketed', e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="is_ticketed">This is a ticketed event</Label>
+                </div>
+                <p className="text-xs text-gray-500">Enable ticketing to sell tickets for your event.</p>
+
+                {formData.is_ticketed && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="space-y-2">
+                      <Label htmlFor="ticket_price">Ticket Price ($)</Label>
+                      <Input
+                        id="ticket_price"
+                        type="number"
+                        placeholder="25.00"
+                        value={formData.ticket_price}
+                        onChange={(e) => handleInputChange('ticket_price', e.target.value)}
+                        min="0"
+                        step="0.01"
+                      />
+                      <p className="text-xs text-gray-500">Price per ticket</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="ticket_currency">Currency</Label>
+                      <select
+                        id="ticket_currency"
+                        value={formData.ticket_currency}
+                        onChange={(e) => handleInputChange('ticket_currency', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+                      >
+                        <option value="usd">USD ($)</option>
+                        <option value="eur">EUR (€)</option>
+                        <option value="gbp">GBP (£)</option>
+                        <option value="cad">CAD (C$)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="ticket_quantity">Max Tickets (Optional)</Label>
+                      <Input
+                        id="ticket_quantity"
+                        type="number"
+                        placeholder="100"
+                        value={formData.ticket_quantity}
+                        onChange={(e) => handleInputChange('ticket_quantity', e.target.value)}
+                        min="1"
+                      />
+                      <p className="text-xs text-gray-500">Leave blank for unlimited</p>
+                    </div>
                   </div>
                 )}
               </div>

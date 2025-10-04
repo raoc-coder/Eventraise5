@@ -12,6 +12,11 @@ export const createEventSchema = z.object({
   location: z.string().trim().min(0).optional(),
   is_public: z.boolean().optional(),
   invite_emails: z.string().trim().optional(),
+  // Ticketing fields
+  is_ticketed: z.boolean().optional(),
+  ticket_price: z.union([z.number(), z.string()]).optional(),
+  ticket_currency: z.string().trim().optional(),
+  ticket_quantity: z.union([z.number(), z.string()]).optional(),
 })
 
 export type CreateEventInput = z.infer<typeof createEventSchema>

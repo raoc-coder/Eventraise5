@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const raw = await req.json().catch(() => ({}))
     const body = createEventSchema.parse(raw)
-    const { title, description, event_type, start_date, end_date, goal_amount, location, is_public, invite_emails } = body
+    const { title, description, event_type, start_date, end_date, goal_amount, location, is_public, invite_emails, is_ticketed, ticket_price, ticket_currency, ticket_quantity } = body
 
     const todayIso = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
     const safeTitle = title && String(title).trim().length > 0 ? String(title).trim() : 'Untitled Event'
@@ -111,6 +111,32 @@ export async function POST(req: NextRequest) {
       } catch (inviteError) {
         console.error('[events/create] Error processing invites:', inviteError)
         // Don't fail the event creation if invite processing fails
+      }
+    }
+
+    // Create ticket if this is a ticketed event
+    if (is_ticketed && ticket_price && ticket_currency && data?.id) {
+      try {
+        const ticketData = {
+          event_id: data.id,
+          name: 'General Admission',
+          price_cents: Math.round(parseFloat(String(ticket_price)) * 100),
+          currency: ticket_currency,
+          quantity_total: ticket_quantity ? parseInt(String(ticket_quantity)) : null,
+          sales_start_at: new Date().toISOString(),
+          sales_end_at: null
+        }
+
+        const { error: ticketError } = await db.from('event_tickets').insert(ticketData)
+        if (ticketError) {
+          console.error('[events/create] Error creating ticket:', ticketError)
+          // Don't fail the event creation if ticket creation fails
+        } else {
+          console.log('[events/create] Ticket created successfully for event:', data.id)
+        }
+      } catch (ticketErr) {
+        console.error('[events/create] Error processing ticket creation:', ticketErr)
+        // Don't fail the event creation if ticket processing fails
       }
     }
 
