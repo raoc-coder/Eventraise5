@@ -4,6 +4,7 @@ export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
+  console.log('[api/events] GET request received')
   // Use regular client for now
   const db = supabase
   if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
@@ -63,6 +64,7 @@ export async function GET(req: NextRequest) {
     }
     
     console.log('[api/events] Returning events for user:', data?.length || 0)
+    console.log('[api/events] Events data:', data?.map(e => ({ id: e.id, title: e.title, created_by: e.created_by, organizer_id: e.organizer_id })))
     return NextResponse.json({ events: data || [], page, pageSize, total: count || 0 })
   }
 
@@ -80,6 +82,8 @@ export async function GET(req: NextRequest) {
     console.error('[api/events] list error', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+  console.log('[api/events] Returning all events:', data?.length || 0)
+  console.log('[api/events] All events data:', data?.map(e => ({ id: e.id, title: e.title, created_by: e.created_by, organizer_id: e.organizer_id })))
   return NextResponse.json({ events: data, page, pageSize, total: count })
 }
 

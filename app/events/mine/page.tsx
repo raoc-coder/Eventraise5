@@ -80,7 +80,7 @@ export default function MyEventsPage() {
       } catch (error) {
         console.error('Error getting user session:', error)
       }
-      const res = await fetch('/api/events?mine=1', { 
+      const res = await fetch(`/api/events?mine=1&t=${Date.now()}`, { 
         headers, 
         cache: 'no-store' as RequestCache,
         next: { revalidate: 0 }
@@ -105,6 +105,19 @@ export default function MyEventsPage() {
       fetchEvents()
     }
   }, [user, authLoading, fetchEvents])
+
+  // Listen for event deletion events to refresh the list
+  useEffect(() => {
+    const handleStorageEvent = (e: StorageEvent) => {
+      if (e.key === 'event-deleted') {
+        console.log('Event deleted, refreshing events list')
+        fetchEvents()
+      }
+    }
+
+    window.addEventListener('storage', handleStorageEvent)
+    return () => window.removeEventListener('storage', handleStorageEvent)
+  }, [fetchEvents])
 
 
   // Show loading while checking authentication

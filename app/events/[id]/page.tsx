@@ -431,10 +431,20 @@ export default function EventDetailPage() {
       console.log('Delete response:', json)
       
       if (!res.ok) {
+        console.error('Delete failed:', json)
         throw new Error(json.error || `Delete failed with status ${res.status}`)
       }
       
+      console.log('Delete successful, response data:', json)
       toast.success('Event deleted successfully')
+      
+      // Force refresh the events list by triggering a storage event
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'event-deleted',
+        newValue: event.id,
+        url: window.location.href
+      }))
+      
       // Use router.push instead of window.location to avoid blinking
       setTimeout(() => {
         router.push('/events/mine')

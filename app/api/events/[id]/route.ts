@@ -91,16 +91,33 @@ export async function DELETE(req: NextRequest, { params }: any) {
       return fail('You can only delete your own events', 403)
     }
     
-    // Delete the event
-    console.log('[api/events/delete] Proceeding with deletion')
-    const { error } = await db.from('events').delete().eq('id', id)
+    // Delete the event - try with admin client first
+    console.log('[api/events/delete] Proceeding with deletion using admin client')
+    const adminDb = supabaseAdmin
+    if (!adminDb) {
+      console.error('[api/events/delete] Admin client not available')
+      return fail('Admin client unavailable', 500)
+    }
+    
+    const { data: deletedData, error } = await adminDb.from('events').delete().eq('id', id).select()
     if (error) {
       console.error('[api/events/delete] Delete error:', error)
       return fail(error.message, 500, { code: (error as any).code })
     }
     
-    console.log('[api/events/delete] Event deleted successfully')
-    return ok({ deleted: true })
+    console.log('[api/events/delete] Delete result:', { deletedData, error })
+    
+    // Verify deletion by trying to fetch the event
+    const { data: verifyData, error: verifyError } = await adminDb.from('events').select('id').eq('id', id).single()
+    console.log('[api/events/delete] Verification query result:', { verifyData, verifyError })
+    
+    if (verifyData) {
+      console.error('[api/events/delete] Event still exists after deletion!')
+      return fail('Event deletion failed - event still exists', 500)
+    }
+    
+    console.log('[api/events/delete] Event deleted successfully and verified')
+    return ok({ deleted: true, deletedData })
   } catch (e: any) {
     console.error('[api/events/delete] unexpected error:', e)
     return fail(e?.message || 'Unexpected error', 500)
