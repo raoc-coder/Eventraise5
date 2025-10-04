@@ -60,6 +60,11 @@ interface Event {
   image_url?: string
   organizer_id?: string
   created_by?: string
+  is_ticketed?: boolean
+  ticket_price?: number
+  ticket_currency?: string
+  ticket_quantity?: number
+  tickets_sold?: number
 }
 
 export default function EventDetailPage() {
@@ -880,8 +885,8 @@ export default function EventDetailPage() {
                 </Card>
 
                 {/* Ticket Purchase Section */}
-                {tickets.length > 0 && (
-                  <Card className="event-card">
+                {(event?.is_ticketed || tickets.length > 0) && (
+                  <Card id="tickets" className="event-card">
                     <CardHeader>
                       <CardTitle className="text-gray-900">Purchase Tickets</CardTitle>
                       <CardDescription className="text-gray-600">
@@ -889,21 +894,43 @@ export default function EventDetailPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <TicketPurchase 
-                        event={{
-                          id: event.id,
-                          title: event.title,
-                          description: event.description,
-                          start_date: event.start_date,
-                          location: event.location,
-                          organizer_id: event.organizer_id || event.created_by || ''
-                        }}
-                        tickets={tickets}
-                        onSuccess={() => {
-                          toast.success('Tickets purchased successfully!')
-                          fetchTickets() // Refresh tickets to update quantities
-                        }}
-                      />
+                      {ticketsLoading ? (
+                        <div className="text-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                          <p className="mt-4 text-gray-700">Loading tickets...</p>
+                        </div>
+                      ) : tickets.length === 0 && event?.is_ticketed ? (
+                        <div className="text-center py-8">
+                          <div className="text-gray-500 mb-4">
+                            <svg className="h-12 w-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                            </svg>
+                          </div>
+                          <h3 className="text-lg font-medium text-gray-900 mb-2">Tickets Coming Soon</h3>
+                          <p className="text-gray-600 mb-4">
+                            Ticket sales for this event haven&apos;t started yet or are temporarily unavailable.
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Please check back later or contact the event organizer for more information.
+                          </p>
+                        </div>
+                      ) : (
+                        <TicketPurchase 
+                          event={{
+                            id: event.id,
+                            title: event.title,
+                            description: event.description,
+                            start_date: event.start_date,
+                            location: event.location,
+                            organizer_id: event.organizer_id || event.created_by || ''
+                          }}
+                          tickets={tickets}
+                          onSuccess={() => {
+                            toast.success('Tickets purchased successfully!')
+                            fetchTickets() // Refresh tickets to update quantities
+                          }}
+                        />
+                      )}
                     </CardContent>
                   </Card>
                 )}

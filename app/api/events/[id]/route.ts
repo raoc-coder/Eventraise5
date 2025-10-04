@@ -12,17 +12,42 @@ export async function GET(_req: Request, { params }: any) {
   // Await params in Next.js 15
   const { id } = await params
   
-  // Try to select with organizer_id first, fall back to basic select if column doesn't exist
-  let { data, error } = await db.from('events').select('*, organizer_id, created_by').eq('id', id).single()
+  // Try to select with organizer_id and tickets first, fall back to basic select if columns don't exist
+  let { data, error } = await db.from('events').select(`
+    *,
+    organizer_id,
+    created_by,
+    event_tickets!left(
+      id,
+      name,
+      price_cents,
+      currency,
+      quantity_total,
+      quantity_sold
+    )
+  `).eq('id', id).single()
   
   if (error && (error as any).code === '42703') {
-    // Column doesn't exist, try without organizer_id
+    // Column doesn't exist, try without organizer_id and tickets
     const result = await db.from('events').select('*').eq('id', id).single()
     data = result.data
     error = result.error
   }
   
   if (error) return NextResponse.json({ error: error.message }, { status: 404 })
+  
+  // Process event with ticket data
+  if (data && data.event_tickets && data.event_tickets.length > 0) {
+    const ticket = data.event_tickets[0] // Get first ticket
+    data.is_ticketed = true
+    data.ticket_price = ticket.price_cents / 100 // Convert cents to dollars
+    data.ticket_currency = ticket.currency
+    data.ticket_quantity = ticket.quantity_total
+    data.tickets_sold = ticket.quantity_sold || 0
+  } else {
+    data.is_ticketed = false
+  }
+  
   return NextResponse.json({ event: data })
 }
 
