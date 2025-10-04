@@ -36,6 +36,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
   const [event, setEvent] = useState<Event | null>(null)
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
 
@@ -79,7 +80,16 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
       }
     } catch (error) {
       console.error('Error fetching data:', error)
-      router.push('/events')
+      if (error instanceof Error && error.message === 'Access denied') {
+        setError('You do not have permission to manage tickets for this event.')
+        router.push('/events')
+      } else if (error instanceof Error && error.message === 'No active session') {
+        setError('Please log in to manage tickets.')
+        router.push('/auth/login')
+      } else {
+        setError('Failed to load event data. Please try again.')
+        console.error('Failed to load event data:', error)
+      }
     } finally {
       setLoading(false)
     }
@@ -88,6 +98,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
   const handleCreateTicket = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -110,7 +121,10 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
         })
       })
 
-      if (!response.ok) throw new Error('Failed to create ticket')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to create ticket')
+      }
 
       const { id: refreshEventId } = await params
       await fetchData(refreshEventId)
@@ -125,6 +139,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
       })
     } catch (error) {
       console.error('Error creating ticket:', error)
+      setError(error instanceof Error ? error.message : 'Failed to create ticket. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -189,6 +204,22 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
           <h1 className="text-3xl font-bold text-gray-900">Manage Tickets</h1>
           <p className="text-gray-600 mt-2">Create and manage tickets for {event.title}</p>
         </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Error</h3>
+                <div className="mt-1 text-sm text-red-700">{error}</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Create Ticket Form */}
         {showCreateForm && (

@@ -70,15 +70,39 @@ export default function OrganizerPayoutsPage() {
     )
     setSupabase(supabaseClient)
 
-    supabaseClient.auth.getUser().then(({ data: { user } }) => {
+    const initializeData = async () => {
+      const { data: { user } } = await supabaseClient.auth.getUser()
       if (!user) {
         router.push('/login')
         return
       }
       setUser(user)
-      fetchPayouts()
-    })
-  }, [router, fetchPayouts])
+      
+      // Call fetchPayouts directly instead of using the callback
+      setLoading(true)
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession()
+        if (!session) throw new Error('No active session')
+
+        const response = await fetch('/api/organizer/payouts', {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        if (!response.ok) throw new Error('Failed to fetch payouts')
+        const data = await response.json()
+        setPayouts(data.payouts || [])
+        setTotals(data.totals || {})
+      } catch (error) {
+        console.error('Error fetching payouts:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    initializeData()
+  }, [router])
 
   const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()
