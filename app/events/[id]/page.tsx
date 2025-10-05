@@ -98,6 +98,12 @@ export default function EventDetailPage() {
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>([])
   const [tickets, setTickets] = useState<any[]>([])
   const [ticketsLoading, setTicketsLoading] = useState(false)
+  // Volunteers
+  const [volunteerShifts, setVolunteerShifts] = useState<any[]>([])
+  const [volunteerLoading, setVolunteerLoading] = useState(false)
+  const [volunteerName, setVolunteerName] = useState('')
+  const [volunteerEmail, setVolunteerEmail] = useState('')
+  const [volunteerPhone, setVolunteerPhone] = useState('')
 
   // Handle escape key to close modals
   useEffect(() => {
@@ -196,6 +202,24 @@ export default function EventDetailPage() {
     }
   }, [event?.id])
 
+  const fetchVolunteerShifts = useCallback(async () => {
+    if (!event?.id) return
+    setVolunteerLoading(true)
+    try {
+      const res = await fetch(`/api/events/${event.id}/volunteer-shifts`, { cache: 'no-store' })
+      if (!res.ok) {
+        setVolunteerShifts([])
+        return
+      }
+      const json = await res.json()
+      setVolunteerShifts(Array.isArray(json.shifts) ? json.shifts : [])
+    } catch {
+      setVolunteerShifts([])
+    } finally {
+      setVolunteerLoading(false)
+    }
+  }, [event?.id])
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -212,10 +236,11 @@ export default function EventDetailPage() {
             start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
-          // Fetch donation total and tickets after event is loaded
+          // Fetch donation total, tickets, and volunteer shifts after event is loaded
           setTimeout(() => {
             fetchDonationTotal()
             fetchTickets()
+            fetchVolunteerShifts()
           }, 100)
           if (searchParams?.get('created') === '1') {
             setShowCreatedBanner(true)
@@ -935,6 +960,83 @@ export default function EventDetailPage() {
                     </CardContent>
                   </Card>
                 )}
+
+                {/* Volunteer Opportunities */}
+                <Card className="event-card">
+                  <CardHeader>
+                    <CardTitle className="text-gray-900">Volunteer Opportunities</CardTitle>
+                    <CardDescription className="text-gray-600">
+                      Lend a hand by signing up for an available shift
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {volunteerLoading ? (
+                      <div className="text-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                        <p className="mt-4 text-gray-700">Loading shifts...</p>
+                      </div>
+                    ) : volunteerShifts.length === 0 ? (
+                      <div className="text-center py-8 text-gray-600">No active volunteer shifts at the moment.</div>
+                    ) : (
+                      <div className="space-y-4">
+                        {volunteerShifts.map((shift:any) => {
+                          const spotsLeft = Math.max(0, (shift.max_volunteers || 0) - (shift.current_volunteers || 0))
+                          return (
+                            <div key={shift.id} className="border rounded-lg p-4">
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <div>
+                                  <div className="font-medium text-gray-900">{shift.title || 'Volunteer Shift'}</div>
+                                  <div className="text-sm text-gray-600">
+                                    {shift.start_time ? new Date(shift.start_time).toLocaleString() : ''}
+                                    {shift.end_time ? ` - ${new Date(shift.end_time).toLocaleTimeString()}` : ''}
+                                  </div>
+                                  {typeof shift.max_volunteers === 'number' && (
+                                    <div className="text-sm text-gray-700 mt-1">{spotsLeft} of {shift.max_volunteers} spots left</div>
+                                  )}
+                                </div>
+                                <div className="w-full sm:w-auto">
+                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                    <Input placeholder="Full name" value={volunteerName} onChange={(e)=>setVolunteerName(e.target.value)} />
+                                    <Input placeholder="Email" type="email" value={volunteerEmail} onChange={(e)=>setVolunteerEmail(e.target.value)} />
+                                    <Input placeholder="Phone (optional)" value={volunteerPhone} onChange={(e)=>setVolunteerPhone(e.target.value)} />
+                                  </div>
+                                  <div className="mt-2 flex justify-end">
+                                    <Button
+                                      disabled={spotsLeft === 0 || !volunteerName || !volunteerEmail}
+                                      onClick={async()=>{
+                                        try {
+                                          const res = await fetch('/api/events/volunteer-signup', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                              shift_id: shift.id,
+                                              volunteer_name: volunteerName,
+                                              volunteer_email: volunteerEmail,
+                                              volunteer_phone: volunteerPhone
+                                            })
+                                          })
+                                          const json = await res.json()
+                                          if (!res.ok) throw new Error(json.error || 'Signup failed')
+                                          toast.success('Thanks for signing up! We\'ll email you details.')
+                                          setVolunteerName('')
+                                          setVolunteerEmail('')
+                                          setVolunteerPhone('')
+                                          fetchVolunteerShifts()
+                                        } catch (e:any) {
+                                          toast.error(e.message || 'Unable to sign up')
+                                        }
+                                      }}
+                                    >Sign Up</Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
 
                 {/* Optional Donation Card */}
                 <Card className="event-card">
