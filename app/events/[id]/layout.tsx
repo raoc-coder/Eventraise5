@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 
 type Props = {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/events/${params.id}`, {
+    const resolvedParams = await params
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/events/${resolvedParams.id}`, {
       cache: 'no-store'
     })
     
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           openGraph: {
             title: `${event.title} — EventraiseHub`,
             description: event.description || `Join ${event.title} on EventraiseHub`,
-            url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/events/${params.id}`,
+            url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/events/${resolvedParams.id}`,
             type: 'website',
           },
           twitter: {
