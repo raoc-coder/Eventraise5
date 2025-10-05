@@ -41,6 +41,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
   const [buyerInfo, setBuyerInfo] = useState({ name: '', email: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [pendingRegistrationId, setPendingRegistrationId] = useState<string | null>(null)
 
   const availableTickets = tickets.filter(ticket => {
     const now = new Date()
@@ -70,8 +71,12 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
     }
   }
 
-  const handlePayPalSuccess = async (details: any, registrationId?: string, amountValue?: number) => {
-    if (!selectedTicket || !registrationId) return
+  const handlePayPalSuccess = async (details: any, registrationId?: string) => {
+    const regId = registrationId || pendingRegistrationId
+    if (!selectedTicket || !regId) {
+      setError('Missing registration. Please try again.')
+      return
+    }
 
     setLoading(true)
     try {
@@ -79,7 +84,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          registration_id: registrationId,
+          registration_id: regId,
           paypal_order_id: details.id
         })
       })
@@ -95,6 +100,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
         setSelectedTicket(null)
         setQuantity(1)
         setBuyerInfo({ name: '', email: '' })
+        setPendingRegistrationId(null)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Payment failed')
@@ -410,14 +416,12 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
                         throw new Error(data.error || 'Failed to create order')
                       }
                       
-                      // stash registration id on the DOM dataset for onApprove
-                      (window as any).__lastRegistrationId = data.registration_id
+                      setPendingRegistrationId(data.registration_id)
                       return data.orderId
                     }}
                     onApprove={(data) => {
-                      const regId = (window as any).__lastRegistrationId
                       const orderDetails = { id: (data as any)?.orderID }
-                      return handlePayPalSuccess(orderDetails, regId)
+                      return handlePayPalSuccess(orderDetails)
                     }}
                     onError={(err) => {
                       setError('Payment failed. Please try again.')
