@@ -258,7 +258,7 @@ export default function EventDetailPage() {
     }
 
     fetchEvent()
-  }, [params, searchParams, fetchDonationTotal, fetchTickets])
+  }, [params, searchParams, fetchDonationTotal, fetchTickets, fetchVolunteerShifts])
 
   const handleShare = () => {
     if (navigator.share) {
@@ -1227,7 +1227,7 @@ export default function EventDetailPage() {
                         </div>
                         <div className="border-t border-blue-300 mt-2 pt-2">
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-900 font-bold">You’ll Be Charged</span>
+                            <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
                             <span className="text-blue-600 font-bold text-lg">
                               ${donationAmount.toFixed(2)}
                             </span>
@@ -1564,7 +1564,7 @@ export default function EventDetailPage() {
                         </div>
                         <div className="border-t border-blue-300 mt-2 pt-2">
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-900 font-bold">You'll Be Charged</span>
+                            <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
                             <span className="text-blue-600 font-bold text-lg">
                               ${donationAmount.toFixed(2)}
                             </span>
