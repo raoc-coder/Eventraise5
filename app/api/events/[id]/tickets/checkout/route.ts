@@ -101,7 +101,12 @@ export async function POST(req: NextRequest, { params }: any) {
       name, // donorName
       email // donorEmail
     )
-    
+
+    if (!paypalOrder?.success) {
+      console.error('[api/tickets/checkout] PayPal order creation failed:', paypalOrder?.error)
+      return NextResponse.json({ error: paypalOrder?.error || 'Failed to create PayPal order' }, { status: 502 })
+    }
+
     console.log('[api/tickets/checkout] PayPal order created:', paypalOrder.orderId)
 
     return NextResponse.json({
