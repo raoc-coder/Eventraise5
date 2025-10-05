@@ -45,7 +45,7 @@ export default function GettingStartedPage() {
       icon: Share2,
       title: "Publish and Share",
       description: "Publish and share your event link.",
-      details: "Once you're satisfied with your event details, click \"Publish\" to make it live. You'll receive a unique shareable link to distribute to your community.",
+      details: "Once you&apos;re satisfied with your event details, click \"Publish\" to make it live. You&apos;ll receive a unique shareable link to distribute to your community.",
       color: "from-pink-500 to-pink-600"
     },
     {
