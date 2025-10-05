@@ -70,8 +70,8 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
     }
   }
 
-  const handlePayPalSuccess = async (details: any) => {
-    if (!selectedTicket) return
+  const handlePayPalSuccess = async (details: any, registrationId?: string, amountValue?: number) => {
+    if (!selectedTicket || !registrationId) return
 
     setLoading(true)
     try {
@@ -79,10 +79,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ticket_id: selectedTicket.id,
-          quantity,
-          name: buyerInfo.name,
-          email: buyerInfo.email,
+          registration_id: registrationId,
           paypal_order_id: details.id
         })
       })
@@ -413,9 +410,15 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
                         throw new Error(data.error || 'Failed to create order')
                       }
                       
+                      // stash registration id on the DOM dataset for onApprove
+                      (window as any).__lastRegistrationId = data.registration_id
                       return data.orderId
                     }}
-                    onApprove={handlePayPalSuccess}
+                    onApprove={(data) => {
+                      const regId = (window as any).__lastRegistrationId
+                      const orderDetails = { id: (data as any)?.orderID }
+                      return handlePayPalSuccess(orderDetails, regId)
+                    }}
                     onError={(err) => {
                       setError('Payment failed. Please try again.')
                       console.error('PayPal error:', err)

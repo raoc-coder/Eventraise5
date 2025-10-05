@@ -1,20 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { captureOrder } from '@/lib/paypal'
-import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
     const { id } = await params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
     
-    // Use standardized authentication
-    const { user, db, event } = await requireEventAccess(req, id)
-    
     const body = await req.json().catch(() => ({}))
-    const { registration_id, paypal_order_id, amount } = body
+    const { registration_id, paypal_order_id } = body
 
-    if (!registration_id || !paypal_order_id || !amount) {
+    if (!registration_id || !paypal_order_id) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
@@ -42,7 +38,7 @@ export async function POST(req: NextRequest, { params }: any) {
       }, { status: 400 })
     }
     
-    const amountCents = Math.round(amount * 100)
+    const amountCents = Number(registration.event_tickets.price_cents) * Number(registration.quantity)
     const feeCents = Math.floor(amountCents * 0.0899)
     const netCents = amountCents - feeCents
 
@@ -82,7 +78,7 @@ export async function POST(req: NextRequest, { params }: any) {
       success: true,
       transaction_id: captureResult.captureId,
       registration_id: registration_id,
-      amount: amount,
+      amount: amountCents / 100,
       fee_cents: feeCents,
       net_cents: netCents
     })
