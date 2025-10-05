@@ -390,7 +390,9 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
                   options={{
                     clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
                     currency: selectedTicket.currency.toUpperCase(),
-                    intent: 'capture'
+                    intent: 'capture',
+                    components: 'buttons,marks',
+                    enableFunding: 'venmo,paylater,card'
                   }}
                 >
                   <PayPalButtons

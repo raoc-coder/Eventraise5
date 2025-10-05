@@ -110,6 +110,8 @@ export async function POST(req: NextRequest, { params }: any) {
     console.log('[api/tickets/checkout] PayPal order created:', paypalOrder.orderId)
 
     return NextResponse.json({
+      success: true,
+      orderId: paypalOrder.orderId,
       registration_id: registration.id,
       paypal_order_id: paypalOrder.orderId,
       amount: totalAmount,
