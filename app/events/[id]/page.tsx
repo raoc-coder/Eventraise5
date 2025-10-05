@@ -37,15 +37,12 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/app/providers'
 import { DonationConfirmation } from '@/components/payments/donation-confirmation'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import { EventRegistration } from '@/components/events/event-registration'
 import { VolunteerShifts } from '@/components/events/volunteer-shifts'
 import { TicketPurchase } from '@/components/events/ticket-purchase'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// Use shared Supabase client to avoid multiple GoTrue instances
 
 interface Event {
   id: string

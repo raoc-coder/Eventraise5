@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase as sharedSupabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { Toaster } from 'react-hot-toast'
 
@@ -31,25 +31,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [supabase, setSupabase] = useState<any>(null)
 
   useEffect(() => {
-    // Only initialize Supabase client on the client side
-    if (typeof window !== 'undefined') {
-      try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-        
-        if (!supabaseUrl || !supabaseAnonKey) {
-          console.error('Missing Supabase environment variables')
-          setLoading(false)
-          return
-        }
-
-        const client = createClient(supabaseUrl, supabaseAnonKey)
-        setSupabase(client)
-      } catch (error) {
-        console.error('Failed to initialize Supabase client:', error)
-        setLoading(false)
-      }
+    if (typeof window === 'undefined') return
+    if (!sharedSupabase) {
+      console.error('Missing Supabase environment variables')
+      setLoading(false)
+      return
     }
+    setSupabase(sharedSupabase)
   }, [])
 
   useEffect(() => {

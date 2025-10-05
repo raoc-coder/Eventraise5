@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase as sharedSupabase } from '@/lib/supabase'
 import { createEventSchema } from '@/lib/validators'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/providers'
@@ -128,7 +128,7 @@ export default function CreateEventPage() {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
         const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         if (supabaseUrl && supabaseAnonKey) {
-          const client = createClient(supabaseUrl, supabaseAnonKey)
+          const client = sharedSupabase!
           const { data: sessionData } = await client.auth.getSession()
           const token = sessionData?.session?.access_token
           const uid = sessionData?.session?.user?.id

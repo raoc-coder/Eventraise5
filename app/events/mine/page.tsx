@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Navigation } from '@/components/layout/navigation'
-import { createClient } from '@supabase/supabase-js'
+import { supabase as sharedSupabase } from '@/lib/supabase'
 import { useAuth } from '@/app/providers'
 import { 
   Calendar, 
@@ -70,7 +70,7 @@ export default function MyEventsPage() {
         const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
         const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         if (url && key) {
-          const client = createClient(url, key)
+      const client = sharedSupabase!
           const { data } = await client.auth.getSession()
           const uid = data?.session?.user?.id
           const token = data?.session?.access_token
