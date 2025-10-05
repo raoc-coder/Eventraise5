@@ -62,6 +62,9 @@ export default function CreateEventPage() {
     ticket_price: '',
     ticket_currency: 'usd',
     ticket_quantity: '',
+    // Volunteer quick ask
+    create_volunteer: false,
+    volunteer_title: '',
   })
 
   const handleInputChange = (field: string, value: any) => {
@@ -146,6 +149,31 @@ export default function CreateEventPage() {
       if (!res.ok) throw new Error(json.error || 'Failed to create event')
       const ev = json.event ?? json.data?.event
       if (!ev?.id) throw new Error('Event ID missing from response')
+
+      // Optionally create a simple volunteer opportunity and copy share link
+      if (formData.create_volunteer && formData.volunteer_title.trim()) {
+        try {
+          const client = sharedSupabase!
+          const { data: sessionData } = await client.auth.getSession()
+          const token = sessionData?.session?.access_token
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+          if (token) headers.Authorization = `Bearer ${token}`
+
+          const resShift = await fetch(`/api/events/${ev.id}/volunteer-shifts`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ title: formData.volunteer_title.trim(), is_active: true })
+          })
+          const shiftJson = await resShift.json()
+          if (!resShift.ok) throw new Error(shiftJson.error || 'Failed to create volunteer opportunity')
+
+          const shareUrl = `${window.location.origin}/events/${ev.id}?shift=${encodeURIComponent(shiftJson.shift.id)}`
+          try { await navigator.clipboard.writeText(shareUrl) } catch {}
+          toast.success('Volunteer link created and copied to clipboard')
+        } catch (volErr: any) {
+          toast.error(volErr?.message || 'Volunteer setup failed (you can add it later)')
+        }
+      }
 
       toast.success('Event created successfully!')
       router.push(`/events/${ev.id}?created=1`)
@@ -385,6 +413,34 @@ export default function CreateEventPage() {
                         min="1"
                       />
                       <p className="text-xs text-gray-500">Leave blank for unlimited</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Volunteer Quick Ask Section */}
+              <div className="space-y-4 border-t pt-6">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="create_volunteer"
+                    checked={formData.create_volunteer}
+                    onChange={(e) => handleInputChange('create_volunteer', e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="create_volunteer">Create a volunteer opportunity (simple yes/no)</Label>
+                </div>
+                {formData.create_volunteer && (
+                  <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="space-y-2">
+                      <Label htmlFor="volunteer_title">Volunteer Ask Title</Label>
+                      <Input
+                        id="volunteer_title"
+                        placeholder="e.g. Yes, I can help!"
+                        value={formData.volunteer_title}
+                        onChange={(e) => handleInputChange('volunteer_title', e.target.value)}
+                      />
+                      <p className="text-xs text-gray-500">We’ll create a shareable link for people to say yes.</p>
                     </div>
                   </div>
                 )}
