@@ -648,19 +648,17 @@ export default function EventDetailPage() {
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
-                    {user && event && (user.id === (event.organizer_id || event.created_by)) && (
-                      <Button 
-                        onClick={() => {
-                          navigator.clipboard.writeText(window.location.href)
-                          toast.success('Event link copied to clipboard!')
-                        }} 
-                        variant="outline" 
-                        className="hover:bg-green-50 transition-colors border-green-200 text-green-700"
-                      >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Copy Link
-                      </Button>
-                    )}
+                    <Button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(window.location.href)
+                        toast.success('Event link copied to clipboard!')
+                      }} 
+                      variant="outline" 
+                      className="hover:bg-green-50 transition-colors border-green-200 text-green-700"
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Copy Link
+                    </Button>
                     {editMode ? null : (
                       <>
                         {user && event && (user.id === (event.organizer_id || event.created_by)) && (
