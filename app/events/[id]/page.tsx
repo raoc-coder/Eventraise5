@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import Head from 'next/head'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -236,10 +235,6 @@ export default function EventDetailPage() {
             start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
-          // Update browser tab title with event name
-          if (data.event?.title) {
-            document.title = `${data.event.title} — EventraiseHub`
-          }
           // Fetch donation total, tickets, and volunteer shifts after event is loaded
           setTimeout(() => {
             fetchDonationTotal()
