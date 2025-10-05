@@ -958,6 +958,50 @@ export default function EventDetailPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
+                    {user && (user.id === (event.organizer_id || event.created_by)) && (
+                      <div className="mb-6 p-4 border rounded-lg">
+                        <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+                          <div className="flex-1">
+                            <Label htmlFor="newShiftTitle" className="text-gray-700 font-medium">Create a quick volunteer ask</Label>
+                            <Input id="newShiftTitle" placeholder="e.g. Yes, I can help!" value={volunteerName} onChange={(e)=>setVolunteerName(e.target.value)} />
+                          </div>
+                          <Button
+                            onClick={async()=>{
+                              const title = volunteerName?.trim()
+                              if (!title) { toast.error('Please enter a title'); return }
+                              try {
+                                const res = await fetch(`/api/events/${event.id}/volunteer-shifts`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ title, is_active: true })
+                                })
+                                const json = await res.json()
+                                if (!res.ok) throw new Error(json.error || 'Failed to create')
+                                toast.success('Volunteer ask created')
+                                setVolunteerName('')
+                                fetchVolunteerShifts()
+                              } catch (e:any) {
+                                toast.error(e.message || 'Unable to create')
+                              }
+                            }}
+                          >Create</Button>
+                        </div>
+                        {volunteerShifts.length > 0 && (
+                          <div className="mt-3 text-sm text-gray-700">
+                            Share link to collect Yes responses:{' '}
+                            <Button
+                              variant="outline"
+                              className="ml-2"
+                              onClick={()=>{
+                                const url = `${window.location.origin}/events/${event.id}?shift=${encodeURIComponent(volunteerShifts[0].id)}`
+                                navigator.clipboard.writeText(url)
+                                toast.success('Share link copied to clipboard')
+                              }}
+                            >Copy share link</Button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {volunteerLoading ? (
                       <div className="text-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>

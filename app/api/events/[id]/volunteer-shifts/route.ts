@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
+import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function GET(
   request: NextRequest,
@@ -41,5 +42,52 @@ export async function GET(
       { error: 'Internal server error' },
       { status: 500 }
     )
+  }
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: eventId } = await params
+    const body = await request.json().catch(() => ({}))
+    const { title, is_active = true } = body || {}
+
+    if (!title || typeof title !== 'string') {
+      return NextResponse.json({ error: 'Title is required' }, { status: 400 })
+    }
+
+    // Require owner or admin
+    const auth = await requireEventAccess(request, eventId)
+
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('volunteer_shifts')
+      .insert({
+        event_id: eventId,
+        title,
+        description: null,
+        start_time: null,
+        end_time: null,
+        max_volunteers: 0, // simple yes/no: unlimited or tracked later
+        current_volunteers: 0,
+        is_active: !!is_active,
+      })
+      .select('id, title, is_active')
+      .single()
+
+    if (error) {
+      console.error('Error creating volunteer shift:', error)
+      return NextResponse.json({ error: 'Failed to create shift' }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true, shift: data })
+  } catch (error) {
+    console.error('Error in volunteer shift create API:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
