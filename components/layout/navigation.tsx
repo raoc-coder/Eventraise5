@@ -46,14 +46,14 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 Events
               </Button>
             </Link>
-            <Link href="/marketplace">
+            <Link href="/faqs">
               <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Marketplace
+                FAQs
               </Button>
             </Link>
-            <Link href="/pricing">
+            <Link href="/getting-started">
               <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Pricing
+                Getting Started
               </Button>
             </Link>
             <Link href="/events/mine">
@@ -138,14 +138,14 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                   Events
                 </Button>
               </Link>
-              <Link href="/marketplace" onClick={closeMobileMenu}>
+              <Link href="/faqs" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  Marketplace
+                  FAQs
                 </Button>
               </Link>
-              <Link href="/pricing" onClick={closeMobileMenu}>
+              <Link href="/getting-started" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  Pricing
+                  Getting Started
                 </Button>
               </Link>
               <Link href="/events/mine" onClick={closeMobileMenu}>
