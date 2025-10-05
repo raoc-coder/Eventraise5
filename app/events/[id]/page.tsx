@@ -970,9 +970,18 @@ export default function EventDetailPage() {
                               const title = volunteerName?.trim()
                               if (!title) { toast.error('Please enter a title'); return }
                               try {
+                                // Retrieve auth token for owner-only action
+                                const { data: { session } } = await (supabase as any).auth.getSession()
+                                if (!session?.access_token) {
+                                  toast.error('Please log in again')
+                                  return
+                                }
                                 const res = await fetch(`/api/events/${event.id}/volunteer-shifts`, {
                                   method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${session.access_token}`
+                                  },
                                   body: JSON.stringify({ title, is_active: true })
                                 })
                                 const json = await res.json()
