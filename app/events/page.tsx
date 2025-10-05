@@ -278,7 +278,7 @@ export default function EventsPage() {
                       </Link>
                     ) : (event.event_type === 'direct_donation') && (
                       <Link href={`/events/${event.id}#donate`}>
-                        <Button variant="secondary" className="whitespace-nowrap">Donate</Button>
+                        <Button className="whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200">Donate</Button>
                       </Link>
                     )}
                     <Button variant="outline" size="sm" className="text-gray-700">

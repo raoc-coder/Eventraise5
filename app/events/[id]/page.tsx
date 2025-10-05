@@ -762,7 +762,7 @@ export default function EventDetailPage() {
                 {event.event_type === 'direct_donation' ? (
                   <Button 
                     onClick={() => setActiveModal('donation')}
-                    className="w-full h-12 text-lg bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="w-full h-12 text-lg bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                     size="lg"
                   >
                     <Heart className="h-5 w-5 mr-2" />
@@ -801,7 +801,7 @@ export default function EventDetailPage() {
                     
                     <Button 
                       onClick={() => setActiveModal('donation')}
-                      className="w-full h-12 text-lg bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                      className="w-full h-12 text-lg bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                       size="lg"
                     >
                       <Heart className="h-5 w-5 mr-2" />
@@ -1249,7 +1249,6 @@ export default function EventDetailPage() {
                         
                         <div className="text-center">
                           <Button 
-                            variant="outline"
                             onClick={async()=>{
                               try {
                                 const res = await fetch('/api/donations/checkout', {
@@ -1270,7 +1269,7 @@ export default function EventDetailPage() {
                                 toast.error(e.message || 'Unable to start checkout')
                               }
                             }}
-                            className="w-full"
+                            className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                           >
                             <Heart className="h-4 w-4 mr-2" />
                           Donate ${donationAmount}
