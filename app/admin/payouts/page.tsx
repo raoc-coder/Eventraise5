@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
+import { supabase as sharedSupabase } from '@/lib/supabase'
 import { Navigation } from '@/components/layout/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -91,7 +91,7 @@ export default function AdminPayoutsPage() {
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
       
       if (supabaseUrl && supabaseAnonKey) {
-        const client = createClient(supabaseUrl, supabaseAnonKey)
+        const client = sharedSupabase!
         setSupabase(client)
       }
     }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
+import { supabase as sharedSupabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -25,38 +25,12 @@ export default function RegisterPage() {
   const [supabase, setSupabase] = useState<any>(null)
 
   useEffect(() => {
-    // Only initialize Supabase client on the client side
-    if (typeof window !== 'undefined') {
-      try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-        
-        if (!supabaseUrl || !supabaseAnonKey) {
-          console.error('Missing Supabase environment variables')
-          return
-        }
-
-        // Debug: safe env visibility in client (prefixes only)
-        const redact = (v?: string) => (v ? `${v.slice(0, 8)}…(${v.length})` : 'undefined')
-        console.log('[auth/register] Initializing Supabase', {
-          supabaseUrl,
-          supabaseAnonKeyPrefix: redact(supabaseAnonKey),
-          appUrl: process.env.NEXT_PUBLIC_APP_URL,
-        })
-
-        const client = createClient(supabaseUrl, supabaseAnonKey, {
-          global: {
-            headers: {
-              apikey: supabaseAnonKey,
-              Authorization: `Bearer ${supabaseAnonKey}`,
-            },
-          },
-        })
-        setSupabase(client)
-      } catch (error) {
-        console.error('Failed to initialize Supabase client:', error)
-      }
+    if (typeof window === 'undefined') return
+    if (!sharedSupabase) {
+      console.error('Missing Supabase environment variables')
+      return
     }
+    setSupabase(sharedSupabase)
   }, [])
 
   const handleRegister = async (e: React.FormEvent) => {

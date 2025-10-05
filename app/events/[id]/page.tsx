@@ -101,6 +101,7 @@ export default function EventDetailPage() {
   const [volunteerName, setVolunteerName] = useState('')
   const [volunteerEmail, setVolunteerEmail] = useState('')
   const [volunteerPhone, setVolunteerPhone] = useState('')
+  const [creatingVolunteerAsk, setCreatingVolunteerAsk] = useState(false)
 
   // Handle escape key to close modals
   useEffect(() => {
@@ -966,10 +967,12 @@ export default function EventDetailPage() {
                             <Input id="newShiftTitle" placeholder="e.g. Yes, I can help!" value={volunteerName} onChange={(e)=>setVolunteerName(e.target.value)} />
                           </div>
                           <Button
+                            disabled={creatingVolunteerAsk}
                             onClick={async()=>{
                               const title = volunteerName?.trim()
                               if (!title) { toast.error('Please enter a title'); return }
                               try {
+                                setCreatingVolunteerAsk(true)
                                 // Retrieve auth token for owner-only action
                                 const { data: { session } } = await (supabase as any).auth.getSession()
                                 if (!session?.access_token) {
@@ -991,9 +994,11 @@ export default function EventDetailPage() {
                                 fetchVolunteerShifts()
                               } catch (e:any) {
                                 toast.error(e.message || 'Unable to create')
+                              } finally {
+                                setCreatingVolunteerAsk(false)
                               }
                             }}
-                          >Create</Button>
+                          >{creatingVolunteerAsk ? 'Creating…' : 'Create'}</Button>
                         </div>
                         {volunteerShifts.length > 0 && (
                           <div className="mt-3 text-sm text-gray-700">

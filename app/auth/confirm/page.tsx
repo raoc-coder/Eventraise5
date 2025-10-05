@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
+import { supabase as sharedSupabase } from '@/lib/supabase'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Heart, CheckCircle, XCircle, Loader2 } from 'lucide-react'
@@ -30,7 +30,7 @@ function EmailConfirmContent() {
           return
         }
 
-        const client = createClient(supabaseUrl, supabaseAnonKey)
+        const client = sharedSupabase!
         setSupabase(client)
       } catch (error) {
         console.error('Failed to initialize Supabase client:', error)
