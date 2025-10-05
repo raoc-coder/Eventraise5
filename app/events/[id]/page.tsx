@@ -102,12 +102,16 @@ export default function EventDetailPage() {
   const [volunteerEmail, setVolunteerEmail] = useState('')
   const [volunteerPhone, setVolunteerPhone] = useState('')
   const [creatingVolunteerAsk, setCreatingVolunteerAsk] = useState(false)
+  // Modal state for unified action modal
+  const [activeModal, setActiveModal] = useState<'rsvp' | 'volunteer' | 'donation' | null>(null)
 
   // Handle escape key to close modals
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (analytics) {
+        if (activeModal) {
+          setActiveModal(null)
+        } else if (analytics) {
           setAnalytics(null)
         } else if (registrations) {
           setRegistrations(null)
@@ -116,7 +120,7 @@ export default function EventDetailPage() {
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [analytics, registrations])
+  }, [activeModal, analytics, registrations])
 
 
   const formatDate = (dateString: string) => {
@@ -644,6 +648,19 @@ export default function EventDetailPage() {
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
+                    {user && event && (user.id === (event.organizer_id || event.created_by)) && (
+                      <Button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(window.location.href)
+                          toast.success('Event link copied to clipboard!')
+                        }} 
+                        variant="outline" 
+                        className="hover:bg-green-50 transition-colors border-green-200 text-green-700"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Copy Link
+                      </Button>
+                    )}
                     {editMode ? null : (
                       <>
                         {user && event && (user.id === (event.organizer_id || event.created_by)) && (
@@ -734,8 +751,74 @@ export default function EventDetailPage() {
 
           </div>
 
-          {/* Right rail: type-specific CTAs */}
+          {/* Right rail: Action buttons */}
           <div className="space-y-6">
+            <Card className="event-card">
+              <CardHeader>
+                <CardTitle className="text-gray-900">Get Involved</CardTitle>
+                <CardDescription className="text-gray-600">
+                  Choose how you'd like to participate in this event
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {event.event_type === 'direct_donation' ? (
+                  <Button 
+                    onClick={() => setActiveModal('donation')}
+                    className="w-full h-12 text-lg"
+                    size="lg"
+                  >
+                    <Heart className="h-5 w-5 mr-2" />
+                    Make a Donation
+                  </Button>
+                ) : (
+                  <>
+                    <Button 
+                      onClick={() => setActiveModal('rsvp')}
+                      className="w-full h-12 text-lg"
+                      size="lg"
+                    >
+                      <Users className="h-5 w-5 mr-2" />
+                      RSVP to Event
+                    </Button>
+                    
+                    {(event?.is_ticketed || tickets.length > 0) && (
+                      <Button 
+                        onClick={() => setActiveModal('donation')}
+                        variant="outline"
+                        className="w-full h-12 text-lg border-blue-200 hover:bg-blue-50"
+                        size="lg"
+                      >
+                        <Ticket className="h-5 w-5 mr-2" />
+                        Purchase Tickets
+                      </Button>
+                    )}
+                    
+                    <Button 
+                      onClick={() => setActiveModal('volunteer')}
+                      variant="outline"
+                      className="w-full h-12 text-lg border-green-200 hover:bg-green-50"
+                      size="lg"
+                    >
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      Volunteer
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => setActiveModal('donation')}
+                      variant="outline"
+                      className="w-full h-12 text-lg border-purple-200 hover:bg-purple-50"
+                      size="lg"
+                    >
+                      <Heart className="h-5 w-5 mr-2" />
+                      Make Donation
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+            
+            {/* Original content hidden, will be moved to modal */}
+            <div className="hidden">
             {event.event_type === 'direct_donation' ? (
               <Card className="event-card" id="donate">
                 <CardHeader>
@@ -1205,11 +1288,323 @@ export default function EventDetailPage() {
                 </Card>
               </div>
             )}
-
+            </div>
 
           </div>
         </div>
       </div>
+
+      {/* Unified Action Modal */}
+      {activeModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setActiveModal(null)
+            }
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {activeModal === 'rsvp' && 'RSVP to Event'}
+                    {activeModal === 'volunteer' && 'Volunteer Opportunities'}
+                    {activeModal === 'donation' && 'Support This Event'}
+                  </h2>
+                  <p className="text-gray-600">
+                    {activeModal === 'rsvp' && 'Reserve your spot for this event'}
+                    {activeModal === 'volunteer' && 'Lend a hand by signing up for an available shift'}
+                    {activeModal === 'donation' && 'Make a donation to support this event'}
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setActiveModal(null)}>
+                  Close
+                </Button>
+              </div>
+              
+              <div className="max-h-[60vh] overflow-y-auto">
+                {activeModal === 'rsvp' && (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="rsvpName" className="text-gray-700 font-medium">Your Name</Label>
+                      <Input id="rsvpName" type="text" value={donorName} onChange={(e)=>setDonorName(e.target.value)} className="input" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="rsvpEmail" className="text-gray-700 font-medium">Your Email</Label>
+                      <Input id="rsvpEmail" type="email" value={donorEmail} onChange={(e)=>setDonorEmail(e.target.value)} className="input" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="rsvpQty" className="text-gray-700 font-medium">Quantity</Label>
+                      <input id="rsvpQty" type="number" min={1} defaultValue={1} className="input w-24" />
+                    </div>
+                    <Button className="w-full" onClick={async()=>{
+                      try {
+                        const qtyEl = document.getElementById('rsvpQty') as HTMLInputElement | null
+                        const qty = Math.max(1, Number(qtyEl?.value || 1))
+                        const res = await fetch(`/api/events/${event.id}/register`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ name: donorName, email: donorEmail, quantity: qty, type: 'rsvp' })
+                        })
+                        const json = await res.json()
+                        if (!res.ok) throw new Error(json.error || 'Registration failed')
+                        toast.success('RSVP confirmed!')
+                        setActiveModal(null)
+                      } catch (e:any) {
+                        toast.error(e.message || 'Unable to RSVP')
+                      }
+                    }}>Reserve Spot</Button>
+                  </div>
+                )}
+
+                {activeModal === 'volunteer' && (
+                  <div className="space-y-4">
+                    {user && (user.id === (event.organizer_id || event.created_by)) && (
+                      <div className="mb-6 p-4 border rounded-lg bg-blue-50">
+                        <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+                          <div className="flex-1">
+                            <Label htmlFor="newShiftTitle" className="text-gray-700 font-medium">Create a quick volunteer ask</Label>
+                            <Input id="newShiftTitle" placeholder="e.g. Yes, I can help!" value={volunteerName} onChange={(e)=>setVolunteerName(e.target.value)} />
+                          </div>
+                          <Button
+                            disabled={creatingVolunteerAsk}
+                            onClick={async()=>{
+                              const title = volunteerName?.trim()
+                              if (!title) { toast.error('Please enter a title'); return }
+                              try {
+                                setCreatingVolunteerAsk(true)
+                                const { data: { session } } = await (supabase as any).auth.getSession()
+                                if (!session?.access_token) {
+                                  toast.error('Please log in again')
+                                  return
+                                }
+                                const res = await fetch(`/api/events/${event.id}/volunteer-shifts`, {
+                                  method: 'POST',
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${session.access_token}`
+                                  },
+                                  body: JSON.stringify({ title, is_active: true })
+                                })
+                                const json = await res.json()
+                                if (!res.ok) throw new Error(json.error || 'Failed to create')
+                                toast.success('Volunteer ask created')
+                                setVolunteerName('')
+                                fetchVolunteerShifts()
+                              } catch (e:any) {
+                                toast.error(e.message || 'Unable to create')
+                              } finally {
+                                setCreatingVolunteerAsk(false)
+                              }
+                            }}
+                          >{creatingVolunteerAsk ? 'Creating…' : 'Create'}</Button>
+                        </div>
+                        {volunteerShifts.length > 0 && (
+                          <div className="mt-3 text-sm text-gray-700">
+                            Share link to collect Yes responses:{' '}
+                            <Button
+                              variant="outline"
+                              className="ml-2"
+                              onClick={()=>{
+                                const url = `${window.location.origin}/events/${event.id}?shift=${encodeURIComponent(volunteerShifts[0].id)}`
+                                navigator.clipboard.writeText(url)
+                                toast.success('Share link copied to clipboard')
+                              }}
+                            >Copy share link</Button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {volunteerLoading ? (
+                      <div className="text-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                        <p className="mt-4 text-gray-700">Loading shifts...</p>
+                      </div>
+                    ) : volunteerShifts.length === 0 ? (
+                      <div className="text-center py-8 text-gray-600">No active volunteer shifts at the moment.</div>
+                    ) : (
+                      <div className="space-y-4">
+                        {volunteerShifts.map((shift:any) => {
+                          const spotsLeft = Math.max(0, (shift.max_volunteers || 0) - (shift.current_volunteers || 0))
+                          return (
+                            <div key={shift.id} className="border rounded-lg p-4">
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <div>
+                                  <div className="font-medium text-gray-900">{shift.title || 'Volunteer Shift'}</div>
+                                  <div className="text-sm text-gray-600">
+                                    {shift.start_time ? new Date(shift.start_time).toLocaleString() : ''}
+                                    {shift.end_time ? ` - ${new Date(shift.end_time).toLocaleTimeString()}` : ''}
+                                  </div>
+                                  {typeof shift.max_volunteers === 'number' && (
+                                    <div className="text-sm text-gray-700 mt-1">{spotsLeft} of {shift.max_volunteers} spots left</div>
+                                  )}
+                                </div>
+                                <div className="w-full sm:w-auto">
+                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                    <Input placeholder="Full name" value={volunteerName} onChange={(e)=>setVolunteerName(e.target.value)} />
+                                    <Input placeholder="Email" type="email" value={volunteerEmail} onChange={(e)=>setVolunteerEmail(e.target.value)} />
+                                    <Input placeholder="Phone (optional)" value={volunteerPhone} onChange={(e)=>setVolunteerPhone(e.target.value)} />
+                                  </div>
+                                  <div className="mt-2 flex justify-end">
+                                    <Button
+                                      disabled={spotsLeft === 0 || !volunteerName || !volunteerEmail}
+                                      onClick={async()=>{
+                                        try {
+                                          const res = await fetch('/api/events/volunteer-signup', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                              shift_id: shift.id,
+                                              volunteer_name: volunteerName,
+                                              volunteer_email: volunteerEmail,
+                                              volunteer_phone: volunteerPhone
+                                            })
+                                          })
+                                          const json = await res.json()
+                                          if (!res.ok) throw new Error(json.error || 'Signup failed')
+                                          toast.success('Thanks for signing up! We\'ll email you details.')
+                                          setVolunteerName('')
+                                          setVolunteerEmail('')
+                                          setVolunteerPhone('')
+                                          fetchVolunteerShifts()
+                                          setActiveModal(null)
+                                        } catch (e:any) {
+                                          toast.error(e.message || 'Unable to sign up')
+                                        }
+                                      }}
+                                    >Sign Up</Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeModal === 'donation' && (
+                  <div className="space-y-4">
+                    {/* Quick Donation Amounts */}
+                    <div className="mb-6">
+                      <p className="text-gray-700 mb-3 font-medium">Choose Amount</p>
+                      <div className="flex flex-wrap items-center gap-2 mb-4 overflow-hidden">
+                        {[1,10,25,50,100].map(v => (
+                          <Button 
+                            key={v}
+                            variant={donationAmount===v ? 'default' : 'outline'}
+                            onClick={()=>setDonationAmount(v)}
+                            className="min-h-[44px] px-4"
+                          >
+                            ${v}
+                          </Button>
+                        ))}
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="text-gray-600 text-sm font-medium whitespace-nowrap">Custom</span>
+                          <input
+                            type="number"
+                            min={1}
+                            step={1}
+                            value={donationAmount}
+                            onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
+                            className="input w-20 sm:w-24 min-h-[44px] text-base"
+                            placeholder="$1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-xs text-gray-600 mb-4">Using EventraiseHUB is free. A platform fee of 8.99% applies to donations received.</p>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="donorName" className="text-gray-700 font-medium">Your Name (Optional)</Label>
+                        <Input
+                          id="donorName"
+                          type="text"
+                          placeholder="Enter your name"
+                          value={donorName}
+                          onChange={(e) => setDonorName(e.target.value)}
+                          className="input"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="donorEmail" className="text-gray-700 font-medium">Your Email (Optional)</Label>
+                        <Input
+                          id="donorEmail"
+                          type="email"
+                          placeholder="Enter your email"
+                          value={donorEmail}
+                          onChange={(e) => setDonorEmail(e.target.value)}
+                          className="input"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="donorMessage" className="text-gray-700 font-medium">Message (Optional)</Label>
+                        <textarea
+                          id="donorMessage"
+                          placeholder="Leave a message of support..."
+                          value={donorMessage}
+                          onChange={(e) => setDonorMessage(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-gray-700 font-medium">Donation Amount</span>
+                          <span className="text-gray-900 font-semibold">${donationAmount.toFixed(2)}</span>
+                        </div>
+                        <div className="border-t border-blue-300 mt-2 pt-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-900 font-bold">You'll Be Charged</span>
+                            <span className="text-blue-600 font-bold text-lg">
+                              ${donationAmount.toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-600 mt-2">Fees are deducted from your donation so the organizer receives the net amount.</p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <PayPalDonationButton
+                          amount={donationAmount}
+                          eventId={(params as any)?.id}
+                          onSuccess={(orderId) => {
+                            toast.success('Donation successful! Thank you for your support.')
+                            // Reset form
+                            setDonationAmount(1)
+                            setDonorName('')
+                            setDonorEmail('')
+                            setDonorMessage('')
+                            setActiveModal(null)
+                          }}
+                          onError={(error) => {
+                            toast.error(error)
+                          }}
+                          disabled={donationAmount < 1}
+                        />
+                        
+                        {/* PayPal Marks for branding */}
+                        <div className="flex items-center justify-center">
+                          <img alt="Powered by PayPal" src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png" className="h-6" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Analytics Modal */}
       {user && event && (user.id === (event.organizer_id || event.created_by)) && analytics && (
