@@ -534,7 +534,7 @@ export default function EventDetailPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {showCreatedBanner && (
           <div className="mb-6 p-6 rounded-xl border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 shadow-lg flex items-start justify-between">
             <div>
@@ -562,7 +562,7 @@ export default function EventDetailPage() {
             </div>
           </div>
         )}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 no-overflow">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 no-overflow">
           {/* Event Info */}
           <div className="lg:col-span-2 space-y-6">
               <Card className="event-card shadow-xl border-0 bg-gradient-to-br from-white to-gray-50" id="donate">
@@ -643,7 +643,7 @@ export default function EventDetailPage() {
                     )}
                   </div>
                 </div>
-                  <div className="flex flex-wrap gap-3 mt-6">
+                  <div className="flex flex-wrap gap-3 mt-6 sm:gap-4">
                     <Button onClick={handleShare} variant="outline" className="hover:bg-blue-50 transition-colors">
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
@@ -662,29 +662,29 @@ export default function EventDetailPage() {
                     {editMode ? null : (
                       <>
                         {user && event && (user.id === (event.organizer_id || event.created_by)) && (
-                          <div className="flex flex-col sm:flex-row gap-2 ml-auto w-full sm:w-auto">
-                            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                              <Button variant="outline" onClick={()=>setEditMode(true)} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                          <div className="flex flex-col gap-3 w-full">
+                            <div className="grid grid-cols-2 gap-2">
+                              <Button variant="outline" onClick={()=>setEditMode(true)} className="hover:bg-gray-50 transition-colors h-11 text-sm">
                                 <Edit className="h-4 w-4 mr-2" />
                                 Edit
                               </Button>
-                              <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                              <Button variant="outline" onClick={()=>togglePublish(!(event as any).is_published)} disabled={publishing} className="hover:bg-gray-50 transition-colors h-11 text-sm">
                                 {(event as any).is_published ? 'Unpublish' : 'Publish'}
                               </Button>
                             </div>
-                            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                              <Button variant="outline" onClick={() => fetchRegistrations()} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                            <div className="grid grid-cols-2 gap-2">
+                              <Button variant="outline" onClick={() => fetchRegistrations()} className="hover:bg-gray-50 transition-colors h-11 text-sm">
                                 <Users className="h-4 w-4 mr-2" />
                                 Registrations
                               </Button>
-                              <Button variant="outline" onClick={() => fetchAnalytics()} className="hover:bg-gray-50 transition-colors btn-mobile flex-1 sm:flex-none">
+                              <Button variant="outline" onClick={() => fetchAnalytics()} className="hover:bg-gray-50 transition-colors h-11 text-sm">
                                 <Target className="h-4 w-4 mr-2" />
                                 Analytics
                               </Button>
                             </div>
-                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors btn-mobile w-full sm:w-auto">
+                            <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors h-11 text-sm">
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
+                              Delete Event
                             </Button>
                           </div>
                         )}
@@ -1299,8 +1299,8 @@ export default function EventDetailPage() {
             }
           }}
         >
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] overflow-y-auto mx-4">
+            <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">

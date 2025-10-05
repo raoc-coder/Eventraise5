@@ -27,7 +27,7 @@ export default function HomePage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-20 lg:py-32">
+      <section className="relative py-16 sm:py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
@@ -38,7 +38,7 @@ export default function HomePage() {
               EventraiseHub helps you create and manage all kinds of events — donation drives, ticketed experiences,
               RSVPs, volunteer signups, and sponsorships — with built‑in payments, registrations, and analytics.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 justify-center px-4">
               <Link href="/auth/register" className="w-full sm:w-auto">
                 <Button size="mobile">
                   Create Your First Event

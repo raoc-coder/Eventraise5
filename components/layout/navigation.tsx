@@ -26,7 +26,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
   return (
     <nav className={`sticky top-0 z-50 bg-white border-b border-gray-200 backdrop-blur supports-[backdrop-filter]:backdrop-saturate-150 shadow-sm w-full overflow-hidden ${className}`}>
       <div className="nav-container w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
-        <div className="flex justify-between items-center h-16 min-h-[64px]">
+        <div className="flex justify-between items-center h-16 min-h-[64px] sm:h-16">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
@@ -134,45 +134,45 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white backdrop-blur">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+            <div className="px-4 pt-4 pb-6 space-y-2">
               <Link href="/faqs" onClick={closeMobileMenu}>
-                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                   FAQs
                 </Button>
               </Link>
               <Link href="/getting-started" onClick={closeMobileMenu}>
-                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                   Getting Started
                 </Button>
               </Link>
               {user && (
                 <Link href="/dashboard" onClick={closeMobileMenu}>
-                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                     Dashboard
                   </Button>
                 </Link>
               )}
               <Link href="/events/mine" onClick={closeMobileMenu}>
-                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                   My Events
                 </Button>
               </Link>
               {user && (
                 <Link href="/organizer/payouts" onClick={closeMobileMenu}>
-                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                     My Payouts
                   </Button>
                 </Link>
               )}
               {user && (user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin') && (
                 <Link href="/admin/payouts/events" onClick={closeMobileMenu}>
-                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                     Admin Payouts
                   </Button>
                 </Link>
               )}
               <Link href="/events" onClick={closeMobileMenu}>
-                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                   Events
                 </Button>
               </Link>
@@ -195,7 +195,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                   ) : (
                     <>
                       <Link href="/auth/login" onClick={closeMobileMenu}>
-                        <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                           Login
                         </Button>
                       </Link>
