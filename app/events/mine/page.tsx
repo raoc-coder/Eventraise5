@@ -139,7 +139,7 @@ export default function MyEventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Events</h1>
@@ -150,7 +150,7 @@ export default function MyEventsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {events.map((ev) => (
-              <Card key={ev.id} className="hover:shadow-md transition-all duration-200">
+              <Card key={ev.id} className="hover:shadow-xl transition-all duration-300 shadow-lg border-0 bg-gradient-to-br from-white to-gray-50">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>

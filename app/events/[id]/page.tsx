@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Head from 'next/head'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -235,6 +236,10 @@ export default function EventDetailPage() {
             start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
+          // Update browser tab title with event name
+          if (data.event?.title) {
+            document.title = `${data.event.title} — EventraiseHub`
+          }
           // Fetch donation total, tickets, and volunteer shifts after event is loaded
           setTimeout(() => {
             fetchDonationTotal()
@@ -531,12 +536,12 @@ export default function EventDetailPage() {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {showCreatedBanner && (
-          <div className="mb-6 p-4 rounded-lg border-2 border-green-200 bg-green-50 flex items-start justify-between">
+          <div className="mb-6 p-6 rounded-xl border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 shadow-lg flex items-start justify-between">
             <div>
               <p className="text-green-800 font-semibold">Your event is live!</p>
               <p className="text-green-700 text-sm">Share the link below to start accepting registrations and donations.</p>
@@ -565,7 +570,7 @@ export default function EventDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 no-overflow">
           {/* Event Info */}
           <div className="lg:col-span-2 space-y-6">
-              <Card className="event-card" id="donate">
+              <Card className="event-card shadow-xl border-0 bg-gradient-to-br from-white to-gray-50" id="donate">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -751,7 +756,7 @@ export default function EventDetailPage() {
 
           {/* Right rail: Action buttons */}
           <div className="space-y-6">
-            <Card className="event-card">
+            <Card className="event-card shadow-xl border-0 bg-gradient-to-br from-white to-blue-50">
               <CardHeader>
                 <CardTitle className="text-gray-900">Get Involved</CardTitle>
                 <CardDescription className="text-gray-600">
@@ -762,7 +767,7 @@ export default function EventDetailPage() {
                 {event.event_type === 'direct_donation' ? (
                   <Button 
                     onClick={() => setActiveModal('donation')}
-                    className="w-full h-12 text-lg"
+                    className="w-full h-12 text-lg bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                     size="lg"
                   >
                     <Heart className="h-5 w-5 mr-2" />
@@ -772,7 +777,7 @@ export default function EventDetailPage() {
                   <>
                     <Button 
                       onClick={() => setActiveModal('rsvp')}
-                      className="w-full h-12 text-lg"
+                      className="w-full h-12 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                       size="lg"
                     >
                       <Users className="h-5 w-5 mr-2" />
@@ -782,8 +787,7 @@ export default function EventDetailPage() {
                     {(event?.is_ticketed || tickets.length > 0) && (
                       <Button 
                         onClick={() => setActiveModal('donation')}
-                        variant="outline"
-                        className="w-full h-12 text-lg border-blue-200 hover:bg-blue-50"
+                        className="w-full h-12 text-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                         size="lg"
                       >
                         <Ticket className="h-5 w-5 mr-2" />
@@ -793,8 +797,7 @@ export default function EventDetailPage() {
                     
                     <Button 
                       onClick={() => setActiveModal('volunteer')}
-                      variant="outline"
-                      className="w-full h-12 text-lg border-green-200 hover:bg-green-50"
+                      className="w-full h-12 text-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                       size="lg"
                     >
                       <Sparkles className="h-5 w-5 mr-2" />
@@ -803,8 +806,7 @@ export default function EventDetailPage() {
                     
                     <Button 
                       onClick={() => setActiveModal('donation')}
-                      variant="outline"
-                      className="w-full h-12 text-lg border-purple-200 hover:bg-purple-50"
+                      className="w-full h-12 text-lg bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                       size="lg"
                     >
                       <Heart className="h-5 w-5 mr-2" />
