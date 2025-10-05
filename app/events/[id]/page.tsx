@@ -418,11 +418,8 @@ export default function EventDetailPage() {
       // Get auth token for the request
       let authToken: string | null = null
       try {
-        const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
-        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
-        if (url && key) {
-          const sb = createClient(url, key)
-          const { data } = await sb.auth.getSession()
+        if (supabase) {
+          const { data } = await supabase.auth.getSession()
           authToken = data.session?.access_token || null
           console.log('Auth token obtained:', !!authToken)
         }
@@ -1289,7 +1286,7 @@ export default function EventDetailPage() {
                     onClick={async () => {
                       try {
                         // Get fresh session token like we do for analytics
-                        const { data: { session } } = await supabase.auth.getSession()
+                        const { data: { session } } = await (supabase as any).auth.getSession()
                         if (!session) {
                           toast.error('Please log in to export data')
                           return
