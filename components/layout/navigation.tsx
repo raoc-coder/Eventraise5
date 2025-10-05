@@ -41,11 +41,6 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1.5">
-            <Link href="/events">
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Events
-              </Button>
-            </Link>
             <Link href="/faqs">
               <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                 FAQs
@@ -56,6 +51,13 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 Getting Started
               </Button>
             </Link>
+            {user && (
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  Dashboard
+                </Button>
+              </Link>
+            )}
             <Link href="/events/mine">
               <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                 My Events
@@ -75,16 +77,16 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 </Button>
               </Link>
             )}
+            <Link href="/events">
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                Events
+              </Button>
+            </Link>
             
             {showAuth && (
               <>
                 {user ? (
                   <>
-                    <Link href="/dashboard">
-                      <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                        Dashboard
-                      </Button>
-                    </Link>
                     <Button 
                       variant="ghost" 
                       size="sm"
@@ -133,11 +135,6 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white backdrop-blur">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link href="/events" onClick={closeMobileMenu}>
-                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  Events
-                </Button>
-              </Link>
               <Link href="/faqs" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                   FAQs
@@ -148,6 +145,13 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                   Getting Started
                 </Button>
               </Link>
+              {user && (
+                <Link href="/dashboard" onClick={closeMobileMenu}>
+                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                    Dashboard
+                  </Button>
+                </Link>
+              )}
               <Link href="/events/mine" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                   My Events
@@ -167,16 +171,16 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                   </Button>
                 </Link>
               )}
+              <Link href="/events" onClick={closeMobileMenu}>
+                <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  Events
+                </Button>
+              </Link>
               
               {showAuth && (
                 <>
                   {user ? (
                     <>
-                      <Link href="/dashboard" onClick={closeMobileMenu}>
-                        <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                          Dashboard
-                        </Button>
-                      </Link>
                       <Button 
                         variant="ghost" 
                         onClick={() => {
