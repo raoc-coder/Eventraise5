@@ -60,7 +60,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-4">
-              Everything You Need for Event Management
+              Everything You Need for Fundraising Donation, Event, and Volunteer Management
             </h2>
             <p className="text-base sm:text-lg text-gray-800 max-w-2xl mx-auto px-4">
               From event planning to secure payment processing, we&apos;ve got you covered.
