@@ -590,7 +590,7 @@ export default function EventDetailPage() {
                           <input value={draft.location} onChange={(e)=>setDraft({...draft,location:e.target.value})} placeholder="Location" className="input min-h-[44px]" />
                         </div>
                         <div className="flex gap-2">
-                          <Button onClick={updateEvent} disabled={saving}>{saving?'Saving…':'Save'}</Button>
+                          <Button onClick={updateEvent} disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button>
                           <Button variant="outline" onClick={()=>setEditMode(false)}>Cancel</Button>
                         </div>
                       </div>
@@ -757,7 +757,7 @@ export default function EventDetailPage() {
               <CardHeader>
                 <CardTitle className="text-gray-900">Get Involved</CardTitle>
                 <CardDescription className="text-gray-600">
-                  Choose how you'd like to participate in this event
+                  Choose how you&apos;d like to participate in this event
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
