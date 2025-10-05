@@ -141,11 +141,8 @@ export default function EventDetailPage() {
       // Always try to get auth token first
       let authToken: string | null = null
       try {
-        const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
-        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
-        if (url && key) {
-          const sb = createClient(url, key)
-          const { data } = await sb.auth.getSession()
+        if (supabase) {
+          const { data } = await supabase.auth.getSession()
           authToken = data.session?.access_token || null
         }
       } catch (authError) {
@@ -351,11 +348,8 @@ export default function EventDetailPage() {
       // Always try to get auth token first
       let authToken: string | null = null
       try {
-        const url = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined
-        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined
-        if (url && key) {
-          const sb = createClient(url, key)
-          const { data } = await sb.auth.getSession()
+        if (supabase) {
+          const { data } = await supabase.auth.getSession()
           authToken = data.session?.access_token || null
         }
       } catch (authError) {
