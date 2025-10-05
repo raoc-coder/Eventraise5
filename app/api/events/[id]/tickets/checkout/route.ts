@@ -63,8 +63,13 @@ export async function POST(req: NextRequest, { params }: any) {
     const feeCents = Math.floor(totalCents * 0.0899) // 8.99% platform fee
     const netCents = totalCents - feeCents
 
-    // Create registration record
-    const { data: registration, error: regErr } = await db
+    // Create registration record (use admin client to bypass RLS)
+    if (!supabaseAdmin) {
+      console.error('[api/tickets/checkout] Admin client unavailable')
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
+
+    const { data: registration, error: regErr } = await supabaseAdmin
       .from('event_registrations')
       .insert({
         event_id: id,
