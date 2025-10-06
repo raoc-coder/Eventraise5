@@ -96,10 +96,6 @@ async function handlePaymentCompleted(webhookData: any) {
       }
     }
 
-    if (donationError) {
-      console.error('Failed to update donation status:', donationError)
-    }
-
     // Update registration status if applicable
     const { error: registrationError } = await supabaseAdmin
       .from('event_registrations')
