@@ -108,6 +108,26 @@ async function handlePaymentCompleted(webhookData: any) {
       console.error('Failed to update registration status:', registrationError)
     }
 
+    // Auto-create a payout for the related event (idempotent at RPC level)
+    try {
+      const { data: orderForEvent } = await supabaseAdmin
+        .from('paypal_orders')
+        .select('event_id')
+        .eq('order_id', orderId)
+        .single()
+
+      const eventId = orderForEvent?.event_id
+      if (eventId) {
+        const { error: payoutError } = await supabaseAdmin
+          .rpc('create_event_payout', { event_uuid: eventId })
+        if (payoutError) {
+          console.error('Failed to auto-create payout:', payoutError)
+        }
+      }
+    } catch (e) {
+      console.error('Auto-create payout error:', e)
+    }
+
   } catch (error) {
     console.error('Error handling payment completed:', error)
   }
