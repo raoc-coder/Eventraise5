@@ -16,7 +16,8 @@ import {
   DollarSign,
   Target,
   Edit,
-  Settings
+  Settings,
+  Plus
 } from 'lucide-react'
 
 export default function MyEventsPage() {

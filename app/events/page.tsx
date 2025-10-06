@@ -237,7 +237,7 @@ export default function EventsPage() {
             <div className="mt-4 flex flex-wrap gap-2">
               {searchTerm && (
                 <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                  Search: "{searchTerm}"
+                  Search: &ldquo;{searchTerm}&rdquo;
                   <button
                     onClick={() => setSearchTerm('')}
                     className="ml-2 text-blue-600 hover:text-blue-800"

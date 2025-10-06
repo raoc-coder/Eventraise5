@@ -196,7 +196,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
     }
 
     initializeData()
-  }, [params, router])
+  }, [params, router, fetchData])
 
   if (!user || !event) return <div>Loading...</div>
 
