@@ -22,6 +22,14 @@ import {
 export default function MyEventsPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
+  const navigate = (url: string) => {
+    try {
+      router.push(url)
+    } catch {}
+    if (typeof window !== 'undefined') {
+      window.location.href = url
+    }
+  }
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const fetchingRef = useRef(false)
@@ -261,10 +269,10 @@ export default function MyEventsPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-4">
-                      <Button className="flex-1" onClick={() => router.push(`/events/${ev.id}`)}>
+                      <Button className="flex-1" onClick={() => navigate(`/events/${ev.id}`)}>
                         View Details
                       </Button>
-                      <Button variant="outline" className="whitespace-nowrap" onClick={() => router.push(`/events/${ev.id}`)}>
+                      <Button variant="outline" className="whitespace-nowrap" onClick={() => navigate(`/events/${ev.id}`)}>
                         <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
                       </Button>
                     </div>

@@ -44,6 +44,14 @@ interface Event {
 
 export default function EventsPage() {
   const router = useRouter()
+  const navigate = (url: string) => {
+    try {
+      router.push(url)
+    } catch {}
+    if (typeof window !== 'undefined') {
+      window.location.href = url
+    }
+  }
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -281,21 +289,21 @@ export default function EventsPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-4">
-                    <Button className="flex-1" onClick={() => router.push(`/events/${event.id}`)}>
+                    <Button className="flex-1" onClick={() => navigate(`/events/${event.id}`)}>
                       View Details
                     </Button>
                     {event.is_ticketed ? (
                       <Button
                         variant="secondary"
                         className="whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white"
-                        onClick={() => router.push(`/events/${event.id}#tickets`)}
+                        onClick={() => navigate(`/events/${event.id}#tickets`)}
                       >
                         <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
                       </Button>
                     ) : (event.event_type === 'direct_donation') && (
                       <Button
                         className="whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                        onClick={() => router.push(`/events/${event.id}#donate`)}
+                        onClick={() => navigate(`/events/${event.id}#donate`)}
                       >
                         Donate
                       </Button>
