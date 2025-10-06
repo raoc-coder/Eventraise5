@@ -266,7 +266,20 @@ export default function MyEventsPage() {
                         className={buttonVariants({ className: 'flex-1' })}
                         onClick={() => {
                           console.log('View Details clicked for event:', ev.id)
-                          window.location.href = `/events/${ev.id}`
+                          console.log('About to navigate to:', `/events/${ev.id}`)
+                          try {
+                            // Try multiple navigation methods
+                            window.location.href = `/events/${ev.id}`
+                            console.log('window.location.href set')
+                            
+                            // Fallback to router
+                            setTimeout(() => {
+                              console.log('Trying router navigation as fallback')
+                              router.push(`/events/${ev.id}`)
+                            }, 100)
+                          } catch (error) {
+                            console.error('Navigation error:', error)
+                          }
                         }}
                       >
                         View Details
@@ -275,7 +288,13 @@ export default function MyEventsPage() {
                         className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
                         onClick={() => {
                           console.log('Manage clicked for event:', ev.id)
-                          window.location.href = `/events/${ev.id}`
+                          console.log('About to navigate to:', `/events/${ev.id}`)
+                          try {
+                            window.location.assign(`/events/${ev.id}`)
+                            console.log('Navigation command executed')
+                          } catch (error) {
+                            console.error('Navigation error:', error)
+                          }
                         }}
                       >
                         <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
