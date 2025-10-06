@@ -63,7 +63,16 @@ export async function PATCH(req: Request, { params }: any) {
   const body = updateEventSchema.parse(raw)
   const toIso = (d?: string) => (d ? new Date(`${d}T00:00:00Z`).toISOString() : undefined)
   const update: any = {}
-  if (body.title !== undefined) update.title = body.title
+  if (body.title !== undefined) {
+    update.title = body.title
+    // Update slug if title changes
+    try {
+      update.slug = String(body.title)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')
+    } catch {}
+  }
   if (body.description !== undefined) update.description = body.description
   if (body.event_type !== undefined) update.event_type = body.event_type
   if (body.start_date !== undefined) update.start_date = toIso(body.start_date)

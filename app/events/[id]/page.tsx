@@ -79,6 +79,42 @@ export default function EventDetailPage() {
   const [editMode, setEditMode] = useState(false)
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState({ title: '', description: '', location: '', start_date: '', end_date: '' })
+  // Update browser tab title when event loads
+  useEffect(() => {
+    const originalTitle = document.title
+    if (event?.title) {
+      document.title = `${event.title} — EventraiseHub`
+      // Push pretty slug URL without full reload
+      const slug = (event as any)?.slug
+      if (slug && typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        const parts = url.pathname.split('/').filter(Boolean)
+        // Replace ID segment with slug
+        const idx = parts.indexOf('events')
+        if (idx >= 0 && parts[idx + 1]) {
+          parts[idx + 1] = slug
+          const next = '/' + parts.join('/') + url.search + url.hash
+          window.history.replaceState(null, document.title, next)
+        }
+      }
+
+      // Set canonical link to slug URL
+      try {
+        const head = document.head
+        const existing = head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+        const canonicalHref = `${window.location.origin}/events/${(event as any)?.slug || (params as any)?.id}`
+        if (existing) {
+          existing.href = canonicalHref
+        } else {
+          const link = document.createElement('link')
+          link.setAttribute('rel', 'canonical')
+          link.setAttribute('href', canonicalHref)
+          head.appendChild(link)
+        }
+      } catch {}
+    }
+    return () => { document.title = originalTitle }
+  }, [event?.title])
   const [shareOpen, setShareOpen] = useState(false)
   const [shareEmail, setShareEmail] = useState('')
   const [shareMsg, setShareMsg] = useState('')
