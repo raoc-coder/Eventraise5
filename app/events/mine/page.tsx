@@ -261,15 +261,14 @@ export default function MyEventsPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-4">
-                      <Link href={`/events/${ev.id}`} className="flex-1">
-                        <Button className="w-full">View Details</Button>
-                      </Link>
-                      <Link href={`/events/${ev.id}`}>
-                        <Button variant="outline" className="whitespace-nowrap">
-                          <Settings className="h-4 w-4 mr-1" />
-                          Manage
-                        </Button>
-                      </Link>
+                      <Button asChild className="flex-1">
+                        <Link href={`/events/${ev.id}`}>View Details</Link>
+                      </Button>
+                      <Button asChild variant="outline" className="whitespace-nowrap">
+                        <Link href={`/events/${ev.id}`}>
+                          <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
