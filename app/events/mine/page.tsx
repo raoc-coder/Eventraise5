@@ -269,12 +269,22 @@ export default function MyEventsPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-4">
-                      <Button className="flex-1" onClick={() => navigate(`/events/${ev.id}`)}>
+                      <a
+                        href={`/events/${ev.id}`}
+                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${ev.id}`) }}
+                        className={buttonVariants({ className: 'flex-1' })}
+                        role="link"
+                      >
                         View Details
-                      </Button>
-                      <Button variant="outline" className="whitespace-nowrap" onClick={() => navigate(`/events/${ev.id}`)}>
+                      </a>
+                      <a
+                        href={`/events/${ev.id}`}
+                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${ev.id}`) }}
+                        className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
+                        role="link"
+                      >
                         <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
-                      </Button>
+                      </a>
                     </div>
                   </div>
                 </CardContent>

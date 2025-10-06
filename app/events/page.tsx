@@ -289,24 +289,32 @@ export default function EventsPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-4">
-                    <Button className="flex-1" onClick={() => navigate(`/events/${event.id}`)}>
+                    <a
+                      href={`/events/${event.id}`}
+                      onClick={(e)=>{ e.preventDefault(); navigate(`/events/${event.id}`) }}
+                      className={buttonVariants({ className: 'flex-1' })}
+                      role="link"
+                    >
                       View Details
-                    </Button>
+                    </a>
                     {event.is_ticketed ? (
-                      <Button
-                        variant="secondary"
-                        className="whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white"
-                        onClick={() => navigate(`/events/${event.id}#tickets`)}
+                      <a
+                        href={`/events/${event.id}#tickets`}
+                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${event.id}#tickets`) }}
+                        className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white' })}
+                        role="link"
                       >
                         <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
-                      </Button>
+                      </a>
                     ) : (event.event_type === 'direct_donation') && (
-                      <Button
-                        className="whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                        onClick={() => navigate(`/events/${event.id}#donate`)}
+                      <a
+                        href={`/events/${event.id}#donate`}
+                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${event.id}#donate`) }}
+                        className={buttonVariants({ className: 'whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200' })}
+                        role="link"
                       >
                         Donate
-                      </Button>
+                      </a>
                     )}
                     <Button variant="outline" size="sm" className="text-gray-700" aria-label="Favorite event">
                       <Heart className="h-4 w-4" />
