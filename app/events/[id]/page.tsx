@@ -276,6 +276,12 @@ export default function EventDetailPage() {
   }, [event?.id])
 
   useEffect(() => {
+    // Safety net: never allow indefinite spinner
+    const t = setTimeout(() => setLoading(false), 5000)
+    return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
     const fetchEvent = async () => {
       try {
         const id = typeof params?.id === 'string' ? params.id : ''
@@ -283,6 +289,7 @@ export default function EventDetailPage() {
         const response = await fetch(`/api/events/${id}`)
         if (response.ok) {
           const data = await response.json()
+          console.log('[event page] fetched event ok')
           setEvent(data.event)
           setDraft({
             title: data.event?.title || '',

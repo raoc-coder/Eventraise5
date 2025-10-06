@@ -5,12 +5,17 @@ import { ok, fail } from '@/lib/api'
 import { requireAuth } from '@/lib/auth-utils'
 
 export async function GET(_req: Request, { params }: any) {
-  // Use regular client for now
-  const db = supabase
-  if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
-  
-  // Await params in Next.js 15
-  const { id } = await params
+  try {
+    // Prefer admin client to avoid auth/env issues; fall back to public client
+    const db = supabaseAdmin || supabase
+    if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
+    
+    // Await params in Next.js 15
+    const awaited = await params
+    const id = awaited?.id
+    if (!id || typeof id !== 'string') {
+      return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+    }
   
   // Try to select with organizer_id and tickets first, fall back to basic select if columns don't exist
   let { data, error } = await db.from('events').select(`
@@ -49,6 +54,9 @@ export async function GET(_req: Request, { params }: any) {
   }
   
   return NextResponse.json({ event: data })
+  } catch (e: any) {
+    return NextResponse.json({ error: e?.message || 'Unexpected error' }, { status: 500 })
+  }
 }
 
 export async function PATCH(req: Request, { params }: any) {
