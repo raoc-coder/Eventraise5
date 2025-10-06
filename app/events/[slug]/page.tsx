@@ -7,7 +7,15 @@ export default async function EventSlugRedirectPage({ params }: { params: Promis
   // If the slug is actually a UUID, redirect directly to ID page
   const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
   if (uuidRe.test(slug)) {
-    redirect(`/events/${slug}`)
+    // Render a minimal page with client-side replace to avoid potential redirect loops
+    return (
+      <html>
+        <head>
+          <meta httpEquiv="refresh" content={`0; url=/events/${slug}`} />
+        </head>
+        <body />
+      </html>
+    ) as any
   }
 
   try {
@@ -26,7 +34,14 @@ export default async function EventSlugRedirectPage({ params }: { params: Promis
       notFound()
     }
 
-    redirect(`/events/${data.id}`)
+    return (
+      <html>
+        <head>
+          <meta httpEquiv="refresh" content={`0; url=/events/${data.id}`} />
+        </head>
+        <body />
+      </html>
+    ) as any
   } catch {
     redirect('/events')
   }

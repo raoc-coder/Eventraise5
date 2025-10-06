@@ -84,25 +84,12 @@ export default function EventDetailPage() {
     const originalTitle = document.title
     if (event?.title) {
       document.title = `${event.title} — EventraiseHub`
-      // Push pretty slug URL without full reload
-      const slug = (event as any)?.slug
-      if (slug && typeof window !== 'undefined') {
-        const url = new URL(window.location.href)
-        const parts = url.pathname.split('/').filter(Boolean)
-        // Replace ID segment with slug
-        const idx = parts.indexOf('events')
-        if (idx >= 0 && parts[idx + 1]) {
-          parts[idx + 1] = slug
-          const next = '/' + parts.join('/') + url.search + url.hash
-          window.history.replaceState(null, document.title, next)
-        }
-      }
 
-      // Set canonical link to slug URL
+      // Set canonical link to current URL
       try {
         const head = document.head
         const existing = head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
-        const canonicalHref = `${window.location.origin}/events/${(event as any)?.slug || (params as any)?.id}`
+        const canonicalHref = typeof window !== 'undefined' ? window.location.href : ''
         if (existing) {
           existing.href = canonicalHref
         } else {
