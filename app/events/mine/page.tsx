@@ -261,14 +261,20 @@ export default function MyEventsPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-2 pt-4">
+                    <div className="flex gap-2 pt-4" style={{ position: 'relative', zIndex: 10 }}>
                       <a
                         href={`/events/${ev.id}`}
                         className={buttonVariants({ className: 'flex-1' })}
                         role="link"
+                        style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
                         onClick={(e) => {
                           console.log('View Details clicked for event:', ev.id)
+                          console.log('Event target:', e.target)
+                          console.log('Event currentTarget:', e.currentTarget)
                           // Let the default navigation happen
+                        }}
+                        onMouseDown={(e) => {
+                          console.log('View Details mousedown for event:', ev.id)
                         }}
                       >
                         View Details
@@ -277,9 +283,15 @@ export default function MyEventsPage() {
                         href={`/events/${ev.id}`}
                         className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
                         role="link"
+                        style={{ position: 'relative', zIndex: 10, pointerEvents: 'auto' }}
                         onClick={(e) => {
                           console.log('Manage clicked for event:', ev.id)
+                          console.log('Event target:', e.target)
+                          console.log('Event currentTarget:', e.currentTarget)
                           // Let the default navigation happen
+                        }}
+                        onMouseDown={(e) => {
+                          console.log('Manage mousedown for event:', ev.id)
                         }}
                       >
                         <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
