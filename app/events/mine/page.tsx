@@ -147,21 +147,60 @@ export default function MyEventsPage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="border rounded-lg p-4 animate-pulse">
-                <div className="h-6 w-40 bg-gray-200 rounded mb-3" />
-                <div className="h-3 w-full bg-gray-200 rounded mb-4" />
-                <div className="h-2 w-full bg-gray-200 rounded mb-2" />
-                <div className="h-2 w-3/4 bg-gray-200 rounded" />
+              <div key={i} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm animate-pulse">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="h-6 w-32 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                  <div className="flex gap-2">
+                    <div className="h-5 w-16 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                    <div className="h-5 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                  </div>
+                </div>
+                <div className="h-4 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-3" />
+                <div className="h-4 w-3/4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-4" />
+                
+                {/* Progress bar skeleton */}
+                <div className="mb-4">
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 w-1/3 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                  </div>
+                </div>
+                
+                {/* Meta info skeleton */}
+                <div className="flex justify-between items-center mb-4">
+                  <div className="h-4 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                  <div className="h-4 w-16 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                </div>
+                
+                {/* Button skeleton */}
+                <div className="flex gap-2">
+                  <div className="h-10 flex-1 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                  <div className="h-10 w-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                </div>
               </div>
             ))}
           </div>
         ) : events.length === 0 ? (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">You haven&apos;t created any events yet</h3>
-            <p className="text-gray-600 mb-4">Create your first event to start raising funds.</p>
-            <Link href="/events/create">
-              <Button>Create Event</Button>
-            </Link>
+          <div className="text-center py-16">
+            <div className="mx-auto w-24 h-24 bg-gradient-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
+              <Calendar className="h-12 w-12 text-green-600" />
+            </div>
+            <h3 className="text-2xl font-semibold text-gray-900 mb-3">Ready to make an impact?</h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Create your first event and start raising funds for causes you care about. It only takes a few minutes to get started.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/events/create">
+                <Button size="lg" className="px-8">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create Your First Event
+                </Button>
+              </Link>
+              <Link href="/getting-started">
+                <Button variant="outline" className="px-6">
+                  Learn How
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

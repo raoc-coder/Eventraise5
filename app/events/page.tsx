@@ -24,7 +24,8 @@ import {
   Target,
   Award,
   Bell,
-  Ticket
+  Ticket,
+  X
 } from 'lucide-react'
 
 interface Event {
@@ -117,20 +118,51 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
         <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="mb-6 sm:mb-8">
-            <div className="h-8 w-64 bg-gray-200 rounded animate-pulse mb-2" />
-            <div className="h-4 w-96 bg-gray-200 rounded animate-pulse" />
+            <div className="h-8 w-64 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse mb-3" />
+            <div className="h-4 w-96 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
           </div>
+          
+          {/* Search and Filter Skeletons */}
+          <div className="mb-6 sm:mb-8 flex flex-col gap-4">
+            <div className="h-12 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="h-12 w-48 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
+              <div className="h-12 w-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
+            </div>
+          </div>
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="border rounded-lg p-4 animate-pulse">
-                <div className="h-6 w-40 bg-gray-200 rounded mb-3" />
-                <div className="h-3 w-full bg-gray-200 rounded mb-4" />
-                <div className="h-2 w-full bg-gray-200 rounded mb-2" />
-                <div className="h-2 w-3/4 bg-gray-200 rounded" />
+              <div key={i} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm animate-pulse">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="h-6 w-32 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                  <div className="h-5 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                </div>
+                <div className="h-4 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-3" />
+                <div className="h-4 w-3/4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-4" />
+                
+                {/* Progress bar skeleton */}
+                <div className="mb-4">
+                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 w-1/3 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                  </div>
+                </div>
+                
+                {/* Meta info skeleton */}
+                <div className="flex justify-between items-center mb-4">
+                  <div className="h-4 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                  <div className="h-4 w-16 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                </div>
+                
+                {/* Button skeleton */}
+                <div className="flex gap-2">
+                  <div className="h-10 flex-1 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                  <div className="h-10 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                </div>
               </div>
             ))}
           </div>
@@ -150,37 +182,85 @@ export default function EventsPage() {
         </div>
 
         {/* Search and Filter */}
-        <div className="mb-6 sm:mb-8 flex flex-col gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search events..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12 text-base text-gray-900 placeholder:text-gray-400"
-              />
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search events by title or description..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-12 text-base text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  aria-label="Search events"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="px-4 py-3 border border-gray-300 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base h-12 min-w-[180px]"
+                aria-label="Filter events by type"
+              >
+                <option value="all">All Types</option>
+                <option value="ticketed">Ticketed Events</option>
+                <option value="walkathon">Walk-a-thon</option>
+                <option value="auction">Auction</option>
+                <option value="product_sale">Product Sale</option>
+                <option value="direct_donation">Direct Donation</option>
+                <option value="raffle">Raffle</option>
+              </select>
+              <Button 
+                variant="outline" 
+                className="h-12 px-6"
+                aria-label="Advanced filters"
+                title="More filter options coming soon"
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                More Filters
+              </Button>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-3 border border-gray-400 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-base h-12"
-            >
-              <option value="all">All Types</option>
-              <option value="ticketed">Ticketed Events</option>
-              <option value="walkathon">Walk-a-thon</option>
-              <option value="auction">Auction</option>
-              <option value="product_sale">Product Sale</option>
-              <option value="direct_donation">Direct Donation</option>
-              <option value="raffle">Raffle</option>
-            </select>
-            <Button variant="outline" className="h-12">
-              <Filter className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
-          </div>
+          
+          {/* Active filters display */}
+          {(searchTerm || filterType !== 'all') && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {searchTerm && (
+                <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                  Search: "{searchTerm}"
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="ml-2 text-blue-600 hover:text-blue-800"
+                    aria-label="Remove search filter"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+              {filterType !== 'all' && (
+                <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                  Type: {filterType.replace('_', ' ')}
+                  <button
+                    onClick={() => setFilterType('all')}
+                    className="ml-2 text-green-600 hover:text-green-800"
+                    aria-label="Remove type filter"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Events Grid */}
@@ -306,7 +386,13 @@ export default function EventsPage() {
                         Donate
                       </a>
                     )}
-                    <Button variant="outline" size="sm" className="text-gray-700" aria-label="Favorite event">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-gray-700 hover:text-red-600 hover:border-red-300 hover:bg-red-50 transition-all duration-200" 
+                      aria-label="Add to favorites"
+                      title="Add to favorites"
+                    >
                       <Heart className="h-4 w-4" />
                     </Button>
                   </div>
@@ -316,11 +402,47 @@ export default function EventsPage() {
           ))}
         </div>
 
-        {filteredEvents.length === 0 && (
-          <div className="text-center py-12">
-            <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+        {filteredEvents.length === 0 && !loading && (
+          <div className="text-center py-16">
+            <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-6">
+              <Calendar className="h-12 w-12 text-blue-600" />
+            </div>
+            <h3 className="text-2xl font-semibold text-gray-900 mb-3">No events found</h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              {searchTerm || filterType !== 'all' 
+                ? 'Try adjusting your search or filter criteria to find more events.'
+                : 'Be the first to create an impactful event and start making a difference.'
+              }
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              {searchTerm || filterType !== 'all' ? (
+                <>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setSearchTerm('')
+                      setFilterType('all')
+                    }}
+                    className="px-6"
+                  >
+                    Clear Filters
+                  </Button>
+                  <Link href="/events/create">
+                    <Button className="px-6">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Event
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <Link href="/events/create">
+                  <Button size="lg" className="px-8">
+                    <Plus className="h-5 w-5 mr-2" />
+                    Create Your First Event
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         )}
       </div>
