@@ -1,0 +1,28 @@
+# AI Crawler Access Policy for EventraiseHub
+
+User-Agent: *
+Allow: /
+Sitemap: /sitemap.xml
+
+User-Agent: GPTBot
+Allow: /
+
+User-Agent: ChatGPT-User
+Allow: /
+
+User-Agent: Claude-Web
+Allow: /
+
+User-Agent: anthropic-ai
+Allow: /
+
+User-Agent: PerplexityBot
+Allow: /
+
+User-Agent: CCBot
+Allow: /
+
+User-Agent: Canva
+Allow: /
+
+Owner: support@eventraisehub.com
