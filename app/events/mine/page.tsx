@@ -264,37 +264,28 @@ export default function MyEventsPage() {
                     <div className="flex gap-2 pt-4">
                       <button
                         className={buttonVariants({ className: 'flex-1' })}
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
                           console.log('View Details clicked for event:', ev.id)
                           console.log('About to navigate to:', `/events/${ev.id}`)
-                          try {
-                            // Try multiple navigation methods
-                            window.location.href = `/events/${ev.id}`
-                            console.log('window.location.href set')
-                            
-                            // Fallback to router
-                            setTimeout(() => {
-                              console.log('Trying router navigation as fallback')
-                              router.push(`/events/${ev.id}`)
-                            }, 100)
-                          } catch (error) {
-                            console.error('Navigation error:', error)
-                          }
+                          
+                          // Force navigation
+                          window.location.replace(`/events/${ev.id}`)
                         }}
                       >
                         View Details
                       </button>
                       <button
                         className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
                           console.log('Manage clicked for event:', ev.id)
                           console.log('About to navigate to:', `/events/${ev.id}`)
-                          try {
-                            window.location.assign(`/events/${ev.id}`)
-                            console.log('Navigation command executed')
-                          } catch (error) {
-                            console.error('Navigation error:', error)
-                          }
+                          
+                          // Force navigation
+                          window.location.replace(`/events/${ev.id}`)
                         }}
                       >
                         <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
