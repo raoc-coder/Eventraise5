@@ -110,6 +110,22 @@ export async function requireEventAccess(req: NextRequest, eventId: string): Pro
 export async function requireAdminAuth(req: NextRequest): Promise<AuthResult> {
   const auth = await requireAuth(req)
 
+  // 1) Allowlist via env
+  const allowlist = (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean)
+  const userEmail = (auth as any)?.user?.email?.toLowerCase?.()
+  if (userEmail && allowlist.includes(userEmail)) {
+    return auth
+  }
+
+  // 2) User metadata role
+  const metaRole = (auth as any)?.user?.user_metadata?.role
+  if (metaRole === 'admin') {
+    return auth
+  }
+
   // Prefer server-side admin client to avoid RLS or token edge cases
   try {
     const { supabaseAdmin } = await import('./supabase')
