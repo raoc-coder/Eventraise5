@@ -44,14 +44,7 @@ interface Event {
 
 export default function EventsPage() {
   const router = useRouter()
-  const navigate = (url: string) => {
-    try {
-      router.push(url)
-    } catch {}
-    if (typeof window !== 'undefined') {
-      window.location.href = url
-    }
-  }
+  // No JS navigation fallback; rely on normal anchor navigation for reliability across browsers
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -291,7 +284,6 @@ export default function EventsPage() {
                   <div className="flex gap-2 pt-4">
                     <a
                       href={`/events/${event.id}`}
-                      onClick={(e)=>{ e.preventDefault(); navigate(`/events/${event.id}`) }}
                       className={buttonVariants({ className: 'flex-1' })}
                       role="link"
                     >
@@ -300,7 +292,6 @@ export default function EventsPage() {
                     {event.is_ticketed ? (
                       <a
                         href={`/events/${event.id}#tickets`}
-                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${event.id}#tickets`) }}
                         className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white' })}
                         role="link"
                       >
@@ -309,7 +300,6 @@ export default function EventsPage() {
                     ) : (event.event_type === 'direct_donation') && (
                       <a
                         href={`/events/${event.id}#donate`}
-                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${event.id}#donate`) }}
                         className={buttonVariants({ className: 'whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200' })}
                         role="link"
                       >

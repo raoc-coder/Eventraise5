@@ -22,14 +22,7 @@ import {
 export default function MyEventsPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
-  const navigate = (url: string) => {
-    try {
-      router.push(url)
-    } catch {}
-    if (typeof window !== 'undefined') {
-      window.location.href = url
-    }
-  }
+  // No JS navigation fallback; rely on plain anchors for reliability
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const fetchingRef = useRef(false)
@@ -271,7 +264,6 @@ export default function MyEventsPage() {
                     <div className="flex gap-2 pt-4">
                       <a
                         href={`/events/${ev.id}`}
-                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${ev.id}`) }}
                         className={buttonVariants({ className: 'flex-1' })}
                         role="link"
                       >
@@ -279,7 +271,6 @@ export default function MyEventsPage() {
                       </a>
                       <a
                         href={`/events/${ev.id}`}
-                        onClick={(e)=>{ e.preventDefault(); navigate(`/events/${ev.id}`) }}
                         className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
                         role="link"
                       >
