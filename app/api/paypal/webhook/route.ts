@@ -86,7 +86,7 @@ async function handlePaymentCompleted(webhookData: any) {
       const { error: donationError } = await supabaseAdmin
         .from('donation_requests')
         .update({ 
-          status: 'completed',
+          status: 'succeeded',
           settlement_status: 'settled'
         })
         .eq('paypal_order_id', orderRow.id)
@@ -97,15 +97,17 @@ async function handlePaymentCompleted(webhookData: any) {
     }
 
     // Update registration status if applicable
-    const { error: registrationError } = await supabaseAdmin
-      .from('event_registrations')
-      .update({ 
-        status: 'confirmed'
-      })
-      .eq('paypal_order_id', orderId)
+    if (orderRow?.id) {
+      const { error: registrationError } = await supabaseAdmin
+        .from('event_registrations')
+        .update({ 
+          status: 'confirmed'
+        })
+        .eq('paypal_order_id', orderRow.id)
 
-    if (registrationError) {
-      console.error('Failed to update registration status:', registrationError)
+      if (registrationError) {
+        console.error('Failed to update registration status:', registrationError)
+      }
     }
 
     // Auto-create a payout for the related event (idempotent at RPC level)
@@ -118,6 +120,19 @@ async function handlePaymentCompleted(webhookData: any) {
 
       const eventId = orderForEvent?.event_id
       if (eventId) {
+        // Ensure organizer_id exists; if missing, backfill from created_by
+        const { data: ev } = await supabaseAdmin
+          .from('events')
+          .select('id, organizer_id, created_by')
+          .eq('id', eventId)
+          .single()
+        if (ev && !ev.organizer_id && ev.created_by) {
+          await supabaseAdmin
+            .from('events')
+            .update({ organizer_id: ev.created_by })
+            .eq('id', eventId)
+        }
+
         const { error: payoutError } = await supabaseAdmin
           .rpc('create_event_payout', { event_uuid: eventId })
         if (payoutError) {
