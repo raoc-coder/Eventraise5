@@ -73,13 +73,6 @@ export async function PATCH(req: Request, { params }: any) {
   const update: any = {}
   if (body.title !== undefined) {
     update.title = body.title
-    // Update slug if title changes
-    try {
-      update.slug = String(body.title)
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '')
-    } catch {}
   }
   if (body.description !== undefined) update.description = body.description
   if (body.event_type !== undefined) update.event_type = body.event_type

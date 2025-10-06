@@ -39,11 +39,6 @@ export async function POST(req: NextRequest) {
       end_date: toIsoDate(safeEnd),
       location: safeLocation,
       is_public: is_public !== false, // Default to public if not specified
-      // Generate slug from title; fallback to short id after insert (handled separately if needed)
-      slug: safeTitle
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '')
     }
 
     // Add goal_amount if provided
