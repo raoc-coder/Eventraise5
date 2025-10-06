@@ -214,42 +214,59 @@ export async function verifyWebhookSignature(headers: any, body: string): Promis
     const certUrlHeader = normalizedHeaders['paypal-cert-url']
     const certIdFallback = normalizedHeaders['paypal-cert-id']
 
-    if (!authAlgoHeader || !transmissionId || !transmissionSig || !transmissionTime || (!certUrlHeader && !certIdFallback)) {
+    const webhookId = process.env.PAYPAL_WEBHOOK_ID
+    if (!authAlgoHeader || !transmissionId || !transmissionSig || !transmissionTime || (!certUrlHeader && !certIdFallback) || !webhookId) {
       console.error('Missing PayPal webhook headers')
       return false
     }
 
-    // Resolve certificate URL: prefer header-provided URL, otherwise construct from cert id
+    // Prefer the header-provided cert URL, else build from cert id
     const resolvedCertUrl = certUrlHeader || `${paypalConfig.baseUrl}/v1/notifications/certs/${certIdFallback}`
 
-    // Fetch PayPal public certificate
-    const certResponse = await fetch(resolvedCertUrl)
-    if (!certResponse.ok) {
-      console.error('Failed to fetch PayPal certificate')
+    // Use PayPal's verify-webhook-signature API (most robust)
+    let webhookEvent: any = null
+    try {
+      webhookEvent = JSON.parse(body)
+    } catch {
+      // If the body isn't JSON-parsable, it's invalid for verification
+      console.error('Invalid webhook JSON body')
       return false
     }
-    const cert = await certResponse.text()
 
-    // Construct the signed content per PayPal docs
-    const webhookId = process.env.PAYPAL_WEBHOOK_ID
-    if (!webhookId) {
-      console.error('Missing PAYPAL_WEBHOOK_ID for webhook verification')
+    const accessToken = await getPayPalAccessToken()
+    const verifyResponse = await fetch(`${paypalConfig.baseUrl}/v1/notifications/verify-webhook-signature`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        transmission_id: transmissionId,
+        transmission_time: transmissionTime,
+        cert_url: resolvedCertUrl,
+        auth_algo: authAlgoHeader,
+        transmission_sig: transmissionSig,
+        webhook_id: webhookId,
+        webhook_event: webhookEvent
+      })
+    })
+
+    const verifyText = await verifyResponse.text()
+    let verifyJson: any = null
+    try {
+      verifyJson = verifyText ? JSON.parse(verifyText) : null
+    } catch {}
+
+    if (!verifyResponse.ok) {
+      console.error('PayPal verify API error:', {
+        status: verifyResponse.status,
+        body: verifyText?.slice(0, 1000)
+      })
       return false
     }
-    const signatureString = `${transmissionId}|${transmissionTime}|${webhookId}|${body}`
 
-    // Map PayPal algo header to Node crypto algorithm
-    const algoMap: Record<string, string> = {
-      'sha256withrsa': 'RSA-SHA256',
-      'sha1withrsa': 'RSA-SHA1'
-    }
-    const nodeAlgo = algoMap[authAlgoHeader.toLowerCase()] || 'RSA-SHA256'
-
-    const crypto = require('crypto')
-    const verifier = crypto.createVerify(nodeAlgo)
-    verifier.update(signatureString, 'utf8')
-
-    const isValid = verifier.verify(cert, transmissionSig, 'base64')
+    const status = verifyJson?.verification_status
+    const isValid = status === 'SUCCESS'
     if (!isValid) {
       console.error('PayPal webhook signature verification failed')
     }
