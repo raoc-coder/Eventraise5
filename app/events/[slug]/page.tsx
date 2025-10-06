@@ -1,7 +1,8 @@
 import { redirect, notFound } from 'next/navigation'
 
-export default async function EventSlugRedirectPage({ params }: { params: { slug?: string } }) {
-  const slug = params?.slug || ''
+export default async function EventSlugRedirectPage({ params }: { params: Promise<{ slug?: string }> }) {
+  const awaited = await params
+  const slug = awaited?.slug || ''
 
   // If the slug is actually a UUID, redirect directly to ID page
   const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
