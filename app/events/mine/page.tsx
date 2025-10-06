@@ -144,9 +144,24 @@ export default function MyEventsPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Events</h1>
         {loading ? (
-          <p className="text-gray-700">Loading…</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="border rounded-lg p-4 animate-pulse">
+                <div className="h-6 w-40 bg-gray-200 rounded mb-3" />
+                <div className="h-3 w-full bg-gray-200 rounded mb-4" />
+                <div className="h-2 w-full bg-gray-200 rounded mb-2" />
+                <div className="h-2 w-3/4 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
         ) : events.length === 0 ? (
-          <p className="text-gray-700">You haven&apos;t created any events yet.</p>
+          <div className="text-center py-12">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">You haven&apos;t created any events yet</h3>
+            <p className="text-gray-600 mb-4">Create your first event to start raising funds.</p>
+            <Link href="/events/create">
+              <Button>Create Event</Button>
+            </Link>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {events.map((ev) => (

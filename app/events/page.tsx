@@ -114,10 +114,23 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-700 font-medium">Loading events...</p>
+      <div className="min-h-screen bg-white">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="mb-6 sm:mb-8">
+            <div className="h-8 w-64 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-96 bg-gray-200 rounded animate-pulse" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="border rounded-lg p-4 animate-pulse">
+                <div className="h-6 w-40 bg-gray-200 rounded mb-3" />
+                <div className="h-3 w-full bg-gray-200 rounded mb-4" />
+                <div className="h-2 w-full bg-gray-200 rounded mb-2" />
+                <div className="h-2 w-3/4 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     )
@@ -294,8 +307,8 @@ export default function EventsPage() {
         {filteredEvents.length === 0 && (
           <div className="text-center py-12">
             <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-white mb-2">No events found</h3>
-            <p className="text-gray-400">Try adjusting your search or filter criteria</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
+            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
           </div>
         )}
       </div>

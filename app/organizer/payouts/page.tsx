@@ -115,7 +115,16 @@ export default function OrganizerPayoutsPage() {
     return variants[status] || 'bg-gray-100 text-gray-800'
   }
 
-  if (!user) return <div>Loading...</div>
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center space-x-3 text-gray-700" role="status" aria-live="polite">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <span>Loading your payouts…</span>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,57 +137,59 @@ export default function OrganizerPayoutsPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <DollarSign className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Raised</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totals.total_gross)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Platform Fees</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totals.total_fees)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Users className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Net Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totals.total_net)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Calendar className="h-8 w-8 text-orange-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Completed Payouts</p>
-                  <p className="text-2xl font-bold text-gray-900">{totals.completed_payouts}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {[0,1,2,3].map((i) => (
+            <Card key={i}>
+              <CardContent className="p-6">
+                {loading ? (
+                  <div className="animate-pulse flex items-center">
+                    <div className="h-8 w-8 rounded bg-gray-200" />
+                    <div className="ml-4 w-full">
+                      <div className="h-3 w-24 bg-gray-200 rounded mb-2" />
+                      <div className="h-5 w-32 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    {i === 0 && <DollarSign className="h-8 w-8 text-green-600" />}
+                    {i === 1 && <TrendingUp className="h-8 w-8 text-blue-600" />}
+                    {i === 2 && <Users className="h-8 w-8 text-purple-600" />}
+                    {i === 3 && <Calendar className="h-8 w-8 text-orange-600" />}
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">{['Total Raised','Platform Fees','Net Earnings','Completed Payouts'][i]}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {i === 0 && formatCurrency(totals.total_gross)}
+                        {i === 1 && formatCurrency(totals.total_fees)}
+                        {i === 2 && formatCurrency(totals.total_net)}
+                        {i === 3 && totals.completed_payouts}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* Payouts List */}
         <div className="space-y-6">
+          {loading && (
+            <Card aria-hidden="true">
+              <CardHeader>
+                <div className="animate-pulse h-4 w-40 bg-gray-200 rounded mb-2" />
+                <div className="animate-pulse h-3 w-64 bg-gray-200 rounded" />
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[0,1,2].map((k)=>(
+                    <div key={k} className="text-center">
+                      <div className="h-3 w-24 bg-gray-200 rounded mx-auto mb-2 animate-pulse" />
+                      <div className="h-6 w-20 bg-gray-200 rounded mx-auto animate-pulse" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {payouts.map((payout) => (
             <Card key={payout.id}>
               <CardHeader>
@@ -222,7 +233,7 @@ export default function OrganizerPayoutsPage() {
                           Paid on {payout.payout_date ? formatDate(payout.payout_date) : 'Unknown'}
                         </p>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" aria-label={`View payout details for ${payout.event_title}`}>
                         <ExternalLink className="h-4 w-4 mr-2" />
                         View Details
                       </Button>

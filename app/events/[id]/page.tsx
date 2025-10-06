@@ -34,6 +34,7 @@ import {
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/app/providers'
 import { DonationConfirmation } from '@/components/payments/donation-confirmation'
@@ -927,7 +928,14 @@ export default function EventDetailPage() {
                       
                       {/* PayPal Marks for branding */}
                       <div className="flex items-center justify-center">
-                        <img alt="Powered by PayPal" src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png" className="h-6" />
+                        <Image
+                          src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png"
+                          alt="Powered by PayPal"
+                          width={300}
+                          height={60}
+                          className="h-6 w-auto"
+                          priority
+                        />
                       </div>
                     </div>
                   </div>
@@ -1588,7 +1596,14 @@ export default function EventDetailPage() {
                         
                         {/* PayPal Marks for branding */}
                         <div className="flex items-center justify-center">
-                          <img alt="Powered by PayPal" src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png" className="h-6" />
+                          <Image
+                            src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png"
+                            alt="Powered by PayPal"
+                            width={300}
+                            height={60}
+                            className="h-6 w-auto"
+                            priority
+                          />
                         </div>
                       </div>
                     </div>

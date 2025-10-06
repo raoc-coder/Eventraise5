@@ -117,7 +117,16 @@ export default function EventPayoutsPage() {
     return variants[status] || 'bg-gray-100 text-gray-800'
   }
 
-  if (!user) return <div>Loading...</div>
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center space-x-3 text-gray-700" role="status" aria-live="polite">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <span>Loading admin payouts…</span>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -130,53 +139,37 @@ export default function EventPayoutsPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <DollarSign className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Gross</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totals.total_gross)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Fees</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totals.total_fees)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Users className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Net to Organizers</p>
-                  <p className="text-2xl font-bold text-gray-900">{formatCurrency(totals.total_net)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Calendar className="h-8 w-8 text-orange-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Pending Payouts</p>
-                  <p className="text-2xl font-bold text-gray-900">{totals.pending_payouts}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {[0,1,2,3].map((i) => (
+            <Card key={i}>
+              <CardContent className="p-6">
+                {loading ? (
+                  <div className="animate-pulse flex items-center">
+                    <div className="h-8 w-8 rounded bg-gray-200" />
+                    <div className="ml-4 w-full">
+                      <div className="h-3 w-24 bg-gray-200 rounded mb-2" />
+                      <div className="h-5 w-32 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    {i === 0 && <DollarSign className="h-8 w-8 text-green-600" />}
+                    {i === 1 && <TrendingUp className="h-8 w-8 text-blue-600" />}
+                    {i === 2 && <Users className="h-8 w-8 text-purple-600" />}
+                    {i === 3 && <Calendar className="h-8 w-8 text-orange-600" />}
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-600">{['Total Gross','Total Fees','Net to Organizers','Pending Payouts'][i]}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {i === 0 && formatCurrency(totals.total_gross)}
+                        {i === 1 && formatCurrency(totals.total_fees)}
+                        {i === 2 && formatCurrency(totals.total_net)}
+                        {i === 3 && totals.pending_payouts}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* Payouts Table */}
@@ -187,7 +180,7 @@ export default function EventPayoutsPage() {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
+              <table className="min-w-full text-sm" aria-busy={loading} aria-live="polite">
                 <thead>
                   <tr className="text-left text-gray-600 border-b">
                     <th className="py-3 pr-4">Event</th>
@@ -202,6 +195,14 @@ export default function EventPayoutsPage() {
                   </tr>
                 </thead>
                 <tbody>
+                  {loading && (
+                    <tr aria-hidden="true">
+                      <td colSpan={9} className="py-6">
+                        <div className="animate-pulse h-4 w-40 bg-gray-200 rounded mb-2" />
+                        <div className="animate-pulse h-3 w-64 bg-gray-200 rounded" />
+                      </td>
+                    </tr>
+                  )}
                   {payouts.map((payout) => (
                     <tr key={payout.id} className="border-b hover:bg-gray-50">
                       <td className="py-3 pr-4">
@@ -232,6 +233,7 @@ export default function EventPayoutsPage() {
                             <Button 
                               size="sm" 
                               onClick={() => updatePayoutStatus(payout.id, 'processing')}
+                              aria-label={`Mark payout for ${payout.event_title} as processing`}
                             >
                               Process
                             </Button>
@@ -241,11 +243,12 @@ export default function EventPayoutsPage() {
                               size="sm" 
                               variant="outline"
                               onClick={() => updatePayoutStatus(payout.id, 'completed', 'paypal', `PAY-${Date.now()}`)}
+                              aria-label={`Mark payout for ${payout.event_title} as completed`}
                             >
                               Complete
                             </Button>
                           )}
-                          <Button size="sm" variant="outline">
+                          <Button size="sm" variant="outline" aria-label={`View details for payout ${payout.id}`}>
                             <ExternalLink className="h-4 w-4" />
                           </Button>
                         </div>
