@@ -814,61 +814,76 @@ export default function EventDetailPage() {
 
           {/* Right rail: Action buttons */}
           <div className="space-y-6">
-            <Card className="event-card shadow-xl border-0 bg-gradient-to-br from-white to-blue-50">
-              <CardHeader>
-                <CardTitle className="text-gray-900">Get Involved</CardTitle>
-                <CardDescription className="text-gray-600">
-                  Choose how you&apos;d like to participate in this event
-                </CardDescription>
+            <Card className="event-card shadow-2xl border-0 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+              {/* Decorative background elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200/30 to-pink-200/30 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-200/30 to-cyan-200/30 rounded-full translate-y-12 -translate-x-12"></div>
+              
+              <CardHeader className="relative z-10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <Zap className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-gray-900 text-xl font-bold">Get Involved</CardTitle>
+                    <CardDescription className="text-gray-600 text-sm">
+                      Make a difference today
+                    </CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 relative z-10">
                 {event.event_type === 'direct_donation' ? (
                   <Button 
                     onClick={() => setActiveModal('donation')}
-                    className="w-full h-12 text-lg bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 hover:from-amber-600 hover:via-orange-600 hover:to-red-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-0"
                     size="lg"
                   >
-                    <Heart className="h-5 w-5 mr-2" />
-                    Make a Donation
+                    <Heart className="h-6 w-6 mr-3" />
+                    💝 Make a Donation
                   </Button>
                 ) : (
                   <>
+                    {/* 1. Donation - Most prominent */}
                     <Button 
-                      onClick={() => setActiveModal('rsvp')}
-                      className="w-full h-12 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                      onClick={() => setActiveModal('donation')}
+                      className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 hover:from-amber-600 hover:via-orange-600 hover:to-red-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-0"
                       size="lg"
                     >
-                      <Users className="h-5 w-5 mr-2" />
-                      RSVP to Event
+                      <Heart className="h-6 w-6 mr-3" />
+                      💝 Make a Donation
                     </Button>
                     
+                    {/* 2. Purchase Tickets */}
                     {(event?.is_ticketed || tickets.length > 0) && (
                       <Button 
                         onClick={() => setActiveModal('donation')}
-                        className="w-full h-12 text-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                        className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
                         size="lg"
                       >
                         <Ticket className="h-5 w-5 mr-2" />
-                        Purchase Tickets
+                        🎫 Purchase Tickets
                       </Button>
                     )}
                     
+                    {/* 3. RSVP */}
+                    <Button 
+                      onClick={() => setActiveModal('rsvp')}
+                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
+                      size="lg"
+                    >
+                      <Users className="h-5 w-5 mr-2" />
+                      ✋ RSVP to Event
+                    </Button>
+                    
+                    {/* 4. Volunteer */}
                     <Button 
                       onClick={() => setActiveModal('volunteer')}
-                      className="w-full h-12 text-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
                       size="lg"
                     >
                       <Sparkles className="h-5 w-5 mr-2" />
-                      Volunteer
-                    </Button>
-                    
-                    <Button 
-                      onClick={() => setActiveModal('donation')}
-                      className="w-full h-12 text-lg bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                      size="lg"
-                    >
-                      <Heart className="h-5 w-5 mr-2" />
-                      Make Donation
+                      ✨ Volunteer
                     </Button>
                   </>
                 )}
