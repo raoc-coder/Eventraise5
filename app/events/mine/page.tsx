@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Navigation } from '@/components/layout/navigation'
@@ -20,6 +21,7 @@ import {
 } from 'lucide-react'
 
 export default function MyEventsPage() {
+  const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   const [events, setEvents] = useState<any[]>([])
@@ -261,18 +263,12 @@ export default function MyEventsPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-4">
-                      <Link
-                        href={`/events/${ev.id}`}
-                        className={buttonVariants({ className: 'flex-1' })}
-                      >
+                      <Button className="flex-1" onClick={() => router.push(`/events/${ev.id}`)}>
                         View Details
-                      </Link>
-                      <Link
-                        href={`/events/${ev.id}`}
-                        className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
-                      >
+                      </Button>
+                      <Button variant="outline" className="whitespace-nowrap" onClick={() => router.push(`/events/${ev.id}`)}>
                         <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
-                      </Link>
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

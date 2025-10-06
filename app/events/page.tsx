@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -42,6 +43,7 @@ interface Event {
 }
 
 export default function EventsPage() {
+  const router = useRouter()
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -279,26 +281,24 @@ export default function EventsPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-4">
-                    <Link
-                      href={`/events/${event.id}`}
-                      className={buttonVariants({ className: 'flex-1' })}
-                    >
+                    <Button className="flex-1" onClick={() => router.push(`/events/${event.id}`)}>
                       View Details
-                    </Link>
+                    </Button>
                     {event.is_ticketed ? (
-                      <Link
-                        href={`/events/${event.id}#tickets`}
-                        className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white' })}
+                      <Button
+                        variant="secondary"
+                        className="whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white"
+                        onClick={() => router.push(`/events/${event.id}#tickets`)}
                       >
                         <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
-                      </Link>
+                      </Button>
                     ) : (event.event_type === 'direct_donation') && (
-                      <Link
-                        href={`/events/${event.id}#donate`}
-                        className={buttonVariants({ className: 'whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200' })}
+                      <Button
+                        className="whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                        onClick={() => router.push(`/events/${event.id}#donate`)}
                       >
                         Donate
-                      </Link>
+                      </Button>
                     )}
                     <Button variant="outline" size="sm" className="text-gray-700" aria-label="Favorite event">
                       <Heart className="h-4 w-4" />
