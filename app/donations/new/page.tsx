@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'next/navigation'
 import { Heart, DollarSign } from 'lucide-react'
+import Image from 'next/image'
 import { PayPalDonationButton } from '@/lib/paypal-client'
 
 function DonationForm() {
@@ -130,7 +131,16 @@ function DonationForm() {
         <div className="space-y-4">
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-2">Secure payment powered by PayPal</p>
-            <img alt="PayPal" src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" className="h-8 mx-auto" />
+            <div className="flex justify-center">
+              <Image
+                src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+                alt="PayPal accepted"
+                width={111}
+                height={69}
+                className="h-8 w-auto"
+                priority
+              />
+            </div>
           </div>
           <PayPalDonationButton
             amount={amount}
