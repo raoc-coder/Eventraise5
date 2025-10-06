@@ -282,35 +282,29 @@ export default function EventsPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-4">
-                    <button
+                    <a
+                      href={`/events/${event.id}`}
                       className={buttonVariants({ className: 'flex-1' })}
-                      onClick={() => {
-                        console.log('View Details clicked for event:', event.id)
-                        window.location.href = `/events/${event.id}`
-                      }}
+                      style={{ textDecoration: 'none' }}
                     >
                       View Details
-                    </button>
+                    </a>
                     {event.is_ticketed ? (
-                      <button
+                      <a
+                        href={`/events/${event.id}#tickets`}
                         className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white' })}
-                        onClick={() => {
-                          console.log('Buy Tickets clicked for event:', event.id)
-                          window.location.href = `/events/${event.id}#tickets`
-                        }}
+                        style={{ textDecoration: 'none' }}
                       >
                         <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
-                      </button>
+                      </a>
                     ) : (event.event_type === 'direct_donation') && (
-                      <button
+                      <a
+                        href={`/events/${event.id}#donate`}
                         className={buttonVariants({ className: 'whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200' })}
-                        onClick={() => {
-                          console.log('Donate clicked for event:', event.id)
-                          window.location.href = `/events/${event.id}#donate`
-                        }}
+                        style={{ textDecoration: 'none' }}
                       >
                         Donate
-                      </button>
+                      </a>
                     )}
                     <Button variant="outline" size="sm" className="text-gray-700" aria-label="Favorite event">
                       <Heart className="h-4 w-4" />

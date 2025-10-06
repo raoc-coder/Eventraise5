@@ -262,34 +262,20 @@ export default function MyEventsPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-4">
-                      <button
+                      <a
+                        href={`/events/${ev.id}`}
                         className={buttonVariants({ className: 'flex-1' })}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          console.log('View Details clicked for event:', ev.id)
-                          console.log('About to navigate to:', `/events/${ev.id}`)
-                          
-                          // Force navigation
-                          window.location.replace(`/events/${ev.id}`)
-                        }}
+                        style={{ textDecoration: 'none' }}
                       >
                         View Details
-                      </button>
-                      <button
+                      </a>
+                      <a
+                        href={`/events/${ev.id}`}
                         className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          console.log('Manage clicked for event:', ev.id)
-                          console.log('About to navigate to:', `/events/${ev.id}`)
-                          
-                          // Force navigation
-                          window.location.replace(`/events/${ev.id}`)
-                        }}
+                        style={{ textDecoration: 'none' }}
                       >
                         <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
-                      </button>
+                      </a>
                     </div>
                   </div>
                 </CardContent>
