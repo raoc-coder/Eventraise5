@@ -286,6 +286,10 @@ export default function EventsPage() {
                       href={`/events/${event.id}`}
                       className={buttonVariants({ className: 'flex-1' })}
                       role="link"
+                      onClick={(e) => {
+                        console.log('View Details clicked for event:', event.id)
+                        // Let the default navigation happen
+                      }}
                     >
                       View Details
                     </a>
@@ -294,6 +298,10 @@ export default function EventsPage() {
                         href={`/events/${event.id}#tickets`}
                         className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white' })}
                         role="link"
+                        onClick={(e) => {
+                          console.log('Buy Tickets clicked for event:', event.id)
+                          // Let the default navigation happen
+                        }}
                       >
                         <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
                       </a>
@@ -302,6 +310,10 @@ export default function EventsPage() {
                         href={`/events/${event.id}#donate`}
                         className={buttonVariants({ className: 'whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200' })}
                         role="link"
+                        onClick={(e) => {
+                          console.log('Donate clicked for event:', event.id)
+                          // Let the default navigation happen
+                        }}
                       >
                         Donate
                       </a>
