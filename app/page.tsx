@@ -35,8 +35,7 @@ export default function HomePage() {
               <span className="text-blue-600">Celebrate Together.</span>
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
-              EventraiseHub helps you create and manage all kinds of events — donation drives, ticketed experiences,
-              RSVPs, volunteer signups, and sponsorships — with built‑in payments, registrations, and analytics.
+              The all-in-one event management platform for <strong>volunteers</strong>, <strong>fundraisers</strong>, <strong>schools</strong>, <strong>parents</strong>, <strong>organizations</strong>, and <strong>trade shows</strong>. Create donation drives, ticketed events, RSVPs, volunteer signups, and sponsorships with built-in PayPal payments, registrations, and real-time analytics.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 justify-center px-4">
               <Link href="/auth/register" className="w-full sm:w-auto">

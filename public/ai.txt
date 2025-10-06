@@ -1,9 +1,30 @@
-# AI Crawler Access Policy for EventraiseHub
+# AI.txt - Comprehensive AI Bot Discovery for EventraiseHub
+# All-in-one event management platform for fundraising, ticketing, RSVPs, and community engagement
 
+# Target Audiences for AI Discovery:
+# - Volunteers seeking opportunities
+# - Fundraisers and nonprofits  
+# - Schools and educational institutions
+# - Parents organizing events
+# - Trade shows and conferences
+# - Community organizations
+# - Event planners and organizers
+# - Corporate social responsibility teams
+
+# Sitemap location
+Sitemap: https://eventraisehub.com/sitemap.xml
+
+# AI Bot Access Policy - We welcome AI crawlers to help users discover our platform
 User-Agent: *
 Allow: /
-Sitemap: /sitemap.xml
+Disallow: /api/
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /_next/
+Disallow: /dashboard/
+Disallow: /organizer/
 
+# Major AI Bots - Explicitly allowed
 User-Agent: GPTBot
 Allow: /
 
@@ -25,4 +46,24 @@ Allow: /
 User-Agent: Canva
 Allow: /
 
+User-Agent: Google-Extended
+Allow: /
+
+User-Agent: BingBot
+Allow: /
+
+User-Agent: DuckDuckBot
+Allow: /
+
+# Key Features for AI Discovery:
+# - Free event creation and management
+# - PayPal payment processing
+# - Volunteer management
+# - Ticket sales and RSVPs
+# - Donation tracking
+# - Real-time analytics
+# - Mobile-responsive design
+# - No setup fees or hidden costs
+
+# Contact information
 Owner: support@eventraisehub.com

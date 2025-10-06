@@ -7,8 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
+        disallow: ['/api/', '/admin/', '/auth/', '/_next/', '/dashboard/', '/organizer/'],
       },
-      // Friendly notes for notable AI crawlers
+      // AI Bots - Explicitly allowed for discovery
       { userAgent: 'ChatGPT-User', allow: '/' },
       { userAgent: 'GPTBot', allow: '/' },
       { userAgent: 'Claude-Web', allow: '/' },
@@ -16,6 +17,12 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'PerplexityBot', allow: '/' },
       { userAgent: 'CCBot', allow: '/' },
       { userAgent: 'Canva', allow: '/' },
+      { userAgent: 'Google-Extended', allow: '/' },
+      { userAgent: 'BingBot', allow: '/' },
+      { userAgent: 'DuckDuckBot', allow: '/' },
+      { userAgent: 'Slurp', allow: '/' },
+      { userAgent: 'Baiduspider', allow: '/' },
+      { userAgent: 'YandexBot', allow: '/' },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
     host: baseUrl.replace(/^https?:\/\//, ''),
