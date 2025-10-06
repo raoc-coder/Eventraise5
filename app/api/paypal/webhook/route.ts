@@ -74,13 +74,27 @@ async function handlePaymentCompleted(webhookData: any) {
     }
 
     // Update donation status if applicable
-    const { error: donationError } = await supabaseAdmin
-      .from('donation_requests')
-      .update({ 
-        status: 'completed',
-        settlement_status: 'settled'
-      })
-      .eq('paypal_order_id', orderId)
+    // Note: donation_requests.paypal_order_id stores the INTERNAL id of paypal_orders,
+    // so we must resolve the internal id from the external order_id first.
+    const { data: orderRow } = await supabaseAdmin
+      .from('paypal_orders')
+      .select('id')
+      .eq('order_id', orderId)
+      .single()
+
+    if (orderRow?.id) {
+      const { error: donationError } = await supabaseAdmin
+        .from('donation_requests')
+        .update({ 
+          status: 'completed',
+          settlement_status: 'settled'
+        })
+        .eq('paypal_order_id', orderRow.id)
+
+      if (donationError) {
+        console.error('Failed to update donation status:', donationError)
+      }
+    }
 
     if (donationError) {
       console.error('Failed to update donation status:', donationError)
@@ -163,15 +177,23 @@ async function handlePaymentRefunded(webhookData: any) {
     }
 
     // Update donation status
-    const { error: donationError } = await supabaseAdmin
-      .from('donation_requests')
-      .update({ 
-        status: 'refunded'
-      })
-      .eq('paypal_order_id', orderId)
+    const { data: orderRow } = await supabaseAdmin
+      .from('paypal_orders')
+      .select('id')
+      .eq('order_id', orderId)
+      .single()
 
-    if (donationError) {
-      console.error('Failed to update donation status:', donationError)
+    if (orderRow?.id) {
+      const { error: donationError } = await supabaseAdmin
+        .from('donation_requests')
+        .update({ 
+          status: 'refunded'
+        })
+        .eq('paypal_order_id', orderRow.id)
+
+      if (donationError) {
+        console.error('Failed to update donation status:', donationError)
+      }
     }
 
   } catch (error) {
