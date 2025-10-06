@@ -109,17 +109,32 @@ export async function requireEventAccess(req: NextRequest, eventId: string): Pro
  */
 export async function requireAdminAuth(req: NextRequest): Promise<AuthResult> {
   const auth = await requireAuth(req)
-  
-  // Check admin role in profiles table
+
+  // Prefer server-side admin client to avoid RLS or token edge cases
+  try {
+    const { supabaseAdmin } = await import('./supabase')
+    if (supabaseAdmin) {
+      const { data: profile, error } = await supabaseAdmin
+        .from('profiles')
+        .select('role')
+        .eq('id', auth.user.id)
+        .single()
+      if (!error && profile?.role === 'admin') {
+        return auth
+      }
+    }
+  } catch {}
+
+  // Fallback to session-bound client
   const { data: profile, error } = await auth.db
     .from('profiles')
     .select('role')
     .eq('id', auth.user.id)
     .single()
-  
+
   if (error || !profile || profile.role !== 'admin') {
     throw new Error('Admin access required')
   }
-  
+
   return auth
 }
