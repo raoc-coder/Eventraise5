@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Navigation } from '@/components/layout/navigation'
 import { supabase as sharedSupabase } from '@/lib/supabase'
 import { useAuth } from '@/app/providers'
@@ -261,14 +261,18 @@ export default function MyEventsPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-4">
-                      <Button asChild className="flex-1">
-                        <Link href={`/events/${ev.id}`}>View Details</Link>
-                      </Button>
-                      <Button asChild variant="outline" className="whitespace-nowrap">
-                        <Link href={`/events/${ev.id}`}>
-                          <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
-                        </Link>
-                      </Button>
+                      <Link
+                        href={`/events/${ev.id}`}
+                        className={buttonVariants({ className: 'flex-1' })}
+                      >
+                        View Details
+                      </Link>
+                      <Link
+                        href={`/events/${ev.id}`}
+                        className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
+                      >
+                        <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
+                      </Link>
                     </div>
                   </div>
                 </CardContent>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Navigation } from '@/components/layout/navigation'
 import { 
@@ -279,19 +279,26 @@ export default function EventsPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-4">
-                    <Button asChild className="flex-1">
-                      <Link href={`/events/${event.id}`}>View Details</Link>
-                    </Button>
+                    <Link
+                      href={`/events/${event.id}`}
+                      className={buttonVariants({ className: 'flex-1' })}
+                    >
+                      View Details
+                    </Link>
                     {event.is_ticketed ? (
-                      <Button asChild variant="secondary" className="whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white">
-                        <Link href={`/events/${event.id}#tickets`}>
-                          <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
-                        </Link>
-                      </Button>
+                      <Link
+                        href={`/events/${event.id}#tickets`}
+                        className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white' })}
+                      >
+                        <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
+                      </Link>
                     ) : (event.event_type === 'direct_donation') && (
-                      <Button asChild className="whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200">
-                        <Link href={`/events/${event.id}#donate`}>Donate</Link>
-                      </Button>
+                      <Link
+                        href={`/events/${event.id}#donate`}
+                        className={buttonVariants({ className: 'whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200' })}
+                      >
+                        Donate
+                      </Link>
                     )}
                     <Button variant="outline" size="sm" className="text-gray-700" aria-label="Favorite event">
                       <Heart className="h-4 w-4" />
