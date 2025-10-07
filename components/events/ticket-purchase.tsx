@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { ShoppingCart, Ticket, Calendar, MapPin, Users } from 'lucide-react'
+import { toast } from 'sonner'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
-import { paypalClientConfig } from '@/lib/paypal-client'
+import { paypalClientConfig, PayPalTicketButton } from '@/lib/paypal-client'
 
 interface Ticket {
   id: string
@@ -34,9 +35,10 @@ interface TicketPurchaseProps {
   event: Event
   tickets: Ticket[]
   onSuccess?: () => void
+  fetchTickets?: () => void
 }
 
-export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProps) {
+export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: TicketPurchaseProps) {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [buyerInfo, setBuyerInfo] = useState({ name: '', email: '' })
@@ -259,27 +261,21 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
       {/* PayPal Payment */}
       {selectedTicket && buyerInfo.name && buyerInfo.email && (
         <div className="space-y-4">
-          <PayPalScriptProvider options={{ ...paypalClientConfig, currency: selectedTicket.currency.toUpperCase() }}>
-            <PayPalButtons
-              createOrder={async () => {
-                const response = await fetch(`/api/events/${event.id}/tickets/checkout`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ ticket_id: selectedTicket.id, quantity, name: buyerInfo.name, email: buyerInfo.email })
-                })
-                const data = await response.json()
-                if (!data.success) throw new Error(data.error || 'Failed to create order')
-                setPendingRegistrationId(data.registration_id)
-                return data.orderId
-              }}
-              onApprove={(data) => {
-                const orderDetails = { id: (data as any)?.orderID }
-                return handlePayPalSuccess(orderDetails)
-              }}
-              onError={(err) => { setError('Payment failed. Please try again.'); console.error('PayPal error:', err) }}
-              style={{ layout: 'vertical', label: 'paypal' }}
-            />
-          </PayPalScriptProvider>
+          <PayPalTicketButton
+            amount={totalAmount / 100}
+            eventId={event.id}
+            ticketId={selectedTicket.id}
+            quantity={quantity}
+            onSuccess={(orderId) => {
+              toast.success('Tickets purchased successfully!')
+              fetchTickets?.()
+              onSuccess?.()
+            }}
+            onError={(error) => {
+              toast.error(error)
+            }}
+            disabled={!buyerInfo.name || !buyerInfo.email}
+          />
           <p className="text-xs text-gray-500 text-center">By completing this purchase, you agree to our terms. Payments are processed securely by PayPal.</p>
         </div>
       )}

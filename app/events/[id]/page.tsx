@@ -1614,9 +1614,8 @@ export default function EventDetailPage() {
                           organizer_id: event.organizer_id || event.created_by || ''
                         }}
                         tickets={tickets}
+                        fetchTickets={fetchTickets}
                         onSuccess={() => {
-                          toast.success('Tickets purchased successfully!')
-                          fetchTickets()
                           setActiveModal(null)
                         }}
                       />
