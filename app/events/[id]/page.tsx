@@ -159,7 +159,7 @@ export default function EventDetailPage() {
   const [volunteerPhone, setVolunteerPhone] = useState('')
   const [creatingVolunteerAsk, setCreatingVolunteerAsk] = useState(false)
   // Modal state for unified action modal
-  const [activeModal, setActiveModal] = useState<'rsvp' | 'volunteer' | 'donation' | null>(null)
+  const [activeModal, setActiveModal] = useState<'rsvp' | 'volunteer' | 'donation' | 'tickets' | null>(null)
 
   // Handle escape key to close modals
   useEffect(() => {
@@ -876,15 +876,14 @@ export default function EventDetailPage() {
                     
                     {/* 2. Purchase Tickets */}
                     {(event?.is_ticketed || tickets.length > 0) && (
-                      <a
-                        href={`#tickets-anchor`}
-                        className="w-full h-12 inline-flex items-center justify-center rounded-lg text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
-                        role="button"
-                        aria-label="Purchase tickets"
+                      <Button
+                        onClick={() => setActiveModal('tickets')}
+                        className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
+                        size="lg"
                       >
                         <Ticket className="h-5 w-5 mr-2" />
                         🎫 Purchase Tickets
-                      </a>
+                      </Button>
                     )}
                     
                     {/* 3. RSVP */}
@@ -1415,11 +1414,13 @@ export default function EventDetailPage() {
                     {activeModal === 'rsvp' && 'RSVP to Event'}
                     {activeModal === 'volunteer' && 'Volunteer Opportunities'}
                     {activeModal === 'donation' && 'Support This Event'}
+                    {activeModal === 'tickets' && 'Purchase Tickets'}
                   </h2>
                   <p className="text-gray-600">
                     {activeModal === 'rsvp' && 'Reserve your spot for this event'}
                     {activeModal === 'volunteer' && 'Lend a hand by signing up for an available shift'}
                     {activeModal === 'donation' && 'Make a donation to support this event'}
+                    {activeModal === 'tickets' && 'Buy tickets for this event'}
                   </p>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => setActiveModal(null)}>
@@ -1592,6 +1593,32 @@ export default function EventDetailPage() {
 
                 {activeModal === 'donation' && (
                   <div className="space-y-4">
+                {activeModal === 'tickets' && (
+                  <div className="space-y-4">
+                    {!tickets || tickets.length === 0 ? (
+                      <div className="text-center py-8 text-gray-600">
+                        Ticket sales for this event haven&apos;t started yet or are temporarily unavailable.
+                      </div>
+                    ) : (
+                      <TicketPurchase 
+                        event={{
+                          id: event.id,
+                          title: event.title,
+                          description: event.description,
+                          start_date: event.start_date,
+                          location: event.location,
+                          organizer_id: event.organizer_id || event.created_by || ''
+                        }}
+                        tickets={tickets}
+                        onSuccess={() => {
+                          toast.success('Tickets purchased successfully!')
+                          fetchTickets()
+                          setActiveModal(null)
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
                     {/* Quick Donation Amounts */}
                     <div className="mb-6">
                       <p className="text-gray-700 mb-3 font-medium">Choose Amount</p>
