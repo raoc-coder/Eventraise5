@@ -277,7 +277,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
                 return handlePayPalSuccess(orderDetails)
               }}
               onError={(err) => { setError('Payment failed. Please try again.'); console.error('PayPal error:', err) }}
-              style={{ layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' }}
+              style={{ layout: 'vertical', label: 'paypal' }}
             />
           </PayPalScriptProvider>
           <p className="text-xs text-gray-500 text-center">By completing this purchase, you agree to our terms. Payments are processed securely by PayPal.</p>
