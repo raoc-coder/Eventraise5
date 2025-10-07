@@ -138,36 +138,33 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
       {/* Ticket Selection */}
       <div className="mb-6">
         <p className="text-gray-700 mb-3 font-medium">Select Ticket</p>
-        <div className="space-y-3">
+        <div className="space-y-2">
           {availableTickets.map((ticket) => (
-            <div
+            <Button
               key={ticket.id}
-              className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
-                selectedTicket?.id === ticket.id
-                  ? 'border-blue-500 bg-blue-50 shadow-md'
-                  : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-              }`}
+              variant={selectedTicket?.id === ticket.id ? 'default' : 'outline'}
               onClick={() => handleTicketSelect(ticket)}
+              className="w-full justify-start p-4 h-auto min-h-[60px]"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex-1 text-left">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-gray-900">{ticket.name}</h4>
+                    <span className="font-medium">{ticket.name}</span>
                     {selectedTicket?.id === ticket.id && (
                       <Badge className="bg-blue-100 text-blue-800">Selected</Badge>
                     )}
                   </div>
-                  <p className="text-lg font-semibold text-gray-900">
+                  <div className="text-lg font-semibold">
                     ${(ticket.price_cents / 100).toFixed(2)} {ticket.currency.toUpperCase()}
-                  </p>
+                  </div>
                   {ticket.quantity_total && (
-                    <p className="text-sm text-gray-600 mt-1">
+                    <div className="text-sm opacity-75 mt-1">
                       {ticket.quantity_total - ticket.quantity_sold} of {ticket.quantity_total} remaining
-                    </p>
+                    </div>
                   )}
                 </div>
               </div>
-            </div>
+            </Button>
           ))}
         </div>
       </div>
@@ -186,13 +183,13 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
             >
               -
             </Button>
-            <Input
+            <input
               type="number"
               value={quantity}
               onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
               min={1}
               max={maxQuantity}
-              className="w-20 text-center text-lg font-medium"
+              className="input w-20 text-center text-base"
             />
             <Button
               variant="outline"
