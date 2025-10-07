@@ -873,41 +873,15 @@ export default function EventDetailPage() {
                     
                     {/* 2. Purchase Tickets */}
                     {(event?.is_ticketed || tickets.length > 0) && (
-                      <Button 
-                        type="button"
+                      <a
+                        href="#tickets"
+                        className="w-full h-12 inline-flex items-center justify-center rounded-lg text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
                         aria-controls="tickets"
-                        onClick={() => {
-                          try {
-                            console.log('[event page] Purchase Tickets clicked')
-                            const el = document.getElementById('tickets') as HTMLElement | null
-                            if (el) {
-                              // Ensure the section has scroll margin and is focusable for accessibility
-                              el.style.scrollMarginTop = '96px'
-                              el.setAttribute('tabindex', '-1')
-                              el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                              setTimeout(() => { try { el.focus({ preventScroll: true }) } catch {} }, 120)
-                              // Manual offset adjustment for sticky header
-                              setTimeout(() => {
-                                try {
-                                  const rect = el.getBoundingClientRect()
-                                  const absoluteTop = rect.top + window.scrollY
-                                  const offset = 96
-                                  window.scrollTo({ top: Math.max(absoluteTop - offset, 0), behavior: 'smooth' })
-                                } catch {}
-                              }, 140)
-                              return
-                            }
-                            // Fallbacks
-                            try { router.push(`#tickets`) } catch {}
-                            setTimeout(() => { window.location.hash = 'tickets' }, 100)
-                          } catch {}
-                        }}
-                        className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
-                        size="lg"
+                        role="button"
                       >
                         <Ticket className="h-5 w-5 mr-2" />
                         🎫 Purchase Tickets
-                      </Button>
+                      </a>
                     )}
                     
                     {/* 3. RSVP */}
