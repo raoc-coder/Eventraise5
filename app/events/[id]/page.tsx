@@ -765,16 +765,18 @@ export default function EventDetailPage() {
                                 Analytics
                               </Button>
                             </div>
-                            <div className="grid grid-cols-2 gap-2">
-                              <Button variant="outline" onClick={() => window.open(`/events/${event.id}/tickets/manage`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
-                                <Ticket className="h-4 w-4 mr-2" />
-                                Manage Tickets
-                              </Button>
-                              <Button variant="outline" onClick={() => window.open(`/events/${event.id}/tickets`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
-                                <ExternalLink className="h-4 w-4 mr-2" />
-                                View Tickets
-                              </Button>
-                            </div>
+                            {(event as any).is_ticketed && (
+                              <div className="grid grid-cols-2 gap-2">
+                                <Button variant="outline" onClick={() => window.open(`/events/${event.id}/tickets/manage`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
+                                  <Ticket className="h-4 w-4 mr-2" />
+                                  Manage Tickets
+                                </Button>
+                                <Button variant="outline" onClick={() => window.open(`/events/${event.id}/tickets`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
+                                  <ExternalLink className="h-4 w-4 mr-2" />
+                                  View Tickets
+                                </Button>
+                              </div>
+                            )}
                             <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors h-11 text-sm">
                               <Trash2 className="h-4 w-4 mr-2" />
                               Delete Event
@@ -885,7 +887,7 @@ export default function EventDetailPage() {
                     </Button>
                     
                     {/* 2. Purchase Tickets */}
-                    {(event?.is_ticketed || tickets.length > 0) && (
+                    {(event as any)?.is_ticketed && (
                       <Button
                         onClick={() => setActiveModal('tickets')}
                         className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
@@ -1424,13 +1426,13 @@ export default function EventDetailPage() {
                     {activeModal === 'rsvp' && 'RSVP to Event'}
                     {activeModal === 'volunteer' && 'Volunteer Opportunities'}
                     {activeModal === 'donation' && 'Support This Event'}
-                    {activeModal === 'tickets' as any && 'Purchase Tickets'}
+                    {activeModal === 'tickets' && 'Purchase Tickets'}
                   </h2>
                   <p className="text-gray-600">
                     {activeModal === 'rsvp' && 'Reserve your spot for this event'}
                     {activeModal === 'volunteer' && 'Lend a hand by signing up for an available shift'}
                     {activeModal === 'donation' && 'Make a donation to support this event'}
-                    {activeModal === 'tickets' as any && 'Buy tickets for this event'}
+                    {activeModal === 'tickets' && 'Buy tickets for this event'}
                   </p>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => setActiveModal(null)}>
@@ -1601,9 +1603,7 @@ export default function EventDetailPage() {
                   </div>
                 )}
 
-                {activeModal === 'donation' && (
-                  <div className="space-y-4">
-                {/* @ts-ignore */}                {activeModal === 'tickets' as any && (
+                {activeModal === 'tickets' && (
                   <div className="space-y-4">
                     {!tickets || tickets.length === 0 ? (
                       <div className="text-center py-8 text-gray-600">
@@ -1629,6 +1629,9 @@ export default function EventDetailPage() {
                     )}
                   </div>
                 )}
+
+                {activeModal === 'donation' && (
+                  <div className="space-y-4">
                     {/* Quick Donation Amounts */}
                     <div className="mb-6">
                       <p className="text-gray-700 mb-3 font-medium">Choose Amount</p>
