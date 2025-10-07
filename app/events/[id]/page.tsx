@@ -1082,7 +1082,7 @@ export default function EventDetailPage() {
 
                 {/* Ticket Purchase Section */}
                 {(event?.is_ticketed || tickets.length > 0) && (
-                  <Card id="tickets" className="event-card">
+                  <Card id="tickets" className="event-card" tabIndex={-1} style={{ scrollMarginTop: '96px' }}>
                     <CardHeader>
                       <CardTitle className="text-gray-900">Purchase Tickets</CardTitle>
                       <CardDescription className="text-gray-600">
