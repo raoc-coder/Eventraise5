@@ -286,7 +286,10 @@ export default function EventDetailPage() {
       try {
         const id = typeof params?.id === 'string' ? params.id : ''
         if (!id) return
-        const response = await fetch(`/api/events/${id}`)
+        const url = typeof window !== 'undefined'
+          ? new URL(`/api/events/${id}`, window.location.origin).toString()
+          : `/api/events/${id}`
+        const response = await fetch(url)
         if (response.ok) {
           const data = await response.json()
           console.log('[event page] fetched event ok')
