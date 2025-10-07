@@ -874,10 +874,10 @@ export default function EventDetailPage() {
                     {/* 2. Purchase Tickets */}
                     {(event?.is_ticketed || tickets.length > 0) && (
                       <a
-                        href="#tickets"
+                        href={`/events/${event.id}/tickets`}
                         className="w-full h-12 inline-flex items-center justify-center rounded-lg text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
-                        aria-controls="tickets"
                         role="button"
+                        aria-label="Purchase tickets"
                       >
                         <Ticket className="h-5 w-5 mr-2" />
                         🎫 Purchase Tickets
