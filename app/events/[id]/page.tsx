@@ -766,16 +766,10 @@ export default function EventDetailPage() {
                               </Button>
                             </div>
                             {(event as any).is_ticketed && (
-                              <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" onClick={() => window.open(`/events/${event.id}/tickets/manage`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
-                                  <Ticket className="h-4 w-4 mr-2" />
-                                  Manage Tickets
-                                </Button>
-                                <Button variant="outline" onClick={() => window.open(`/events/${event.id}/tickets`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
-                                  <ExternalLink className="h-4 w-4 mr-2" />
-                                  View Tickets
-                                </Button>
-                              </div>
+                              <Button variant="outline" onClick={() => window.open(`/events/${event.id}/tickets/manage`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
+                                <Ticket className="h-4 w-4 mr-2" />
+                                Manage Tickets
+                              </Button>
                             )}
                             <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors h-11 text-sm">
                               <Trash2 className="h-4 w-4 mr-2" />

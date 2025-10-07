@@ -214,7 +214,7 @@ export default function TicketManagement() {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                onClick={() => router.back()}
+                onClick={() => router.push(`/events/${eventId}`)}
               >
                 Back to Event
               </Button>

@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { ShoppingCart, Ticket, Calendar, MapPin, Users } from 'lucide-react'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
+import { paypalClientConfig } from '@/lib/paypal-client'
 
 interface Ticket {
   id: string
@@ -370,7 +371,7 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
                     <span className="font-semibold">${(totalAmount / 100).toFixed(2)}</span>
                   </div>
                 </div>
-                <PayPalScriptProvider options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!, currency: selectedTicket.currency.toUpperCase(), intent: 'capture', components: 'buttons,marks', enableFunding: 'venmo,paylater,card' }}>
+                <PayPalScriptProvider options={{ ...paypalClientConfig, currency: selectedTicket.currency.toUpperCase() }}>
                   <PayPalButtons
                     createOrder={async () => {
                       const response = await fetch(`/api/events/${event.id}/tickets/checkout`, {
