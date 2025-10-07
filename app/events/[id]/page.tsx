@@ -857,14 +857,21 @@ export default function EventDetailPage() {
                     {/* 2. Purchase Tickets */}
                     {(event?.is_ticketed || tickets.length > 0) && (
                       <Button 
+                        type="button"
+                        aria-controls="tickets"
                         onClick={() => {
-                          const el = document.getElementById('tickets')
-                          if (el) {
-                            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                          } else {
-                            // Fallback: navigate with hash to trigger scroll on load
-                            window.location.hash = 'tickets'
-                          }
+                          try {
+                            console.log('[event page] Purchase Tickets clicked')
+                            const el = document.getElementById('tickets')
+                            if (el) {
+                              el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                              return
+                            }
+                            // Fallback 1: push hash via router (if available)
+                            try { router.push(`#tickets`) } catch {}
+                            // Fallback 2: set hash directly
+                            setTimeout(() => { window.location.hash = 'tickets' }, 50)
+                          } catch {}
                         }}
                         className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
                         size="lg"
