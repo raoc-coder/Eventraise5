@@ -874,7 +874,7 @@ export default function EventDetailPage() {
                     {/* 2. Purchase Tickets */}
                     {(event?.is_ticketed || tickets.length > 0) && (
                       <a
-                        href={`/events/${event.id}/tickets`}
+                        href={`#tickets-anchor`}
                         className="w-full h-12 inline-flex items-center justify-center rounded-lg text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
                         role="button"
                         aria-label="Purchase tickets"
@@ -1082,7 +1082,9 @@ export default function EventDetailPage() {
 
                 {/* Ticket Purchase Section */}
                 {(event?.is_ticketed || tickets.length > 0) && (
-                  <Card id="tickets" className="event-card" tabIndex={-1} style={{ scrollMarginTop: '96px' }}>
+                  <>
+                    <div id="tickets-anchor" style={{ position: 'relative', top: '-96px' }} aria-hidden="true" />
+                    <Card id="tickets" className="event-card" tabIndex={-1} style={{ scrollMarginTop: '96px' }}>
                     <CardHeader>
                       <CardTitle className="text-gray-900">Purchase Tickets</CardTitle>
                       <CardDescription className="text-gray-600">
@@ -1128,7 +1130,8 @@ export default function EventDetailPage() {
                         />
                       )}
                     </CardContent>
-                  </Card>
+                    </Card>
+                  </>
                 )}
 
                 {/* Volunteer Opportunities */}
