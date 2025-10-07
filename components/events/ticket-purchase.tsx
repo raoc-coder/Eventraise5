@@ -43,7 +43,6 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [pendingRegistrationId, setPendingRegistrationId] = useState<string | null>(null)
-  const [showCheckout, setShowCheckout] = useState(false)
 
   const availableTickets = tickets.filter(ticket => {
     const now = new Date()
@@ -135,267 +134,156 @@ export function TicketPurchase({ event, tickets, onSuccess }: TicketPurchaseProp
   }
 
   return (
-    <div className="space-y-6">
-      {/* Event Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            {event.title}
-          </CardTitle>
-          <CardDescription>{event.description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-500" />
-              <span>{new Date(event.start_date).toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-gray-500" />
-              <span>{event.location}</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
+    <div className="space-y-4">
       {/* Ticket Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Select Tickets</CardTitle>
-          <CardDescription>Choose your ticket type and quantity</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {availableTickets.map((ticket) => (
-              <div
-                key={ticket.id}
-                className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
-                  selectedTicket?.id === ticket.id
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-                }`}
-                onClick={() => handleTicketSelect(ticket)}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-gray-900">{ticket.name}</h4>
-                      {selectedTicket?.id === ticket.id && (
-                        <Badge className="bg-blue-100 text-blue-800">Selected</Badge>
-                      )}
-                    </div>
-                    <p className="text-lg font-semibold text-gray-900">
-                      ${(ticket.price_cents / 100).toFixed(2)} {ticket.currency.toUpperCase()}
-                    </p>
-                    {ticket.quantity_total && (
-                      <div className="mt-2">
-                        <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
-                          <span>Availability</span>
-                          <span>{ticket.quantity_total - ticket.quantity_sold} of {ticket.quantity_total} remaining</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                            style={{ 
-                              width: `${Math.max(0, Math.min(100, ((ticket.quantity_total - ticket.quantity_sold) / ticket.quantity_total) * 100))}%` 
-                            }}
-                          />
-                        </div>
-                      </div>
+      <div className="mb-6">
+        <p className="text-gray-700 mb-3 font-medium">Select Ticket</p>
+        <div className="space-y-3">
+          {availableTickets.map((ticket) => (
+            <div
+              key={ticket.id}
+              className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                selectedTicket?.id === ticket.id
+                  ? 'border-blue-500 bg-blue-50 shadow-md'
+                  : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+              }`}
+              onClick={() => handleTicketSelect(ticket)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-medium text-gray-900">{ticket.name}</h4>
+                    {selectedTicket?.id === ticket.id && (
+                      <Badge className="bg-blue-100 text-blue-800">Selected</Badge>
                     )}
                   </div>
-                  <div className="text-right space-y-1">
-                    {ticket.sales_start_at && (
-                      <Badge variant="outline" className="text-xs block">
-                        Sales start: {new Date(ticket.sales_start_at).toLocaleDateString()}
-                      </Badge>
-                    )}
-                    {ticket.sales_end_at && (
-                      <Badge variant="outline" className="text-xs block">
-                        Sales end: {new Date(ticket.sales_end_at).toLocaleDateString()}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Quantity and Buyer Info */}
-      {selectedTicket && (
-        <>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5" />
-                Purchase Details
-              </CardTitle>
-              <CardDescription>
-                Complete your ticket purchase for {selectedTicket.name}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Selected Ticket Summary */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-gray-900">{selectedTicket.name}</h4>
-                    <p className="text-sm text-gray-600">
-                      ${(selectedTicket.price_cents / 100).toFixed(2)} {selectedTicket.currency.toUpperCase()} each
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-green-600">
-                      ${(totalAmount / 100).toFixed(2)}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {quantity} ticket{quantity !== 1 ? 's' : ''}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="quantity" className="text-base font-medium">Quantity</Label>
-                  <div className="flex items-center gap-3 mt-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleQuantityChange(quantity - 1)}
-                      disabled={quantity <= 1}
-                      className="w-10 h-10"
-                    >
-                      -
-                    </Button>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      value={quantity}
-                      onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
-                      min={1}
-                      max={maxQuantity}
-                      className="w-20 text-center text-lg font-medium"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleQuantityChange(quantity + 1)}
-                      disabled={quantity >= maxQuantity}
-                      className="w-10 h-10"
-                    >
-                      +
-                    </Button>
-                  </div>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Maximum {maxQuantity} ticket{maxQuantity !== 1 ? 's' : ''} per purchase
+                  <p className="text-lg font-semibold text-gray-900">
+                    ${(ticket.price_cents / 100).toFixed(2)} {ticket.currency.toUpperCase()}
                   </p>
-                </div>
-
-                <div>
-                  <Label className="text-base font-medium">Total Amount</Label>
-                  <div className="mt-2 p-4 bg-green-50 rounded-lg border border-green-200">
-                    <div className="text-3xl font-bold text-green-700">
-                      ${(totalAmount / 100).toFixed(2)}
-                    </div>
-                    <div className="text-sm text-green-600 mt-1">
-                      {quantity} × ${(selectedTicket.price_cents / 100).toFixed(2)}
-                    </div>
-                  </div>
+                  {ticket.quantity_total && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      {ticket.quantity_total - ticket.quantity_sold} of {ticket.quantity_total} remaining
+                    </p>
+                  )}
                 </div>
               </div>
-
-              <div className="border-t pt-6">
-                <h4 className="text-lg font-medium text-gray-900 mb-4">Your Information</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="name" className="text-base font-medium">Full Name</Label>
-                    <Input
-                      id="name"
-                      value={buyerInfo.name}
-                      onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })}
-                      placeholder="Enter your full name"
-                      required
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email" className="text-base font-medium">Email Address</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={buyerInfo.email}
-                      onChange={(e) => setBuyerInfo({ ...buyerInfo, email: e.target.value })}
-                      placeholder="Enter your email"
-                      required
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  We&apos;ll send your ticket confirmation to this email address.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Modal trigger for checkout */}
-          {buyerInfo.name && buyerInfo.email && (
-            <div className="flex justify-end">
-              <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setShowCheckout(true)}>
-                Continue to Payment
-              </Button>
             </div>
-          )}
-        </>
+          ))}
+        </div>
+      </div>
+
+      {/* Quantity Selection */}
+      {selectedTicket && (
+        <div className="mb-6">
+          <p className="text-gray-700 mb-3 font-medium">Quantity</p>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuantityChange(quantity - 1)}
+              disabled={quantity <= 1}
+              className="w-10 h-10"
+            >
+              -
+            </Button>
+            <Input
+              type="number"
+              value={quantity}
+              onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+              min={1}
+              max={maxQuantity}
+              className="w-20 text-center text-lg font-medium"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuantityChange(quantity + 1)}
+              disabled={quantity >= maxQuantity}
+              className="w-10 h-10"
+            >
+              +
+            </Button>
+          </div>
+          <p className="text-xs text-gray-600 mt-1">
+            Maximum {maxQuantity} ticket{maxQuantity !== 1 ? 's' : ''} per purchase
+          </p>
+        </div>
       )}
-      {/* Modal Checkout */}
-      {showCheckout && selectedTicket && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={() => !loading && setShowCheckout(false)} />
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="w-full max-w-lg bg-white rounded-xl shadow-xl overflow-hidden">
-              <div className="flex items-center justify-between px-5 py-4 border-b">
-                <div className="font-semibold text-gray-900">Complete Purchase</div>
-                <button className="text-gray-500 hover:text-gray-700" onClick={() => !loading && setShowCheckout(false)} aria-label="Close">×</button>
-              </div>
-              <div className="px-5 pt-4 pb-5">
-                {error && (<div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-700">{error}</div>)}
-                {loading && (<div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-800">Processing your payment...</div>)}
-                <div className="mb-4 bg-gray-50 rounded-lg p-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">{selectedTicket.name} × {quantity}</span>
-                    <span className="font-semibold">${(totalAmount / 100).toFixed(2)}</span>
-                  </div>
-                </div>
-                <PayPalScriptProvider options={{ ...paypalClientConfig, currency: selectedTicket.currency.toUpperCase() }}>
-                  <PayPalButtons
-                    createOrder={async () => {
-                      const response = await fetch(`/api/events/${event.id}/tickets/checkout`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ticket_id: selectedTicket.id, quantity, name: buyerInfo.name, email: buyerInfo.email })
-                      })
-                      const data = await response.json()
-                      if (!data.success) throw new Error(data.error || 'Failed to create order')
-                      setPendingRegistrationId(data.registration_id)
-                      return data.orderId
-                    }}
-                    onApprove={(data) => {
-                      const orderDetails = { id: (data as any)?.orderID }
-                      return handlePayPalSuccess(orderDetails).then(() => setShowCheckout(false))
-                    }}
-                    onError={(err) => { setError('Payment failed. Please try again.'); console.error('PayPal error:', err) }}
-                    style={{ layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal', height: 45 }}
-                  />
-                </PayPalScriptProvider>
-                <p className="mt-4 text-center text-[11px] text-gray-500">By completing this purchase, you agree to our terms. Payments are processed securely by PayPal.</p>
-              </div>
+
+      {/* Buyer Information */}
+      {selectedTicket && (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-gray-700 font-medium">Your Name (Required)</Label>
+            <Input
+              id="name"
+              value={buyerInfo.name}
+              onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })}
+              placeholder="Enter your full name"
+              required
+              className="input"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-gray-700 font-medium">Your Email (Required)</Label>
+            <Input
+              id="email"
+              type="email"
+              value={buyerInfo.email}
+              onChange={(e) => setBuyerInfo({ ...buyerInfo, email: e.target.value })}
+              placeholder="Enter your email"
+              required
+              className="input"
+            />
+          </div>
+          <p className="text-xs text-gray-600">We&apos;ll send your ticket confirmation to this email address.</p>
+        </div>
+      )}
+
+      {/* Payment Summary */}
+      {selectedTicket && (
+        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-gray-700 font-medium">Ticket Price</span>
+            <span className="text-gray-900 font-semibold">${(selectedTicket.price_cents / 100).toFixed(2)} × {quantity}</span>
+          </div>
+          <div className="border-t border-blue-300 mt-2 pt-2">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
+              <span className="text-blue-600 font-bold text-lg">
+                ${(totalAmount / 100).toFixed(2)}
+              </span>
             </div>
           </div>
+          <p className="text-xs text-gray-600 mt-2">A platform fee of 8.99% applies to ticket purchases.</p>
+        </div>
+      )}
+
+      {/* PayPal Payment */}
+      {selectedTicket && buyerInfo.name && buyerInfo.email && (
+        <div className="space-y-4">
+          <PayPalScriptProvider options={{ ...paypalClientConfig, currency: selectedTicket.currency.toUpperCase() }}>
+            <PayPalButtons
+              createOrder={async () => {
+                const response = await fetch(`/api/events/${event.id}/tickets/checkout`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ ticket_id: selectedTicket.id, quantity, name: buyerInfo.name, email: buyerInfo.email })
+                })
+                const data = await response.json()
+                if (!data.success) throw new Error(data.error || 'Failed to create order')
+                setPendingRegistrationId(data.registration_id)
+                return data.orderId
+              }}
+              onApprove={(data) => {
+                const orderDetails = { id: (data as any)?.orderID }
+                return handlePayPalSuccess(orderDetails)
+              }}
+              onError={(err) => { setError('Payment failed. Please try again.'); console.error('PayPal error:', err) }}
+              style={{ layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' }}
+            />
+          </PayPalScriptProvider>
+          <p className="text-xs text-gray-500 text-center">By completing this purchase, you agree to our terms. Payments are processed securely by PayPal.</p>
         </div>
       )}
     </div>
