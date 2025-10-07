@@ -33,7 +33,7 @@ interface Event {
 export default function TicketManagement() {
   const params = useParams()
   const router = useRouter()
-  const eventId = params.id as string
+  const eventId = params?.id as string
 
   const [event, setEvent] = useState<Event | null>(null)
   const [tickets, setTickets] = useState<Ticket[]>([])
