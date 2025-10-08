@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Heart, Menu, X } from 'lucide-react'
+import { Shield, Menu, X } from 'lucide-react'
 import { useAuth } from '@/app/providers'
 import { useState } from 'react'
 
@@ -31,7 +31,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
           <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm bg-blue-600 flex-shrink-0">
-                <Heart className="h-5 w-5 text-white" />
+                <Shield className="h-5 w-5 text-white" />
               </div>
               <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 tracking-tight truncate">
                 EventraiseHUB
