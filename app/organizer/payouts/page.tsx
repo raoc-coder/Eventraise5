@@ -112,7 +112,8 @@ export default function OrganizerPayoutsPage() {
       failed: 'bg-red-100 text-red-800',
       cancelled: 'bg-gray-100 text-gray-800'
     }
-    return variants[status] || 'bg-gray-100 text-gray-800'
+    const base = 'inline-flex items-center px-2 py-1 rounded-full font-semibold text-xs'
+    return `${base} ${variants[status] || 'bg-gray-100 text-gray-800'}`
   }
 
   if (!user) {

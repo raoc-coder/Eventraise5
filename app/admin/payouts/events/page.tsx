@@ -114,7 +114,8 @@ export default function EventPayoutsPage() {
       failed: 'bg-red-100 text-red-800',
       cancelled: 'bg-gray-100 text-gray-800'
     }
-    return variants[status] || 'bg-gray-100 text-gray-800'
+    const base = 'inline-flex items-center px-2 py-1 rounded-full font-semibold text-xs'
+    return `${base} ${variants[status] || 'bg-gray-100 text-gray-800'}`
   }
 
   if (!user) {
@@ -182,16 +183,16 @@ export default function EventPayoutsPage() {
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm" aria-busy={loading} aria-live="polite">
                 <thead>
-                  <tr className="text-left text-gray-600 border-b">
-                    <th className="py-3 pr-4">Event</th>
-                    <th className="py-3 pr-4">Organizer</th>
-                    <th className="py-3 pr-4">Gross</th>
-                    <th className="py-3 pr-4">Fees</th>
-                    <th className="py-3 pr-4">Net</th>
-                    <th className="py-3 pr-4">Status</th>
-                    <th className="py-3 pr-4">Method</th>
-                    <th className="py-3 pr-4">Date</th>
-                    <th className="py-3 pr-4">Actions</th>
+                  <tr className="text-left text-gray-700 border-b">
+                    <th className="py-3 pr-4 text-sm font-medium">Event</th>
+                    <th className="py-3 pr-4 text-sm font-medium">Organizer</th>
+                    <th className="py-3 pr-4 text-sm font-medium text-right">Gross</th>
+                    <th className="py-3 pr-4 text-sm font-medium text-right">Fees</th>
+                    <th className="py-3 pr-4 text-sm font-medium text-right">Net</th>
+                    <th className="py-3 pr-4 text-sm font-medium">Status</th>
+                    <th className="py-3 pr-4 text-sm font-medium">Method</th>
+                    <th className="py-3 pr-4 text-sm font-medium text-right">Date</th>
+                    <th className="py-3 pr-4 text-sm font-medium text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -204,31 +205,31 @@ export default function EventPayoutsPage() {
                     </tr>
                   )}
                   {payouts.map((payout) => (
-                    <tr key={payout.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 pr-4">
+                    <tr key={payout.id} className="border-b hover:bg-gray-50 focus-within:bg-gray-50">
+                      <td className="py-3 pr-4 align-middle">
                         <div>
                           <p className="font-medium">{payout.event_title}</p>
                           <p className="text-xs text-gray-500">{payout.donation_count} donations</p>
                         </div>
                       </td>
-                      <td className="py-3 pr-4">
+                      <td className="py-3 pr-4 align-middle">
                         <div>
                           <p className="font-medium">{payout.organizer_name}</p>
                           <p className="text-xs text-gray-500">{payout.organizer_email}</p>
                         </div>
                       </td>
-                      <td className="py-3 pr-4 font-medium">{formatCurrency(payout.total_gross_cents)}</td>
-                      <td className="py-3 pr-4 text-red-600">{formatCurrency(payout.total_fees_cents)}</td>
-                      <td className="py-3 pr-4 font-bold text-green-600">{formatCurrency(payout.total_net_cents)}</td>
-                      <td className="py-3 pr-4">
+                      <td className="py-3 pr-4 text-right font-medium align-middle">{formatCurrency(payout.total_gross_cents)}</td>
+                      <td className="py-3 pr-4 text-right text-red-600 align-middle">{formatCurrency(payout.total_fees_cents)}</td>
+                      <td className="py-3 pr-4 text-right font-bold text-green-600 align-middle">{formatCurrency(payout.total_net_cents)}</td>
+                      <td className="py-3 pr-4 align-middle">
                         <Badge className={getStatusBadge(payout.payout_status)}>
                           {payout.payout_status}
                         </Badge>
                       </td>
-                      <td className="py-3 pr-4">{payout.payout_method || '—'}</td>
-                      <td className="py-3 pr-4">{payout.payout_date ? formatDate(payout.payout_date) : '—'}</td>
-                      <td className="py-3 pr-4">
-                        <div className="flex gap-2">
+                      <td className="py-3 pr-4 align-middle">{payout.payout_method || '—'}</td>
+                      <td className="py-3 pr-4 text-right align-middle">{payout.payout_date ? formatDate(payout.payout_date) : '—'}</td>
+                      <td className="py-3 pr-4 text-right align-middle">
+                        <div className="flex gap-2 justify-end">
                           {payout.payout_status === 'pending' && (
                             <Button 
                               size="sm" 

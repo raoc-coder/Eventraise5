@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -151,6 +151,7 @@ export default function EventDetailPage() {
   const [selectedRegistrations, setSelectedRegistrations] = useState<string[]>([])
   const [tickets, setTickets] = useState<any[]>([])
   const [ticketsLoading, setTicketsLoading] = useState(false)
+  const modalRef = useRef<HTMLDivElement | null>(null)
   // Volunteers
   const [volunteerShifts, setVolunteerShifts] = useState<any[]>([])
   const [volunteerLoading, setVolunteerLoading] = useState(false)
@@ -177,6 +178,22 @@ export default function EventDetailPage() {
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
   }, [activeModal, analytics, registrations])
+
+  // Autofocus first focusable in modal when opened
+  useEffect(() => {
+    if (!activeModal) return
+    const raf = requestAnimationFrame(() => {
+      const root = modalRef.current
+      if (!root) return
+      const focusables = Array.from(
+        root.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+      ) as HTMLElement[]
+      if (focusables.length > 0) {
+        focusables[0].focus()
+      }
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [activeModal])
 
 
   const formatDate = (dateString: string) => {
@@ -648,7 +665,7 @@ export default function EventDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 no-overflow">
           {/* Event Info */}
           <div className="lg:col-span-2 space-y-6">
-              <Card className="event-card shadow-xl border-0 bg-gradient-to-br from-white to-gray-50" id="donate">
+              <Card className="event-card" id="donate">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -840,7 +857,7 @@ export default function EventDetailPage() {
 
           {/* Right rail: Action buttons */}
           <div className="space-y-6">
-            <Card className="event-card shadow-2xl border-0 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+            <Card className="event-card relative overflow-hidden">
               {/* Decorative background elements */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200/30 to-pink-200/30 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-200/30 to-cyan-200/30 rounded-full translate-y-12 -translate-x-12"></div>
@@ -1411,18 +1428,48 @@ export default function EventDetailPage() {
               setActiveModal(null)
             }
           }}
+          aria-hidden="false"
         >
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] overflow-y-auto mx-4">
+          <div 
+            className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] overflow-y-auto mx-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="action-modal-title"
+            aria-describedby="action-modal-desc"
+            ref={modalRef}
+            onKeyDown={(e) => {
+              if (e.key !== 'Tab') return
+              const root = modalRef.current
+              if (!root) return
+              const focusables = Array.from(
+                root.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+              ).filter(el => !el.hasAttribute('disabled'))
+              if (focusables.length === 0) return
+              const first = focusables[0]
+              const last = focusables[focusables.length - 1]
+              if (e.shiftKey) {
+                if (document.activeElement === first) {
+                  (last as HTMLElement).focus()
+                  e.preventDefault()
+                }
+              } else {
+                if (document.activeElement === last) {
+                  (first as HTMLElement).focus()
+                  e.preventDefault()
+                }
+              }
+            }}
+          >
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 id="action-modal-title" className="text-2xl font-bold text-gray-900">
                     {activeModal === 'rsvp' && 'RSVP to Event'}
                     {activeModal === 'volunteer' && 'Volunteer Opportunities'}
                     {activeModal === 'donation' && 'Support This Event'}
                     {activeModal === 'tickets' && 'Purchase Tickets'}
                   </h2>
-                  <p className="text-gray-600">
+                  <p id="action-modal-desc" className="text-gray-600">
                     {activeModal === 'rsvp' && 'Reserve your spot for this event'}
                     {activeModal === 'volunteer' && 'Lend a hand by signing up for an available shift'}
                     {activeModal === 'donation' && 'Make a donation to support this event'}

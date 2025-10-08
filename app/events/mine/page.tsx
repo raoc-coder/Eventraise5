@@ -143,39 +143,39 @@ export default function MyEventsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" aria-live="polite" role="status">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Events</h1>
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm animate-pulse">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="h-6 w-32 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                  <div className="h-6 w-32 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
                   <div className="flex gap-2">
-                    <div className="h-5 w-16 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
-                    <div className="h-5 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                    <div className="h-5 w-16 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full" />
+                    <div className="h-5 w-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full" />
                   </div>
                 </div>
-                <div className="h-4 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-3" />
-                <div className="h-4 w-3/4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-4" />
+                <div className="h-4 w-full bg-gradient-to-r from-gray-100 to-gray-200 rounded mb-3" />
+                <div className="h-4 w-3/4 bg-gradient-to-r from-gray-100 to-gray-200 rounded mb-4" />
                 
                 {/* Progress bar skeleton */}
                 <div className="mb-4">
                   <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-2 w-1/3 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                    <div className="h-2 w-1/3 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full" />
                   </div>
                 </div>
                 
                 {/* Meta info skeleton */}
                 <div className="flex justify-between items-center mb-4">
-                  <div className="h-4 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
-                  <div className="h-4 w-16 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                  <div className="h-4 w-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded" />
+                  <div className="h-4 w-16 bg-gradient-to-r from-gray-100 to-gray-200 rounded" />
                 </div>
                 
                 {/* Button skeleton */}
                 <div className="flex gap-2">
-                  <div className="h-10 flex-1 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
-                  <div className="h-10 w-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                  <div className="h-10 flex-1 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
+                  <div className="h-10 w-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
                 </div>
               </div>
             ))}
@@ -191,13 +191,13 @@ export default function MyEventsPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/events/create">
-                <Button size="lg" className="px-8">
+                <Button size="mobile" className="px-8">
                   <Plus className="h-5 w-5 mr-2" />
                   Create Your First Event
                 </Button>
               </Link>
               <Link href="/getting-started">
-                <Button variant="outline" className="px-6">
+                <Button variant="outline" size="mobile" className="px-6">
                   Learn How
                 </Button>
               </Link>
@@ -206,7 +206,7 @@ export default function MyEventsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {events.map((ev) => (
-              <Card key={ev.id} className="hover:shadow-xl transition-all duration-300 shadow-lg border-0 bg-gradient-to-br from-white to-gray-50">
+              <Card key={ev.id} className="hover:shadow-md transition-all duration-200">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>

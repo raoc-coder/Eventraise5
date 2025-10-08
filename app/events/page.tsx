@@ -120,18 +120,18 @@ export default function EventsPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
         <Navigation />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8" aria-live="polite" role="status">
           <div className="mb-6 sm:mb-8">
-            <div className="h-8 w-64 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse mb-3" />
-            <div className="h-4 w-96 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
+            <div className="h-8 w-64 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg animate-pulse mb-3" />
+            <div className="h-4 w-96 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg animate-pulse" />
           </div>
           
           {/* Search and Filter Skeletons */}
           <div className="mb-6 sm:mb-8 flex flex-col gap-4">
-            <div className="h-12 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
+            <div className="h-12 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg animate-pulse" />
             <div className="flex flex-col sm:flex-row gap-3">
-              <div className="h-12 w-48 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
-              <div className="h-12 w-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse" />
+              <div className="h-12 w-48 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg animate-pulse" />
+              <div className="h-12 w-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg animate-pulse" />
             </div>
           </div>
           
@@ -139,29 +139,29 @@ export default function EventsPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm animate-pulse">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="h-6 w-32 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
-                  <div className="h-5 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                  <div className="h-6 w-32 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
+                  <div className="h-5 w-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full" />
                 </div>
-                <div className="h-4 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-3" />
-                <div className="h-4 w-3/4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-4" />
+                <div className="h-4 w-full bg-gradient-to-r from-gray-100 to-gray-200 rounded mb-3" />
+                <div className="h-4 w-3/4 bg-gradient-to-r from-gray-100 to-gray-200 rounded mb-4" />
                 
                 {/* Progress bar skeleton */}
                 <div className="mb-4">
                   <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-2 w-1/3 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full" />
+                    <div className="h-2 w-1/3 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full" />
                   </div>
                 </div>
                 
                 {/* Meta info skeleton */}
                 <div className="flex justify-between items-center mb-4">
-                  <div className="h-4 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
-                  <div className="h-4 w-16 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                  <div className="h-4 w-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded" />
+                  <div className="h-4 w-16 bg-gradient-to-r from-gray-100 to-gray-200 rounded" />
                 </div>
                 
                 {/* Button skeleton */}
                 <div className="flex gap-2">
-                  <div className="h-10 flex-1 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
-                  <div className="h-10 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg" />
+                  <div className="h-10 flex-1 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
+                  <div className="h-10 w-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
                 </div>
               </div>
             ))}
@@ -419,6 +419,7 @@ export default function EventsPage() {
                 <>
                   <Button 
                     variant="outline" 
+                    size="mobile"
                     onClick={() => {
                       setSearchTerm('')
                       setFilterType('all')
@@ -428,7 +429,7 @@ export default function EventsPage() {
                     Clear Filters
                   </Button>
                   <Link href="/events/create">
-                    <Button className="px-6">
+                    <Button size="mobile" className="px-6">
                       <Plus className="h-4 w-4 mr-2" />
                       Create Event
                     </Button>
@@ -436,7 +437,7 @@ export default function EventsPage() {
                 </>
               ) : (
                 <Link href="/events/create">
-                  <Button size="lg" className="px-8">
+                  <Button size="mobile" className="px-8">
                     <Plus className="h-5 w-5 mr-2" />
                     Create Your First Event
                   </Button>
