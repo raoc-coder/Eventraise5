@@ -697,7 +697,7 @@ export default function EventDetailPage() {
                     ) : (
                       <>
                         <div className="flex items-center gap-3 flex-wrap">
-                          <CardTitle className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">{event.title}</CardTitle>
+                          <CardTitle className="text-3xl sm:text-[2rem] font-extrabold text-gray-900 leading-tight tracking-tight">{event.title}</CardTitle>
                           {('is_published' in (event as any)) && (
                             (event as any).is_published ? (
                               <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">Published</span>
@@ -706,7 +706,7 @@ export default function EventDetailPage() {
                             )
                           )}
                         </div>
-                        <div className="h-2 mb-2" />
+                        <div className="h-1.5 mb-1.5" />
                       </>
                     )}
                     {event.goal_amount && (

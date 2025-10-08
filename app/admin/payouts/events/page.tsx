@@ -133,9 +133,9 @@ export default function EventPayoutsPage() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Event Payouts</h1>
-          <p className="text-gray-600 mt-2">Manage payouts per event and organizer</p>
+          <p className="text-gray-600 mt-1">Manage payouts per event and organizer</p>
         </div>
 
         {/* Summary Cards */}
@@ -195,7 +195,7 @@ export default function EventPayoutsPage() {
                     <th className="py-3 pr-4 text-sm font-medium text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="[&>tr:nth-child(even)]:bg-gray-50/50">
                   {loading && (
                     <tr aria-hidden="true">
                       <td colSpan={9} className="py-6">

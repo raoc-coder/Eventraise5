@@ -131,9 +131,9 @@ export default function OrganizerPayoutsPage() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">My Payouts</h1>
-          <p className="text-gray-600 mt-2">Track your event payouts and earnings</p>
+          <p className="text-gray-600 mt-1">Track your event payouts and earnings</p>
         </div>
 
         {/* Summary Cards */}
@@ -191,8 +191,8 @@ export default function OrganizerPayoutsPage() {
               </CardContent>
             </Card>
           )}
-          {payouts.map((payout) => (
-            <Card key={payout.id}>
+          {payouts.map((payout, idx) => (
+            <Card key={payout.id} className={idx % 2 === 1 ? 'bg-gray-50/50' : undefined}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
