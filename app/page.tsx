@@ -211,7 +211,7 @@ export default function HomePage() {
 
             <Card className="event-card">
               <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
                   <Shield className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Secure & Compliant</CardTitle>

@@ -84,7 +84,7 @@ export default function DashboardPage() {
               <CardTitle className="text-gray-900">Quick Actions</CardTitle>
               <CardDescription className="text-gray-800">Start a new event or jump back into your work</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
               <Link href="/events/create">
                 <Button className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                   <Plus className="mr-2 h-5 w-5" />
