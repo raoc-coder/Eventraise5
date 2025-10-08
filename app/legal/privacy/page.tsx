@@ -22,7 +22,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-lg font-semibold mb-3">4. Payment Information</h2>
-          <p>We use PayPal for payment processing. Your payment information is handled securely by PayPal and is subject to PayPal's privacy policy. We do not store your full payment card details on our servers.</p>
+          <p>We use PayPal for payment processing. Your payment information is handled securely by PayPal and is subject to PayPal&apos;s privacy policy. We do not store your full payment card details on our servers.</p>
         </section>
 
         <section>
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-lg font-semibold mb-3">11. Changes to This Policy</h2>
-          <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date.</p>
+          <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the &quot;Last updated&quot; date.</p>
         </section>
 
         <section>

@@ -17,7 +17,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-lg font-semibold mb-3">3. Payment Processing</h2>
-          <p>EventraiseHub uses PayPal for payment processing. All transactions are subject to PayPal's terms of service. We are not responsible for PayPal's processing fees or policies.</p>
+          <p>EventraiseHub uses PayPal for payment processing. All transactions are subject to PayPal&apos;s terms of service. We are not responsible for PayPal&apos;s processing fees or policies.</p>
         </section>
 
         <section>
@@ -32,7 +32,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-lg font-semibold mb-3">6. Disclaimer</h2>
-          <p>The information on this website is provided on an "as is" basis. To the fullest extent permitted by law, EventraiseHub excludes all representations, warranties, conditions and terms relating to our website and the use of this website.</p>
+          <p>The information on this website is provided on an &quot;as is&quot; basis. To the fullest extent permitted by law, EventraiseHub excludes all representations, warranties, conditions and terms relating to our website and the use of this website.</p>
         </section>
 
         <section>
