@@ -26,7 +26,7 @@ import {
   Bell,
   Ticket,
   X,
-  Rows3,
+  Rows,
   LayoutGrid
 } from 'lucide-react'
 
@@ -230,7 +230,7 @@ export default function EventsPage() {
                   <option value="most_raised">Most Raised</option>
                 </select>
                 <Button variant="outline" className="h-12 px-3" onClick={()=>setCompact(c=>!c)} aria-label="Toggle view">
-                  {compact ? <LayoutGrid className="h-4 w-4" /> : <Rows3 className="h-4 w-4" />}
+                  {compact ? <LayoutGrid className="h-4 w-4" /> : <Rows className="h-4 w-4" />}
                 </Button>
               </div>
             </div>

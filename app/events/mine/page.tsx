@@ -18,7 +18,7 @@ import {
   Edit,
   Settings,
   Plus,
-  Rows3,
+  Rows,
   LayoutGrid
 } from 'lucide-react'
 
@@ -128,7 +128,7 @@ export default function MyEventsPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div className="mb-6 flex items-center justify-between gap-3">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">My Events</h1>
           <div className="flex items-center gap-2">
             <select
@@ -142,7 +142,7 @@ export default function MyEventsPage() {
               <option value="most_raised">Most Raised</option>
             </select>
             <Button variant="outline" onClick={()=>setCompact(c=>!c)} aria-label="Toggle view" className="h-10 px-3">
-              {compact ? <LayoutGrid className="h-4 w-4" /> : <Rows3 className="h-4 w-4" />}
+              {compact ? <LayoutGrid className="h-4 w-4" /> : <Rows className="h-4 w-4" />}
             </Button>
           </div>
         </div>
