@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase as sharedSupabase, supabaseAdmin } from '@/lib/supabase'
+import { rateLimit, getClientKeyFromHeaders } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
   try {
+    const key = getClientKeyFromHeaders(req.headers)
+    if (!rateLimit(`cashout:${key}`, 10)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
     const { event_id, payout_id, method, contact_email, notes } = await req.json().catch(() => ({}))
     if (!event_id && !payout_id) {
       return NextResponse.json({ error: 'Missing event_id or payout_id' }, { status: 400 })
@@ -78,7 +83,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: upErr.message }, { status: 400 })
     }
 
-    // Optionally: insert into a separate cashout_requests table if exists (noop if not present)
     try {
       await supabaseAdmin.from('cashout_requests').insert({
         event_id: targetPayout.event_id,
@@ -91,7 +95,6 @@ export async function POST(req: NextRequest) {
       })
     } catch {}
 
-    // Admin notification stub (replace with email/inbox later)
     console.log('[ADMIN] Cash-out requested', {
       eventId: targetPayout.event_id,
       eventTitle: eventRow?.title,

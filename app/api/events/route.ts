@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
+import { rateLimit, getClientKeyFromHeaders } from '@/lib/rate-limit'
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
@@ -25,6 +26,9 @@ function processEventsWithTickets(events: any[]) {
 }
 
 export async function GET(req: NextRequest) {
+  if (!rateLimit(`events:${getClientKeyFromHeaders(req.headers)}`, 60)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
   console.log('[api/events] GET request received')
   // Use regular client for now
   const db = supabase
