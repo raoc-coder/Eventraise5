@@ -50,6 +50,8 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
+  const [page, setPage] = useState(1)
+  const pageSize = 12
 
   // Fetch events from API
   useEffect(() => {
@@ -76,6 +78,11 @@ export default function EventsPage() {
     fetchEvents()
   }, [filterType])
 
+  useEffect(() => {
+    // Reset to first page on filter/search change
+    setPage(1)
+  }, [filterType, searchTerm])
+
   const filteredEvents = events.filter(event => {
     const title = (event.title || '').toLowerCase()
     const desc = (event.description || '').toLowerCase()
@@ -90,6 +97,11 @@ export default function EventsPage() {
     
     return matchesSearch && matchesFilter
   })
+
+  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / pageSize))
+  const startIdx = (page - 1) * pageSize
+  const endIdx = startIdx + pageSize
+  const paginated = filteredEvents.slice(startIdx, endIdx)
 
   const getEventTypeLabel = (type: string, isTicketed?: boolean) => {
     if (isTicketed) return 'Ticketed Event'
@@ -265,7 +277,7 @@ export default function EventsPage() {
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {filteredEvents.map((event) => (
+          {paginated.map((event) => (
             <Card key={event.id} className="hover:shadow-md transition-all duration-200">
               <CardHeader>
                 <div className="flex justify-between items-start">
@@ -402,7 +414,16 @@ export default function EventsPage() {
           ))}
         </div>
 
-        {filteredEvents.length === 0 && !loading && (
+        {/* Pagination Controls */}
+        {filteredEvents.length > pageSize && (
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}>Prev</Button>
+            <span className="text-sm text-gray-700">Page {page} of {totalPages}</span>
+            <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}>Next</Button>
+          </div>
+        )}
+
+        {paginated.length === 0 && !loading && (
           <div className="text-center py-16">
             <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-6">
               <Calendar className="h-12 w-12 text-blue-600" />

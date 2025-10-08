@@ -27,6 +27,8 @@ export default function MyEventsPage() {
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const fetchingRef = useRef(false)
+  const [page, setPage] = useState(1)
+  const pageSize = 12
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -109,6 +111,10 @@ export default function MyEventsPage() {
     }
   }, [user, authLoading, fetchEvents])
 
+  useEffect(() => {
+    setPage(1)
+  }, [user])
+
   // Listen for event deletion events to refresh the list
   useEffect(() => {
     const handleStorageEvent = (e: StorageEvent) => {
@@ -121,7 +127,6 @@ export default function MyEventsPage() {
     window.addEventListener('storage', handleStorageEvent)
     return () => window.removeEventListener('storage', handleStorageEvent)
   }, [fetchEvents])
-
 
   // Show loading while checking authentication
   if (authLoading) {
@@ -140,10 +145,15 @@ export default function MyEventsPage() {
     return null
   }
 
+  const totalPages = Math.max(1, Math.ceil(events.length / pageSize))
+  const startIdx = (page - 1) * pageSize
+  const endIdx = startIdx + pageSize
+  const paginated = events.slice(startIdx, endIdx)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" aria-live="polite" role="status">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Events</h1>
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -158,21 +168,15 @@ export default function MyEventsPage() {
                 </div>
                 <div className="h-4 w-full bg-gradient-to-r from-gray-100 to-gray-200 rounded mb-3" />
                 <div className="h-4 w-3/4 bg-gradient-to-r from-gray-100 to-gray-200 rounded mb-4" />
-                
-                {/* Progress bar skeleton */}
                 <div className="mb-4">
                   <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
                     <div className="h-2 w-1/3 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full" />
                   </div>
                 </div>
-                
-                {/* Meta info skeleton */}
                 <div className="flex justify-between items-center mb-4">
                   <div className="h-4 w-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded" />
                   <div className="h-4 w-16 bg-gradient-to-r from-gray-100 to-gray-200 rounded" />
                 </div>
-                
-                {/* Button skeleton */}
                 <div className="flex gap-2">
                   <div className="h-10 flex-1 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
                   <div className="h-10 w-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg" />
@@ -204,124 +208,135 @@ export default function MyEventsPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {events.map((ev) => (
-              <Card key={ev.id} className="hover:shadow-md transition-all duration-200">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-xl font-semibold text-gray-900">{ev.title}</CardTitle>
-                      {('organization_name' in (ev as any)) && (ev as any).organization_name && (
-                        <p className="text-sm text-gray-600 mt-1">{(ev as any).organization_name}</p>
-                      )}
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {paginated.map((ev) => (
+                <Card key={ev.id} className="hover:shadow-md transition-all duration-200">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-xl font-semibold text-gray-900">{ev.title}</CardTitle>
+                        {('organization_name' in (ev as any)) && (ev as any).organization_name && (
+                          <p className="text-sm text-gray-600 mt-1">{(ev as any).organization_name}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                          ev.is_ticketed 
+                            ? 'bg-purple-100 text-purple-800' 
+                            : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {ev.is_ticketed ? 'Ticketed Event' : 'Event'}
+                        </span>
+                        {('is_published' in (ev as any)) && (
+                          (ev as any).is_published ? (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">Published</span>
+                          ) : (
+                            <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-semibold">Draft</span>
+                          )
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
-                        ev.is_ticketed 
-                          ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {getEventTypeLabel(ev.event_type || '', ev.is_ticketed)}
-                      </span>
-                      {('is_published' in (ev as any)) && (
-                        (ev as any).is_published ? (
-                          <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">Published</span>
-                        ) : (
-                          <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-semibold">Draft</span>
-                        )
-                      )}
-                    </div>
-                  </div>
-                  <CardDescription className="mt-2 text-gray-700">
-                    {ev.description || 'No description'}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Goal + Thermometer or Ticket Info */}
-                    {ev.is_ticketed ? (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                            ${(ev.ticket_price || 0).toFixed(2)} {ev.ticket_currency?.toUpperCase() || 'USD'}
-                          </span>
-                          <span className="text-xs text-gray-700">
-                            {ev.tickets_sold || 0} sold
-                            {ev.ticket_quantity && ` • ${ev.ticket_quantity - (ev.tickets_sold || 0)} left`}
-                          </span>
+                    <CardDescription className="mt-2 text-gray-700">
+                      {ev.description || 'No description'}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Goal + Thermometer or Ticket Info */}
+                      {ev.is_ticketed ? (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                              ${(ev.ticket_price || 0).toFixed(2)} {ev.ticket_currency?.toUpperCase() || 'USD'}
+                            </span>
+                            <span className="text-xs text-gray-700">
+                              {ev.tickets_sold || 0} sold
+                              {ev.ticket_quantity && ` • ${ev.ticket_quantity - (ev.tickets_sold || 0)} left`}
+                            </span>
+                          </div>
+                          {ev.ticket_quantity && (
+                            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                              <div 
+                                className="h-2 bg-purple-600" 
+                                style={{ 
+                                  width: `${Math.min(100, Math.max(0, ((ev.tickets_sold || 0) / ev.ticket_quantity) * 100))}%` 
+                                }} 
+                              />
+                            </div>
+                          )}
                         </div>
-                        {ev.ticket_quantity && (
-                          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                            <div 
-                              className="h-2 bg-purple-600" 
-                              style={{ 
-                                width: `${Math.min(100, Math.max(0, ((ev.tickets_sold || 0) / ev.ticket_quantity) * 100))}%` 
-                              }} 
-                            />
+                      ) : (() => {
+                        const goal = Number((ev as any).goal_amount || 0)
+                        const raisedRaw = (ev as any).total_raised ?? (ev as any).amount_raised ?? (ev as any).raised ?? 0
+                        const raised = Number(raisedRaw) || 0
+                        if (!goal || goal <= 0) return null
+                        const pct = Math.min(100, Math.max(0, Math.round((raised / goal) * 100)))
+                        return (
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Goal: ${goal.toLocaleString()}</span>
+                              <span className="text-xs text-gray-700">Raised ${raised.toLocaleString()} • {pct}%</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                              <div className="h-2 bg-blue-600" style={{ width: pct + '%' }} />
+                            </div>
+                          </div>
+                        )
+                      })()}
+
+                      {/* Compact meta row */}
+                      <div className="flex items-center justify-between text-sm text-gray-600">
+                        <span>{ev.event_type || 'Event'}</span>
+                        <span>{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</span>
+                      </div>
+
+                      {/* Event Details */}
+                      <div className="space-y-2 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-2 text-blue-500" />
+                          <span className="truncate">{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</span>
+                        </div>
+                        {(ev.location) && (
+                          <div className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2 text-green-600" />
+                            <span className="truncate">{ev.location}</span>
                           </div>
                         )}
                       </div>
-                    ) : (() => {
-                      const goal = Number((ev as any).goal_amount || 0)
-                      const raisedRaw = (ev as any).total_raised ?? (ev as any).amount_raised ?? (ev as any).raised ?? 0
-                      const raised = Number(raisedRaw) || 0
-                      if (!goal || goal <= 0) return null
-                      const pct = Math.min(100, Math.max(0, Math.round((raised / goal) * 100)))
-                      return (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Goal: ${goal.toLocaleString()}</span>
-                            <span className="text-xs text-gray-700">Raised ${raised.toLocaleString()} • {pct}%</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                            <div className="h-2 bg-blue-600" style={{ width: pct + '%' }} />
-                          </div>
-                        </div>
-                      )
-                    })()}
 
-                    {/* Compact meta row */}
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>{formatType(ev.event_type)}</span>
-                      <span>{ev.start_date ? formatDate(ev.start_date) : ''}</span>
-                    </div>
-
-                    {/* Event Details */}
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                        <span className="truncate">{ev.start_date ? formatDate(ev.start_date) : ''}</span>
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-4">
+                        <a
+                          href={`/events/${ev.id}`}
+                          className={buttonVariants({ className: 'flex-1' })}
+                          style={{ textDecoration: 'none' }}
+                        >
+                          View Details
+                        </a>
+                        <a
+                          href={`/events/${ev.id}`}
+                          className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
+                        </a>
                       </div>
-                      {(ev.location) && (
-                        <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-2 text-green-600" />
-                          <span className="truncate">{ev.location}</span>
-                        </div>
-                      )}
                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-4">
-                      <a
-                        href={`/events/${ev.id}`}
-                        className={buttonVariants({ className: 'flex-1' })}
-                        style={{ textDecoration: 'none' }}
-                      >
-                        View Details
-                      </a>
-                      <a
-                        href={`/events/${ev.id}`}
-                        className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
-                      </a>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+            {/* Pagination Controls */}
+            {events.length > pageSize && (
+              <div className="mt-8 flex items-center justify-center gap-3">
+                <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}>Prev</Button>
+                <span className="text-sm text-gray-700">Page {page} of {Math.max(1, Math.ceil(events.length / pageSize))}</span>
+                <Button variant="outline" size="sm" disabled={page >= Math.ceil(events.length / pageSize)} onClick={() => setPage(p => Math.min(Math.ceil(events.length / pageSize), p + 1))}>Next</Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
