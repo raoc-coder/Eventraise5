@@ -46,7 +46,7 @@ export default function FAQsPage() {
     },
     {
       question: "How does cash out work?",
-      answer: "After your event concludes, you can request a cash out from the Organizer Payouts page using the \"Request Cash Out\" button on a payout. Cash outs are currently processed manually by our team via your selected method (PayPal, Venmo, or ACH). You&apos;ll be notified when the transfer has been initiated."
+      answer: "After your event concludes, you can request a cash out from the Organizer Payouts page using the \"Request Cash Out\" button on a payout. Cash outs are currently processed manually by our team via your selected method (PayPal, Venmo, or ACH). You’ll be notified when the transfer has been initiated."
     }
   ]
 

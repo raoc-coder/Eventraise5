@@ -30,7 +30,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm bg-blue-600 flex-shrink-0">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 ring-2 ring-blue-100 shadow-md flex-shrink-0">
                 <Shield className="h-5 w-5 text-white" />
               </div>
               <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 tracking-tight truncate">
