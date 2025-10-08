@@ -70,7 +70,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <Card>
-              <CardHeader>
+              <CardHeader className="text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
@@ -98,7 +98,7 @@ export default function HomePage() {
             </Card>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
                   <Shield className="h-6 w-6 text-white" />
                 </div>
@@ -126,7 +126,7 @@ export default function HomePage() {
             </Card>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
                   <Share2 className="h-6 w-6 text-white" />
                 </div>
@@ -154,7 +154,7 @@ export default function HomePage() {
             </Card>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-4">
                   <Star className="h-6 w-6 text-white" />
                 </div>
@@ -182,7 +182,7 @@ export default function HomePage() {
             </Card>
 
             <Card>
-              <CardHeader>
+              <CardHeader className="text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center mb-4">
                   <Smartphone className="h-6 w-6 text-white" />
                 </div>
@@ -210,7 +210,7 @@ export default function HomePage() {
             </Card>
 
             <Card className="event-card">
-              <CardHeader>
+              <CardHeader className="text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
                   <Shield className="h-6 w-6 text-white" />
                 </div>

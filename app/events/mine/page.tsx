@@ -17,64 +17,39 @@ import {
   Target,
   Edit,
   Settings,
-  Plus
+  Plus,
+  Rows3,
+  LayoutGrid
 } from 'lucide-react'
 
 export default function MyEventsPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
-  // No JS navigation fallback; rely on plain anchors for reliability
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const fetchingRef = useRef(false)
   const [page, setPage] = useState(1)
   const pageSize = 12
+  const [compact, setCompact] = useState(false)
+  const [sortBy, setSortBy] = useState<'upcoming'|'newest'|'most_raised'>('upcoming')
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/auth/login')
     }
   }, [user, authLoading, router])
 
-  const getEventTypeLabel = (type: string, isTicketed?: boolean) => {
-    if (isTicketed) return 'Ticketed Event'
-    const labels: { [key: string]: string } = {
-      walkathon: 'Walk-a-thon',
-      auction: 'Auction',
-      product_sale: 'Product Sale',
-      direct_donation: 'Direct Donation',
-      raffle: 'Raffle'
-    }
-    return labels[type] || type
-  }
-
-  const formatType = (t?: string) => {
-    const map: Record<string,string> = { walkathon: 'Walk-a-thon', auction: 'Auction', product_sale: 'Product Sale', direct_donation: 'Direct Donation', raffle: 'Raffle' }
-    return map[t || ''] || (t || 'Event')
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
-
   const fetchEvents = useCallback(async () => {
-    if (fetchingRef.current) return // Prevent multiple simultaneous calls
-    
+    if (fetchingRef.current) return
     try {
       fetchingRef.current = true
       setLoading(true)
-      // include user id header for ownership filtering
       let headers: Record<string, string> = {}
       try {
         const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
         const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         if (url && key) {
-      const client = sharedSupabase!
+          const client = sharedSupabase!
           const { data } = await client.auth.getSession()
           const uid = data?.session?.user?.id
           const token = data?.session?.access_token
@@ -85,11 +60,7 @@ export default function MyEventsPage() {
       } catch (error) {
         console.error('Error getting user session:', error)
       }
-      const res = await fetch(`/api/events?mine=1&t=${Date.now()}`, { 
-        headers, 
-        cache: 'no-store' as RequestCache,
-        next: { revalidate: 0 }
-      })
+      const res = await fetch(`/api/events?mine=1&t=${Date.now()}`, { headers, cache: 'no-store' as RequestCache, next: { revalidate: 0 } })
       const json = await res.json().catch(() => ({}))
       console.log('API response:', { status: res.status, json })
       if (!res.ok) {
@@ -113,22 +84,8 @@ export default function MyEventsPage() {
 
   useEffect(() => {
     setPage(1)
-  }, [user])
+  }, [user, sortBy])
 
-  // Listen for event deletion events to refresh the list
-  useEffect(() => {
-    const handleStorageEvent = (e: StorageEvent) => {
-      if (e.key === 'event-deleted') {
-        console.log('Event deleted, refreshing events list')
-        fetchEvents()
-      }
-    }
-
-    window.addEventListener('storage', handleStorageEvent)
-    return () => window.removeEventListener('storage', handleStorageEvent)
-  }, [fetchEvents])
-
-  // Show loading while checking authentication
   if (authLoading) {
     return (
       <div className="min-h-screen bg-white">
@@ -140,21 +97,55 @@ export default function MyEventsPage() {
     )
   }
 
-  // Don't render if not authenticated (will redirect)
   if (!user) {
     return null
   }
 
-  const totalPages = Math.max(1, Math.ceil(events.length / pageSize))
+  const now = new Date().getTime()
+  const sorted = [...events].sort((a, b) => {
+    const aStart = a.start_date ? new Date(a.start_date).getTime() : 0
+    const bStart = b.start_date ? new Date(b.start_date).getTime() : 0
+    if (sortBy === 'upcoming') {
+      const aDelta = aStart >= now ? aStart - now : Number.MAX_SAFE_INTEGER
+      const bDelta = bStart >= now ? bStart - now : Number.MAX_SAFE_INTEGER
+      return aDelta - bDelta
+    }
+    if (sortBy === 'newest') {
+      return (bStart || 0) - (aStart || 0)
+    }
+    const aScore = (a.tickets_sold || 0)
+    const bScore = (b.tickets_sold || 0)
+    if (bScore !== aScore) return bScore - aScore
+    return (bStart || 0) - (aStart || 0)
+  })
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize))
   const startIdx = (page - 1) * pageSize
   const endIdx = startIdx + pageSize
-  const paginated = events.slice(startIdx, endIdx)
+  const paginated = sorted.slice(startIdx, endIdx)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">My Events</h1>
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">My Events</h1>
+          <div className="flex items-center gap-2">
+            <select
+              value={sortBy}
+              onChange={(e)=>setSortBy(e.target.value as any)}
+              className="px-3 py-2 h-10 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Sort events"
+            >
+              <option value="upcoming">Upcoming</option>
+              <option value="newest">Newest</option>
+              <option value="most_raised">Most Raised</option>
+            </select>
+            <Button variant="outline" onClick={()=>setCompact(c=>!c)} aria-label="Toggle view" className="h-10 px-3">
+              {compact ? <LayoutGrid className="h-4 w-4" /> : <Rows3 className="h-4 w-4" />}
+            </Button>
+          </div>
+        </div>
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -209,126 +200,95 @@ export default function MyEventsPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {paginated.map((ev) => (
-                <Card key={ev.id} className="hover:shadow-md transition-all duration-200">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-xl font-semibold text-gray-900">{ev.title}</CardTitle>
-                        {('organization_name' in (ev as any)) && (ev as any).organization_name && (
-                          <p className="text-sm text-gray-600 mt-1">{(ev as any).organization_name}</p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
-                          ev.is_ticketed 
-                            ? 'bg-purple-100 text-purple-800' 
-                            : 'bg-blue-100 text-blue-800'
-                        }`}>
-                          {ev.is_ticketed ? 'Ticketed Event' : 'Event'}
-                        </span>
-                        {('is_published' in (ev as any)) && (
-                          (ev as any).is_published ? (
-                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">Published</span>
-                          ) : (
-                            <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-semibold">Draft</span>
-                          )
-                        )}
-                      </div>
+            {compact ? (
+              <div className="divide-y border rounded-lg overflow-hidden bg-white">
+                <div className="grid grid-cols-12 bg-gray-50 text-gray-700 text-sm font-medium">
+                  <div className="col-span-5 px-4 py-3">Title</div>
+                  <div className="col-span-2 px-4 py-3">Type</div>
+                  <div className="col-span-2 px-4 py-3">Date</div>
+                  <div className="col-span-2 px-4 py-3 hidden sm:block">Location</div>
+                  <div className="col-span-1 px-4 py-3 text-right">Actions</div>
+                </div>
+                {paginated.map(ev => (
+                  <div key={ev.id} className="grid grid-cols-12 items-center text-sm hover:bg-gray-50">
+                    <div className="col-span-5 px-4 py-3">
+                      <div className="font-semibold text-gray-900 truncate">{ev.title}</div>
+                      <div className="text-gray-600 truncate">{ev.description || 'No description'}</div>
                     </div>
-                    <CardDescription className="mt-2 text-gray-700">
-                      {ev.description || 'No description'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {/* Goal + Thermometer or Ticket Info */}
-                      {ev.is_ticketed ? (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                              ${(ev.ticket_price || 0).toFixed(2)} {ev.ticket_currency?.toUpperCase() || 'USD'}
-                            </span>
-                            <span className="text-xs text-gray-700">
-                              {ev.tickets_sold || 0} sold
-                              {ev.ticket_quantity && ` • ${ev.ticket_quantity - (ev.tickets_sold || 0)} left`}
-                            </span>
+                    <div className="col-span-2 px-4 py-3 text-gray-700">{ev.is_ticketed ? 'Ticketed Event' : (ev.event_type || 'Event')}</div>
+                    <div className="col-span-2 px-4 py-3 text-gray-700">{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</div>
+                    <div className="col-span-2 px-4 py-3 text-gray-700 hidden sm:block">{ev.location || ''}</div>
+                    <div className="col-span-1 px-4 py-3 flex items-center justify-end gap-2">
+                      <a href={`/events/${ev.id}`} className={buttonVariants({ variant: 'outline', className: 'h-9 px-3 text-xs' })}>View</a>
+                      <a href={`/events/${ev.id}`} className={buttonVariants({ className: 'h-9 px-3 text-xs' })}>Open</a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {paginated.map((ev) => (
+                  <Card key={ev.id} className="hover:shadow-md transition-all duration-200">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-xl font-semibold text-gray-900">{ev.title}</CardTitle>
+                          {('organization_name' in (ev as any)) && (ev as any).organization_name && (
+                            <p className="text-sm text-gray-600 mt-1">{(ev as any).organization_name}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                            ev.is_ticketed 
+                              ? 'bg-purple-100 text-purple-800' 
+                              : 'bg-blue-100 text-blue-800'
+                          }`}>
+                            {ev.is_ticketed ? 'Ticketed Event' : 'Event'}
+                          </span>
+                          {('is_published' in (ev as any)) && (
+                            (ev as any).is_published ? (
+                              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">Published</span>
+                            ) : (
+                              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-semibold">Draft</span>
+                            )
+                          )}
+                        </div>
+                      </div>
+                      <CardDescription className="mt-2 text-gray-700">
+                        {ev.description || 'No description'}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>{ev.event_type || 'Event'}</span>
+                          <span>{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</span>
+                        </div>
+                        <div className="space-y-2 text-sm text-gray-600">
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-2 text-blue-500" />
+                            <span className="truncate">{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</span>
                           </div>
-                          {ev.ticket_quantity && (
-                            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                              <div 
-                                className="h-2 bg-purple-600" 
-                                style={{ 
-                                  width: `${Math.min(100, Math.max(0, ((ev.tickets_sold || 0) / ev.ticket_quantity) * 100))}%` 
-                                }} 
-                              />
+                          {(ev.location) && (
+                            <div className="flex items-center">
+                              <MapPin className="h-4 w-4 mr-2 text-green-600" />
+                              <span className="truncate">{ev.location}</span>
                             </div>
                           )}
                         </div>
-                      ) : (() => {
-                        const goal = Number((ev as any).goal_amount || 0)
-                        const raisedRaw = (ev as any).total_raised ?? (ev as any).amount_raised ?? (ev as any).raised ?? 0
-                        const raised = Number(raisedRaw) || 0
-                        if (!goal || goal <= 0) return null
-                        const pct = Math.min(100, Math.max(0, Math.round((raised / goal) * 100)))
-                        return (
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Goal: ${goal.toLocaleString()}</span>
-                              <span className="text-xs text-gray-700">Raised ${raised.toLocaleString()} • {pct}%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                              <div className="h-2 bg-blue-600" style={{ width: pct + '%' }} />
-                            </div>
-                          </div>
-                        )
-                      })()}
-
-                      {/* Compact meta row */}
-                      <div className="flex items-center justify-between text-sm text-gray-600">
-                        <span>{ev.event_type || 'Event'}</span>
-                        <span>{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</span>
-                      </div>
-
-                      {/* Event Details */}
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                          <span className="truncate">{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</span>
+                        <div className="flex gap-2 pt-4">
+                          <a href={`/events/${ev.id}`} className={buttonVariants({ className: 'flex-1' })} style={{ textDecoration: 'none' }}>View Details</a>
+                          <a href={`/events/${ev.id}`} className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })} style={{ textDecoration: 'none' }}>
+                            <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
+                          </a>
                         </div>
-                        {(ev.location) && (
-                          <div className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-2 text-green-600" />
-                            <span className="truncate">{ev.location}</span>
-                          </div>
-                        )}
                       </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
-                      {/* Action Buttons */}
-                      <div className="flex gap-2 pt-4">
-                        <a
-                          href={`/events/${ev.id}`}
-                          className={buttonVariants({ className: 'flex-1' })}
-                          style={{ textDecoration: 'none' }}
-                        >
-                          View Details
-                        </a>
-                        <a
-                          href={`/events/${ev.id}`}
-                          className={buttonVariants({ variant: 'outline', className: 'whitespace-nowrap' })}
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <span className="inline-flex items-center"><Settings className="h-4 w-4 mr-1" />Manage</span>
-                        </a>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Pagination Controls */}
             {events.length > pageSize && (
               <div className="mt-8 flex items-center justify-center gap-3">
                 <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}>Prev</Button>
