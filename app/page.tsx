@@ -71,7 +71,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <Card>
               <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Event Creation</CardTitle>
@@ -99,7 +99,7 @@ export default function HomePage() {
 
             <Card>
               <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
                   <Shield className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Secure Payments</CardTitle>
@@ -127,7 +127,7 @@ export default function HomePage() {
 
             <Card>
               <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
                   <Share2 className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Easy Sharing</CardTitle>
@@ -155,7 +155,7 @@ export default function HomePage() {
 
             <Card>
               <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
                   <Star className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Real-time Tracking</CardTitle>
@@ -183,7 +183,7 @@ export default function HomePage() {
 
             <Card>
               <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
                   <Smartphone className="h-6 w-6 text-white" />
                 </div>
                 <CardTitle className="text-gray-900">Mobile Optimized</CardTitle>

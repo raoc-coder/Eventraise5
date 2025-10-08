@@ -45,7 +45,7 @@ export default function ContactPage() {
                 <Mail className="h-8 w-8 text-green-600" />
               </div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">Message Sent!</h2>
-              <p className="text-gray-600 mb-4">Thank you for contacting us. We'll get back to you within 24 hours.</p>
+              <p className="text-gray-600 mb-4">Thank you for contacting us. We&apos;ll get back to you within 24 hours.</p>
               <Button onClick={() => setSubmitted(false)} variant="outline">
                 Send Another Message
               </Button>
@@ -69,7 +69,7 @@ export default function ContactPage() {
           <Card>
             <CardHeader>
               <CardTitle>Send us a message</CardTitle>
-              <CardDescription>Fill out the form and we'll get back to you soon.</CardDescription>
+              <CardDescription>Fill out the form and we&apos;ll get back to you soon.</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
