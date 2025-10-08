@@ -30,17 +30,19 @@ export default function HomePage() {
       <section className="relative py-16 sm:py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
           <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-              Raise More. Stress Less.{' '}
-              <span className="text-blue-600">Celebrate Together.</span>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">
+              Raise More. Stress Less.
             </h1>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-blue-600 mb-4 sm:mb-6 leading-tight">
+              Celebrate Together.
+            </h2>
             <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
               The all-in-one event management platform for <strong>volunteers</strong>, <strong>fundraisers</strong>, <strong>schools</strong>, <strong>parents</strong>, <strong>organizations</strong>, and <strong>trade shows</strong>. Create donation drives, ticketed events, RSVPs, volunteer signups, and sponsorships with built-in PayPal payments, registrations, and real-time analytics.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 justify-center px-4">
               <Link href="/auth/register" className="w-full sm:w-auto">
                 <Button size="mobile">
-                  Create Your First Event
+                  Create Event
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
@@ -296,7 +298,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link href="/auth/register" className="w-full sm:w-auto">
               <Button size="mobile">
-                Create Your First Event
+                Create Event
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>

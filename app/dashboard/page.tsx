@@ -69,7 +69,7 @@ export default function DashboardPage() {
                 <Link href="/events/create">
                   <Button>
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Your First Event
+                    Create Event
                   </Button>
                 </Link>
               </div>

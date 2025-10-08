@@ -187,13 +187,13 @@ export default function MyEventsPage() {
             </div>
             <h3 className="text-2xl font-semibold text-gray-900 mb-3">Ready to make an impact?</h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Create your first event and start raising funds for causes you care about. It only takes a few minutes to get started.
+              Start your event and start raising funds for causes you care about. It only takes a few minutes to get started.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/events/create">
                 <Button size="mobile" className="px-8">
                   <Plus className="h-5 w-5 mr-2" />
-                  Create Your First Event
+                  Create Event
                 </Button>
               </Link>
               <Link href="/getting-started">

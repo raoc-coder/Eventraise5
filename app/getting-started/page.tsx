@@ -35,8 +35,8 @@ export default function GettingStartedPage() {
     {
       number: 3,
       icon: Plus,
-      title: "Create Your First Event",
-      description: "Click \"Create Your First Event\" and fill in event details.",
+      title: "Create Event",
+      description: "Click \"Create Event\" and fill in event details.",
       details: "Choose your event type (donation, ticketed, RSVP, volunteer, or sponsorship), add your event details, set your fundraising goal, and upload an image or description.",
       color: "from-purple-500 to-purple-600"
     },
@@ -177,7 +177,7 @@ export default function GettingStartedPage() {
                 </Link>
                 <Link href="/auth/register">
                   <Button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700">
-                    Start Your First Event
+                    Start Your Event
                   </Button>
                 </Link>
               </div>

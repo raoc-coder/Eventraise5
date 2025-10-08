@@ -439,7 +439,7 @@ export default function EventsPage() {
                 <Link href="/events/create">
                   <Button size="mobile" className="px-8">
                     <Plus className="h-5 w-5 mr-2" />
-                    Create Your First Event
+                    Create Event
                   </Button>
                 </Link>
               )}

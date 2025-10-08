@@ -10,11 +10,11 @@ export default function FAQsPage() {
     },
     {
       question: "How do I get started?",
-      answer: "Click \"Sign Up\" on the homepage to create your account. Once you confirm your email, you can immediately start creating your first event."
+      answer: "Click \"Sign Up\" on the homepage to create your account. Once you confirm your email, you can immediately start your event."
     },
     {
       question: "How do I create an event?",
-      answer: "After logging in, go to \"Create Your First Event.\" Choose your event type (donation, ticketed, RSVP, volunteer, or sponsorship), enter your event details, fundraising goal, and upload an image or description. Then click \"Publish.\""
+      answer: "After logging in, go to \"Create Event.\" Choose your event type (donation, ticketed, RSVP, volunteer, or sponsorship), enter your event details, fundraising goal, and upload an image or description. Then click \"Publish.\""
     },
     {
       question: "How are donations and payments handled?",
