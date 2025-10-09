@@ -4,6 +4,12 @@ const { withSentryConfig } = require('@sentry/nextjs')
 const nextConfig = {
   images: {
     domains: ['images.unsplash.com', 'via.placeholder.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
+    ],
   },
   typescript: {
     ignoreBuildErrors: false,
