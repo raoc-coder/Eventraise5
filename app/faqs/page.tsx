@@ -5,8 +5,8 @@ import { HelpCircle, ArrowRight } from 'lucide-react'
 export default function FAQsPage() {
   const faqs = [
     {
-      question: "What is EventRaiseHUB?",
-      answer: "EventRaiseHUB is an all-in-one event management platform that helps schools, nonprofits, and community groups organize donation drives, ticketed events, volunteer signups, sponsorships, and more — all in one place."
+      question: "What is EventraiseHub?",
+      answer: "EventraiseHub is an all-in-one event management platform that helps schools, nonprofits, and community groups organize donation drives, ticketed events, volunteer signups, sponsorships, and more — all in one place."
     },
     {
       question: "How do I get started?",
@@ -22,7 +22,7 @@ export default function FAQsPage() {
     },
     {
       question: "What are the fees?",
-      answer: "EventRaiseHUB is free to use. A platform fee of 8.99% is applied only to donations to cover payment processing, data storage, and platform maintenance costs."
+      answer: "EventraiseHub is free to use. A platform fee of 8.99% is applied only to donations to cover payment processing, data storage, and platform maintenance costs."
     },
     {
       question: "How do I share my event?",
@@ -34,14 +34,14 @@ export default function FAQsPage() {
     },
     {
       question: "Is the platform secure?",
-      answer: "Absolutely. EventRaiseHUB uses bank-level encryption, is PCI DSS compliant, and ensures your organization&apos;s and donors&apos; data are always protected."
+      answer: "Absolutely. EventraiseHub uses bank-level encryption, is PCI DSS compliant, and ensures your organization&apos;s and donors&apos; data are always protected."
     },
     {
       question: "Can I access my dashboard on mobile?",
       answer: "Yes. The platform is fully mobile-optimized, allowing organizers and donors to manage and contribute from any device."
     },
     {
-      question: "Who can use EventRaiseHUB?",
+      question: "Who can use EventraiseHub?",
       answer: "Parents, teachers, volunteers, and community leaders — anyone organizing fundraising or participation-based events for schools or nonprofits."
     },
     {
@@ -65,7 +65,7 @@ export default function FAQsPage() {
             Frequently Asked Questions
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Everything you need to know about EventRaiseHUB to get started with your fundraising and event management.
+            Everything you need to know about EventraiseHub to get started with your fundraising and event management.
           </p>
         </div>
 
