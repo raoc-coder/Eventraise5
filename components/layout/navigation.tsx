@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Shield, Menu, X } from 'lucide-react'
 import { useAuth } from '@/app/providers'
 import { useState } from 'react'
+import Image from 'next/image'
 
 interface NavigationProps {
   showAuth?: boolean
@@ -14,6 +15,9 @@ interface NavigationProps {
 export function Navigation({ showAuth = true, className = '' }: NavigationProps) {
   const { user, signOut } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const envLogoUrl = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || ''
+  const initialVariant: 'env' | 'png' | 'svg' | 'icon' = envLogoUrl ? 'env' : 'png'
+  const [logoVariant, setLogoVariant] = useState<'env' | 'png' | 'svg' | 'icon'>(initialVariant)
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -23,6 +27,28 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
     setIsMobileMenuOpen(false)
   }
 
+  const renderLogo = () => {
+    if (logoVariant === 'icon') {
+      return (
+        <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 ring-2 ring-blue-100 shadow-md flex-shrink-0">
+          <Shield className="h-5 w-5 text-white" />
+        </div>
+      )
+    }
+    const src = logoVariant === 'env' ? envLogoUrl : logoVariant === 'png' ? '/brand/logo.png' : '/brand/logo.svg'
+    return (
+      <Image
+        src={src}
+        alt="EventraiseHub logo"
+        width={36}
+        height={36}
+        className="w-9 h-9 rounded-md ring-2 ring-blue-100 shadow-md object-contain bg-white"
+        onError={() => setLogoVariant(logoVariant === 'env' ? 'png' : logoVariant === 'png' ? 'svg' : 'icon')}
+        priority
+      />
+    )
+  }
+
   return (
     <nav className={`sticky top-0 z-50 bg-white border-b border-gray-200 backdrop-blur supports-[backdrop-filter]:backdrop-saturate-150 shadow-sm w-full overflow-hidden ${className}`}>
       <div className="nav-container w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
@@ -30,11 +56,9 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
-              <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 ring-2 ring-blue-100 shadow-md flex-shrink-0">
-                <Shield className="h-5 w-5 text-white" />
-              </div>
+              {renderLogo()}
               <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 tracking-tight truncate">
-                EventraiseHUB
+                EventraiseHub
               </span>
             </Link>
           </div>
