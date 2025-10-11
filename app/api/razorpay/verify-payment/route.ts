@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     // Fetch payment details from Razorpay
     const paymentDetails = await fetchPaymentDetails(paymentId)
-    if (!paymentDetails.success) {
+    if (!paymentDetails.success || !paymentDetails.payment) {
       return NextResponse.json({ 
         error: 'Failed to verify payment with Razorpay' 
       }, { status: 400 })
