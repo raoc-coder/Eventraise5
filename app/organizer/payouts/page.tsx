@@ -27,7 +27,7 @@ interface OrganizerPayout {
 
 export default function OrganizerPayoutsPage() {
   const router = useRouter()
-  const { formatCurrency, currency, symbol } = useCurrency()
+  const { formatCurrency: formatCurrencyGlobal, currency, symbol } = useCurrency()
   const [supabase, setSupabase] = useState<any>(null)
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(false)
@@ -105,7 +105,7 @@ export default function OrganizerPayoutsPage() {
     initializeData()
   }, [router])
 
-  const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`
+  const formatCurrencyLocal = (cents: number) => formatCurrencyGlobal(cents / 100)
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()
 
   const getStatusBadge = (status: string) => {
@@ -198,9 +198,9 @@ export default function OrganizerPayoutsPage() {
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">{['Total Raised','Platform Fees','Net Earnings','Completed Payouts'][i]}</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        {i === 0 && formatCurrency(totals.total_gross/100)}
-                        {i === 1 && formatCurrency(totals.total_fees/100)}
-                        {i === 2 && formatCurrency(totals.total_net/100)}
+                        {i === 0 && formatCurrencyLocal(totals.total_gross)}
+                        {i === 1 && formatCurrencyLocal(totals.total_fees)}
+                        {i === 2 && formatCurrencyLocal(totals.total_net)}
                         {i === 3 && totals.completed_payouts}
                       </p>
                     </div>
@@ -250,15 +250,15 @@ export default function OrganizerPayoutsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Total Raised</p>
-                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(payout.total_gross_cents/100)}</p>
+                    <p className="text-2xl font-bold text-gray-900">{formatCurrencyLocal(payout.total_gross_cents)}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Platform Fees</p>
-                    <p className="text-2xl font-bold text-red-600">{formatCurrency(payout.total_fees_cents/100)}</p>
+                    <p className="text-2xl font-bold text-red-600">{formatCurrencyLocal(payout.total_fees_cents)}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Your Earnings</p>
-                    <p className="text-2xl font-bold text-green-600">{formatCurrency(payout.total_net_cents/100)}</p>
+                    <p className="text-2xl font-bold text-green-600">{formatCurrencyLocal(payout.total_net_cents)}</p>
                   </div>
                 </div>
 
