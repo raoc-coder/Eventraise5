@@ -34,7 +34,7 @@ export default function FAQsPage() {
     },
     {
       question: "Is the platform secure?",
-      answer: "Absolutely. EventraiseHub uses bank-level encryption, is PCI DSS compliant, and ensures your organization&apos;s and donors&apos; data are always protected."
+      answer: "Absolutely. EventraiseHub uses bank-level encryption, is PCI DSS compliant, and ensures your organization's and donors' data are always protected."
     },
     {
       question: "Can I access my dashboard on mobile?",
