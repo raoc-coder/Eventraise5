@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, DollarSign, Users, TrendingUp, ExternalLink } from 'lucide-react'
+import { useCurrency } from '@/app/providers/currency-provider'
 
 interface EventPayout {
   id: string
@@ -30,6 +31,7 @@ interface EventPayout {
 
 export default function EventPayoutsPage() {
   const router = useRouter()
+  const { formatCurrency } = useCurrency()
   const [supabase, setSupabase] = useState<any>(null)
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(false)
@@ -103,7 +105,7 @@ export default function EventPayoutsPage() {
     })
   }, [router, fetchEventPayouts])
 
-  const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`
+  const formatCurrencyLocal = (cents: number) => formatCurrency(cents / 100)
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()
 
   const getStatusBadge = (status: string) => {
@@ -160,9 +162,9 @@ export default function EventPayoutsPage() {
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">{['Total Gross','Total Fees','Net to Organizers','Pending Payouts'][i]}</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        {i === 0 && formatCurrency(totals.total_gross)}
-                        {i === 1 && formatCurrency(totals.total_fees)}
-                        {i === 2 && formatCurrency(totals.total_net)}
+                        {i === 0 && formatCurrencyLocal(totals.total_gross)}
+                        {i === 1 && formatCurrencyLocal(totals.total_fees)}
+                        {i === 2 && formatCurrencyLocal(totals.total_net)}
                         {i === 3 && totals.pending_payouts}
                       </p>
                     </div>
@@ -218,9 +220,9 @@ export default function EventPayoutsPage() {
                           <p className="text-xs text-gray-500">{payout.organizer_email}</p>
                         </div>
                       </td>
-                      <td className="py-3 pr-4 text-right font-medium align-middle">{formatCurrency(payout.total_gross_cents)}</td>
-                      <td className="py-3 pr-4 text-right text-red-600 align-middle">{formatCurrency(payout.total_fees_cents)}</td>
-                      <td className="py-3 pr-4 text-right font-bold text-green-600 align-middle">{formatCurrency(payout.total_net_cents)}</td>
+                      <td className="py-3 pr-4 text-right font-medium align-middle">{formatCurrencyLocal(payout.total_gross_cents)}</td>
+                      <td className="py-3 pr-4 text-right text-red-600 align-middle">{formatCurrencyLocal(payout.total_fees_cents)}</td>
+                      <td className="py-3 pr-4 text-right font-bold text-green-600 align-middle">{formatCurrencyLocal(payout.total_net_cents)}</td>
                       <td className="py-3 pr-4 align-middle">
                         <Badge className={getStatusBadge(payout.payout_status)}>
                           {payout.payout_status}

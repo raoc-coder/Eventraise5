@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Check, Globe, MapPin } from 'lucide-react'
-import { Country, getStoredCountry, storeCountry, COUNTRY_CONFIG } from '@/lib/currency'
+import { Country, COUNTRY_CONFIG } from '@/lib/currency'
+import { useCurrency } from '@/app/providers/currency-provider'
 
 interface CountrySelectorProps {
   onCountryChange?: (country: Country) => void
@@ -17,17 +18,12 @@ export function CountrySelector({
   className = '',
   variant = 'dropdown'
 }: CountrySelectorProps) {
-  const [selectedCountry, setSelectedCountry] = useState<Country>('US')
+  const { country: selectedCountry, setCountry } = useCurrency()
   const [isOpen, setIsOpen] = useState(false)
-
-  useEffect(() => {
-    setSelectedCountry(getStoredCountry())
-  }, [])
 
   const handleCountrySelect = (country: Country) => {
     console.log('Country selected:', country)
-    setSelectedCountry(country)
-    storeCountry(country)
+    setCountry(country)
     setIsOpen(false)
     onCountryChange?.(country)
   }
@@ -88,9 +84,11 @@ export function CountrySelector({
       <button
         onClick={() => {
           console.log('Country selector clicked, isOpen:', isOpen)
+          console.log('Current country:', selectedCountry)
           setIsOpen(!isOpen)
         }}
-        className="flex items-center gap-2 h-10 px-3 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-2 h-10 px-3 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors cursor-pointer"
+        style={{ zIndex: 999 }}
       >
         <MapPin className="h-4 w-4" />
         <span>
@@ -105,10 +103,10 @@ export function CountrySelector({
         <>
           {/* Backdrop to close dropdown */}
           <div 
-            className="fixed inset-0 z-40" 
+            className="fixed inset-0 z-[999]" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+          <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-[1000]">
             <div className="p-2">
               {Object.entries(COUNTRY_CONFIG).map(([countryCode, config]) => (
                 <button

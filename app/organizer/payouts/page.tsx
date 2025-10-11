@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DollarSign, Calendar, TrendingUp, Users, ExternalLink } from 'lucide-react'
+import { useCurrency } from '@/app/providers/currency-provider'
 
 interface OrganizerPayout {
   id: string
@@ -26,6 +27,7 @@ interface OrganizerPayout {
 
 export default function OrganizerPayoutsPage() {
   const router = useRouter()
+  const { formatCurrency, currency, symbol } = useCurrency()
   const [supabase, setSupabase] = useState<any>(null)
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(false)
@@ -196,9 +198,9 @@ export default function OrganizerPayoutsPage() {
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">{['Total Raised','Platform Fees','Net Earnings','Completed Payouts'][i]}</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        {i === 0 && `$${(totals.total_gross/100).toFixed(2)}`}
-                        {i === 1 && `$${(totals.total_fees/100).toFixed(2)}`}
-                        {i === 2 && `$${(totals.total_net/100).toFixed(2)}`}
+                        {i === 0 && formatCurrency(totals.total_gross/100)}
+                        {i === 1 && formatCurrency(totals.total_fees/100)}
+                        {i === 2 && formatCurrency(totals.total_net/100)}
                         {i === 3 && totals.completed_payouts}
                       </p>
                     </div>
@@ -248,15 +250,15 @@ export default function OrganizerPayoutsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Total Raised</p>
-                    <p className="text-2xl font-bold text-gray-900">{`$${(payout.total_gross_cents/100).toFixed(2)}`}</p>
+                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(payout.total_gross_cents/100)}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Platform Fees</p>
-                    <p className="text-2xl font-bold text-red-600">{`$${(payout.total_fees_cents/100).toFixed(2)}`}</p>
+                    <p className="text-2xl font-bold text-red-600">{formatCurrency(payout.total_fees_cents/100)}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Your Earnings</p>
-                    <p className="text-2xl font-bold text-green-600">{`$${(payout.total_net_cents/100).toFixed(2)}`}</p>
+                    <p className="text-2xl font-bold text-green-600">{formatCurrency(payout.total_net_cents/100)}</p>
                   </div>
                 </div>
 

@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase as sharedSupabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { Toaster } from 'react-hot-toast'
+import { CurrencyProvider } from '@/app/providers/currency-provider'
 
 interface AuthContextType {
   user: User | null
@@ -80,8 +81,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, loading, signOut }}>
-      {children}
-      <Toaster position="top-right" />
+      <CurrencyProvider>
+        {children}
+        <Toaster position="top-right" />
+      </CurrencyProvider>
     </AuthContext.Provider>
   )
 }
