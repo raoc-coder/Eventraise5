@@ -46,7 +46,15 @@ export default function FAQsPage() {
     },
     {
       question: "How does cash out work?",
-      answer: "After your event concludes, you can request a cash out from the Organizer Payouts page using the \"Request Cash Out\" button on a payout. Cash outs are currently processed manually by our team via your selected method (PayPal, Venmo, or ACH). You’ll be notified when the transfer has been initiated."
+      answer: "After your event concludes, you can request a cash out from the Organizer Payouts page using the \"Request Cash Out\" button on a payout. Cash outs are currently processed manually by our team via your selected method (PayPal, Venmo, or ACH). You'll be notified when the transfer has been initiated."
+    },
+    {
+      question: "Do you support international payments?",
+      answer: "Yes! EventraiseHub supports both US and India markets. Select your country from the dropdown in the navigation to switch between USD (PayPal) and INR (Razorpay + PayPal) payment options. All features work the same way regardless of your location."
+    },
+    {
+      question: "What payment methods are available in India?",
+      answer: "For Indian users, we support Razorpay (which includes UPI, credit/debit cards, net banking, and digital wallets) as the primary payment method, with PayPal as a backup option. All transactions are processed securely and in INR currency."
     }
   ]
 

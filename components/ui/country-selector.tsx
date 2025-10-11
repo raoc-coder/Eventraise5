@@ -86,7 +86,11 @@ export function CountrySelector({
     <div className={`relative ${className}`}>
       <Button
         variant="outline"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          setIsOpen(!isOpen)
+        }}
         className="flex items-center gap-2 h-10 px-3"
       >
         <MapPin className="h-4 w-4" />
@@ -99,40 +103,51 @@ export function CountrySelector({
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-          <div className="p-2">
-            {Object.entries(COUNTRY_CONFIG).map(([countryCode, config]) => (
-              <button
-                key={countryCode}
-                onClick={() => handleCountrySelect(countryCode as Country)}
-                className={`w-full text-left p-3 rounded-md transition-colors flex items-center gap-3 ${
-                  selectedCountry === countryCode
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'hover:bg-gray-50'
-                }`}
-              >
-                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
-                  {countryCode === 'US' ? (
-                    <span className="text-xs">🇺🇸</span>
-                  ) : (
-                    <span className="text-xs">🇮🇳</span>
+        <>
+          {/* Backdrop to close dropdown */}
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <div className="p-2">
+              {Object.entries(COUNTRY_CONFIG).map(([countryCode, config]) => (
+                <button
+                  key={countryCode}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleCountrySelect(countryCode as Country)
+                  }}
+                  className={`w-full text-left p-3 rounded-md transition-colors flex items-center gap-3 ${
+                    selectedCountry === countryCode
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                    {countryCode === 'US' ? (
+                      <span className="text-xs">🇺🇸</span>
+                    ) : (
+                      <span className="text-xs">🇮🇳</span>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-sm">
+                      {countryCode === 'US' ? 'United States' : 'India'}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {config.currency} • {config.paymentMethods.join(', ')}
+                    </div>
+                  </div>
+                  {selectedCountry === countryCode && (
+                    <Check className="h-4 w-4 text-blue-600" />
                   )}
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm">
-                    {countryCode === 'US' ? 'United States' : 'India'}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {config.currency} • {config.paymentMethods.join(', ')}
-                  </div>
-                </div>
-                {selectedCountry === countryCode && (
-                  <Check className="h-4 w-4 text-blue-600" />
-                )}
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   )
