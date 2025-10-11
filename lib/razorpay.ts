@@ -5,11 +5,17 @@
 
 import Razorpay from 'razorpay'
 
-// Initialize Razorpay instance
-export const razorpayInstance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-})
+// Initialize Razorpay instance only when environment variables are available
+export const getRazorpayInstance = () => {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    throw new Error('Razorpay environment variables not configured')
+  }
+  
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  })
+}
 
 /**
  * Create a Razorpay order for donations
@@ -21,7 +27,8 @@ export async function createDonationOrder(
   donorEmail?: string
 ) {
   try {
-    const order = await razorpayInstance.orders.create({
+    const razorpay = getRazorpayInstance()
+    const order = await razorpay.orders.create({
       amount: amountInPaise,
       currency: 'INR',
       receipt: `donation_${eventId}_${Date.now()}`,
@@ -61,7 +68,8 @@ export async function createTicketOrder(
   buyerEmail?: string
 ) {
   try {
-    const order = await razorpayInstance.orders.create({
+    const razorpay = getRazorpayInstance()
+    const order = await razorpay.orders.create({
       amount: amountInPaise,
       currency: 'INR',
       receipt: `ticket_${eventId}_${ticketId}_${Date.now()}`,
@@ -118,7 +126,8 @@ export function verifyPaymentSignature(
  */
 export async function fetchPaymentDetails(paymentId: string) {
   try {
-    const payment = await razorpayInstance.payments.fetch(paymentId)
+    const razorpay = getRazorpayInstance()
+    const payment = await razorpay.payments.fetch(paymentId)
     return {
       success: true,
       payment,

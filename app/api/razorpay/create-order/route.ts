@@ -4,6 +4,13 @@ import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if Razorpay is configured
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json({ 
+        error: 'Razorpay not configured for this environment' 
+      }, { status: 503 })
+    }
+
     // Rate limiting
     const clientKey = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
     if (!rateLimit(`rzp-create-order:${clientKey}`, 10)) {
