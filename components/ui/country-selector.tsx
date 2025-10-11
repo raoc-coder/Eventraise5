@@ -25,6 +25,7 @@ export function CountrySelector({
   }, [])
 
   const handleCountrySelect = (country: Country) => {
+    console.log('Country selected:', country)
     setSelectedCountry(country)
     storeCountry(country)
     setIsOpen(false)
@@ -84,23 +85,21 @@ export function CountrySelector({
 
   return (
     <div className={`relative ${className}`}>
-      <Button
-        variant="outline"
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
+      <button
+        onClick={() => {
+          console.log('Country selector clicked, isOpen:', isOpen)
           setIsOpen(!isOpen)
         }}
-        className="flex items-center gap-2 h-10 px-3"
+        className="flex items-center gap-2 h-10 px-3 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors"
       >
         <MapPin className="h-4 w-4" />
-        <span className="text-sm">
-          {selectedCountry === 'US' ? '🇺🇸 United States' : '🇮🇳 India'}
+        <span>
+          {selectedCountry === 'US' ? '🇺🇸 US' : '🇮🇳 India'}
         </span>
         <span className="text-xs text-gray-500">
           {currentConfig.currency}
         </span>
-      </Button>
+      </button>
 
       {isOpen && (
         <>
@@ -114,11 +113,7 @@ export function CountrySelector({
               {Object.entries(COUNTRY_CONFIG).map(([countryCode, config]) => (
                 <button
                   key={countryCode}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    handleCountrySelect(countryCode as Country)
-                  }}
+                  onClick={() => handleCountrySelect(countryCode as Country)}
                   className={`w-full text-left p-3 rounded-md transition-colors flex items-center gap-3 ${
                     selectedCountry === countryCode
                       ? 'bg-blue-50 text-blue-700'
