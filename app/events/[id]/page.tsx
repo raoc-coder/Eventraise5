@@ -739,7 +739,7 @@ export default function EventDetailPage() {
                           })()}
                         </div>
                         <div className="flex justify-between mt-1 text-xs text-blue-800">
-                          <span>Raised ${getRaisedAmount(event).toLocaleString()}</span>
+                          <span>Raised {formatCurrency(getRaisedAmount(event))}</span>
                           <span>{(() => {
                             const goal = Number(event.goal_amount) || 0
                             const pct = goal > 0 ? Math.min(100, Math.max(0, Math.round((getRaisedAmount(event) / goal) * 100))) : 0
@@ -1022,13 +1022,13 @@ export default function EventDetailPage() {
                     <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-gray-700 font-medium">Donation Amount</span>
-                        <span className="text-gray-900 font-semibold">${donationAmount.toFixed(2)}</span>
+                        <span className="text-gray-900 font-semibold">{formatCurrency(donationAmount)}</span>
                       </div>
                       <div className="border-t border-blue-300 mt-2 pt-2">
                         <div className="flex justify-between items-center">
                           <span className="text-gray-900 font-bold">You’ll Be Charged</span>
                           <span className="text-blue-600 font-bold text-lg">
-                            ${donationAmount.toFixed(2)}
+                            {formatCurrency(donationAmount)}
                           </span>
                         </div>
                       </div>
@@ -1357,13 +1357,13 @@ export default function EventDetailPage() {
                       <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-gray-700 font-medium">Donation Amount</span>
-                          <span className="text-gray-900 font-semibold">${donationAmount.toFixed(2)}</span>
+                          <span className="text-gray-900 font-semibold">{formatCurrency(donationAmount)}</span>
                         </div>
                         <div className="border-t border-blue-300 mt-2 pt-2">
                           <div className="flex justify-between items-center">
                             <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
                             <span className="text-blue-600 font-bold text-lg">
-                              ${donationAmount.toFixed(2)}
+                              {formatCurrency(donationAmount)}
                             </span>
                           </div>
                         </div>
@@ -1412,7 +1412,7 @@ export default function EventDetailPage() {
                             className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                           >
                             <Heart className="h-4 w-4 mr-2" />
-                          Donate ${donationAmount}
+                          Donate {formatCurrency(donationAmount)}
                           </Button>
                           {/* Removed legacy Braintree method */}
                         </div>
@@ -1752,13 +1752,13 @@ export default function EventDetailPage() {
                       <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-gray-700 font-medium">Donation Amount</span>
-                          <span className="text-gray-900 font-semibold">${donationAmount.toFixed(2)}</span>
+                          <span className="text-gray-900 font-semibold">{formatCurrency(donationAmount)}</span>
                         </div>
                         <div className="border-t border-blue-300 mt-2 pt-2">
                           <div className="flex justify-between items-center">
                             <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
                             <span className="text-blue-600 font-bold text-lg">
-                              ${donationAmount.toFixed(2)}
+                              {formatCurrency(donationAmount)}
                             </span>
                           </div>
                         </div>
@@ -1847,8 +1847,8 @@ export default function EventDetailPage() {
                     <Target className="h-5 w-5 text-green-600 mr-2" />
                     <h3 className="font-semibold text-green-900">Revenue</h3>
                   </div>
-                  <p className="text-2xl font-bold text-green-600">${(analytics.revenue?.total || 0).toFixed(2)}</p>
-                  <p className="text-sm text-green-700">${(analytics.revenue?.donations?.net || 0).toFixed(2)} net after fees</p>
+                  <p className="text-2xl font-bold text-green-600">{formatCurrency(analytics.revenue?.total || 0)}</p>
+                  <p className="text-sm text-green-700">{formatCurrency(analytics.revenue?.donations?.net || 0)} net after fees</p>
                 </div>
                 <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
                   <div className="flex items-center mb-2">
@@ -1870,15 +1870,15 @@ export default function EventDetailPage() {
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Gross Donations:</span>
-                      <span className="font-medium">${(analytics.revenue?.donations?.gross || 0).toFixed(2)}</span>
+                      <span className="font-medium">{formatCurrency(analytics.revenue?.donations?.gross || 0)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Platform Fees:</span>
-                      <span className="font-medium">${(analytics.revenue?.donations?.fees || 0).toFixed(2)}</span>
+                      <span className="font-medium">{formatCurrency(analytics.revenue?.donations?.fees || 0)}</span>
                     </div>
                     <div className="flex justify-between border-t pt-1">
                       <span className="text-gray-900 font-medium">Net to You:</span>
-                      <span className="font-bold text-green-600">${(analytics.revenue?.donations?.net || 0).toFixed(2)}</span>
+                      <span className="font-bold text-green-600">{formatCurrency(analytics.revenue?.donations?.net || 0)}</span>
                     </div>
                     <div className="flex justify-between text-xs text-gray-500 mt-2">
                       <span>Completed: {analytics.revenue?.donations?.count || 0}</span>
