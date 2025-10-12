@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Navigation } from '@/components/layout/navigation'
 import { PayPalDonationButton } from '@/lib/paypal-client'
+import { useCurrency } from '@/app/providers/currency-provider'
 import { 
   Heart, 
   Share2, 
@@ -70,6 +71,7 @@ export default function EventDetailPage() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { formatCurrency, country, getSuggestedAmounts } = useCurrency()
   const [showCreatedBanner, setShowCreatedBanner] = useState(false)
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
@@ -138,7 +140,12 @@ export default function EventDetailPage() {
   const [shareEmail, setShareEmail] = useState('')
   const [shareMsg, setShareMsg] = useState('')
   const [shareSending, setShareSending] = useState(false)
-  const [donationAmount, setDonationAmount] = useState<number>(25)
+  const [donationAmount, setDonationAmount] = useState<number>(country === 'IN' ? 2000 : 25)
+  
+  // Update donation amount when country changes
+  useEffect(() => {
+    setDonationAmount(country === 'IN' ? 2000 : 25)
+  }, [country])
   const [publishing, setPublishing] = useState(false)
   const [registrations, setRegistrations] = useState<any[] | null>(null)
   const [regLoading, setRegLoading] = useState(false)
@@ -1676,14 +1683,14 @@ export default function EventDetailPage() {
                     <div className="mb-6">
                       <p className="text-gray-700 mb-3 font-medium">Choose Amount</p>
                       <div className="flex flex-wrap items-center gap-2 mb-4 overflow-hidden">
-                        {[1,10,25,50,100].map(v => (
+                        {getSuggestedAmounts(country).map(v => (
                           <Button 
                             key={v}
                             variant={donationAmount===v ? 'default' : 'outline'}
                             onClick={()=>setDonationAmount(v)}
                             className="min-h-[44px] px-4"
                           >
-                            ${v}
+                            {formatCurrency(v)}
                           </Button>
                         ))}
                         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -1695,7 +1702,7 @@ export default function EventDetailPage() {
                             value={donationAmount}
                             onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
                             className="input w-20 sm:w-24 min-h-[44px] text-base"
-                            placeholder="$1"
+                            placeholder={country === 'IN' ? "₹1" : "$1"}
                           />
                         </div>
                       </div>

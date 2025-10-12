@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Navigation } from '@/components/layout/navigation'
+import { useCurrency } from '@/app/providers/currency-provider'
 import { 
   Search, 
   Filter, 
@@ -47,6 +48,7 @@ interface Event {
 
 export default function EventsPage() {
   const router = useRouter()
+  const { formatCurrency } = useCurrency()
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -303,7 +305,7 @@ export default function EventsPage() {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                            ${(event.ticket_price || 0).toFixed(2)} {event.ticket_currency?.toUpperCase() || 'USD'}
+                            {formatCurrency(event.ticket_price || 0)}
                           </span>
                           <span className="text-xs text-gray-700">
                             {event.tickets_sold || 0} sold
@@ -330,8 +332,8 @@ export default function EventsPage() {
                       return (
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Goal: ${goal.toLocaleString()}</span>
-                            <span className="text-xs text-gray-700">Raised ${raised.toLocaleString()} • {pct}%</span>
+                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Goal: {formatCurrency(goal)}</span>
+                            <span className="text-xs text-gray-700">Raised {formatCurrency(raised)} • {pct}%</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                             <div className="h-2 bg-blue-600" style={{ width: pct + '%' }} />

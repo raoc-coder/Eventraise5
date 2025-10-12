@@ -8,6 +8,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Navigation } from '@/components/layout/navigation'
 import { supabase as sharedSupabase } from '@/lib/supabase'
 import { useAuth } from '@/app/providers'
+import { useCurrency } from '@/app/providers/currency-provider'
 import { 
   Calendar, 
   MapPin, 
@@ -25,6 +26,7 @@ import {
 export default function MyEventsPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
+  const { formatCurrency } = useCurrency()
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const fetchingRef = useRef(false)

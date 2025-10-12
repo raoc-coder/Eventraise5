@@ -10,6 +10,7 @@ import { ShoppingCart, Ticket, Calendar, MapPin, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { paypalClientConfig, PayPalTicketButton } from '@/lib/paypal-client'
+import { useCurrency } from '@/app/providers/currency-provider'
 
 interface Ticket {
   id: string
@@ -39,6 +40,7 @@ interface TicketPurchaseProps {
 }
 
 export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: TicketPurchaseProps) {
+  const { formatCurrency, country } = useCurrency()
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [buyerInfo, setBuyerInfo] = useState({ name: '', email: '' })
@@ -157,7 +159,7 @@ export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: Tick
                     )}
                   </div>
                   <div className="text-lg font-semibold">
-                    ${(ticket.price_cents / 100).toFixed(2)} {ticket.currency.toUpperCase()}
+                    {formatCurrency(ticket.price_cents / 100)}
                   </div>
                   {ticket.quantity_total && (
                     <div className="text-sm opacity-75 mt-1">
@@ -244,13 +246,13 @@ export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: Tick
         <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-700 font-medium">Ticket Price</span>
-            <span className="text-gray-900 font-semibold">${(selectedTicket.price_cents / 100).toFixed(2)} × {quantity}</span>
+            <span className="text-gray-900 font-semibold">{formatCurrency(selectedTicket.price_cents / 100)} × {quantity}</span>
           </div>
           <div className="border-t border-blue-300 mt-2 pt-2">
             <div className="flex justify-between items-center">
               <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
               <span className="text-blue-600 font-bold text-lg">
-                ${(totalAmount / 100).toFixed(2)}
+                {formatCurrency(totalAmount / 100)}
               </span>
             </div>
           </div>

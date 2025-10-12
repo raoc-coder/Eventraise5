@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from '@/app/providers'
+import { useCurrency } from '@/app/providers/currency-provider'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -25,6 +26,7 @@ import Link from 'next/link'
 
 export default function DashboardPage() {
   const { user, loading } = useAuth()
+  const { formatCurrency } = useCurrency()
   const router = useRouter()
 
   useEffect(() => {
