@@ -1,12 +1,13 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { Country, getStoredCountry, storeCountry, formatCurrency, COUNTRY_CONFIG } from '@/lib/currency'
+import { Country, getStoredCountry, storeCountry, formatCurrency, getSuggestedAmounts, COUNTRY_CONFIG } from '@/lib/currency'
 
 interface CurrencyContextType {
   country: Country
   setCountry: (country: Country) => void
   formatCurrency: (amount: number) => string
+  getSuggestedAmounts: (country: Country) => number[]
   currency: string
   symbol: string
   paymentMethods: readonly string[]
@@ -36,6 +37,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
     country,
     setCountry,
     formatCurrency: (amount: number) => formatCurrency(amount, country),
+    getSuggestedAmounts,
     currency: config.currency,
     symbol: config.symbol,
     paymentMethods: config.paymentMethods,
