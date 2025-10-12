@@ -12,13 +12,13 @@ export const COUNTRY_CONFIG = {
     symbol: '$',
     locale: 'en-US',
     paymentMethods: ['paypal'] as const,
-    defaultAmount: 25, // Default donation amount in USD
+    defaultAmount: 50, // Default donation amount in USD
   },
   IN: {
     currency: 'INR' as Currency,
     symbol: '₹',
     locale: 'en-IN',
-    paymentMethods: ['razorpay', 'paypal'] as const,
+    paymentMethods: ['paypal'] as const,
     defaultAmount: 2000, // Default donation amount in INR (~$25)
   },
 } as const
@@ -62,7 +62,7 @@ export function getSuggestedAmounts(country: Country = 'US'): number[] {
   if (country === 'IN') {
     return [500, 1000, 2000, 5000, 10000] // INR amounts
   }
-  return [10, 25, 50, 100, 250] // USD amounts
+  return [10, 20, 50, 100, 200] // USD amounts in $10 increments
 }
 
 /**
@@ -118,4 +118,27 @@ export function storeCountry(country: Country): void {
   } catch (error) {
     console.warn('Failed to store country preference:', error)
   }
+}
+
+/**
+ * Format date based on country preference
+ */
+export function formatDate(date: Date | string, country: Country = 'US'): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  
+  if (country === 'IN') {
+    // India format: DD/MM/YYYY
+    return dateObj.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+  }
+  
+  // US format: MM/DD/YYYY
+  return dateObj.toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  })
 }

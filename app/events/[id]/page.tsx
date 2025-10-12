@@ -71,7 +71,7 @@ export default function EventDetailPage() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const { formatCurrency, country, getSuggestedAmounts } = useCurrency()
+  const { formatCurrency, country, getSuggestedAmounts, currency } = useCurrency()
   const [showCreatedBanner, setShowCreatedBanner] = useState(false)
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
@@ -140,11 +140,11 @@ export default function EventDetailPage() {
   const [shareEmail, setShareEmail] = useState('')
   const [shareMsg, setShareMsg] = useState('')
   const [shareSending, setShareSending] = useState(false)
-  const [donationAmount, setDonationAmount] = useState<number>(country === 'IN' ? 2000 : 25)
+  const [donationAmount, setDonationAmount] = useState<number>(country === 'IN' ? 2000 : 50)
   
   // Update donation amount when country changes
   useEffect(() => {
-    setDonationAmount(country === 'IN' ? 2000 : 25)
+    setDonationAmount(country === 'IN' ? 2000 : 50)
   }, [country])
   const [publishing, setPublishing] = useState(false)
   const [registrations, setRegistrations] = useState<any[] | null>(null)
@@ -724,7 +724,7 @@ export default function EventDetailPage() {
                           </div>
                           <div>
                             <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
-                            <p className="text-2xl font-bold text-blue-900">${event.goal_amount.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-blue-900">{formatCurrency(event.goal_amount)}</p>
                           </div>
                         </div>
                         {/* Thermometer */}
@@ -831,7 +831,7 @@ export default function EventDetailPage() {
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-green-700 uppercase tracking-wide">Fundraising Goal</p>
-                        <p className="text-green-900 font-bold text-lg">${event.goal_amount.toLocaleString()}</p>
+                        <p className="text-green-900 font-bold text-lg">{formatCurrency(event.goal_amount)}</p>
                       </div>
                     </div>
                   )}
@@ -1039,10 +1039,11 @@ export default function EventDetailPage() {
                       <PayPalDonationButton
                         amount={donationAmount}
                         eventId={(params as any)?.id}
+                        currency={currency}
                         onSuccess={(orderId) => {
                           toast.success('Donation successful! Thank you for your support.')
                           // Reset form
-                          setDonationAmount(1)
+                          setDonationAmount(country === 'IN' ? 2000 : 50)
                           setDonorName('')
                           setDonorEmail('')
                           setDonorMessage('')
@@ -1050,7 +1051,7 @@ export default function EventDetailPage() {
                         onError={(error) => {
                           toast.error(error)
                         }}
-                        disabled={donationAmount < 1}
+                        disabled={donationAmount < (country === 'IN' ? 1 : 10)}
                       />
                       
                       {/* PayPal Marks for branding */}
@@ -1373,16 +1374,17 @@ export default function EventDetailPage() {
                         <PayPalDonationButton
                           amount={donationAmount}
                           eventId={(params as any)?.id}
+                          currency={currency}
                           onSuccess={(orderId) => {
                             toast.success('Donation successful! Thank you for your support.')
                             // Reset form
-                            setDonationAmount(1)
+                            setDonationAmount(country === 'IN' ? 2000 : 50)
                             setDonorMessage('')
                           }}
                           onError={(error) => {
                             toast.error(error)
                           }}
-                          disabled={donationAmount < 1}
+                          disabled={donationAmount < (country === 'IN' ? 1 : 10)}
                         />
                         
                         <div className="text-center">
@@ -1697,12 +1699,12 @@ export default function EventDetailPage() {
                           <span className="text-gray-600 text-sm font-medium whitespace-nowrap">Custom</span>
                           <input
                             type="number"
-                            min={1}
-                            step={1}
+                            min={country === 'IN' ? 1 : 10}
+                            step={country === 'IN' ? 1 : 10}
                             value={donationAmount}
-                            onChange={(e)=>setDonationAmount(Math.max(1, Number(e.target.value)))}
+                            onChange={(e)=>setDonationAmount(Math.max(country === 'IN' ? 1 : 10, Number(e.target.value)))}
                             className="input w-20 sm:w-24 min-h-[44px] text-base"
-                            placeholder={country === 'IN' ? "₹1" : "$1"}
+                            placeholder={country === 'IN' ? "₹1" : "$10"}
                           />
                         </div>
                       </div>
@@ -1767,10 +1769,11 @@ export default function EventDetailPage() {
                         <PayPalDonationButton
                           amount={donationAmount}
                           eventId={(params as any)?.id}
+                          currency={currency}
                           onSuccess={(orderId) => {
                             toast.success('Donation successful! Thank you for your support.')
                             // Reset form
-                            setDonationAmount(1)
+                            setDonationAmount(country === 'IN' ? 2000 : 50)
                             setDonorName('')
                             setDonorEmail('')
                             setDonorMessage('')
@@ -1779,7 +1782,7 @@ export default function EventDetailPage() {
                           onError={(error) => {
                             toast.error(error)
                           }}
-                          disabled={donationAmount < 1}
+                          disabled={donationAmount < (country === 'IN' ? 1 : 10)}
                         />
                         
                         {/* PayPal Marks for branding */}
@@ -1899,7 +1902,7 @@ export default function EventDetailPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Goal:</span>
                       <span className="font-medium">
-                        {event.goal_amount ? `$${event.goal_amount.toLocaleString()}` : 'No goal set'}
+                        {event.goal_amount ? formatCurrency(event.goal_amount) : 'No goal set'}
                       </span>
                     </div>
                   </div>

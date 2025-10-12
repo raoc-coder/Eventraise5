@@ -5,7 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { eventId, amount, type, ticketId, quantity } = body
+    const { eventId, amount, type, ticketId, quantity, currency = 'USD' } = body
 
     if (!eventId || !amount || !type) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -35,10 +35,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Calculate fees
-    const fees = calculatePlatformFee(amount)
+    const fees = calculatePlatformFee(amount, currency)
 
     // Create PayPal order
-    const orderResult = await createDonationOrder(eventId, amount)
+    const orderResult = await createDonationOrder(eventId, amount, currency)
 
     if (!orderResult.success) {
       // Propagate a clearer error with 4xx when it's likely a request/config issue

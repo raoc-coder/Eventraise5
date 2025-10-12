@@ -40,7 +40,7 @@ interface TicketPurchaseProps {
 }
 
 export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: TicketPurchaseProps) {
-  const { formatCurrency, country } = useCurrency()
+  const { formatCurrency, country, currency } = useCurrency()
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [buyerInfo, setBuyerInfo] = useState({ name: '', email: '' })
@@ -268,6 +268,7 @@ export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: Tick
             eventId={event.id}
             ticketId={selectedTicket.id}
             quantity={quantity}
+            currency={currency}
             onSuccess={(orderId) => {
               toast.success('Tickets purchased successfully!')
               fetchTickets?.()

@@ -2,27 +2,32 @@
 
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
 
-// PayPal client configuration
-export const paypalClientConfig = {
+// PayPal client configuration factory
+export const createPaypalClientConfig = (currency: string = 'USD') => ({
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-  currency: 'USD',
+  currency,
   intent: 'capture',
   components: 'buttons',
   enableFunding: 'paylater,venmo,card,credit,paypal',
   disableFunding: '',
   dataSdkIntegration: 'eventraisehub'
-}
+})
+
+// Default USD configuration for backward compatibility
+export const paypalClientConfig = createPaypalClientConfig('USD')
 
 // PayPal button component for donations
 export function PayPalDonationButton({
   amount,
   eventId,
+  currency = 'USD',
   onSuccess,
   onError,
   disabled = false
 }: {
   amount: number
   eventId: string
+  currency?: string
   onSuccess: (orderId: string) => void
   onError: (error: string) => void
   disabled?: boolean
@@ -37,6 +42,7 @@ export function PayPalDonationButton({
         body: JSON.stringify({
           eventId,
           amount,
+          currency,
           type: 'donation'
         }),
       })
@@ -88,7 +94,7 @@ export function PayPalDonationButton({
   }
 
   return (
-    <PayPalScriptProvider options={paypalClientConfig}>
+    <PayPalScriptProvider options={createPaypalClientConfig(currency)}>
       <PayPalButtons
         createOrder={createOrder}
         onApprove={onApprove}
@@ -106,6 +112,7 @@ export function PayPalTicketButton({
   eventId,
   ticketId,
   quantity,
+  currency = 'USD',
   onSuccess,
   onError,
   disabled = false
@@ -114,6 +121,7 @@ export function PayPalTicketButton({
   eventId: string
   ticketId: string
   quantity: number
+  currency?: string
   onSuccess: (orderId: string) => void
   onError: (error: string) => void
   disabled?: boolean
@@ -130,6 +138,7 @@ export function PayPalTicketButton({
           ticketId,
           amount,
           quantity,
+          currency,
           type: 'ticket'
         }),
       })
@@ -182,7 +191,7 @@ export function PayPalTicketButton({
   }
 
   return (
-    <PayPalScriptProvider options={paypalClientConfig}>
+    <PayPalScriptProvider options={createPaypalClientConfig(currency)}>
       <PayPalButtons
         createOrder={createOrder}
         onApprove={onApprove}

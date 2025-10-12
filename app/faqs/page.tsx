@@ -50,11 +50,11 @@ export default function FAQsPage() {
     },
     {
       question: "Do you support international payments?",
-      answer: "Yes! EventraiseHub supports both US and India markets. Select your country from the dropdown in the navigation to switch between USD (PayPal) and INR (Razorpay + PayPal) payment options. All features work the same way regardless of your location."
+      answer: "Yes! EventraiseHub supports both US and India markets. Select your country from the dropdown in the navigation to switch between USD and INR currencies. PayPal World handles payments in both currencies seamlessly."
     },
     {
       question: "What payment methods are available in India?",
-      answer: "For Indian users, we support Razorpay (which includes UPI, credit/debit cards, net banking, and digital wallets) as the primary payment method, with PayPal as a backup option. All transactions are processed securely and in INR currency."
+      answer: "For Indian users, PayPal World accepts INR payments through credit/debit cards, bank transfers, and PayPal balance. The same secure PayPal platform is used globally, ensuring consistent and reliable payment processing."
     }
   ]
 

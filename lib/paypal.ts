@@ -46,15 +46,26 @@ async function getPayPalAccessToken(): Promise<string> {
 }
 
 // Fee calculation utilities
-export function calculatePlatformFee(amount: number): {
+export function calculatePlatformFee(amount: number, currency: string = 'USD'): {
   platformFee: number
   netAmount: number
   paypalFee: number
   totalFees: number
 } {
   const platformFeeRate = 0.0899 // 8.99%
-  const paypalFeeRate = 0.029 // 2.9% (approximate)
-  const paypalFixedFee = 0.49 // $0.49 fixed fee
+  
+  let paypalFeeRate: number
+  let paypalFixedFee: number
+  
+  if (currency === 'INR') {
+    // PayPal India fees (approximate)
+    paypalFeeRate = 0.02 // 2% for INR
+    paypalFixedFee = 3 // ₹3 fixed fee
+  } else {
+    // PayPal US fees (approximate)
+    paypalFeeRate = 0.029 // 2.9%
+    paypalFixedFee = 0.49 // $0.49 fixed fee
+  }
   
   const platformFee = Math.round(amount * platformFeeRate * 100) / 100
   const paypalFee = Math.round((amount * paypalFeeRate + paypalFixedFee) * 100) / 100
@@ -70,8 +81,8 @@ export function calculatePlatformFee(amount: number): {
 }
 
 // Create PayPal order for donation
-export async function createDonationOrder(eventId: string, amount: number, donorName?: string, donorEmail?: string) {
-  const fees = calculatePlatformFee(amount)
+export async function createDonationOrder(eventId: string, amount: number, currency: string = 'USD', donorName?: string, donorEmail?: string) {
+  const fees = calculatePlatformFee(amount, currency)
 
   // Important: Charge exactly the entered amount at PayPal.
   // Platform and PayPal fees are internal accounting and should NOT be added
@@ -83,7 +94,7 @@ export async function createDonationOrder(eventId: string, amount: number, donor
       {
         reference_id: `donation_${eventId}_${Date.now()}`,
         amount: {
-          currency_code: 'USD',
+          currency_code: currency,
           value: amount.toFixed(2)
         },
         // Keep items optional; not required for a simple donation

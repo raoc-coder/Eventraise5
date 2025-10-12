@@ -138,7 +138,7 @@ export default function GettingStartedPage() {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Secure payment processing (PayPal for US, Razorpay + PayPal for India)</span>
+                  <span className="text-gray-700">Secure payment processing with PayPal World (supports USD and INR)</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
