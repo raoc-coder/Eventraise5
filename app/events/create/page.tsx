@@ -17,7 +17,7 @@ import toast from 'react-hot-toast'
 
 export default function CreateEventPage() {
   const { user, loading: authLoading } = useAuth()
-  const { country, currency, symbol } = useCurrency()
+  const { country, currency, symbol, formatCurrency } = useCurrency()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   
@@ -497,7 +497,7 @@ export default function CreateEventPage() {
                     </div>
                     <div>
                       <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
-                      <p className="text-xl font-bold text-blue-900">${Number(formData.goal_amount).toLocaleString()}</p>
+                      <p className="text-xl font-bold text-blue-900">{formatCurrency(Number(formData.goal_amount))}</p>
                     </div>
                   </div>
                 )}
