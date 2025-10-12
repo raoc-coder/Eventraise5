@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase as sharedSupabase } from '@/lib/supabase'
 import { createEventSchema } from '@/lib/validators'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/providers'
+import { useCurrency } from '@/app/providers/currency-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,6 +17,7 @@ import toast from 'react-hot-toast'
 
 export default function CreateEventPage() {
   const { user, loading: authLoading } = useAuth()
+  const { country, currency, symbol } = useCurrency()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   
@@ -60,12 +62,20 @@ export default function CreateEventPage() {
     // Ticketing fields
     is_ticketed: false,
     ticket_price: '',
-    ticket_currency: 'usd',
+    ticket_currency: currency.toLowerCase(),
     ticket_quantity: '',
     // Volunteer quick ask
     create_volunteer: false,
     volunteer_title: '',
   })
+
+  // Update ticket currency when country changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      ticket_currency: currency.toLowerCase()
+    }))
+  }, [currency])
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => {
@@ -255,18 +265,18 @@ export default function CreateEventPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="goal_amount">Fundraising Goal ($) *</Label>
+                  <Label htmlFor="goal_amount">Fundraising Goal ({symbol}) *</Label>
                   <Input
                     id="goal_amount"
                     type="number"
-                    placeholder="10000"
+                    placeholder={country === 'IN' ? "50000" : "10000"}
                     value={formData.goal_amount}
                     onChange={(e) => handleInputChange('goal_amount', e.target.value)}
                     min={1}
                     step={1}
                     required
                   />
-                  <p className="text-xs text-gray-500">Enter a whole dollar amount. You can adjust later.</p>
+                  <p className="text-xs text-gray-500">Enter a whole {currency} amount. You can adjust later.</p>
                   {errors.goal_amount && <p className="text-red-500 text-sm">{errors.goal_amount}</p>}
                 </div>
               </div>
@@ -374,17 +384,17 @@ export default function CreateEventPage() {
                 {formData.is_ticketed && (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                     <div className="space-y-2">
-                      <Label htmlFor="ticket_price">Ticket Price ($)</Label>
+                      <Label htmlFor="ticket_price">Ticket Price ({symbol})</Label>
                       <Input
                         id="ticket_price"
                         type="number"
-                        placeholder="25.00"
+                        placeholder={country === 'IN' ? "2000.00" : "25.00"}
                         value={formData.ticket_price}
                         onChange={(e) => handleInputChange('ticket_price', e.target.value)}
                         min="0"
                         step="0.01"
                       />
-                      <p className="text-xs text-gray-500">Price per ticket</p>
+                      <p className="text-xs text-gray-500">Price per ticket in {currency}</p>
                     </div>
 
                     <div className="space-y-2">
@@ -396,9 +406,7 @@ export default function CreateEventPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
                       >
                         <option value="usd">USD ($)</option>
-                        <option value="eur">EUR (€)</option>
-                        <option value="gbp">GBP (£)</option>
-                        <option value="cad">CAD (C$)</option>
+                        <option value="inr">INR (₹)</option>
                       </select>
                     </div>
 

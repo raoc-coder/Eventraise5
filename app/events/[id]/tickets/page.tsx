@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { Navigation } from '@/components/layout/navigation'
+import { useCurrency } from '@/app/providers/currency-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,6 +32,7 @@ interface Event {
 
 export default function EventTicketsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
+  const { symbol } = useCurrency()
   const [supabase, setSupabase] = useState<any>(null)
   const [user, setUser] = useState<any>(null)
   const [event, setEvent] = useState<Event | null>(null)
@@ -249,7 +251,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
                     />
                   </div>
                   <div>
-                    <Label htmlFor="price">Price (USD)</Label>
+                    <Label htmlFor="price">Price ({symbol})</Label>
                     <Input
                       id="price"
                       type="number"
