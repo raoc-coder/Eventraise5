@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Check, Globe, MapPin } from 'lucide-react'
 import { Country, COUNTRY_CONFIG } from '@/lib/currency'
 import { useCurrency } from '@/app/providers/currency-provider'
+import { createPortal } from 'react-dom'
 
 interface CountrySelectorProps {
   onCountryChange?: (country: Country) => void
@@ -20,6 +21,8 @@ export function CountrySelector({
 }: CountrySelectorProps) {
   const { country: selectedCountry, setCountry } = useCurrency()
   const [isOpen, setIsOpen] = useState(false)
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   const handleCountrySelect = (country: Country) => {
     console.log('Country selected:', country)
@@ -27,6 +30,28 @@ export function CountrySelector({
     setIsOpen(false)
     onCountryChange?.(country)
   }
+
+  const updateDropdownPosition = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      updateDropdownPosition()
+      window.addEventListener('scroll', updateDropdownPosition)
+      window.addEventListener('resize', updateDropdownPosition)
+      return () => {
+        window.removeEventListener('scroll', updateDropdownPosition)
+        window.removeEventListener('resize', updateDropdownPosition)
+      }
+    }
+  }, [isOpen])
 
   const currentConfig = COUNTRY_CONFIG[selectedCountry]
 
@@ -82,13 +107,13 @@ export function CountrySelector({
   return (
     <div className={`relative ${className}`}>
       <button
+        ref={buttonRef}
         onClick={() => {
           console.log('Country selector clicked, isOpen:', isOpen)
           console.log('Current country:', selectedCountry)
           setIsOpen(!isOpen)
         }}
         className="flex items-center gap-2 h-10 px-3 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors cursor-pointer"
-        style={{ zIndex: 999 }}
       >
         <MapPin className="h-4 w-4" />
         <span>
@@ -99,14 +124,20 @@ export function CountrySelector({
         </span>
       </button>
 
-      {isOpen && (
+      {isOpen && typeof window !== 'undefined' && createPortal(
         <>
           {/* Backdrop to close dropdown */}
           <div 
-            className="fixed inset-0 z-[999]" 
+            className="fixed inset-0 z-[9999]" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-[1000]">
+          <div 
+            className="fixed w-64 bg-white border-2 border-blue-200 rounded-lg shadow-2xl z-[10000]"
+            style={{
+              top: dropdownPosition.top,
+              left: dropdownPosition.left,
+            }}
+          >
             <div className="p-2">
               {Object.entries(COUNTRY_CONFIG).map(([countryCode, config]) => (
                 <button
@@ -140,7 +171,8 @@ export function CountrySelector({
               ))}
             </div>
           </div>
-        </>
+        </>,
+        document.body
       )}
     </div>
   )
