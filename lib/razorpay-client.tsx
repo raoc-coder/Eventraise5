@@ -14,6 +14,7 @@ interface RazorpayButtonProps {
   buyerEmail?: string
   onSuccess: (paymentId: string, orderId: string, signature: string) => void
   onError: (error: any) => void
+  disabled?: boolean
 }
 
 declare global {
@@ -21,7 +22,7 @@ declare global {
 }
 
 export function RazorpayButton(props: RazorpayButtonProps) {
-  const { amountPaise, eventId, type, ticketId, quantity, buyerName, buyerEmail, onSuccess, onError } = props
+  const { amountPaise, eventId, type, ticketId, quantity, buyerName, buyerEmail, onSuccess, onError, disabled } = props
   const [scriptLoaded, setScriptLoaded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -142,8 +143,8 @@ export function RazorpayButton(props: RazorpayButtonProps) {
   return (
     <>
       <Button
-        onClick={disableRzp ? undefined : handlePayment}
-        disabled={disableRzp || loading}
+        onClick={disableRzp || disabled ? undefined : handlePayment}
+        disabled={disableRzp || disabled || loading}
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
       >
         {disableRzp ? 'Razorpay disabled (diagnostic)' : (loading ? 'Processing...' : 'Pay with UPI / Cards (Razorpay)')}

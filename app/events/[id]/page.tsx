@@ -960,7 +960,7 @@ export default function EventDetailPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="donorEmail" className="text-gray-700 font-medium">Your Email (Optional)</Label>
+                      <Label htmlFor="donorEmail" className="text-gray-700 font-medium">Your Email (Required)</Label>
                       <Input
                         id="donorEmail"
                         type="email"
@@ -968,6 +968,7 @@ export default function EventDetailPage() {
                         value={donorEmail}
                         onChange={(e) => setDonorEmail(e.target.value)}
                         className="input"
+                        required
                       />
                     </div>
 
@@ -1007,6 +1008,7 @@ export default function EventDetailPage() {
                           type="donation"
                           buyerName={donorName}
                           buyerEmail={donorEmail}
+                          disabled={!donorEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donorEmail)}
                           onSuccess={async (paymentId, orderId, signature) => {
                             try {
                               await fetch('/api/razorpay/verify-payment', {
