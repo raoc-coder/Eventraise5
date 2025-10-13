@@ -307,10 +307,11 @@ export default function EventDetailPage() {
   }, [])
 
   const didLoadRef = useRef<string | null>(null)
+  const eventId = typeof params?.id === 'string' ? params.id : ''
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const id = typeof params?.id === 'string' ? params.id : ''
+        const id = eventId
         if (!id) return
         if (didLoadRef.current === id) return
         didLoadRef.current = id
@@ -350,7 +351,7 @@ export default function EventDetailPage() {
     }
 
     fetchEvent()
-  }, [params])
+  }, [eventId])
 
   // If URL hash requests the tickets section, scroll after tickets are loaded
   useEffect(() => {
