@@ -9,10 +9,12 @@ import toast from 'react-hot-toast'
 import { useSearchParams } from 'next/navigation'
 import { Heart, DollarSign } from 'lucide-react'
 import Image from 'next/image'
+import { useCurrency } from '@/app/providers/currency-provider'
 import { PayPalDonationButton } from '@/lib/paypal-client'
 
 function DonationForm() {
   const searchParams = useSearchParams()
+  const { country } = useCurrency()
   const eventId = searchParams?.get('eventId') || undefined
   const [amount, setAmount] = useState(25)
   const [paymentComplete, setPaymentComplete] = useState(false)
@@ -129,26 +131,32 @@ function DonationForm() {
       {/* PayPal Buttons */}
       {amount > 0 && (
         <div className="space-y-4">
-          <div className="text-center">
-            <p className="text-sm text-gray-500 mb-2">Secure payment powered by PayPal</p>
-            <div className="flex justify-center">
-              <Image
-                src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
-                alt="PayPal accepted"
-                width={111}
-                height={69}
-                className="h-8 w-auto"
-                priority
-              />
+          {country !== 'IN' && (
+            <div className="text-center">
+              <p className="text-sm text-gray-500 mb-2">Secure payment powered by PayPal</p>
+              <div className="flex justify-center">
+                <Image
+                  src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+                  alt="PayPal accepted"
+                  width={111}
+                  height={69}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </div>
             </div>
-          </div>
-          <PayPalDonationButton
-            amount={amount}
-            eventId={eventId || ''}
-            onSuccess={() => handlePaymentSuccess('paypal')}
-            onError={(err) => toast.error(err)}
-            disabled={loading || amount < 1}
-          />
+          )}
+          {country === 'IN' ? (
+            <div className="text-sm text-gray-500 text-center">Razorpay handles India donations on the event page.</div>
+          ) : (
+            <PayPalDonationButton
+              amount={amount}
+              eventId={eventId || ''}
+              onSuccess={() => handlePaymentSuccess('paypal')}
+              onError={(err) => toast.error(err)}
+              disabled={loading || amount < 1}
+            />
+          )}
         </div>
       )}
     </div>
@@ -156,6 +164,7 @@ function DonationForm() {
 }
 
 export default function NewDonationPage() {
+  const { country } = useCurrency()
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8 max-w-md">

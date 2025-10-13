@@ -1086,17 +1086,19 @@ export default function EventDetailPage() {
                         />
                       )}
                       
-                      {/* PayPal Marks for branding */}
-                      <div className="flex items-center justify-center">
-                        <Image
-                          src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png"
-                          alt="Powered by PayPal"
-                          width={300}
-                          height={60}
-                          className="h-6 w-auto"
-                          priority
-                        />
-                      </div>
+                      {/* PayPal Marks for branding (US only) */}
+                      {country !== 'IN' && (
+                        <div className="flex items-center justify-center">
+                          <Image
+                            src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png"
+                            alt="Powered by PayPal"
+                            width={300}
+                            height={60}
+                            className="h-6 w-auto"
+                            priority
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -1852,17 +1854,19 @@ export default function EventDetailPage() {
                           />
                         )}
                         
-                        {/* PayPal Marks for branding */}
-                        <div className="flex items-center justify-center">
-                          <Image
-                            src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png"
-                            alt="Powered by PayPal"
-                            width={300}
-                            height={60}
-                            className="h-6 w-auto"
-                            priority
-                          />
-                        </div>
+                        {/* PayPal Marks for branding (US only) */}
+                        {country !== 'IN' && (
+                          <div className="flex items-center justify-center">
+                            <Image
+                              src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_now_accepting_pp_2line_w.png"
+                              alt="Powered by PayPal"
+                              width={300}
+                              height={60}
+                              className="h-6 w-auto"
+                              priority
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
