@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Navigation } from '@/components/layout/navigation'
 import { PayPalDonationButton } from '@/lib/paypal-client'
+import { RazorpayButton } from '@/lib/razorpay-client'
 import { useCurrency } from '@/app/providers/currency-provider'
 import { 
   Heart, 
@@ -1036,23 +1037,54 @@ export default function EventDetailPage() {
                     </div>
 
                     <div className="space-y-4">
-                      <PayPalDonationButton
-                        amount={donationAmount}
-                        eventId={(params as any)?.id}
-                        currency={currency}
-                        onSuccess={(orderId) => {
-                          toast.success('Donation successful! Thank you for your support.')
-                          // Reset form
-                          setDonationAmount(country === 'IN' ? 2000 : 50)
-                          setDonorName('')
-                          setDonorEmail('')
-                          setDonorMessage('')
-                        }}
-                        onError={(error) => {
-                          toast.error(error)
-                        }}
-                        disabled={donationAmount < (country === 'IN' ? 1 : 10)}
-                      />
+                      {country === 'IN' ? (
+                        <RazorpayButton
+                          amountPaise={Math.round(donationAmount * 100)}
+                          eventId={(params as any)?.id}
+                          type="donation"
+                          buyerName={donorName}
+                          buyerEmail={donorEmail}
+                          onSuccess={async (paymentId, orderId, signature) => {
+                            try {
+                              await fetch('/api/razorpay/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  razorpay_order_id: orderId,
+                                  razorpay_payment_id: paymentId,
+                                  razorpay_signature: signature,
+                                  type: 'donation',
+                                }),
+                              })
+                            } catch {}
+                            toast.success('Donation successful! Thank you for your support.')
+                            setDonationAmount(2000)
+                            setDonorName('')
+                            setDonorEmail('')
+                            setDonorMessage('')
+                          }}
+                          onError={(error) => {
+                            toast.error(error?.message || 'Payment failed')
+                          }}
+                        />
+                      ) : (
+                        <PayPalDonationButton
+                          amount={donationAmount}
+                          eventId={(params as any)?.id}
+                          currency={currency}
+                          onSuccess={(orderId) => {
+                            toast.success('Donation successful! Thank you for your support.')
+                            setDonationAmount(50)
+                            setDonorName('')
+                            setDonorEmail('')
+                            setDonorMessage('')
+                          }}
+                          onError={(error) => {
+                            toast.error(error)
+                          }}
+                          disabled={donationAmount < 10}
+                        />
+                      )}
                       
                       {/* PayPal Marks for branding */}
                       <div className="flex items-center justify-center">
@@ -1371,21 +1403,36 @@ export default function EventDetailPage() {
                       </div>
 
                       <div className="space-y-4">
-                        <PayPalDonationButton
-                          amount={donationAmount}
-                          eventId={(params as any)?.id}
-                          currency={currency}
-                          onSuccess={(orderId) => {
-                            toast.success('Donation successful! Thank you for your support.')
-                            // Reset form
-                            setDonationAmount(country === 'IN' ? 2000 : 50)
-                            setDonorMessage('')
-                          }}
-                          onError={(error) => {
-                            toast.error(error)
-                          }}
-                          disabled={donationAmount < (country === 'IN' ? 1 : 10)}
-                        />
+                        {country === 'IN' ? (
+                          <RazorpayButton
+                            amountPaise={Math.round(donationAmount * 100)}
+                            eventId={(params as any)?.id}
+                            type="donation"
+                            onSuccess={() => {
+                              toast.success('Donation successful! Thank you for your support.')
+                              setDonationAmount(2000)
+                              setDonorMessage('')
+                            }}
+                            onError={(error) => {
+                              toast.error(error?.message || 'Payment failed')
+                            }}
+                          />
+                        ) : (
+                          <PayPalDonationButton
+                            amount={donationAmount}
+                            eventId={(params as any)?.id}
+                            currency={currency}
+                            onSuccess={() => {
+                              toast.success('Donation successful! Thank you for your support.')
+                              setDonationAmount(50)
+                              setDonorMessage('')
+                            }}
+                            onError={(error) => {
+                              toast.error(error)
+                            }}
+                            disabled={donationAmount < 10}
+                          />
+                        )}
                         
                         <div className="text-center">
                           <Button 
@@ -1766,24 +1813,44 @@ export default function EventDetailPage() {
                       </div>
 
                       <div className="space-y-4">
-                        <PayPalDonationButton
-                          amount={donationAmount}
-                          eventId={(params as any)?.id}
-                          currency={currency}
-                          onSuccess={(orderId) => {
-                            toast.success('Donation successful! Thank you for your support.')
-                            // Reset form
-                            setDonationAmount(country === 'IN' ? 2000 : 50)
-                            setDonorName('')
-                            setDonorEmail('')
-                            setDonorMessage('')
-                            setActiveModal(null)
-                          }}
-                          onError={(error) => {
-                            toast.error(error)
-                          }}
-                          disabled={donationAmount < (country === 'IN' ? 1 : 10)}
-                        />
+                        {country === 'IN' ? (
+                          <RazorpayButton
+                            amountPaise={Math.round(donationAmount * 100)}
+                            eventId={(params as any)?.id}
+                            type="donation"
+                            buyerName={donorName}
+                            buyerEmail={donorEmail}
+                            onSuccess={() => {
+                              toast.success('Donation successful! Thank you for your support.')
+                              setDonationAmount(2000)
+                              setDonorName('')
+                              setDonorEmail('')
+                              setDonorMessage('')
+                              setActiveModal(null)
+                            }}
+                            onError={(error) => {
+                              toast.error(error?.message || 'Payment failed')
+                            }}
+                          />
+                        ) : (
+                          <PayPalDonationButton
+                            amount={donationAmount}
+                            eventId={(params as any)?.id}
+                            currency={currency}
+                            onSuccess={() => {
+                              toast.success('Donation successful! Thank you for your support.')
+                              setDonationAmount(50)
+                              setDonorName('')
+                              setDonorEmail('')
+                              setDonorMessage('')
+                              setActiveModal(null)
+                            }}
+                            onError={(error) => {
+                              toast.error(error)
+                            }}
+                            disabled={donationAmount < 10}
+                          />
+                        )}
                         
                         {/* PayPal Marks for branding */}
                         <div className="flex items-center justify-center">

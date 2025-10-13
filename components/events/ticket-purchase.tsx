@@ -10,6 +10,7 @@ import { ShoppingCart, Ticket, Calendar, MapPin, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { paypalClientConfig, PayPalTicketButton } from '@/lib/paypal-client'
+import { RazorpayButton } from '@/lib/razorpay-client'
 import { useCurrency } from '@/app/providers/currency-provider'
 
 interface Ticket {
@@ -260,26 +261,63 @@ export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: Tick
         </div>
       )}
 
-      {/* PayPal Payment */}
+      {/* Payment */}
       {selectedTicket && buyerInfo.name && buyerInfo.email && (
         <div className="space-y-4">
-          <PayPalTicketButton
-            amount={totalAmount / 100}
-            eventId={event.id}
-            ticketId={selectedTicket.id}
-            quantity={quantity}
-            currency={currency}
-            onSuccess={(orderId) => {
-              toast.success('Tickets purchased successfully!')
-              fetchTickets?.()
-              onSuccess?.()
-            }}
-            onError={(error) => {
-              toast.error(error)
-            }}
-            disabled={!buyerInfo.name || !buyerInfo.email}
-          />
-          <p className="text-xs text-gray-500 text-center">By completing this purchase, you agree to our terms. Payments are processed securely by PayPal.</p>
+          {country === 'IN' ? (
+            <>
+              <RazorpayButton
+                amountPaise={totalAmount}
+                eventId={event.id}
+                type="ticket"
+                ticketId={selectedTicket.id}
+                quantity={quantity}
+                buyerName={buyerInfo.name}
+                buyerEmail={buyerInfo.email}
+                onSuccess={async (paymentId, orderId, signature) => {
+                  try {
+                    await fetch('/api/razorpay/verify-payment', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        razorpay_order_id: orderId,
+                        razorpay_payment_id: paymentId,
+                        razorpay_signature: signature,
+                        type: 'ticket',
+                      }),
+                    })
+                  } catch {}
+                  toast.success('Tickets purchased successfully!')
+                  fetchTickets?.()
+                  onSuccess?.()
+                }}
+                onError={(error) => {
+                  toast.error(error?.message || 'Payment failed')
+                }}
+              />
+              <p className="text-xs text-gray-500 text-center">Payments are processed securely via Razorpay (UPI, Cards, NetBanking).</p>
+            </>
+          ) : (
+            <>
+              <PayPalTicketButton
+                amount={totalAmount / 100}
+                eventId={event.id}
+                ticketId={selectedTicket.id}
+                quantity={quantity}
+                currency={currency}
+                onSuccess={(orderId) => {
+                  toast.success('Tickets purchased successfully!')
+                  fetchTickets?.()
+                  onSuccess?.()
+                }}
+                onError={(error) => {
+                  toast.error(error)
+                }}
+                disabled={!buyerInfo.name || !buyerInfo.email}
+              />
+              <p className="text-xs text-gray-500 text-center">Payments are processed securely by PayPal.</p>
+            </>
+          )}
         </div>
       )}
     </div>
