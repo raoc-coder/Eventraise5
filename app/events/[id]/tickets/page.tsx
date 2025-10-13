@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { Navigation } from '@/components/layout/navigation'
@@ -51,7 +51,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
     sales_end_at: ''
   })
 
-  const fetchData = async (eventId: string, supabaseClient?: any) => {
+  const fetchData = useCallback(async (eventId: string, supabaseClient?: any) => {
     setLoading(true)
     try {
       const client = supabaseClient || supabase
@@ -98,7 +98,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase, router])
 
   const handleCreateTicket = async (e: React.FormEvent) => {
     e.preventDefault()
