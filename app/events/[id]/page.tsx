@@ -317,6 +317,7 @@ export default function EventDetailPage() {
     console.log('[event page] render', { count: renderCountRef.current, eventId })
   }
   useEffect(() => {
+    const t0 = (typeof performance !== 'undefined' && typeof performance.now === 'function') ? performance.now() : Date.now()
     const fetchEvent = async () => {
       try {
         const id = eventId
@@ -355,6 +356,9 @@ export default function EventDetailPage() {
         setEvent(null)
       } finally {
         setLoading(false)
+        const t1 = (typeof performance !== 'undefined' && typeof performance.now === 'function') ? performance.now() : Date.now()
+        // eslint-disable-next-line no-console
+        console.log('[event page] load effect complete in ms', Math.round(t1 - t0))
       }
     }
 
@@ -362,21 +366,23 @@ export default function EventDetailPage() {
   }, [eventId])
 
   // If URL hash requests the tickets section, scroll after tickets are loaded
+  const scrolledTicketsRef = useRef<string | null>(null)
   useEffect(() => {
     if (typeof window === 'undefined') return
     if (window.location.hash !== '#tickets') return
+    if (!eventId || scrolledTicketsRef.current === eventId) return
     const el = document.getElementById('tickets') as HTMLElement | null
     if (!el) return
-    // Add a slight delay to ensure layout is ready
-    setTimeout(() => {
-      try {
-        el.style.scrollMarginTop = '96px'
-        el.setAttribute('tabindex', '-1')
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        setTimeout(() => { try { el.focus({ preventScroll: true }) } catch {} }, 100)
-      } catch {}
-    }, 80)
-  }, [tickets?.length])
+    try {
+      el.style.scrollMarginTop = '96px'
+      el.setAttribute('tabindex', '-1')
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      setTimeout(() => { try { el.focus({ preventScroll: true }) } catch {} }, 100)
+      scrolledTicketsRef.current = eventId
+      // eslint-disable-next-line no-console
+      console.log('[event page] scrolled to tickets')
+    } catch {}
+  }, [eventId, tickets?.length])
 
   const handleShare = () => {
     if (navigator.share) {
