@@ -30,10 +30,12 @@ export async function createDonationOrder(
 ) {
   try {
     const razorpay = getRazorpayInstance()
+    // Razorpay receipt must be <= 40 chars. Use compact, unique receipt.
+    const receipt = `don_${eventId.substring(0, 8)}_${Date.now().toString(36)}`
     const order = await razorpay.orders.create({
       amount: amountInPaise,
       currency: 'INR',
-      receipt: `donation_${eventId}_${Date.now()}`,
+      receipt,
       notes: {
         event_id: eventId,
         donor_name: donorName ?? null,
@@ -60,10 +62,12 @@ export async function createTicketOrder(
 ) {
   try {
     const razorpay = getRazorpayInstance()
+    // Razorpay receipt must be <= 40 chars. Use compact, unique receipt.
+    const receipt = `t_${eventId.substring(0, 6)}_${ticketId.substring(0, 6)}_${Date.now().toString(36)}`
     const order = await razorpay.orders.create({
       amount: amountInPaise,
       currency: 'INR',
-      receipt: `ticket_${eventId}_${ticketId}_${Date.now()}`,
+      receipt,
       notes: {
         event_id: eventId,
         ticket_id: ticketId,
