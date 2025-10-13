@@ -8,7 +8,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Navigation } from '@/components/layout/navigation'
 import { PayPalDonationButton } from '@/lib/paypal-client'
-import { RazorpayButton } from '@/lib/razorpay-client'
+import dynamic from 'next/dynamic'
+// Load Razorpay client lazily to avoid any upfront side-effects
+const RazorpayButton = dynamic(() => import('@/lib/razorpay-client').then(m => m.RazorpayButton), { ssr: false })
 import { useCurrency } from '@/app/providers/currency-provider'
 import { 
   Heart, 
@@ -308,6 +310,12 @@ export default function EventDetailPage() {
 
   const didLoadRef = useRef<string | null>(null)
   const eventId = typeof params?.id === 'string' ? params.id : ''
+  const renderCountRef = useRef(0)
+  renderCountRef.current += 1
+  if (typeof window !== 'undefined' && renderCountRef.current <= 5) {
+    // eslint-disable-next-line no-console
+    console.log('[event page] render', { count: renderCountRef.current, eventId })
+  }
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -331,9 +339,9 @@ export default function EventDetailPage() {
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
           // Fetch donation total, tickets, and volunteer shifts after event is loaded
-          fetchDonationTotal()
-          fetchTickets()
-          fetchVolunteerShifts()
+          try { await fetchDonationTotal(); console.log('[event page] donation total loaded') } catch {}
+          try { await fetchTickets(); console.log('[event page] tickets loaded') } catch {}
+          try { await fetchVolunteerShifts(); console.log('[event page] volunteers loaded') } catch {}
           if (searchParams?.get('created') === '1') {
             setShowCreatedBanner(true)
             toast.success('Your event is live! Share it with your community.')

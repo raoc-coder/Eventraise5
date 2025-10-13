@@ -27,6 +27,7 @@ export function RazorpayButton(props: RazorpayButtonProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+  const disableRzp = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_DISABLE_RAZORPAY === 'true'
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.Razorpay) {
@@ -117,11 +118,17 @@ export function RazorpayButton(props: RazorpayButtonProps) {
 
   return (
     <>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" onLoad={() => setScriptLoaded(true)} onError={() => toast.error('Failed to load Razorpay script.')} />
-      <Button onClick={handlePayment} disabled={loading || !scriptLoaded} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-        {loading ? 'Processing...' : 'Pay with UPI / Cards (Razorpay)'}
+      {!disableRzp && (
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" onLoad={() => setScriptLoaded(true)} onError={() => toast.error('Failed to load Razorpay script.')} />
+      )}
+      <Button
+        onClick={disableRzp ? undefined : handlePayment}
+        disabled={disableRzp || loading || !scriptLoaded}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+      >
+        {disableRzp ? 'Razorpay disabled (diagnostic)' : (loading ? 'Processing...' : 'Pay with UPI / Cards (Razorpay)')}
       </Button>
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {error && !disableRzp && <p className="text-red-500 text-sm mt-2">{error}</p>}
     </>
   )
 }

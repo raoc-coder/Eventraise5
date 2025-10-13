@@ -10,7 +10,8 @@ import { ShoppingCart, Ticket, Calendar, MapPin, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { paypalClientConfig, PayPalTicketButton } from '@/lib/paypal-client'
-import { RazorpayButton } from '@/lib/razorpay-client'
+import dynamic from 'next/dynamic'
+const RazorpayButton = dynamic(() => import('@/lib/razorpay-client').then(m => m.RazorpayButton), { ssr: false })
 import { useCurrency } from '@/app/providers/currency-provider'
 
 interface Ticket {
