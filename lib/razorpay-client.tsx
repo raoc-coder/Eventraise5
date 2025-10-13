@@ -1,6 +1,5 @@
 'use client'
 
-import Script from 'next/script'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -30,15 +29,39 @@ export function RazorpayButton(props: RazorpayButtonProps) {
   const disableRzp = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_DISABLE_RAZORPAY === 'true'
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.Razorpay) {
+    if (typeof window !== 'undefined' && (window as any).Razorpay) {
       setScriptLoaded(true)
     }
   }, [])
 
+  const loadScript = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (typeof window === 'undefined') return reject(new Error('Window unavailable'))
+      if ((window as any).Razorpay) return resolve()
+      const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]') as HTMLScriptElement | null
+      if (existing) {
+        existing.addEventListener('load', () => resolve())
+        existing.addEventListener('error', () => reject(new Error('Failed to load Razorpay script')))
+        return
+      }
+      const script = document.createElement('script')
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      script.async = true
+      script.onload = () => resolve()
+      script.onerror = () => reject(new Error('Failed to load Razorpay script'))
+      document.body.appendChild(script)
+    })
+  }
+
   const handlePayment = async () => {
-    if (!scriptLoaded || !window.Razorpay) {
-      toast.error('Razorpay script not loaded. Please try again.')
-      return
+    if (!scriptLoaded || !(window as any).Razorpay) {
+      try {
+        await loadScript()
+        setScriptLoaded(true)
+      } catch (e: any) {
+        toast.error(e?.message || 'Failed to load Razorpay script.')
+        return
+      }
     }
     if (!keyId) {
       toast.error('Razorpay Key ID is not configured.')
@@ -99,7 +122,7 @@ export function RazorpayButton(props: RazorpayButtonProps) {
         theme: { color: '#3B82F6' },
       }
 
-      const rzp = new window.Razorpay(options)
+      const rzp = new (window as any).Razorpay(options)
       rzp.on('payment.failed', function (response: any) {
         setError(response.error?.description || 'Payment failed.')
         toast.error(response.error?.description || 'Payment failed.')
@@ -118,12 +141,9 @@ export function RazorpayButton(props: RazorpayButtonProps) {
 
   return (
     <>
-      {!disableRzp && (
-        <Script src="https://checkout.razorpay.com/v1/checkout.js" onLoad={() => setScriptLoaded(true)} onError={() => toast.error('Failed to load Razorpay script.')} />
-      )}
       <Button
         onClick={disableRzp ? undefined : handlePayment}
-        disabled={disableRzp || loading || !scriptLoaded}
+        disabled={disableRzp || loading}
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
       >
         {disableRzp ? 'Razorpay disabled (diagnostic)' : (loading ? 'Processing...' : 'Pay with UPI / Cards (Razorpay)')}
