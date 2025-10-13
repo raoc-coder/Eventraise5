@@ -14,10 +14,17 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { type, eventId, amountPaise, ticketId, quantity, buyerName, buyerEmail, donorName, donorEmail } = body
+    let { type, eventId, amountPaise, amount, currency, ticketId, quantity, buyerName, buyerEmail, donorName, donorEmail } = body
 
-    if (!eventId || !amountPaise || !type) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    // Backward compatibility: if amountPaise is not provided but amount (rupees) is, convert
+    if (!amountPaise && typeof amount === 'number') {
+      amountPaise = Math.round(amount * 100)
+    }
+    if (!eventId || !type) {
+      return NextResponse.json({ error: 'Missing required fields: eventId and type are required', received: body }, { status: 400 })
+    }
+    if (typeof amountPaise !== 'number' || amountPaise <= 0) {
+      return NextResponse.json({ error: 'Invalid amountPaise. Must be integer > 0 (paise).', received: { amountPaise } }, { status: 400 })
     }
 
     let result

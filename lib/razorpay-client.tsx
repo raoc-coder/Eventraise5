@@ -47,20 +47,25 @@ export function RazorpayButton(props: RazorpayButtonProps) {
     setLoading(true)
     setError('')
     try {
+      const payload = {
+        type,
+        eventId,
+        amountPaise,
+        ticketId,
+        quantity,
+        buyerName,
+        buyerEmail,
+      }
+      console.log('[Razorpay] create-order payload', payload)
       const orderResponse = await fetch('/api/razorpay/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type,
-          eventId,
-          amountPaise,
-          ticketId,
-          quantity,
-          buyerName,
-          buyerEmail,
-        }),
+        body: JSON.stringify(payload),
       })
       const orderData = await orderResponse.json()
+      if (!orderResponse.ok) {
+        console.error('[Razorpay] create-order error', orderData)
+      }
       if (!orderResponse.ok) {
         setError(orderData.error || 'Failed to create Razorpay order.')
         toast.error(orderData.error || 'Failed to create Razorpay order.')
