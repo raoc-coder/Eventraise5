@@ -84,61 +84,8 @@ export default function EventDetailPage() {
   const [editMode, setEditMode] = useState(false)
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState({ title: '', description: '', location: '', start_date: '', end_date: '' })
-  // Update browser tab title when event loads
-  useEffect(() => {
-    const originalTitle = document.title
-    if (event?.title) {
-      document.title = `${event.title} — EventraiseHub`
-
-      // Set canonical link to current URL
-      try {
-        const head = document.head
-        const existing = head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
-        const canonicalHref = typeof window !== 'undefined' ? window.location.href : ''
-        if (existing) {
-          existing.href = canonicalHref
-        } else {
-          const link = document.createElement('link')
-          link.setAttribute('rel', 'canonical')
-          link.setAttribute('href', canonicalHref)
-          head.appendChild(link)
-        }
-      } catch {}
-
-      // OpenGraph & Twitter meta
-      try {
-        const head = document.head
-        const ensureMeta = (attr: 'property' | 'name', key: string, content: string) => {
-          let el = head.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null
-          if (!el) {
-            el = document.createElement('meta')
-            el.setAttribute(attr, key)
-            head.appendChild(el)
-          }
-          el.setAttribute('content', content)
-        }
-        const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-        const pageUrl = `${baseUrl}/events/${(event as any)?.slug || (params as any)?.id}`
-        const title = `${event.title} — EventraiseHub`
-        const description = (event.description && event.description.substring(0, 160)) || 'Discover and support events on EventraiseHub.'
-        const imageUrl = (event as any)?.image_url
-          ? (String((event as any).image_url).startsWith('http') ? (event as any).image_url : `${baseUrl}${(event as any).image_url}`)
-          : `${baseUrl}/api/og?title=${encodeURIComponent(event.title)}`
-
-        ensureMeta('property', 'og:type', 'website')
-        ensureMeta('property', 'og:title', title)
-        ensureMeta('property', 'og:description', description)
-        ensureMeta('property', 'og:url', pageUrl)
-        ensureMeta('property', 'og:image', imageUrl)
-
-        ensureMeta('name', 'twitter:card', 'summary_large_image')
-        ensureMeta('name', 'twitter:title', title)
-        ensureMeta('name', 'twitter:description', description)
-        ensureMeta('name', 'twitter:image', imageUrl)
-      } catch {}
-    }
-    return () => { document.title = originalTitle }
-  }, [event?.title])
+  // Temporarily disable client-side title/meta mutations to avoid hydration issues
+  // useEffect(() => {}, [event?.title])
   const [shareOpen, setShareOpen] = useState(false)
   const [shareEmail, setShareEmail] = useState('')
   const [shareMsg, setShareMsg] = useState('')
