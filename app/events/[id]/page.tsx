@@ -306,11 +306,14 @@ export default function EventDetailPage() {
     return () => clearTimeout(t)
   }, [])
 
+  const didLoadRef = useRef<string | null>(null)
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const id = typeof params?.id === 'string' ? params.id : ''
         if (!id) return
+        if (didLoadRef.current === id) return
+        didLoadRef.current = id
         const url = typeof window !== 'undefined'
           ? new URL(`/api/events/${id}`, window.location.origin).toString()
           : `/api/events/${id}`
@@ -327,11 +330,9 @@ export default function EventDetailPage() {
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
           // Fetch donation total, tickets, and volunteer shifts after event is loaded
-          setTimeout(() => {
-            fetchDonationTotal()
-            fetchTickets()
-            fetchVolunteerShifts()
-          }, 100)
+          fetchDonationTotal()
+          fetchTickets()
+          fetchVolunteerShifts()
           if (searchParams?.get('created') === '1') {
             setShowCreatedBanner(true)
             toast.success('Your event is live! Share it with your community.')
@@ -349,7 +350,7 @@ export default function EventDetailPage() {
     }
 
     fetchEvent()
-  }, [params, searchParams, fetchDonationTotal, fetchTickets, fetchVolunteerShifts])
+  }, [params])
 
   // If URL hash requests the tickets section, scroll after tickets are loaded
   useEffect(() => {
