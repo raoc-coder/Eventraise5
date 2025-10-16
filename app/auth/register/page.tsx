@@ -53,7 +53,7 @@ export default function RegisterPage() {
         email: formData.email,
         emailRedirectTo: getEmailRedirectUrl(),
       })
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -73,7 +73,12 @@ export default function RegisterPage() {
 
       if (error) {
         toast.error(error.message)
+      } else if (data?.session) {
+        // Email confirmations disabled or auto-confirm enabled: user is already signed in
+        toast.success('Account created! You are now signed in.')
+        router.push('/dashboard')
       } else {
+        // Email confirmations enabled: fall back to verify-by-email message
         toast.success('Account created! Please check your email to verify your account before signing in.')
         router.push('/auth/login')
       }
