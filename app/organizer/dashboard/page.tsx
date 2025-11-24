@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase as sharedSupabase } from '@/lib/supabase'
 import { Navigation } from '@/components/layout/navigation'
@@ -41,7 +41,8 @@ export default function OrganizerDashboard() {
     completed_payouts: 0
   })
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
+    if (!supabase) return
     setLoading(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -77,7 +78,7 @@ export default function OrganizerDashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase])
 
   useEffect(() => {
     const supabaseClient = sharedSupabase!
@@ -89,9 +90,14 @@ export default function OrganizerDashboard() {
         return
       }
       setUser(user)
-      fetchDashboardData()
     })
-  }, [router, fetchDashboardData])
+  }, [router])
+
+  useEffect(() => {
+    if (supabase && user) {
+      fetchDashboardData()
+    }
+  }, [supabase, user, fetchDashboardData])
 
   const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString()

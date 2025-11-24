@@ -100,7 +100,7 @@ export default function FAQsPage() {
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Still have questions?</h3>
               <p className="text-gray-600 mb-6">
-                Can't find what you're looking for? We're here to help!
+                Can&apos;t find what you&apos;re looking for? We&apos;re here to help!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a 

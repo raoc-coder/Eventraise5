@@ -310,7 +310,7 @@ export default function EventDetailPage() {
     }
 
     fetchEvent()
-  }, [eventId])
+  }, [eventId, fetchDonationTotal, fetchTickets, fetchVolunteerShifts, searchParams])
 
   // If URL hash requests the tickets section, scroll after tickets are loaded
   const scrolledTicketsRef = useRef<string | null>(null)
