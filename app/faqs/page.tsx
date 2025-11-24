@@ -51,10 +51,6 @@ export default function FAQsPage() {
     {
       question: "Do you support international payments?",
       answer: "Yes! EventraiseHub supports payments in USD through PayPal. PayPal handles payments through credit/debit cards, bank transfers, and PayPal balance securely."
-    },
-    {
-      question: "What payment methods are available in India?",
-      answer: "PayPal accepts payments through credit/debit cards, bank transfers, and PayPal balance. The secure PayPal platform ensures consistent and reliable payment processing."
     }
   ]
 
