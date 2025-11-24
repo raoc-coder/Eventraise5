@@ -32,17 +32,18 @@ export async function GET(req: NextRequest, { params }: any) {
     const ticketCount = registrations?.filter((r: any) => r.type === 'ticket').length || 0
     const confirmedCount = registrations?.filter((r: any) => r.status === 'confirmed').length || 0
 
-    // Revenue analytics
-    const totalDonations = donations?.reduce((sum: number, d: any) => sum + (d.amount_cents || 0), 0) || 0
-    const totalFees = donations?.reduce((sum: number, d: any) => sum + (d.fee_cents || 0), 0) || 0
-    const totalNet = donations?.reduce((sum: number, d: any) => sum + (d.net_cents || 0), 0) || 0
+    // Revenue analytics - only count succeeded donations
+    const succeededDonations = donations?.filter((d: any) => d.status === 'succeeded') || []
+    const totalDonations = succeededDonations.reduce((sum: number, d: any) => sum + (d.amount_cents || 0), 0)
+    const totalFees = succeededDonations.reduce((sum: number, d: any) => sum + (d.fee_cents || 0), 0)
+    const totalNet = succeededDonations.reduce((sum: number, d: any) => sum + (d.net_cents || 0), 0)
 
     // Ticket revenue (from ticket sales - this would need to be calculated from actual ticket purchases)
     // For now, we'll set this to 0 since ticket revenue should come from actual ticket purchases
     const ticketRevenue = 0
 
     // Additional metrics
-    const completedDonations = donations?.filter((d: any) => d.status === 'completed').length || 0
+    const completedDonations = succeededDonations.length
     const pendingDonations = donations?.filter((d: any) => d.status === 'pending').length || 0
 
     // Daily registration trends (last 30 days)

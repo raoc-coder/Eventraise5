@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
             amount_cents: orderData.amount_cents,
             fee_cents: orderData.platform_fee_cents,
             net_cents: orderData.net_amount_cents,
+            status: 'succeeded',
             donor_name: null, // Will be filled from PayPal data
             donor_email: null, // Will be filled from PayPal data
             settlement_status: 'pending',

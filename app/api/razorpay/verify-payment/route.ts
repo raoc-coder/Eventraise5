@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       const { error: updateErr } = await supabaseAdmin
         .from('donation_requests')
         .update({
-          status: 'confirmed',
+          status: 'succeeded',
           razorpay_order_id: orderId,
           razorpay_payment_id: paymentId,
           fee_cents: platformFeeCents,
