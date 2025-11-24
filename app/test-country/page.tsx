@@ -103,7 +103,7 @@ export default function TestCountryPage() {
               <div>Selected Country: {selectedCountry}</div>
               <div>Stored Country: {getStoredCountry()}</div>
               <div>Currency: {selectedCountry === 'US' ? 'USD' : 'INR'}</div>
-              <div>Payment Methods: {selectedCountry === 'US' ? 'paypal' : 'razorpay, paypal'}</div>
+              <div>Payment Methods: PayPal</div>
             </div>
           </CardContent>
         </Card>

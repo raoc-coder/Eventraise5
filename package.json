@@ -56,7 +56,6 @@
     "next": "^15.5.3",
     "postcss": "^8.4.32",
     "posthog-js": "^1.266.3",
-    "razorpay": "^2.9.6",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",

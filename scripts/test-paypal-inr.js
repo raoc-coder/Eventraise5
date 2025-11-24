@@ -45,7 +45,7 @@ async function testPayPalINR() {
   console.log('   - Check PayPal Developer Console for INR support')
   console.log('   - Verify PayPal account can receive INR')
   console.log('   - Test with PayPal Sandbox first')
-  console.log('   - Consider Razorpay for India-specific payments')
+  console.log('   - PayPal handles all payments including India')
 }
 
 // Run the test

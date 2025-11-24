@@ -146,17 +146,13 @@ function DonationForm() {
               </div>
             </div>
           )}
-          {country === 'IN' ? (
-            <div className="text-sm text-gray-500 text-center">Razorpay handles India donations on the event page.</div>
-          ) : (
-            <PayPalDonationButton
-              amount={amount}
-              eventId={eventId || ''}
-              onSuccess={() => handlePaymentSuccess('paypal')}
-              onError={(err) => toast.error(err)}
-              disabled={loading || amount < 1}
-            />
-          )}
+          <PayPalDonationButton
+            amount={amount}
+            eventId={eventId || ''}
+            onSuccess={() => handlePaymentSuccess('paypal')}
+            onError={(err) => toast.error(err)}
+            disabled={loading || amount < 1}
+          />
         </div>
       )}
     </div>
