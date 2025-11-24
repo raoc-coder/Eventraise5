@@ -21,7 +21,7 @@ export default function GettingStartedPage() {
       icon: UserPlus,
       title: "Sign Up",
       description: "Go to EventRaiseHUB.com and click \"Sign Up.\"",
-      details: "Create your account with just your email address and a secure password. No credit card required to get started. Don't forget to select your country (US or India) from the dropdown in the navigation to set up the right payment options.",
+      details: "Create your account with just your email address and a secure password. No credit card required to get started.",
       color: "from-blue-500 to-blue-600"
     },
     {
@@ -138,7 +138,7 @@ export default function GettingStartedPage() {
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">Secure payment processing with PayPal World (supports USD and INR)</span>
+                  <span className="text-gray-700">Secure payment processing with PayPal</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />

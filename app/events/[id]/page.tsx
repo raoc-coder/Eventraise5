@@ -71,7 +71,7 @@ export default function EventDetailPage() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const { formatCurrency, country, getSuggestedAmounts, currency } = useCurrency()
+  const { formatCurrency, getSuggestedAmounts, currency } = useCurrency()
   const [showCreatedBanner, setShowCreatedBanner] = useState(false)
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
@@ -87,12 +87,7 @@ export default function EventDetailPage() {
   const [shareEmail, setShareEmail] = useState('')
   const [shareMsg, setShareMsg] = useState('')
   const [shareSending, setShareSending] = useState(false)
-  const [donationAmount, setDonationAmount] = useState<number>(country === 'IN' ? 2000 : 50)
-  
-  // Update donation amount when country changes
-  useEffect(() => {
-    setDonationAmount(country === 'IN' ? 2000 : 50)
-  }, [country])
+  const [donationAmount, setDonationAmount] = useState<number>(50)
   const [publishing, setPublishing] = useState(false)
   const [registrations, setRegistrations] = useState<any[] | null>(null)
   const [regLoading, setRegLoading] = useState(false)
@@ -1004,7 +999,7 @@ export default function EventDetailPage() {
                         currency={currency}
                         onSuccess={(orderId) => {
                           toast.success('Donation successful! Thank you for your support.')
-                          setDonationAmount(country === 'IN' ? 2000 : 50)
+                          setDonationAmount(50)
                           setDonorName('')
                           setDonorEmail('')
                           setDonorMessage('')
@@ -1012,7 +1007,7 @@ export default function EventDetailPage() {
                         onError={(error) => {
                           toast.error(error)
                         }}
-                        disabled={donationAmount < (country === 'IN' ? 1 : 10)}
+                        disabled={donationAmount < 10}
                       />
                       
                       {/* PayPal Marks for branding */}
@@ -1338,13 +1333,13 @@ export default function EventDetailPage() {
                           currency={currency}
                           onSuccess={() => {
                             toast.success('Donation successful! Thank you for your support.')
-                            setDonationAmount(country === 'IN' ? 2000 : 50)
+                            setDonationAmount(50)
                             setDonorMessage('')
                           }}
                           onError={(error) => {
                             toast.error(error)
                           }}
-                          disabled={donationAmount < (country === 'IN' ? 1 : 10)}
+                          disabled={donationAmount < 10}
                         />
                         
                         <div className="text-center">
@@ -1645,7 +1640,7 @@ export default function EventDetailPage() {
                     <div className="mb-6">
                       <p className="text-gray-700 mb-3 font-medium">Choose Amount</p>
                       <div className="flex flex-wrap items-center gap-2 mb-4 overflow-hidden">
-                        {getSuggestedAmounts(country).map(v => (
+                        {getSuggestedAmounts().map(v => (
                           <Button 
                             key={v}
                             variant={donationAmount===v ? 'default' : 'outline'}
@@ -1659,12 +1654,12 @@ export default function EventDetailPage() {
                           <span className="text-gray-600 text-sm font-medium whitespace-nowrap">Custom</span>
                           <input
                             type="number"
-                            min={country === 'IN' ? 1 : 10}
-                            step={country === 'IN' ? 1 : 10}
+                            min={10}
+                            step={10}
                             value={donationAmount}
-                            onChange={(e)=>setDonationAmount(Math.max(country === 'IN' ? 1 : 10, Number(e.target.value)))}
+                            onChange={(e)=>setDonationAmount(Math.max(10, Number(e.target.value)))}
                             className="input w-20 sm:w-24 min-h-[44px] text-base"
-                            placeholder={country === 'IN' ? "₹1" : "$10"}
+                            placeholder="$10"
                           />
                         </div>
                       </div>
@@ -1732,7 +1727,7 @@ export default function EventDetailPage() {
                           currency={currency}
                           onSuccess={() => {
                             toast.success('Donation successful! Thank you for your support.')
-                            setDonationAmount(country === 'IN' ? 2000 : 50)
+                            setDonationAmount(50)
                             setDonorName('')
                             setDonorEmail('')
                             setDonorMessage('')
@@ -1741,7 +1736,7 @@ export default function EventDetailPage() {
                           onError={(error) => {
                             toast.error(error)
                           }}
-                          disabled={donationAmount < (country === 'IN' ? 1 : 10)}
+                          disabled={donationAmount < 10}
                         />
                         
                         {/* PayPal Marks for branding */}

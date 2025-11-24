@@ -6,7 +6,6 @@ import { Shield, Menu, X } from 'lucide-react'
 import { useAuth } from '@/app/providers'
 import { useState } from 'react'
 import Image from 'next/image'
-import { CountrySelector } from '@/components/ui/country-selector'
 
 interface NavigationProps {
   showAuth?: boolean
@@ -66,7 +65,6 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1.5">
-            <CountrySelector variant="dropdown" />
             <Link href="/faqs">
               <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                 FAQs
@@ -161,7 +159,6 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white backdrop-blur">
             <div className="px-4 pt-4 pb-6 space-y-2">
-              <CountrySelector variant="cards" className="mb-4" />
               <Link href="/faqs" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                   FAQs

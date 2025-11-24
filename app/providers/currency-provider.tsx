@@ -1,13 +1,11 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { Country, getStoredCountry, storeCountry, formatCurrency, getSuggestedAmounts, formatDate, COUNTRY_CONFIG } from '@/lib/currency'
+import React, { createContext, useContext, ReactNode } from 'react'
+import { formatCurrency, getSuggestedAmounts, formatDate } from '@/lib/currency'
 
 interface CurrencyContextType {
-  country: Country
-  setCountry: (country: Country) => void
   formatCurrency: (amount: number) => string
-  getSuggestedAmounts: (country: Country) => number[]
+  getSuggestedAmounts: () => number[]
   formatDate: (date: Date | string) => string
   currency: string
   symbol: string
@@ -21,28 +19,13 @@ interface CurrencyProviderProps {
 }
 
 export function CurrencyProvider({ children }: CurrencyProviderProps) {
-  const [country, setCountryState] = useState<Country>('US')
-
-  useEffect(() => {
-    setCountryState(getStoredCountry())
-  }, [])
-
-  const setCountry = (newCountry: Country) => {
-    setCountryState(newCountry)
-    storeCountry(newCountry)
-  }
-
-  const config = COUNTRY_CONFIG[country]
-
   const value: CurrencyContextType = {
-    country,
-    setCountry,
-    formatCurrency: (amount: number) => formatCurrency(amount, country),
+    formatCurrency,
     getSuggestedAmounts,
-    formatDate: (date: Date | string) => formatDate(date, country),
-    currency: config.currency,
-    symbol: config.symbol,
-    paymentMethods: config.paymentMethods,
+    formatDate,
+    currency: 'USD',
+    symbol: '$',
+    paymentMethods: ['paypal'] as const,
   }
 
   return (

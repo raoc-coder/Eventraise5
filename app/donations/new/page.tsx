@@ -14,7 +14,6 @@ import { PayPalDonationButton } from '@/lib/paypal-client'
 
 function DonationForm() {
   const searchParams = useSearchParams()
-  const { country } = useCurrency()
   const eventId = searchParams?.get('eventId') || undefined
   const [amount, setAmount] = useState(25)
   const [paymentComplete, setPaymentComplete] = useState(false)
@@ -131,7 +130,6 @@ function DonationForm() {
       {/* PayPal Buttons */}
       {amount > 0 && (
         <div className="space-y-4">
-          {country !== 'IN' && (
             <div className="text-center">
               <p className="text-sm text-gray-500 mb-2">Secure payment powered by PayPal</p>
               <div className="flex justify-center">
@@ -160,7 +158,6 @@ function DonationForm() {
 }
 
 export default function NewDonationPage() {
-  const { country } = useCurrency()
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8 max-w-md">

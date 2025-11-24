@@ -17,7 +17,7 @@ import toast from 'react-hot-toast'
 
 export default function CreateEventPage() {
   const { user, loading: authLoading } = useAuth()
-  const { country, currency, symbol, formatCurrency } = useCurrency()
+  const { currency, symbol, formatCurrency } = useCurrency()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   
@@ -62,20 +62,13 @@ export default function CreateEventPage() {
     // Ticketing fields
     is_ticketed: false,
     ticket_price: '',
-    ticket_currency: currency.toLowerCase(),
+    ticket_currency: 'usd',
     ticket_quantity: '',
     // Volunteer quick ask
     create_volunteer: false,
     volunteer_title: '',
   })
 
-  // Update ticket currency when country changes
-  useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      ticket_currency: currency.toLowerCase()
-    }))
-  }, [currency])
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => {
@@ -269,7 +262,7 @@ export default function CreateEventPage() {
                   <Input
                     id="goal_amount"
                     type="number"
-                    placeholder={country === 'IN' ? "50000" : "10000"}
+                    placeholder="10000"
                     value={formData.goal_amount}
                     onChange={(e) => handleInputChange('goal_amount', e.target.value)}
                     min={1}
@@ -388,7 +381,7 @@ export default function CreateEventPage() {
                       <Input
                         id="ticket_price"
                         type="number"
-                        placeholder={country === 'IN' ? "2000.00" : "25.00"}
+                        placeholder="25.00"
                         value={formData.ticket_price}
                         onChange={(e) => handleInputChange('ticket_price', e.target.value)}
                         min="0"
@@ -406,7 +399,6 @@ export default function CreateEventPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
                       >
                         <option value="usd">USD ($)</option>
-                        <option value="inr">INR (₹)</option>
                       </select>
                     </div>
 

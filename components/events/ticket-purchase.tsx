@@ -40,7 +40,7 @@ interface TicketPurchaseProps {
 }
 
 export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: TicketPurchaseProps) {
-  const { formatCurrency, country, currency } = useCurrency()
+  const { formatCurrency, currency } = useCurrency()
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [buyerInfo, setBuyerInfo] = useState({ name: '', email: '' })
