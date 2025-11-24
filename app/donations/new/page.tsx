@@ -143,7 +143,6 @@ function DonationForm() {
                 />
               </div>
             </div>
-          )}
           <PayPalDonationButton
             amount={amount}
             eventId={eventId || ''}
