@@ -26,7 +26,7 @@ export default function FAQsPage() {
     },
     {
       question: "How do I share my event?",
-      answer: "Once your event is published, you&apos;ll receive a unique shareable link. You can share it through social media, email campaigns, or directly with your community."
+      answer: "Once your event is published, you'll receive a unique shareable link. You can share it through social media, email campaigns, or directly with your community."
     },
     {
       question: "Can I track donations and ticket sales?",
@@ -100,7 +100,7 @@ export default function FAQsPage() {
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Still have questions?</h3>
               <p className="text-gray-600 mb-6">
-                Can&apos;t find what you&apos;re looking for? We&apos;re here to help!
+                Can't find what you're looking for? We're here to help!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a 
