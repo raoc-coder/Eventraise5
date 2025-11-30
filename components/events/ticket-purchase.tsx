@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { paypalClientConfig, PayPalTicketButton } from '@/lib/paypal-client'
 import { useCurrency } from '@/app/providers/currency-provider'
+import { trackMetaPixelPurchase } from '@/lib/meta-pixel'
 
 interface Ticket {
   id: string
@@ -271,6 +272,16 @@ export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: Tick
             currency={currency}
             onSuccess={(orderId) => {
               toast.success('Tickets purchased successfully!')
+              // Track purchase in Meta Pixel
+              if (selectedTicket) {
+                trackMetaPixelPurchase(
+                  totalAmount / 100,
+                  currency,
+                  event.id,
+                  selectedTicket.id,
+                  quantity
+                )
+              }
               fetchTickets?.()
               onSuccess?.()
             }}

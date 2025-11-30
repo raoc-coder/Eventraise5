@@ -43,6 +43,7 @@ import { supabase } from '@/lib/supabase'
 import { EventRegistration } from '@/components/events/event-registration'
 import { VolunteerShifts } from '@/components/events/volunteer-shifts'
 import { TicketPurchase } from '@/components/events/ticket-purchase'
+import { trackMetaPixelDonation, trackMetaPixelViewContent, trackMetaPixelPurchase, trackMetaPixelRegistration } from '@/lib/meta-pixel'
 
 // Use shared Supabase client to avoid multiple GoTrue instances
 
@@ -278,6 +279,10 @@ export default function EventDetailPage() {
             start_date: data.event?.start_date ? new Date(data.event.start_date).toISOString().slice(0,10) : '',
             end_date: data.event?.end_date ? new Date(data.event.end_date).toISOString().slice(0,10) : '',
           })
+          // Track event view in Meta Pixel
+          if (data.event?.id) {
+            trackMetaPixelViewContent(data.event.id, data.event?.title)
+          }
           // Fetch donation total, tickets, and volunteer shifts after event is loaded
           try { await fetchDonationTotal(); console.log('[event page] donation total loaded') } catch {}
           try { await fetchTickets(); console.log('[event page] tickets loaded') } catch {}
@@ -999,6 +1004,8 @@ export default function EventDetailPage() {
                         currency={currency}
                         onSuccess={(orderId) => {
                           toast.success('Donation successful! Thank you for your support.')
+                          // Track donation in Meta Pixel
+                          trackMetaPixelDonation(donationAmount, currency, (params as any)?.id)
                           setDonationAmount(50)
                           setDonorName('')
                           setDonorEmail('')
@@ -1061,6 +1068,8 @@ export default function EventDetailPage() {
                           const json = await res.json()
                           if (!res.ok) throw new Error(json.error || 'Registration failed')
                           toast.success('RSVP confirmed!')
+                          // Track registration in Meta Pixel
+                          trackMetaPixelRegistration(event.id, 'RSVP')
                         } catch (e:any) {
                           toast.error(e.message || 'Unable to RSVP')
                         }
@@ -1333,6 +1342,8 @@ export default function EventDetailPage() {
                           currency={currency}
                           onSuccess={() => {
                             toast.success('Donation successful! Thank you for your support.')
+                            // Track donation in Meta Pixel
+                            trackMetaPixelDonation(donationAmount, currency, (params as any)?.id)
                             setDonationAmount(50)
                             setDonorMessage('')
                           }}
@@ -1472,6 +1483,8 @@ export default function EventDetailPage() {
                         const json = await res.json()
                         if (!res.ok) throw new Error(json.error || 'Registration failed')
                         toast.success('RSVP confirmed!')
+                        // Track registration in Meta Pixel
+                        trackMetaPixelRegistration(event.id, 'RSVP')
                         setActiveModal(null)
                       } catch (e:any) {
                         toast.error(e.message || 'Unable to RSVP')
@@ -1727,6 +1740,8 @@ export default function EventDetailPage() {
                           currency={currency}
                           onSuccess={() => {
                             toast.success('Donation successful! Thank you for your support.')
+                            // Track donation in Meta Pixel
+                            trackMetaPixelDonation(donationAmount, currency, (params as any)?.id)
                             setDonationAmount(50)
                             setDonorName('')
                             setDonorEmail('')

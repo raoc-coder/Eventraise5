@@ -11,6 +11,7 @@ import { Heart, DollarSign } from 'lucide-react'
 import Image from 'next/image'
 import { useCurrency } from '@/app/providers/currency-provider'
 import { PayPalDonationButton } from '@/lib/paypal-client'
+import { trackMetaPixelDonation } from '@/lib/meta-pixel'
 
 function DonationForm() {
   const searchParams = useSearchParams()
@@ -22,6 +23,8 @@ function DonationForm() {
   const handlePaymentSuccess = (transactionId: string) => {
     setPaymentComplete(true)
     toast.success('Thank you for your donation!')
+    // Track donation in Meta Pixel
+    trackMetaPixelDonation(amount, 'USD', eventId || undefined)
     // Redirect to success page
     window.location.href = `/payment/success?transaction_id=${transactionId}&amount=${amount}`
   }

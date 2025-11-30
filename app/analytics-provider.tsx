@@ -8,12 +8,12 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Initialize analytics
+    // Initialize analytics (includes PostHog and Meta Pixel)
     initAnalytics()
   }, [])
 
   useEffect(() => {
-    // Track page views
+    // Track page views (includes PostHog and Meta Pixel)
     if (pathname) {
       trackPageView(pathname)
     }

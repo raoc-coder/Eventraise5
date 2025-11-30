@@ -1,4 +1,5 @@
 import posthog from 'posthog-js'
+import { initMetaPixel, trackMetaPixelPageView } from './meta-pixel'
 
 // Initialize PostHog
 export const initAnalytics = () => {
@@ -10,6 +11,9 @@ export const initAnalytics = () => {
       capture_pageleave: true,
     })
   }
+  
+  // Initialize Meta Pixel
+  initMetaPixel()
 }
 
 // Analytics event tracking
@@ -37,6 +41,11 @@ export const trackPageView = (path: string, properties?: Record<string, any>) =>
       ...properties,
     })
   }
+  
+  // Track page view in Meta Pixel
+  if (typeof window !== 'undefined') {
+    trackMetaPixelPageView(path)
+  }
 }
 
 // Campaign-specific events
@@ -47,12 +56,18 @@ export const trackDonationStarted = (amount: number) => {
   })
 }
 
-export const trackDonationCompleted = (_campaignId: string | undefined, amount: number, donorEmail?: string) => {
+export const trackDonationCompleted = (campaignId: string | undefined, amount: number, donorEmail?: string) => {
   trackEvent('donation_completed', {
     amount,
     currency: 'USD',
     donor_email: donorEmail ? 'provided' : 'anonymous',
   })
+  
+  // Track donation in Meta Pixel
+  if (typeof window !== 'undefined') {
+    const { trackMetaPixelDonation } = require('./meta-pixel')
+    trackMetaPixelDonation(amount, 'USD', campaignId)
+  }
 }
 
 // Transparency & Trust Layer events
@@ -119,6 +134,12 @@ export const trackEventRegistrationCompleted = (eventId: string, eventTitle: str
     amount,
     participant_email: participantEmail,
   })
+  
+  // Track registration in Meta Pixel
+  if (typeof window !== 'undefined') {
+    const { trackMetaPixelRegistration } = require('./meta-pixel')
+    trackMetaPixelRegistration(eventId, 'Event Registration')
+  }
 }
 
 export const trackEventRegistrationFailed = (eventId: string, eventTitle: string, amount: number, error: string) => {
