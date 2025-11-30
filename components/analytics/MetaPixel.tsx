@@ -9,10 +9,11 @@ export function MetaPixel() {
 
   return (
     <>
-      {/* Meta Pixel Code - Standard implementation for Meta Events Manager detection */}
+      {/* Meta Pixel Code - Complete inline script for Meta Events Manager detection */}
+      {/* Using beforeInteractive to ensure it's in the initial HTML head */}
       <Script
         id="meta-pixel"
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `
             !function(f,b,e,v,n,t,s)
@@ -28,7 +29,7 @@ export function MetaPixel() {
           `,
         }}
       />
-      {/* Noscript fallback for Meta Pixel - Required for Meta Events Manager detection */}
+      {/* Noscript fallback - Required for Meta Events Manager detection */}
       <noscript>
         <img
           height="1"
