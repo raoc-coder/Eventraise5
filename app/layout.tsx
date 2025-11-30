@@ -4,6 +4,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { AnalyticsProvider } from './analytics-provider'
 import Footer from '@/components/layout/Footer'
+import { MetaPixel } from '@/components/analytics/MetaPixel'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -91,6 +92,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-[hsl(var(--background))] text-[hsl(var(--foreground))]`}>
+        <MetaPixel />
         <AnalyticsProvider>
           <Providers>
             {children}
