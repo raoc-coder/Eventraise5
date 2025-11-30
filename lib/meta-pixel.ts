@@ -2,8 +2,8 @@
 
 declare global {
   interface Window {
-    fbq: (...args: any[]) => void
-    _fbq: any
+    fbq?: ((...args: any[]) => void) & { loaded?: boolean; q?: any[]; push?: any; version?: string; queue?: any[] }
+    _fbq?: any
   }
 }
 
@@ -17,19 +17,23 @@ export const initMetaPixel = () => {
   }
 
   // Check if already initialized
-  if (window.fbq) {
+  if (window.fbq && (window.fbq as any).loaded) {
     return
   }
 
   // Initialize fbq function
-  window.fbq = window.fbq || function(...args: any[]) {
-    (window.fbq.q = window.fbq.q || []).push(args)
-  }
-  window._fbq = window.fbq
-  window.fbq.push = window.fbq
-  window.fbq.loaded = true
-  window.fbq.version = '2.0'
-  window.fbq.queue = []
+  const fbq = function(...args: any[]) {
+    (fbq.q = fbq.q || []).push(args)
+  } as any
+  
+  fbq.q = fbq.q || []
+  fbq.push = fbq
+  fbq.loaded = true
+  fbq.version = '2.0'
+  fbq.queue = []
+  
+  window.fbq = fbq
+  window._fbq = fbq
 
   // Load Meta Pixel script
   const script = document.createElement('script')
@@ -38,8 +42,10 @@ export const initMetaPixel = () => {
   document.head.appendChild(script)
 
   // Initialize pixel
-  window.fbq('init', META_PIXEL_ID)
-  window.fbq('track', 'PageView')
+  if (window.fbq) {
+    window.fbq('init', META_PIXEL_ID)
+    window.fbq('track', 'PageView')
+  }
 }
 
 // Track page view
@@ -48,9 +54,11 @@ export const trackMetaPixelPageView = (url?: string) => {
     return
   }
 
-  window.fbq('track', 'PageView', {
-    content_name: url || window.location.pathname,
-  })
+  if (typeof window.fbq === 'function') {
+    window.fbq('track', 'PageView', {
+      content_name: url || window.location.pathname,
+    })
+  }
 }
 
 // Track custom event
@@ -59,7 +67,9 @@ export const trackMetaPixelEvent = (eventName: string, parameters?: Record<strin
     return
   }
 
-  window.fbq('track', eventName, parameters || {})
+  if (typeof window.fbq === 'function') {
+    window.fbq('track', eventName, parameters || {})
+  }
 }
 
 // Track donation events
