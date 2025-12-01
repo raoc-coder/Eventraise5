@@ -1,10 +1,8 @@
 import Script from 'next/script'
 
-// Get pixel ID at module level (server-side)
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID
 
 export function MetaPixel() {
-  // Early return if pixel ID not configured
   if (!META_PIXEL_ID) {
     if (process.env.NODE_ENV === 'development') {
       console.warn('[Meta Pixel] NEXT_PUBLIC_META_PIXEL_ID environment variable is not set')
@@ -12,7 +10,7 @@ export function MetaPixel() {
     return null
   }
 
-  // Standard Meta Pixel code format
+  // Complete Meta Pixel code - Standard format from Meta
   const pixelCode = `!function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -26,8 +24,7 @@ fbq('track', 'PageView');`
 
   return (
     <>
-      {/* Meta Pixel Code - Standard implementation */}
-      {/* Note: afterInteractive places script in body, but Meta Events Manager should still detect it */}
+      {/* Meta Pixel ID: ${META_PIXEL_ID} - For Meta Events Manager detection */}
       <Script
         id="facebook-pixel"
         strategy="afterInteractive"
@@ -36,6 +33,7 @@ fbq('track', 'PageView');`
         }}
       />
       {/* Noscript fallback - REQUIRED for Meta Events Manager detection */}
+      {/* This is server-rendered and will be visible in HTML source */}
       <noscript>
         <img
           height="1"
