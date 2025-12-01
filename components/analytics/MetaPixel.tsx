@@ -11,6 +11,7 @@ export function MetaPixel() {
   }
 
   // Complete Meta Pixel code - Standard format from Meta
+  // Using beforeInteractive to ensure it's in the server-rendered HTML
   const pixelCode = `!function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -24,10 +25,10 @@ fbq('track', 'PageView');`
 
   return (
     <>
-      {/* Meta Pixel ID: ${META_PIXEL_ID} - For Meta Events Manager detection */}
+      {/* Meta Pixel Code - Using beforeInteractive to inject into initial HTML for Meta Events Manager */}
       <Script
         id="facebook-pixel"
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: pixelCode,
         }}

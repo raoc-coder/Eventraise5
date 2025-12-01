@@ -89,8 +89,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID
+  
   return (
-    <html lang="en">
+    <html lang="en" data-meta-pixel-id={metaPixelId || undefined}>
       <body className={`${inter.className} bg-[hsl(var(--background))] text-[hsl(var(--foreground))]`}>
         <MetaPixel />
         <AnalyticsProvider>
