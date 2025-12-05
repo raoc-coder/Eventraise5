@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { supabase as sharedSupabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -16,42 +15,34 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const [supabase, setSupabase] = useState<any>(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (!sharedSupabase) {
-      console.error('Missing Supabase environment variables')
-      return
-    }
-    setSupabase(sharedSupabase)
-  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!supabase) {
-      toast.error('Authentication service is not available. Please try again.')
-      return
-    }
     
     setLoading(true)
 
     try {
       console.log('[auth/login] signIn request', { email })
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       })
 
-      console.log('[auth/login] signIn response', { errorMessage: error?.message, errorName: (error as any)?.name })
-      if (error) {
-        if (error.message.includes('email not confirmed')) {
+      const data = await response.json()
+
+      if (!response.ok) {
+        console.log('[auth/login] signIn response error', { error: data.error, status: response.status })
+        if (data.error?.includes('email not confirmed')) {
           toast.error('Please check your email and click the confirmation link before signing in.')
         } else {
-          toast.error(error.message)
+          toast.error(data.error || 'Login failed')
         }
       } else {
+        console.log('[auth/login] signIn success', { userId: data.user?.id })
         toast.success('Login successful!')
         // Check if there's a stored redirect destination
         const redirectTo = localStorage.getItem('redirectAfterLogin')
@@ -63,6 +54,7 @@ export default function LoginPage() {
         }
       }
     } catch (error) {
+      console.error('[auth/login] exception:', error)
       toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)
