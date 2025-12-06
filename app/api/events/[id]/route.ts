@@ -10,9 +10,8 @@ export async function GET(_req: Request, { params }: any) {
     const db = supabaseAdmin || supabase
     if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
     
-    // Await params in Next.js 15
-    const awaited = await params
-    const id = awaited?.id
+    // Params are synchronous in Next.js 14
+    const id = params?.id
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Missing id' }, { status: 400 })
     }
@@ -64,8 +63,8 @@ export async function PATCH(req: Request, { params }: any) {
   const db = supabase
   if (!db) return fail('Database unavailable', 500)
   
-  // Await params in Next.js 15
-  const { id } = await params
+  // Params are synchronous in Next.js 14
+  const { id } = params
   
   const raw = await req.json().catch(() => ({}))
   const body = updateEventSchema.parse(raw)
@@ -94,8 +93,8 @@ export async function DELETE(req: NextRequest, { params }: any) {
     const { user, db } = await requireAuth(req)
     console.log('[api/events/delete] User authenticated:', user.id)
     
-    // Await params in Next.js 15
-    const { id } = await params
+    // Params are synchronous in Next.js 14
+    const { id } = params
     console.log('[api/events/delete] Deleting event:', id)
     
     // First check if user owns this event

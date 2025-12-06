@@ -30,7 +30,7 @@ interface Event {
   organizer_id: string
 }
 
-export default function EventTicketsPage({ params }: { params: Promise<{ id: string }> }) {
+export default function EventTicketsPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const { symbol } = useCurrency()
   const [supabase, setSupabase] = useState<any>(null)
@@ -111,7 +111,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('No active session')
 
-      const { id: createEventId } = await params
+      const { id: createEventId } = params
       const response = await fetch(`/api/events/${createEventId}/tickets`, {
         method: 'POST',
         headers: {
@@ -133,7 +133,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
         throw new Error(errorData.error || 'Failed to create ticket')
       }
 
-      const { id: refreshEventId } = await params
+      const { id: refreshEventId } = params
       await fetchData(refreshEventId, supabase)
       setShowCreateForm(false)
       setFormData({
@@ -161,7 +161,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('No active session')
 
-      const { id: deleteEventId } = await params
+      const { id: deleteEventId } = params
       const response = await fetch(`/api/events/${deleteEventId}/tickets/${ticketId}`, {
         method: 'DELETE',
         headers: {
@@ -172,7 +172,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
 
       if (!response.ok) throw new Error('Failed to delete ticket')
 
-      const { id: refreshEventId2 } = await params
+      const { id: refreshEventId2 } = params
       await fetchData(refreshEventId2, supabase)
     } catch (error) {
       console.error('Error deleting ticket:', error)
@@ -187,7 +187,7 @@ export default function EventTicketsPage({ params }: { params: Promise<{ id: str
     setSupabase(supabaseClient)
 
     const initializeData = async () => {
-      const resolvedParams = await params
+      const resolvedParams = params
       const { data: { user } } = await supabaseClient.auth.getUser()
       if (!user) {
         router.push('/login')

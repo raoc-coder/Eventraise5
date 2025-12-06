@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: { id: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const resolvedParams = await params
+    const resolvedParams = params
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/events/${resolvedParams.id}`, {
       cache: 'no-store'
     })

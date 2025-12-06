@@ -19,7 +19,7 @@ function toCsv(rows: any[]) {
 
 export async function GET(req: NextRequest, { params }: any) {
   try {
-    const { id } = await params
+    const { id } = params
     console.log('CSV export request for event:', id)
     if (!id) return new NextResponse('Missing id', { status: 400 })
     const { searchParams } = new URL(req.url)

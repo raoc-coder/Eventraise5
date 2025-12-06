@@ -3,7 +3,7 @@ import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function DELETE(req: NextRequest, { params }: any) {
   try {
-    const { id: eventId, ticketId } = await params
+    const { id: eventId, ticketId } = params
     if (!eventId || !ticketId) {
       return NextResponse.json({ error: 'Missing event ID or ticket ID' }, { status: 400 })
     }
@@ -51,7 +51,7 @@ export async function DELETE(req: NextRequest, { params }: any) {
 
 export async function PATCH(req: NextRequest, { params }: any) {
   try {
-    const { id: eventId, ticketId } = await params
+    const { id: eventId, ticketId } = params
     if (!eventId || !ticketId) {
       return NextResponse.json({ error: 'Missing event ID or ticket ID' }, { status: 400 })
     }

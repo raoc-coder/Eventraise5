@@ -4,7 +4,7 @@ import { requireAdminAuth } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
-    const { id } = await params
+    const { id } = params
     if (!id) return NextResponse.json({ error: 'Missing payout id' }, { status: 400 })
 
     // Use standardized admin authentication

@@ -5,7 +5,7 @@ import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
-    const { id } = await params
+    const { id } = params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
     
     console.log('[api/tickets/checkout] Starting checkout for event:', id)

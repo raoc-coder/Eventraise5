@@ -4,10 +4,10 @@ import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id: eventId } = await params
+    const { id: eventId } = params
 
     if (!supabase) {
       return NextResponse.json(
@@ -47,10 +47,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id: eventId } = await params
+    const { id: eventId } = params
     const body = await request.json().catch(() => ({}))
     const { title, is_active = true } = body || {}
 

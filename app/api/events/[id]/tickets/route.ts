@@ -3,7 +3,7 @@ import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function GET(req: NextRequest, { params }: any) {
   try {
-    const { id } = await params
+    const { id } = params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
     // Use regular client for public ticket viewing
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: any) {
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
-    const { id } = await params
+    const { id } = params
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
     const body = await req.json().catch(() => ({}))
     const { name, price_cents, currency, quantity_total, sales_start_at, sales_end_at } = body
