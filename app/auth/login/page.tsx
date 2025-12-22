@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { supabase as sharedSupabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -14,32 +15,45 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [supabase, setSupabase] = useState<any>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!sharedSupabase) {
+      console.error('Missing Supabase environment variables')
+      toast.error('Authentication service is not available. Please check your configuration.')
+      return
+    }
+    setSupabase(sharedSupabase)
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!supabase) {
+      toast.error('Authentication service is not available. Please try again.')
+      return
+    }
     
     setLoading(true)
 
     try {
       console.log('[auth/login] signIn request', { email })
       
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        console.log('[auth/login] signIn response error', { error: data.error, status: response.status })
-        if (data.error?.includes('email not confirmed')) {
+      if (error) {
+        console.log('[auth/login] signIn error', { error: error.message, status: error.status })
+        if (error.message?.includes('email not confirmed') || error.message?.includes('Email not confirmed')) {
           toast.error('Please check your email and click the confirmation link before signing in.')
+        } else if (error.message?.includes('Invalid login credentials')) {
+          toast.error('Invalid email or password. Please try again.')
         } else {
-          toast.error(data.error || 'Login failed')
+          toast.error(error.message || 'Login failed')
         }
       } else {
         console.log('[auth/login] signIn success', { userId: data.user?.id })
@@ -53,9 +67,9 @@ export default function LoginPage() {
           router.push('/dashboard')
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('[auth/login] exception:', error)
-      toast.error('An unexpected error occurred')
+      toast.error(error.message || 'An unexpected error occurred')
     } finally {
       setLoading(false)
     }

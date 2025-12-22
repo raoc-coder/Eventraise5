@@ -28,6 +28,7 @@ export default function RegisterPage() {
     if (typeof window === 'undefined') return
     if (!sharedSupabase) {
       console.error('Missing Supabase environment variables')
+      toast.error('Authentication service is not available. Please check your configuration.')
       return
     }
     setSupabase(sharedSupabase)
@@ -41,8 +42,20 @@ export default function RegisterPage() {
       return
     }
     
+    // Validate password length
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters long')
+      return
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match')
+      return
+    }
+
+    // Validate required fields
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.organizationName.trim()) {
+      toast.error('Please fill in all required fields')
       return
     }
 
@@ -54,12 +67,12 @@ export default function RegisterPage() {
         emailRedirectTo: getEmailRedirectUrl(),
       })
       const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
+        email: formData.email.trim(),
         password: formData.password,
         options: {
           data: {
-            full_name: formData.fullName,
-            organization_name: formData.organizationName,
+            full_name: formData.fullName.trim(),
+            organization_name: formData.organizationName.trim(),
           },
           emailRedirectTo: getEmailRedirectUrl()
         }
@@ -68,22 +81,36 @@ export default function RegisterPage() {
       console.log('[auth/register] signUp response', {
         errorMessage: error?.message,
         errorName: (error as any)?.name,
+        hasSession: !!data?.session,
+        hasUser: !!data?.user,
         currentOrigin: typeof window !== 'undefined' ? window.location.origin : 'server',
       })
 
       if (error) {
-        toast.error(error.message)
+        // Provide more specific error messages
+        if (error.message?.includes('already registered') || error.message?.includes('already exists')) {
+          toast.error('An account with this email already exists. Please sign in instead.')
+        } else if (error.message?.includes('Invalid email')) {
+          toast.error('Please enter a valid email address')
+        } else {
+          toast.error(error.message || 'Failed to create account. Please try again.')
+        }
       } else if (data?.session) {
         // Email confirmations disabled or auto-confirm enabled: user is already signed in
         toast.success('Account created! You are now signed in.')
         router.push('/dashboard')
-      } else {
+      } else if (data?.user) {
         // Email confirmations enabled: fall back to verify-by-email message
         toast.success('Account created! Please check your email to verify your account before signing in.')
         router.push('/auth/login')
+      } else {
+        // Unexpected case
+        toast.error('Account creation initiated. Please check your email for verification.')
+        router.push('/auth/login')
       }
-    } catch (error) {
-      toast.error('An unexpected error occurred')
+    } catch (error: any) {
+      console.error('[auth/register] exception:', error)
+      toast.error(error.message || 'An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
