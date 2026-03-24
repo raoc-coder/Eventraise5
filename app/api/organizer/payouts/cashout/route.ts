@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase as sharedSupabase, supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit, getClientKeyFromHeaders } from '@/lib/rate-limit'
+import { requireAuth } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,13 +17,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid or missing method (paypal|venmo|ach)' }, { status: 400 })
     }
 
-    // Verify user session
-    const supabase = sharedSupabase!
-    const { data: { session }, error: sessionErr } = await supabase.auth.getSession()
-    if (sessionErr || !session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-    const userId = session.user.id
+    const { user } = await requireAuth(req)
+    const userId = user.id
 
     // Use admin client to bypass RLS for server-side write with ownership checks
     if (!supabaseAdmin) {

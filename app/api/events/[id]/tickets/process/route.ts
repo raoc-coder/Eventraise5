@@ -28,6 +28,31 @@ export async function POST(req: NextRequest, { params }: any) {
 
     if (regErr || !registration) return NextResponse.json({ error: 'Registration not found' }, { status: 404 })
 
+    // Idempotency/duplicate guard: if already confirmed, do not recapture.
+    if (registration.status === 'confirmed') {
+      return NextResponse.json({
+        success: true,
+        already_processed: true,
+        registration_id
+      })
+    }
+
+    const { data: storedOrder, error: orderErr } = await supabaseAdmin
+      .from('paypal_orders')
+      .select('id, event_id, type, status')
+      .eq('order_id', paypal_order_id)
+      .single()
+
+    if (orderErr || !storedOrder) {
+      return NextResponse.json({ error: 'PayPal order not found' }, { status: 404 })
+    }
+    if (storedOrder.event_id !== id || storedOrder.type !== 'ticket') {
+      return NextResponse.json({ error: 'Order details mismatch' }, { status: 400 })
+    }
+    if (storedOrder.status !== 'pending') {
+      return NextResponse.json({ error: 'Order is not capturable' }, { status: 409 })
+    }
+
     // Process payment with PayPal
     const captureResult = await captureOrder(paypal_order_id)
     
@@ -47,7 +72,7 @@ export async function POST(req: NextRequest, { params }: any) {
       .from('event_registrations')
       .update({
         status: 'confirmed',
-        paypal_order_id: paypal_order_id,
+        paypal_order_id: storedOrder.id,
         fee_cents: feeCents,
         net_cents: netCents,
         settlement_status: 'pending',
