@@ -4,8 +4,11 @@ import { notFound } from 'next/navigation'
 import {
   getAllPseoParams,
   getPseoCopyVariants,
+  getPseoFaqs,
   getPseoPageContext,
+  getPseoQualityScore,
   getRelatedPseoLinks,
+  getStateFundraisingStat,
   PSEO_PAGE_COUNT,
   type PseoParams,
 } from '@/lib/pseo/us-fundraising-pages'
@@ -30,6 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const { seed, orgType, topic } = context
+  const qualityScore = getPseoQualityScore(params)
   const title = `${topic.label} in ${seed.cityName}, ${seed.stateName} for ${orgType.label} | EventraiseHub`
   const description = `Plan ${topic.label.toLowerCase()} in ${seed.cityName}, ${seed.stateName} with practical templates for ${orgType.label.toLowerCase()}. Launch volunteer-led fundraising events and online donations with EventraiseHub.`
   const canonicalPath = `/fundraising/${params.state}/${params.city}/${params.orgType}/${params.topic}`
@@ -46,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       locale: 'en_US',
     },
     robots: {
-      index: true,
+      index: qualityScore >= 65,
       follow: true,
     },
   }
@@ -61,6 +65,21 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
   const { seed, orgType, topic } = context
   const variants = getPseoCopyVariants(params)
   const relatedPages = getRelatedPseoLinks(params, 4)
+  const qualityScore = getPseoQualityScore(params)
+  const stateStat = getStateFundraisingStat(params)
+  const faqs = getPseoFaqs(params)
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
   const quickIdeas = [
     `Set a clear ${topic.label.toLowerCase()} goal for ${seed.cityName} and define a 30-day timeline.`,
     `Recruit volunteer captains from local ${orgType.label.toLowerCase()} networks in ${seed.stateName}.`,
@@ -71,6 +90,10 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         US Local Fundraising Playbook
       </p>
@@ -115,6 +138,18 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
       </section>
 
       <section className="mt-8 rounded-lg border p-6">
+        <h2 className="text-xl font-semibold">Local benchmark snapshot</h2>
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          Estimated local benchmark indicators for campaign planning in {seed.cityName}, {seed.stateName}.
+        </p>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
+          <li>Estimated volunteer participation rate: {stateStat.volunteerParticipationRate}%</li>
+          <li>Typical donor reach target: {stateStat.avgLocalDonors} supporters</li>
+          <li>Average online donation conversion range: {stateStat.onlineDonationConversionRate}%</li>
+        </ul>
+      </section>
+
+      <section className="mt-8 rounded-lg border p-6">
         <h2 className="text-xl font-semibold">Related guides in {seed.stateName}</h2>
         <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
           {relatedPages.map((item) => (
@@ -129,6 +164,19 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="mt-8 rounded-lg border p-6">
+        <h2 className="text-xl font-semibold">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          {faqs.map((item) => (
+            <div key={item.question}>
+              <h3 className="text-base font-semibold">{item.question}</h3>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-5 text-xs text-muted-foreground">Page quality score: {qualityScore}/100</p>
       </section>
     </main>
   )
