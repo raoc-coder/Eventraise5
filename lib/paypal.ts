@@ -81,7 +81,14 @@ export function calculatePlatformFee(amount: number, currency: string = 'USD'): 
 }
 
 // Create PayPal order for donation
-export async function createDonationOrder(eventId: string, amount: number, currency: string = 'USD', donorName?: string, donorEmail?: string) {
+export async function createDonationOrder(
+  eventId: string,
+  amount: number,
+  currency: string = 'USD',
+  donorName?: string,
+  donorEmail?: string,
+  requestId?: string
+) {
   const fees = calculatePlatformFee(amount, currency)
 
   // Important: Charge exactly the entered amount at PayPal.
@@ -113,12 +120,13 @@ export async function createDonationOrder(eventId: string, amount: number, curre
 
   try {
     const accessToken = await getPayPalAccessToken()
+    const paypalRequestId = (requestId || `donation_${eventId}_${Date.now()}`).slice(0, 108)
     const response = await fetch(`${paypalConfig.baseUrl}/v2/checkout/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
-        'PayPal-Request-Id': `donation_${eventId}_${Date.now()}`
+        'PayPal-Request-Id': paypalRequestId
       },
       body: JSON.stringify(orderRequest)
     })
@@ -160,15 +168,16 @@ export async function createDonationOrder(eventId: string, amount: number, curre
 }
 
 // Capture PayPal order
-export async function captureOrder(orderId: string) {
+export async function captureOrder(orderId: string, requestId?: string) {
   try {
     const accessToken = await getPayPalAccessToken()
+    const paypalRequestId = (requestId || `capture_${orderId}_${Date.now()}`).slice(0, 108)
     const response = await fetch(`${paypalConfig.baseUrl}/v2/checkout/orders/${orderId}/capture`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
-        'PayPal-Request-Id': `capture_${orderId}_${Date.now()}`
+        'PayPal-Request-Id': paypalRequestId
       }
     })
 

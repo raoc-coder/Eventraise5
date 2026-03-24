@@ -6,19 +6,12 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const { orderId, eventId, type, ticketId } = body
+    const headerIdempotencyKey = req.headers.get('idempotency-key')?.trim()
 
     if (!orderId || !eventId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Capture PayPal order
-    const captureResult = await captureOrder(orderId)
-
-    if (!captureResult.success) {
-      return NextResponse.json({ error: captureResult.error }, { status: 500 })
-    }
-
-    // Update order status in database
     if (!supabaseAdmin) {
       return NextResponse.json({ error: 'Database client not initialized' }, { status: 500 })
     }
@@ -42,8 +35,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ticket mismatch' }, { status: 400 })
     }
 
+    if (storedOrder.status === 'captured') {
+      const alreadyResponse = NextResponse.json({
+        success: true,
+        already_processed: true
+      })
+      if (headerIdempotencyKey) {
+        alreadyResponse.headers.set('Idempotency-Key', headerIdempotencyKey)
+      }
+      return alreadyResponse
+    }
+
     if (storedOrder.status !== 'pending') {
       return NextResponse.json({ error: 'Order is not capturable' }, { status: 409 })
+    }
+
+    const captureRequestId = (headerIdempotencyKey || `capture_${orderId}`).slice(0, 108)
+
+    // Capture PayPal order
+    const captureResult = await captureOrder(orderId, captureRequestId)
+
+    if (!captureResult.success) {
+      return NextResponse.json({ error: captureResult.error }, { status: 500 })
     }
 
     const { error: updateError } = await supabaseAdmin
@@ -128,11 +141,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       captureId: captureResult.captureId,
       status: captureResult.status
     })
+    if (headerIdempotencyKey) {
+      response.headers.set('Idempotency-Key', headerIdempotencyKey)
+    }
+    return response
 
   } catch (error) {
     console.error('PayPal capture order error:', error)

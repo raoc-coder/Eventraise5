@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const { eventId, amount, type, ticketId, quantity, currency = 'USD' } = body
+    const headerIdempotencyKey = req.headers.get('idempotency-key')?.trim()
 
     if (!eventId || !amount || !type) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -37,8 +38,19 @@ export async function POST(req: NextRequest) {
     // Calculate fees
     const fees = calculatePlatformFee(amount, currency)
 
+    // Deterministic request id for upstream idempotency (PayPal-Request-Id).
+    const requestFingerprint = [
+      eventId,
+      String(type),
+      String(ticketId || 'none'),
+      String(Math.round(Number(amount) * 100)),
+      String(quantity || 1),
+      String(currency)
+    ].join('_')
+    const paypalRequestId = (headerIdempotencyKey || `create_${eventId}_${requestFingerprint}`).slice(0, 108)
+
     // Create PayPal order
-    const orderResult = await createDonationOrder(eventId, amount, currency)
+    const orderResult = await createDonationOrder(eventId, amount, currency, undefined, undefined, paypalRequestId)
 
     if (!orderResult.success) {
       // Propagate a clearer error with 4xx when it's likely a request/config issue
@@ -69,10 +81,14 @@ export async function POST(req: NextRequest) {
       // Don't fail the request, just log the error
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       orderId: orderResult.orderId,
       fees: fees
     })
+    if (headerIdempotencyKey) {
+      response.headers.set('Idempotency-Key', headerIdempotencyKey)
+    }
+    return response
 
   } catch (error) {
     console.error('PayPal create order error:', error)
