@@ -1,9 +1,10 @@
 import type { MetadataRoute } from 'next'
 import { getAllPseoParams } from '@/lib/pseo/us-fundraising-pages'
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.eventraisehub.com'
-  const staticUrls: MetadataRoute.Sitemap = [
+const SITEMAP_CHUNK_SIZE = 2000
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.eventraisehub.com'
+
+const staticUrls: MetadataRoute.Sitemap = [
     { 
       url: `${baseUrl}/`, 
       lastModified: new Date(),
@@ -64,32 +65,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8
     }
-  ]
+]
 
-  const pseoUrls: MetadataRoute.Sitemap = getAllPseoParams().map((item) => ({
+const pseoUrls: MetadataRoute.Sitemap = getAllPseoParams().map((item) => ({
     url: `${baseUrl}/fundraising/${item.state}/${item.city}/${item.orgType}/${item.topic}`,
     lastModified: new Date(),
     changeFrequency: 'weekly',
     priority: 0.65,
-  }))
+}))
 
+async function getEventUrls(): Promise<MetadataRoute.Sitemap> {
   try {
     const { supabaseAdmin } = await import('@/lib/supabase')
-    if (!supabaseAdmin) return [...staticUrls, ...pseoUrls]
+    if (!supabaseAdmin) return []
     const { data } = await supabaseAdmin
       .from('events')
       .select('slug, updated_at, id')
       .eq('is_public', true)
       .limit(5000)
-    const eventUrls: MetadataRoute.Sitemap = (data || []).map((e: any) => ({
+    return (data || []).map((e: any) => ({
       url: `${baseUrl}/events/${e.slug || e.id}`,
       lastModified: e.updated_at ? new Date(e.updated_at) : new Date(),
       changeFrequency: 'daily'
     }))
-    return [...staticUrls, ...pseoUrls, ...eventUrls]
   } catch {
-    return [...staticUrls, ...pseoUrls]
+    return []
   }
+}
+
+export async function generateSitemaps() {
+  const eventUrls = await getEventUrls()
+  const dynamicTotal = pseoUrls.length + eventUrls.length
+  const totalDynamicChunks = Math.max(1, Math.ceil(dynamicTotal / SITEMAP_CHUNK_SIZE))
+  return Array.from({ length: totalDynamicChunks }, (_, idx) => ({ id: idx }))
+}
+
+export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+  const eventUrls = await getEventUrls()
+  const dynamicUrls = [...pseoUrls, ...eventUrls]
+  const start = id * SITEMAP_CHUNK_SIZE
+  const end = start + SITEMAP_CHUNK_SIZE
+  const currentChunk = dynamicUrls.slice(start, end)
+
+  if (id === 0) {
+    return [...staticUrls, ...currentChunk]
+  }
+  return currentChunk
 }
 
 

@@ -116,6 +116,19 @@ export type PseoParams = {
   topic: string
 }
 
+const STRATEGY_INTROS = [
+  'Volunteer-led fundraising performs best when organizers simplify registration, donation, and outreach into one workflow.',
+  'High-performing local campaigns focus on clear goals, weekly momentum tracking, and transparent impact reporting.',
+  'Community fundraising grows faster when schools and nonprofits combine online giving with in-person event participation.',
+] as const
+
+const ORGANIZER_TIPS = [
+  'Assign one volunteer lead for donor messaging and one for day-of operations.',
+  'Set milestone checkpoints at 25%, 50%, and 80% of your target amount.',
+  'Share progress updates on social and email twice weekly during active campaigns.',
+  'Use early-bird signups to estimate volunteer and staffing needs.',
+] as const
+
 export function getAllPseoParams(): PseoParams[] {
   const items: PseoParams[] = []
   for (const seed of US_STATE_CAPITAL_SEEDS) {
@@ -141,6 +154,24 @@ export function getPseoPageContext(params: PseoParams) {
   const topic = FUNDRAISING_TOPICS.find((item) => item.slug === params.topic)
   if (!seed || !orgType || !topic) return null
   return { seed, orgType, topic }
+}
+
+export function getPseoCopyVariants(params: PseoParams) {
+  const key = `${params.state}|${params.city}|${params.orgType}|${params.topic}`
+  const hash = Array.from(key).reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  return {
+    intro: STRATEGY_INTROS[hash % STRATEGY_INTROS.length],
+    tips: [0, 1, 2].map((offset) => ORGANIZER_TIPS[(hash + offset) % ORGANIZER_TIPS.length]),
+  }
+}
+
+export function getRelatedPseoLinks(params: PseoParams, limit: number = 4): PseoParams[] {
+  const stateMatches = getAllPseoParams().filter(
+    (item) =>
+      item.state === params.state &&
+      (item.city !== params.city || item.topic !== params.topic || item.orgType !== params.orgType)
+  )
+  return stateMatches.slice(0, limit)
 }
 
 export const PSEO_PAGE_COUNT =

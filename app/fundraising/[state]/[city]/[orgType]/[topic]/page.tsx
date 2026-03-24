@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   getAllPseoParams,
+  getPseoCopyVariants,
   getPseoPageContext,
+  getRelatedPseoLinks,
   PSEO_PAGE_COUNT,
   type PseoParams,
 } from '@/lib/pseo/us-fundraising-pages'
@@ -57,11 +59,12 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
   }
 
   const { seed, orgType, topic } = context
+  const variants = getPseoCopyVariants(params)
+  const relatedPages = getRelatedPseoLinks(params, 4)
   const quickIdeas = [
     `Set a clear ${topic.label.toLowerCase()} goal for ${seed.cityName} and define a 30-day timeline.`,
     `Recruit volunteer captains from local ${orgType.label.toLowerCase()} networks in ${seed.stateName}.`,
-    'Publish donation impact milestones so supporters know exactly what each contribution funds.',
-    'Use one checkout flow for donations, tickets, and volunteer signups to reduce drop-off.',
+    ...variants.tips,
   ]
 
   const seoSummary = `${topic.label} in ${seed.cityName}, ${seed.stateName} for ${orgType.label}`
@@ -77,6 +80,7 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
         registrations, and day-of coordination. This page is one of {PSEO_PAGE_COUNT.toLocaleString()} localized
         fundraising guides for U.S. communities.
       </p>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">{variants.intro}</p>
 
       <section className="mt-8 rounded-lg border p-6">
         <h2 className="text-xl font-semibold">How to run this in {seed.cityName}</h2>
@@ -108,6 +112,23 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
             View platform pricing
           </Link>
         </div>
+      </section>
+
+      <section className="mt-8 rounded-lg border p-6">
+        <h2 className="text-xl font-semibold">Related guides in {seed.stateName}</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-muted-foreground">
+          {relatedPages.map((item) => (
+            <li key={`${item.state}-${item.city}-${item.orgType}-${item.topic}`}>
+              <Link
+                href={`/fundraising/${item.state}/${item.city}/${item.orgType}/${item.topic}`}
+                className="underline decoration-muted-foreground/40 underline-offset-4"
+              >
+                {item.topic.replace(/-/g, ' ')} for {item.orgType.replace(/-/g, ' ')} in{' '}
+                {item.city.replace(/-/g, ' ')}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
     </main>
   )
