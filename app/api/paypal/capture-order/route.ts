@@ -23,6 +23,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Database client not initialized' }, { status: 500 })
     }
 
+    // Validate incoming capture request against the server-side order record.
+    const { data: storedOrder, error: orderLookupError } = await supabaseAdmin
+      .from('paypal_orders')
+      .select('id, event_id, type, ticket_id, status')
+      .eq('order_id', orderId)
+      .single()
+
+    if (orderLookupError || !storedOrder) {
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+    }
+
+    if (storedOrder.event_id !== eventId || storedOrder.type !== type) {
+      return NextResponse.json({ error: 'Order details mismatch' }, { status: 400 })
+    }
+
+    if ((storedOrder.ticket_id || null) !== (ticketId || null)) {
+      return NextResponse.json({ error: 'Ticket mismatch' }, { status: 400 })
+    }
+
+    if (storedOrder.status !== 'pending') {
+      return NextResponse.json({ error: 'Order is not capturable' }, { status: 409 })
+    }
+
     const { error: updateError } = await supabaseAdmin
       .from('paypal_orders')
       .update({ 
@@ -57,7 +80,7 @@ export async function POST(req: NextRequest) {
             donor_name: null, // Will be filled from PayPal data
             donor_email: null, // Will be filled from PayPal data
             settlement_status: 'pending',
-            paypal_order_id: orderData.id,
+            paypal_order_id: storedOrder.id,
             paypal_capture_id: captureResult.captureId
           })
 
@@ -83,7 +106,7 @@ export async function POST(req: NextRequest) {
             status: 'confirmed',
             fee_cents: orderData.platform_fee_cents,
             net_cents: orderData.net_amount_cents,
-            paypal_order_id: orderId,
+            paypal_order_id: storedOrder.id,
             paypal_capture_id: captureResult.captureId
           })
 

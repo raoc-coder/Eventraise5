@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { MonitoringService } from '@/lib/monitoring'
+import { requireAdminAuth } from '@/lib/auth-utils'
 
 export async function POST(request: NextRequest) {
   try {
+    await requireAdminAuth(request)
     const { reportType, filters, schedule } = await request.json()
 
     if (!supabase) {

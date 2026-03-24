@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/auth-utils'
 
 type ColumnCheck = {
   table: string
@@ -27,6 +28,11 @@ async function checkColumnExists(table: string, column: string) {
 }
 
 export async function GET(_req: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+  await requireAdminAuth(_req)
+
   if (!supabaseAdmin) {
     return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
   }

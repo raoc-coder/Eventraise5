@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { updateEventSchema } from '@/lib/validators'
 import { ok, fail } from '@/lib/api'
-import { requireAuth } from '@/lib/auth-utils'
+import { requireAuth, requireEventAccess } from '@/lib/auth-utils'
 
 export async function GET(_req: Request, { params }: any) {
   try {
@@ -58,13 +58,14 @@ export async function GET(_req: Request, { params }: any) {
   }
 }
 
-export async function PATCH(req: Request, { params }: any) {
+export async function PATCH(req: NextRequest, { params }: any) {
   // Use regular client for now
   const db = supabase
   if (!db) return fail('Database unavailable', 500)
   
   // Params are synchronous in Next.js 14
   const { id } = params
+  await requireEventAccess(req, id)
   
   const raw = await req.json().catch(() => ({}))
   const body = updateEventSchema.parse(raw)
