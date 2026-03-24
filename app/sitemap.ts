@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { getAllPseoParams } from '@/lib/pseo/us-fundraising-pages'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.eventraisehub.com'
@@ -56,12 +57,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6
+    },
+    {
+      url: `${baseUrl}/fundraising`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8
     }
   ]
 
+  const pseoUrls: MetadataRoute.Sitemap = getAllPseoParams().map((item) => ({
+    url: `${baseUrl}/fundraising/${item.state}/${item.city}/${item.orgType}/${item.topic}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.65,
+  }))
+
   try {
     const { supabaseAdmin } = await import('@/lib/supabase')
-    if (!supabaseAdmin) return staticUrls
+    if (!supabaseAdmin) return [...staticUrls, ...pseoUrls]
     const { data } = await supabaseAdmin
       .from('events')
       .select('slug, updated_at, id')
@@ -72,9 +86,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: e.updated_at ? new Date(e.updated_at) : new Date(),
       changeFrequency: 'daily'
     }))
-    return [...staticUrls, ...eventUrls]
+    return [...staticUrls, ...pseoUrls, ...eventUrls]
   } catch {
-    return staticUrls
+    return [...staticUrls, ...pseoUrls]
   }
 }
 
