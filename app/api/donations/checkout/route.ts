@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getAppUrl } from '@/lib/config'
+import { authenticateRequest } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,7 +21,8 @@ export async function POST(req: NextRequest) {
     const feeCents = Math.floor(amountCents * 0.0899)
     const netCents = amountCents - feeCents
 
-    const userId = req.headers.get('x-user-id') || null
+    const auth = await authenticateRequest(req)
+    const userId = auth.user?.id || null
     const baseInsert: any = {
       user_id: userId,
       amount_cents: amountCents,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { rateLimit, getClientKeyFromHeaders } from '@/lib/rate-limit'
+import { requireAuth } from '@/lib/auth-utils'
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
@@ -38,9 +39,14 @@ export async function GET(req: NextRequest) {
   const pageSize = Math.min(50, Math.max(1, Number(searchParams.get('pageSize') || '12')))
   const mine = searchParams.get('mine') === '1'
   const type = searchParams.get('type') || ''
-  const userId = req.headers.get('x-user-id') || ''
+  let userId = ''
   const from = (page - 1) * pageSize
   const to = from + pageSize - 1
+
+  if (mine) {
+    const auth = await requireAuth(req)
+    userId = auth.user.id
+  }
 
   // Base query; prefer published only if column exists
   let query = db.from('events').select(`

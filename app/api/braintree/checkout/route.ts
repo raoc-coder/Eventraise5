@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getAppUrl } from '@/lib/config'
 import { rateLimit } from '@/lib/rate-limit'
+import { authenticateRequest } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,7 +34,8 @@ export async function POST(req: NextRequest) {
 
     const amountNum = parseFloat(amount)
     const amountCents = Math.round(amountNum * 100)
-    const userId = req.headers.get('x-user-id') || null
+    const auth = await authenticateRequest(req)
+    const userId = auth.user?.id || null
 
     // Store donation request
     const { data: donationRequest, error: drError } = await supabaseAdmin

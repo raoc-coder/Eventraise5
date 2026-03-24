@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createTransaction } from '@/lib/braintree-server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { rateLimit } from '@/lib/rate-limit'
+import { authenticateRequest } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,7 +53,8 @@ export async function POST(req: NextRequest) {
     }
 
     const transaction = result.transaction
-    const userId = req.headers.get('x-user-id') || null
+    const auth = await authenticateRequest(req)
+    const userId = auth.user?.id || null
 
     // Calculate fee and net (8.99%)
     const amountCents = Math.round(amountNum * 100)
