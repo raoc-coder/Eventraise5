@@ -1,6 +1,20 @@
 'use client'
 
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
+import { useRef } from 'react'
+
+function createIdempotencyKey(prefix: string, payload: Record<string, unknown>) {
+  const payloadPart = Object.values(payload)
+    .map((value) => String(value ?? ''))
+    .join('_')
+    .slice(0, 64)
+    .replace(/[^a-zA-Z0-9_-]/g, '')
+  const randomPart =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID().replace(/-/g, '')
+      : `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+  return `${prefix}_${payloadPart}_${randomPart}`.slice(0, 120)
+}
 
 // PayPal client configuration factory
 export const createPaypalClientConfig = (currency: string = 'USD') => ({
@@ -32,12 +46,18 @@ export function PayPalDonationButton({
   onError: (error: string) => void
   disabled?: boolean
 }) {
+  const createOrderKeyRef = useRef<string>('')
+  const captureOrderKeyByOrderIdRef = useRef<Record<string, string>>({})
+
   const createOrder = async () => {
     try {
+      const createKey = createOrderKeyRef.current || createIdempotencyKey('pp_create', { eventId, amount, currency, type: 'donation' })
+      createOrderKeyRef.current = createKey
       const response = await fetch('/api/paypal/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Idempotency-Key': createKey,
         },
         body: JSON.stringify({
           eventId,
@@ -53,6 +73,13 @@ export function PayPalDonationButton({
         throw new Error(data.error || 'Failed to create PayPal order')
       }
 
+      if (data.orderId) {
+        captureOrderKeyByOrderIdRef.current[data.orderId] = createIdempotencyKey('pp_capture', {
+          eventId,
+          orderId: data.orderId,
+          type: 'donation',
+        })
+      }
       return data.orderId
     } catch (error) {
       console.error('Error creating PayPal order:', error)
@@ -63,10 +90,14 @@ export function PayPalDonationButton({
 
   const onApprove = async (data: any) => {
     try {
+      const captureKey =
+        captureOrderKeyByOrderIdRef.current[data.orderID] ||
+        createIdempotencyKey('pp_capture', { eventId, orderId: data.orderID, type: 'donation' })
       const response = await fetch('/api/paypal/capture-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Idempotency-Key': captureKey,
         },
         body: JSON.stringify({
           orderId: data.orderID,
@@ -126,12 +157,20 @@ export function PayPalTicketButton({
   onError: (error: string) => void
   disabled?: boolean
 }) {
+  const createOrderKeyRef = useRef<string>('')
+  const captureOrderKeyByOrderIdRef = useRef<Record<string, string>>({})
+
   const createOrder = async () => {
     try {
+      const createKey =
+        createOrderKeyRef.current ||
+        createIdempotencyKey('pp_create', { eventId, ticketId, amount, quantity, currency, type: 'ticket' })
+      createOrderKeyRef.current = createKey
       const response = await fetch('/api/paypal/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Idempotency-Key': createKey,
         },
         body: JSON.stringify({
           eventId,
@@ -149,6 +188,14 @@ export function PayPalTicketButton({
         throw new Error(data.error || 'Failed to create PayPal order')
       }
 
+      if (data.orderId) {
+        captureOrderKeyByOrderIdRef.current[data.orderId] = createIdempotencyKey('pp_capture', {
+          eventId,
+          orderId: data.orderId,
+          ticketId,
+          type: 'ticket',
+        })
+      }
       return data.orderId
     } catch (error) {
       console.error('Error creating PayPal order:', error)
@@ -159,10 +206,14 @@ export function PayPalTicketButton({
 
   const onApprove = async (data: any) => {
     try {
+      const captureKey =
+        captureOrderKeyByOrderIdRef.current[data.orderID] ||
+        createIdempotencyKey('pp_capture', { eventId, orderId: data.orderID, ticketId, type: 'ticket' })
       const response = await fetch('/api/paypal/capture-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Idempotency-Key': captureKey,
         },
         body: JSON.stringify({
           orderId: data.orderID,
