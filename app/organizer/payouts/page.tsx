@@ -324,12 +324,24 @@ export default function OrganizerPayoutsPage() {
                 )}
 
                 {cashoutOpen === payout.id && (
-                  <div className="fixed inset-0 z-50">
+                  <div
+                    className="fixed inset-0 z-50"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') setCashoutOpen(null)
+                    }}
+                  >
                     <div className="absolute inset-0 bg-black/50" onClick={() => setCashoutOpen(null)} />
                     <div className="absolute inset-0 flex items-center justify-center p-4">
-                      <div className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden" role="dialog" aria-modal="true">
+                      <div
+                        className="w-full max-w-md bg-white rounded-xl shadow-xl overflow-hidden"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="cashout-dialog-title"
+                      >
                         <div className="px-5 pt-4 pb-5">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-1">Request Cash Out</h3>
+                          <h3 id="cashout-dialog-title" className="text-lg font-semibold text-gray-900 mb-1">
+                            Request Cash Out
+                          </h3>
                           <p className="text-sm text-gray-600 mb-4">Cash out is not automated yet. We will process requests manually via your selected method.</p>
                           <div className="space-y-3">
                             <div>

@@ -147,6 +147,11 @@ export default function LocalFundraisingPseoPage({ params }: PageProps) {
           <li>Typical donor reach target: {stateStat.avgLocalDonors} supporters</li>
           <li>Average online donation conversion range: {stateStat.onlineDonationConversionRate}%</li>
         </ul>
+        <p className="mt-4 text-xs leading-5 text-muted-foreground">
+          Note: these are illustrative planning benchmarks generated from campaign segmentation models, not audited
+          census or fundraising authority data. Use them as directional estimates and calibrate with your local
+          historical results.
+        </p>
       </section>
 
       <section className="mt-8 rounded-lg border p-6">

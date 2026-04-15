@@ -145,6 +145,9 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
               size="sm"
               onClick={toggleMobileMenu}
               className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 min-w-[44px] min-h-[44px]"
+              aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation-menu"
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -157,7 +160,10 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 bg-white backdrop-blur">
+          <div
+            id="mobile-navigation-menu"
+            className="md:hidden border-t border-gray-200 bg-white backdrop-blur"
+          >
             <div className="px-4 pt-4 pb-6 space-y-2">
               <Link href="/faqs" onClick={closeMobileMenu}>
                 <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">

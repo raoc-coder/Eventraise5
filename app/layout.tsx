@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     'donation tracking',
     'event analytics'
   ],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+  viewport: 'width=device-width, initial-scale=1',
   openGraph: {
     title: 'EventraiseHub — Free Event Management for Volunteers, Fundraisers & Organizations',
     description: 'All-in-one platform for volunteers, fundraisers, schools, parents, organizations, and trade shows. Create donation drives, ticketed events, RSVPs, volunteer signups with built-in PayPal payments and analytics.',
