@@ -3,6 +3,8 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { isOwnerAdminUser } from '@/lib/auth-utils'
+import { AdminConsoleNav } from '@/components/admin/AdminConsoleNav'
+import { Navigation } from '@/components/layout/navigation'
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const supabase = createServerComponentClient({ cookies })
@@ -18,5 +20,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     redirect('/access-denied?scope=admin')
   }
 
-  return <>{children}</>
+  return (
+    <>
+      <Navigation />
+      <AdminConsoleNav />
+      {children}
+    </>
+  )
 }

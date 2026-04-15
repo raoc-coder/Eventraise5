@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase as sharedSupabase } from '@/lib/supabase'
-import { Navigation } from '@/components/layout/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -136,7 +135,6 @@ export default function AdminPayoutsPage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-white">
-        <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">Loading...</div>
         </div>
@@ -146,7 +144,6 @@ export default function AdminPayoutsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Payouts</h1>

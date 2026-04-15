@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Shield, Menu, X } from 'lucide-react'
 import { useAuth } from '@/app/providers'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 interface NavigationProps {
@@ -15,6 +15,7 @@ interface NavigationProps {
 export function Navigation({ showAuth = true, className = '' }: NavigationProps) {
   const { user, signOut } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isOwnerAdmin, setIsOwnerAdmin] = useState(false)
   const envLogoUrl = process.env.NEXT_PUBLIC_BRAND_LOGO_URL || ''
   const initialVariant: 'env' | 'png' | 'svg' | 'icon' = envLogoUrl ? 'env' : 'png'
   const [logoVariant, setLogoVariant] = useState<'env' | 'png' | 'svg' | 'icon'>(initialVariant)
@@ -26,6 +27,33 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false)
   }
+
+  useEffect(() => {
+    let cancelled = false
+    const fetchAdminStatus = async () => {
+      if (!user) {
+        setIsOwnerAdmin(false)
+        return
+      }
+      try {
+        const res = await fetch('/api/auth/me', { cache: 'no-store' })
+        if (!res.ok) {
+          if (!cancelled) setIsOwnerAdmin(false)
+          return
+        }
+        const data = await res.json()
+        if (!cancelled) {
+          setIsOwnerAdmin(!!data?.isOwnerAdmin)
+        }
+      } catch {
+        if (!cancelled) setIsOwnerAdmin(false)
+      }
+    }
+    fetchAdminStatus()
+    return () => {
+      cancelled = true
+    }
+  }, [user])
 
   const renderLogo = () => {
     if (logoVariant === 'icon') {
@@ -91,6 +119,13 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
               <Link href="/organizer/payouts">
                 <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                   My Payouts
+                </Button>
+              </Link>
+            )}
+            {user && isOwnerAdmin && (
+              <Link href="/admin">
+                <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  Admin Console
                 </Button>
               </Link>
             )}
@@ -184,6 +219,13 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 <Link href="/organizer/payouts" onClick={closeMobileMenu}>
                   <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                     My Payouts
+                  </Button>
+                </Link>
+              )}
+              {user && isOwnerAdmin && (
+                <Link href="/admin" onClick={closeMobileMenu}>
+                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
+                    Admin Console
                   </Button>
                 </Link>
               )}
