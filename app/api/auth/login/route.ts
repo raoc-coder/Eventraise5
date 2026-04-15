@@ -16,7 +16,7 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const { email, password, captchaToken } = await request.json()
 
     if (!email || !password) {
       return NextResponse.json(
@@ -28,10 +28,15 @@ export async function POST(request: NextRequest) {
     const cookieStore = cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const payload: any = {
       email,
       password,
-    })
+    }
+    if (captchaToken) {
+      payload.options = { captchaToken }
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword(payload)
 
     if (error) {
       console.error('[api/auth/login] signIn error:', error)

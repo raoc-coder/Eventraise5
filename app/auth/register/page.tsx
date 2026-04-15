@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Heart, Sparkles } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { getAuthRedirectUrl, getEmailRedirectUrl } from '@/lib/auth-config'
+import { TurnstileCaptcha } from '@/components/auth/TurnstileCaptcha'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -23,6 +24,9 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const [supabase, setSupabase] = useState<any>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaResetSignal, setCaptchaResetSignal] = useState(0)
+  const captchaEnabled = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -39,6 +43,11 @@ export default function RegisterPage() {
     
     if (!supabase) {
       toast.error('Authentication service is not available. Please try again.')
+      return
+    }
+
+    if (captchaEnabled && !captchaToken) {
+      toast.error('Please complete CAPTCHA verification before creating an account.')
       return
     }
     
@@ -74,7 +83,8 @@ export default function RegisterPage() {
             full_name: formData.fullName.trim(),
             organization_name: formData.organizationName.trim(),
           },
-          emailRedirectTo: getEmailRedirectUrl()
+          emailRedirectTo: getEmailRedirectUrl(),
+          captchaToken: captchaEnabled ? captchaToken || undefined : undefined,
         }
       })
 
@@ -92,6 +102,13 @@ export default function RegisterPage() {
           toast.error('An account with this email already exists. Please sign in instead.')
         } else if (error.message?.includes('Invalid email')) {
           toast.error('Please enter a valid email address')
+        } else if (error.message?.toLowerCase().includes('captcha')) {
+          if (!captchaEnabled) {
+            toast.error('CAPTCHA is required but not configured. Set NEXT_PUBLIC_TURNSTILE_SITE_KEY.')
+          } else {
+            toast.error('CAPTCHA verification failed. Please try again.')
+          }
+          setCaptchaResetSignal((v) => v + 1)
         } else {
           toast.error(error.message || 'Failed to create account. Please try again.')
         }
@@ -196,6 +213,7 @@ export default function RegisterPage() {
                 required
               />
             </div>
+            <TurnstileCaptcha onTokenChange={setCaptchaToken} resetSignal={captchaResetSignal} />
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'}
             </Button>

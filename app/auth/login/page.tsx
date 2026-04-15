@@ -10,13 +10,17 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Heart, Sparkles } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { TurnstileCaptcha } from '@/components/auth/TurnstileCaptcha'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [supabase, setSupabase] = useState<any>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaResetSignal, setCaptchaResetSignal] = useState(0)
   const router = useRouter()
+  const captchaEnabled = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -35,6 +39,11 @@ export default function LoginPage() {
       toast.error('Authentication service is not available. Please try again.')
       return
     }
+
+    if (captchaEnabled && !captchaToken) {
+      toast.error('Please complete CAPTCHA verification before signing in.')
+      return
+    }
     
     setLoading(true)
 
@@ -44,6 +53,7 @@ export default function LoginPage() {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
+        options: captchaEnabled ? { captchaToken: captchaToken || undefined } : undefined,
       })
 
       if (error) {
@@ -52,6 +62,13 @@ export default function LoginPage() {
           toast.error('Please check your email and click the confirmation link before signing in.')
         } else if (error.message?.includes('Invalid login credentials')) {
           toast.error('Invalid email or password. Please try again.')
+        } else if (error.message?.toLowerCase().includes('captcha')) {
+          if (!captchaEnabled) {
+            toast.error('CAPTCHA is required but not configured. Set NEXT_PUBLIC_TURNSTILE_SITE_KEY.')
+          } else {
+            toast.error('CAPTCHA verification failed. Please try again.')
+          }
+          setCaptchaResetSignal((v) => v + 1)
         } else {
           toast.error(error.message || 'Login failed')
         }
@@ -118,6 +135,7 @@ export default function LoginPage() {
                 required
               />
             </div>
+            <TurnstileCaptcha onTokenChange={setCaptchaToken} resetSignal={captchaResetSignal} />
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
