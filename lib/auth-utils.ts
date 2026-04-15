@@ -9,6 +9,25 @@ export interface AuthResult {
   authMethod: 'cookie' | 'token' | 'none'
 }
 
+function parseAllowlist(raw?: string) {
+  return (raw || '')
+    .split(',')
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean)
+}
+
+export function isOwnerAdminUser(user: any) {
+  const ownerIds = parseAllowlist(process.env.OWNER_USER_IDS)
+  const ownerEmails = parseAllowlist(process.env.OWNER_ADMIN_EMAILS)
+
+  const userId = String(user?.id || '').toLowerCase()
+  const userEmail = String(user?.email || '').toLowerCase()
+
+  const idMatch = !!userId && ownerIds.includes(userId)
+  const emailMatch = !!userEmail && ownerEmails.includes(userEmail)
+  return idMatch || emailMatch
+}
+
 /**
  * Standardized authentication for API routes
  * Tries cookie-based auth first, falls back to token-based auth
@@ -109,48 +128,12 @@ export async function requireEventAccess(req: NextRequest, eventId: string): Pro
  */
 export async function requireAdminAuth(req: NextRequest): Promise<AuthResult> {
   const auth = await requireAuth(req)
-
-  // 1) Allowlist via env
-  const allowlist = (process.env.ADMIN_EMAILS || '')
-    .split(',')
-    .map(e => e.trim().toLowerCase())
-    .filter(Boolean)
-  const userEmail = (auth as any)?.user?.email?.toLowerCase?.()
-  if (userEmail && allowlist.includes(userEmail)) {
-    return auth
-  }
-
-  // 2) User metadata role
-  const metaRole = (auth as any)?.user?.user_metadata?.role
-  if (metaRole === 'admin') {
-    return auth
-  }
-
-  // Prefer server-side admin client to avoid RLS or token edge cases
-  try {
-    const { supabaseAdmin } = await import('./supabase')
-    if (supabaseAdmin) {
-      const { data: profile, error } = await supabaseAdmin
-        .from('profiles')
-        .select('role')
-        .eq('id', auth.user.id)
-        .single()
-      if (!error && profile?.role === 'admin') {
-        return auth
-      }
-    }
-  } catch {}
-
-  // Fallback to session-bound client
-  const { data: profile, error } = await auth.db
-    .from('profiles')
-    .select('role')
-    .eq('id', auth.user.id)
-    .single()
-
-  if (error || !profile || profile.role !== 'admin') {
+  if (!isOwnerAdminUser(auth.user)) {
     throw new Error('Admin access required')
   }
-
   return auth
+}
+
+export async function requireOwnerAdmin(req: NextRequest): Promise<AuthResult> {
+  return requireAdminAuth(req)
 }

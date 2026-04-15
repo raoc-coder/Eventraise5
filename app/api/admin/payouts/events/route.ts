@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { requireAdminAuth } from '@/lib/auth-utils'
+import { requireOwnerAdmin } from '@/lib/auth-utils'
 
 export async function GET(req: NextRequest) {
   try {
     // Use standardized admin authentication
-    const { user, db } = await requireAdminAuth(req)
+    const { user } = await requireOwnerAdmin(req)
 
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 

@@ -94,13 +94,6 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 </Button>
               </Link>
             )}
-            {user && (user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin') && (
-              <Link href="/admin/payouts/events">
-                <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  Admin Payouts
-                </Button>
-              </Link>
-            )}
             <Link href="/events">
               <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                 Events
@@ -191,13 +184,6 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
                 <Link href="/organizer/payouts" onClick={closeMobileMenu}>
                   <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
                     My Payouts
-                  </Button>
-                </Link>
-              )}
-              {user && (user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin') && (
-                <Link href="/admin/payouts/events" onClick={closeMobileMenu}>
-                  <Button variant="ghost" className="w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-50 h-12 text-base">
-                    Admin Payouts
                   </Button>
                 </Link>
               )}

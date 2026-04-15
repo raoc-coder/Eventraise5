@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { MonitoringService } from '@/lib/monitoring'
-import { requireAdminAuth } from '@/lib/auth-utils'
+import { requireOwnerAdmin } from '@/lib/auth-utils'
+import { logAdminAction } from '@/lib/admin-audit'
 
 export async function POST(request: NextRequest) {
   try {
-    await requireAdminAuth(request)
+    const { user } = await requireOwnerAdmin(request)
     const { reportType, filters, schedule } = await request.json()
 
     if (!supabase) {
@@ -22,7 +23,16 @@ export async function POST(request: NextRequest) {
     MonitoringService.trackBusinessMetric('analytics_requested', 0, {
       report_type: reportType,
       filters: JSON.stringify(filters),
+      requested_by: user.id,
       scheduled: !!schedule
+    })
+
+    await logAdminAction(request, {
+      actorId: user.id,
+      actorEmail: user.email,
+      action: 'admin.reports.generate',
+      status: 'success',
+      details: { reportType, hasSchedule: !!schedule },
     })
 
     return NextResponse.json({
@@ -33,6 +43,13 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error generating analytics:', error)
+    const userId = (error as any)?.user?.id || 'unknown'
+    await logAdminAction(request, {
+      actorId: userId,
+      action: 'admin.reports.generate',
+      status: 'failure',
+      details: { error: error instanceof Error ? error.message : 'unknown' },
+    })
     
     return NextResponse.json(
       { error: 'Failed to generate analytics' },

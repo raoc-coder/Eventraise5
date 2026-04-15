@@ -97,7 +97,7 @@ export default function EventPayoutsPage() {
 
     supabaseClient.auth.getUser().then(({ data: { user } }) => {
       if (!user) {
-        router.push('/login')
+        router.push('/auth/login')
         return
       }
       setUser(user)

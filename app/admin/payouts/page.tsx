@@ -46,11 +46,7 @@ export default function AdminPayoutsPage() {
       if (startDate) params.set('startDate', startDate)
       if (endDate) params.set('endDate', endDate)
 
-      // Get the current session for authentication
-      console.log('🔍 [frontend] Getting session...')
       const { data: { session } } = await supabase.auth.getSession()
-      console.log('📊 [frontend] Session:', session ? 'Present' : 'Missing')
-      console.log('🎫 [frontend] Access token:', session?.access_token ? `${session.access_token.substring(0, 20)}...` : 'Missing')
       
       if (!session) {
         throw new Error('No active session')
@@ -60,11 +56,6 @@ export default function AdminPayoutsPage() {
         'Authorization': `Bearer ${session.access_token}`,
         'Content-Type': 'application/json'
       }
-      
-      console.log('📤 [frontend] Making API calls with headers:', {
-        hasAuth: !!headers.Authorization,
-        tokenLength: headers.Authorization?.length || 0
-      })
 
       const [donRes, sumRes] = await Promise.all([
         fetch(`/api/payouts/donations?${params.toString()}`, { headers }),
@@ -101,39 +92,13 @@ export default function AdminPayoutsPage() {
     if (!supabase) return
 
     const checkAuth = async () => {
-      console.log('🔍 Starting admin payouts page auth check...')
-      
-      // Add a small delay to allow auth state to settle after login
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
       const { data: { user } } = await supabase.auth.getUser()
-      console.log('👤 User from auth:', user)
       
       if (!user) {
-        console.log('❌ No user found, redirecting to login')
-        // Store the intended destination for after login
-        localStorage.setItem('redirectAfterLogin', '/admin/payouts')
         router.push('/auth/login')
         return
       }
-      
-      console.log('✅ User found:', user.email)
-      console.log('📊 User metadata:', user.user_metadata)
-      console.log('📊 App metadata:', user.app_metadata)
-      
-      // TEMPORARY: Skip admin check for testing
-      console.log('🚧 TEMPORARY: Skipping admin check for testing')
-      
       setUser(user)
-      
-      // Test session retrieval immediately
-      console.log('🧪 [test] Testing session retrieval...')
-      const { data: { session } } = await supabase.auth.getSession()
-      console.log('🧪 [test] Session result:', session ? 'Found' : 'Missing')
-      if (session) {
-        console.log('🧪 [test] Access token length:', session.access_token?.length || 0)
-      }
-      
       fetchData()
     }
     

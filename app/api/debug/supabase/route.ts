@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { requireAdminAuth } from '@/lib/auth-utils'
+import { requireOwnerAdmin } from '@/lib/auth-utils'
 import { NextRequest } from 'next/server'
 
 export const revalidate = 0
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
-  await requireAdminAuth(req)
+  await requireOwnerAdmin(req)
 
   return NextResponse.json({
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'undefined',

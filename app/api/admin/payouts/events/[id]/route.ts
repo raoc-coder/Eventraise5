@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { requireAdminAuth } from '@/lib/auth-utils'
+import { requireOwnerAdmin } from '@/lib/auth-utils'
+import { logAdminAction } from '@/lib/admin-audit'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
@@ -8,7 +9,7 @@ export async function POST(req: NextRequest, { params }: any) {
     if (!id) return NextResponse.json({ error: 'Missing payout id' }, { status: 400 })
 
     // Use standardized admin authentication
-    const { user, db } = await requireAdminAuth(req)
+    const { user } = await requireOwnerAdmin(req)
 
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
@@ -33,8 +34,25 @@ export async function POST(req: NextRequest, { params }: any) {
 
     if (updateError) {
       console.error('Error updating payout:', updateError)
+      await logAdminAction(req, {
+        actorId: user.id,
+        actorEmail: user.email,
+        action: 'admin.payouts.update',
+        targetId: id,
+        status: 'failure',
+        details: { error: updateError.message, status },
+      })
       return NextResponse.json({ error: 'Failed to update payout' }, { status: 500 })
     }
+
+    await logAdminAction(req, {
+      actorId: user.id,
+      actorEmail: user.email,
+      action: 'admin.payouts.update',
+      targetId: id,
+      status: 'success',
+      details: { status, method: method || null },
+    })
 
     return NextResponse.json({ 
       success: true, 
