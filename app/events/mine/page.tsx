@@ -127,7 +127,7 @@ export default function MyEventsPage() {
   const paginated = sorted.slice(startIdx, endIdx)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-trust-50">
       <Navigation />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6 flex items-center justify-between gap-3">
@@ -136,7 +136,7 @@ export default function MyEventsPage() {
             <select
               value={sortBy}
               onChange={(e)=>setSortBy(e.target.value as any)}
-              className="px-3 py-2 h-10 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 h-10 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-trust-500"
               aria-label="Sort events"
             >
               <option value="upcoming">Upcoming</option>
@@ -179,7 +179,7 @@ export default function MyEventsPage() {
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-16">
-            <div className="mx-auto w-24 h-24 bg-gradient-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center mb-6">
+            <div className="mx-auto w-24 h-24 bg-gradient-to-br from-trust-100 to-trust-200 rounded-full flex items-center justify-center mb-6">
               <Calendar className="h-12 w-12 text-green-600" />
             </div>
             <h3 className="text-2xl font-semibold text-gray-900 mb-3">Ready to make an impact?</h3>
@@ -242,8 +242,8 @@ export default function MyEventsPage() {
                         <div className="flex items-center gap-2">
                           <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
                             ev.is_ticketed 
-                              ? 'bg-purple-100 text-purple-800' 
-                              : 'bg-blue-100 text-blue-800'
+                              ? 'bg-trust-100 text-trust-800' 
+                              : 'bg-trust-100 text-trust-800'
                           }`}>
                             {ev.is_ticketed ? 'Ticketed Event' : 'Event'}
                           </span>
@@ -268,7 +268,7 @@ export default function MyEventsPage() {
                         </div>
                         <div className="space-y-2 text-sm text-gray-600">
                           <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-2 text-blue-500" />
+                            <Calendar className="h-4 w-4 mr-2 text-trust-600" />
                             <span className="truncate">{ev.start_date ? new Date(ev.start_date).toLocaleDateString() : ''}</span>
                           </div>
                           {(ev.location) && (

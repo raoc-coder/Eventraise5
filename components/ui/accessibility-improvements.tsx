@@ -46,7 +46,7 @@ export function AccessibleButton({
   const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
   
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
+    primary: 'bg-action-600 text-white hover:bg-action-700',
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
     outline: 'border border-gray-300 bg-transparent hover:bg-gray-50',
     ghost: 'hover:bg-gray-100',
@@ -114,7 +114,7 @@ export function AccessibleInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${error ? 'border-red-500' : ''} ${className}`}
+        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-trust-500 focus:border-trust-500 ${error ? 'border-red-500' : ''} ${className}`}
         aria-invalid={!!error}
         aria-describedby={describedBy}
         aria-required={required}
@@ -227,7 +227,7 @@ export function AccessibleProgress({
       <div className="w-full bg-gray-200 rounded-full h-2">
         <div
           id={id}
-          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          className="bg-action-500 h-2 rounded-full transition-all duration-300"
           style={{ width: `${percentage}%` }}
           role="progressbar"
           aria-valuenow={value}
@@ -248,7 +248,7 @@ export function SkipLink({ href, children }: { href: string; children: React.Rea
   return (
     <a
       href={href}
-      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-trust-800 text-white px-4 py-2 rounded-md z-50"
     >
       {children}
     </a>

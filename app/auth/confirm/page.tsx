@@ -127,10 +127,10 @@ function EmailConfirmContent() {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-lg flex items-center justify-center">
                 <Heart className="h-5 w-5 text-white" />
               </div>
-              <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+              <span className="text-lg font-bold bg-gradient-to-r from-trust-300 to-action-500 bg-clip-text text-transparent">
                 EventraiseHub
               </span>
             </div>
@@ -145,7 +145,7 @@ function EmailConfirmContent() {
         <CardContent className="text-center">
           {status === 'loading' && (
             <div className="flex flex-col items-center space-y-4">
-              <Loader2 className="h-8 w-8 text-cyan-400 animate-spin" />
+              <Loader2 className="h-8 w-8 text-trust-300 animate-spin" />
               <p className="text-gray-300">Please wait while we confirm your email...</p>
             </div>
           )}
@@ -193,10 +193,10 @@ export default function EmailConfirmPage() {
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-lg flex items-center justify-center">
                   <Heart className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+                <span className="text-lg font-bold bg-gradient-to-r from-trust-300 to-action-500 bg-clip-text text-transparent">
                   EventraiseHub
                 </span>
               </div>
@@ -208,7 +208,7 @@ export default function EmailConfirmPage() {
           </CardHeader>
           <CardContent className="text-center">
             <div className="flex flex-col items-center space-y-4">
-              <Loader2 className="h-8 w-8 text-cyan-400 animate-spin" />
+              <Loader2 className="h-8 w-8 text-trust-300 animate-spin" />
               <p className="text-gray-300">Please wait...</p>
             </div>
           </CardContent>

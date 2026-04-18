@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
           <Card className="event-card">
             <CardHeader>
               <CardTitle className="text-gray-900 flex items-center">
-                <Shield className="h-6 w-6 mr-2 text-cyan-600" />
+                <Shield className="h-6 w-6 mr-2 text-trust-600" />
                 Our Commitment to Privacy
               </CardTitle>
             </CardHeader>
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-cyan-700 mb-2">Personal Information</h3>
+                <h3 className="text-lg font-semibold text-trust-700 mb-2">Personal Information</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• Name and email address (required for account creation)</li>
                   <li>• Organization name (optional, for campaign creators)</li>
@@ -88,7 +88,7 @@ export default function PrivacyPolicyPage() {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold text-blue-700 mb-3">Communication</h3>
+                  <h3 className="text-lg font-semibold text-trust-800 mb-3">Communication</h3>
                   <ul className="text-gray-700 space-y-2">
                     <li>• Send campaign updates</li>
                     <li>• Provide donation receipts</li>
@@ -121,7 +121,7 @@ export default function PrivacyPolicyPage() {
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold text-purple-700 mb-3">Access Controls</h3>
+                  <h3 className="text-lg font-semibold text-trust-800 mb-3">Access Controls</h3>
                   <ul className="text-gray-700 space-y-2">
                     <li>• Multi-factor authentication support</li>
                     <li>• Role-based access permissions</li>
@@ -162,7 +162,7 @@ export default function PrivacyPolicyPage() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-cyan-700 mb-3">Access & Control</h3>
+                  <h3 className="text-lg font-semibold text-trust-700 mb-3">Access & Control</h3>
                   <ul className="text-gray-700 space-y-2">
                     <li>• View and update your profile information</li>
                     <li>• Access your donation history</li>
@@ -188,7 +188,7 @@ export default function PrivacyPolicyPage() {
           <Card className="event-card">
             <CardHeader>
               <CardTitle className="text-gray-900 flex items-center">
-                <Mail className="h-6 w-6 mr-2 text-blue-600" />
+                <Mail className="h-6 w-6 mr-2 text-trust-700" />
                 Contact Us
               </CardTitle>
             </CardHeader>

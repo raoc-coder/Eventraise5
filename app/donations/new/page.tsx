@@ -70,8 +70,8 @@ function DonationForm() {
               onClick={() => setAmount(preset)}
               className={`h-14 text-lg font-semibold ${
                 amount === preset 
-                  ? "bg-blue-600 text-white border-blue-600 shadow-lg" 
-                  : "bg-white text-gray-700 border-gray-300 hover:border-blue-500 hover:text-blue-600"
+                  ? "bg-action-600 text-white border-action-600 shadow-lg" 
+                  : "bg-white text-gray-700 border-gray-300 hover:border-trust-500 hover:text-trust-700"
               }`}
             >
               <DollarSign className="h-5 w-5 mr-1" />
@@ -96,7 +96,7 @@ function DonationForm() {
               type="number" 
               min="1" 
               step="1"
-              className="w-32 h-12 text-lg font-semibold text-center border-2 border-gray-300 focus:border-blue-500"
+              className="w-32 h-12 text-lg font-semibold text-center border-2 border-gray-300 focus:border-trust-500"
               placeholder="0"
             />
             <span className="text-gray-600 font-medium">USD</span>
@@ -106,7 +106,7 @@ function DonationForm() {
       
       {/* Payment Summary */}
       {amount > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-3">
+        <div className="bg-trust-50 border border-trust-200 rounded-xl p-4 space-y-3">
           <div className="text-center">
             <h3 className="font-semibold text-gray-900 mb-3">Payment Summary</h3>
           </div>
@@ -116,10 +116,10 @@ function DonationForm() {
               <span className="text-gray-700">Donation Amount</span>
               <span className="font-semibold text-gray-900">${amount.toFixed(2)}</span>
             </div>
-            <div className="border-t border-blue-300 pt-2">
+            <div className="border-t border-trust-300 pt-2">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-bold text-gray-900">You’ll Be Charged</span>
-                <span className="text-xl font-bold text-blue-600">${amount.toFixed(2)}</span>
+                <span className="text-xl font-bold text-trust-700">${amount.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -161,11 +161,11 @@ function DonationForm() {
 
 export default function NewDonationPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-trust-50 to-trust-100">
       <div className="container mx-auto px-4 py-8 max-w-md">
         <Card className="w-full shadow-xl border-0 bg-white/95 backdrop-blur-sm">
           <CardHeader className="text-center pb-6 pt-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-trust-600 to-trust-800 rounded-full flex items-center justify-center mx-auto mb-4">
               <Heart className="h-8 w-8 text-white" />
             </div>
             <CardTitle className="text-2xl font-bold text-gray-900">
@@ -179,7 +179,7 @@ export default function NewDonationPage() {
           <CardContent className="px-6 pb-8">
             <Suspense fallback={
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500"></div>
                 <span className="ml-3 text-gray-600">Loading...</span>
               </div>
             }>

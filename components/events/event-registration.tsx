@@ -168,10 +168,10 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
   }
 
   return (
-    <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-100">
+    <Card className="border-2 border-trust-200 bg-gradient-to-br from-trust-50 to-trust-100">
       <CardHeader>
         <div className="flex items-center space-x-2">
-          <Ticket className="h-6 w-6 text-blue-600" />
+          <Ticket className="h-6 w-6 text-trust-700" />
           <CardTitle className="text-gray-900">Register for Event</CardTitle>
         </div>
         <CardDescription className="text-gray-600">
@@ -201,7 +201,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
             <div className="flex items-center space-x-2">
               <Gift className="h-4 w-4 text-gray-500" />
               <span className="text-gray-600">Price:</span>
-              <span className="font-semibold text-blue-600">
+              <span className="font-semibold text-trust-700">
                 ${(event.ticket_price * ticketQuantity).toFixed(2)}
               </span>
             </div>
@@ -349,7 +349,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
           {/* Terms and Conditions */}
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-start space-x-2">
-              <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+              <Shield className="h-5 w-5 text-trust-700 mt-0.5" />
               <div className="text-sm text-gray-600">
                 <p className="font-medium text-gray-900 mb-2">Terms and Conditions</p>
                 <ul className="space-y-1 text-xs">

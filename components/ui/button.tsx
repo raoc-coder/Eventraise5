@@ -3,19 +3,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 touch-manipulation",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-trust-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 touch-manipulation",
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-blue-700 to-blue-800 text-white hover:from-blue-600 hover:to-blue-700 shadow-lg shadow-blue-600/25 hover:shadow-blue-500/40 active:scale-95",
+        default:
+          "bg-gradient-to-r from-action-500 to-action-600 text-white hover:from-action-400 hover:to-action-500 shadow-lg shadow-action-600/25 hover:shadow-action-500/35 active:scale-95",
         destructive:
           "bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-400 hover:to-red-500 shadow-lg shadow-red-500/25 hover:shadow-red-400/40 active:scale-95",
         outline:
-          "border border-blue-500/60 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-600 hover:text-blue-800 active:bg-blue-100",
+          "border border-trust-600/45 bg-white text-trust-800 hover:bg-trust-50 hover:border-trust-700 hover:text-trust-900 active:bg-trust-100",
         secondary:
-          "bg-gradient-to-r from-orange-600 to-orange-700 text-white hover:from-orange-500 hover:to-orange-600 shadow-lg shadow-orange-600/25 hover:shadow-orange-500/40 active:scale-95",
+          "bg-gradient-to-r from-trust-700 to-trust-800 text-white hover:from-trust-600 hover:to-trust-700 shadow-lg shadow-trust-800/25 hover:shadow-trust-700/35 active:scale-95",
         ghost: "text-gray-700 hover:bg-gray-50 hover:text-gray-900 active:bg-gray-100",
-        link: "text-blue-700 underline-offset-4 hover:underline hover:text-blue-800",
+        link: "text-trust-700 underline-offset-4 hover:underline hover:text-trust-900",
       },
       size: {
         default: "h-11 px-4 py-2 min-h-[44px] text-base",

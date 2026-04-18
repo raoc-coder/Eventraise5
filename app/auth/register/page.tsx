@@ -143,7 +143,7 @@ export default function RegisterPage() {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-trust-600 to-trust-800 rounded-lg flex items-center justify-center shadow-md">
                 <Heart className="h-5 w-5 text-white" />
               </div>
               <span className="text-lg font-bold text-gray-900">
@@ -221,7 +221,7 @@ export default function RegisterPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link href="/auth/login" className="text-blue-600 hover:underline">
+              <Link href="/auth/login" className="text-trust-700 hover:underline">
                 Sign in
               </Link>
             </p>

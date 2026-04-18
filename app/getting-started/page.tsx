@@ -22,7 +22,7 @@ export default function GettingStartedPage() {
       title: "Sign Up",
       description: "Go to EventRaiseHUB.com and click \"Sign Up.\"",
       details: "Create your account with just your email address and a secure password. No credit card required to get started.",
-      color: "from-blue-500 to-blue-600"
+      color: "from-trust-600 to-trust-800"
     },
     {
       number: 2,
@@ -30,7 +30,7 @@ export default function GettingStartedPage() {
       title: "Confirm Your Email",
       description: "Confirm your email to activate your account.",
       details: "Check your inbox for a confirmation email and click the verification link to activate your account.",
-      color: "from-green-500 to-green-600"
+      color: "from-trust-500 to-trust-700"
     },
     {
       number: 3,
@@ -38,7 +38,7 @@ export default function GettingStartedPage() {
       title: "Create Event",
       description: "Click \"Create Event\" and fill in event details.",
       details: "Choose your event type (donation, ticketed, RSVP, volunteer, or sponsorship), add your event details, set your fundraising goal, and upload an image or description.",
-      color: "from-purple-500 to-purple-600"
+      color: "from-action-500 to-action-600"
     },
     {
       number: 4,
@@ -46,7 +46,7 @@ export default function GettingStartedPage() {
       title: "Publish and Share",
       description: "Publish and share your event link.",
       details: "Once you’re satisfied with your event details, click \"Publish\" to make it live. You’ll receive a unique link you can share with your community.",
-      color: "from-pink-500 to-pink-600"
+      color: "from-action-500 to-action-700"
     },
     {
       number: 5,
@@ -54,7 +54,7 @@ export default function GettingStartedPage() {
       title: "Collect Donations",
       description: "Collect donations or registrations securely via PayPal.",
       details: "All transactions are processed securely through PayPal, supporting credit/debit cards, PayPal, Venmo, and Pay Later options. Receipts are issued automatically.",
-      color: "from-emerald-500 to-emerald-600"
+      color: "from-trust-700 to-trust-900"
     },
     {
       number: 6,
@@ -62,18 +62,18 @@ export default function GettingStartedPage() {
       title: "Track Progress",
       description: "Track your progress and download reports anytime.",
       details: "Monitor your fundraising progress in real-time with easy-to-read analytics, progress charts, and detailed reports. Download data anytime for your records.",
-      color: "from-indigo-500 to-indigo-600"
+      color: "from-action-500 to-trust-700"
     }
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-trust-50">
       <Navigation />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-trust-600 to-action-500 flex items-center justify-center shadow-lg">
               <Play className="h-8 w-8 text-white" />
             </div>
           </div>
@@ -86,13 +86,13 @@ export default function GettingStartedPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/register">
-              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-200">
+              <Button size="lg" className="bg-gradient-to-r from-action-500 to-action-600 hover:from-action-400 hover:to-action-600 shadow-lg hover:shadow-xl transition-all duration-200">
                 Get Started Now
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/faqs">
-              <Button variant="outline" size="lg" className="border-2 border-blue-200 text-blue-600 hover:bg-blue-50">
+              <Button variant="outline" size="lg" className="border-2 border-trust-200 text-trust-700 hover:bg-trust-50">
                 View FAQs
               </Button>
             </Link>
@@ -123,44 +123,44 @@ export default function GettingStartedPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-blue-50">
+          <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-trust-50">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
-                <CheckCircle className="h-6 w-6 text-green-500 mr-3" />
+                <CheckCircle className="h-6 w-6 text-trust-600 mr-3" />
                 Why Choose EventRaiseHUB?
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
                 <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-trust-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">All-in-one platform for every type of event</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-trust-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">Secure payment processing with PayPal</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-trust-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">Real-time analytics and reporting</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-trust-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">Mobile-optimized for all devices</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-trust-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">Bank-level security and encryption</span>
                 </li>
                 <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-trust-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">Free to use with transparent pricing</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
-          <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-purple-50">
+          <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-trust-50">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-gray-900">Need Help?</CardTitle>
             </CardHeader>
@@ -171,12 +171,12 @@ export default function GettingStartedPage() {
               </p>
               <div className="space-y-4">
                 <Link href="/faqs">
-                  <Button variant="outline" className="w-full border-2 border-purple-200 text-purple-600 hover:bg-purple-50">
+                  <Button variant="outline" className="w-full border-2 border-trust-200 text-trust-700 hover:bg-trust-50">
                     Browse FAQs
                   </Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700">
+                  <Button className="w-full">
                     Start Your Event
                   </Button>
                 </Link>
@@ -186,14 +186,14 @@ export default function GettingStartedPage() {
         </div>
 
         <div className="text-center">
-          <Card className="shadow-xl border-0 bg-gradient-to-r from-green-50 to-emerald-50">
+          <Card className="shadow-xl border-0 bg-gradient-to-r from-trust-50 to-action-50">
             <CardContent className="p-8">
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Ready to Get Started?</h3>
               <p className="text-gray-600 mb-6 text-lg">
                 Join thousands of successful organizers who trust EventRaiseHUB for their fundraising needs.
               </p>
               <Link href="/auth/register">
-                <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-200">
+                <Button size="lg" className="shadow-lg hover:shadow-xl transition-all duration-200">
                   Create Your Account
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

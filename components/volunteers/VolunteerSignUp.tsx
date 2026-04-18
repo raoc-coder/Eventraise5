@@ -159,7 +159,7 @@ export default function VolunteerSignUp({
             {/* Opportunity Details */}
             <div className="bg-gray-800/30 p-4 rounded-lg space-y-3">
               <div className="flex items-center text-sm text-gray-300">
-                <Calendar className="h-4 w-4 text-cyan-400 mr-2" />
+                <Calendar className="h-4 w-4 text-trust-300 mr-2" />
                 <span>{formatDate(startTime)} - {formatDate(endTime)}</span>
               </div>
               <div className="flex items-center text-sm text-gray-300">
@@ -167,7 +167,7 @@ export default function VolunteerSignUp({
                 <span>{location}</span>
               </div>
               <div className="flex items-center text-sm text-gray-300">
-                <Users className="h-4 w-4 text-cyan-400 mr-2" />
+                <Users className="h-4 w-4 text-trust-300 mr-2" />
                 <span>{spotsRemaining} spots remaining</span>
               </div>
               {requiredSkills.length > 0 && (
@@ -268,7 +268,7 @@ export default function VolunteerSignUp({
                   placeholder="Describe any relevant experience or skills..."
                   value={formData.experience}
                   onChange={(e) => handleInputChange('experience', e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-trust-500"
                   rows={3}
                 />
               </div>
@@ -280,7 +280,7 @@ export default function VolunteerSignUp({
                   placeholder="Any specific availability constraints or preferences..."
                   value={formData.availability}
                   onChange={(e) => handleInputChange('availability', e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-trust-500"
                   rows={2}
                 />
               </div>
@@ -292,7 +292,7 @@ export default function VolunteerSignUp({
                   placeholder="Any additional information or special requests..."
                   value={formData.notes}
                   onChange={(e) => handleInputChange('notes', e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-trust-500"
                   rows={2}
                 />
               </div>
@@ -318,7 +318,7 @@ export default function VolunteerSignUp({
               <Button onClick={resetForm}>
                 Sign Up for Another Opportunity
               </Button>
-              <Button variant="outline" className="w-full text-cyan-400 hover:bg-cyan-500/20">
+              <Button variant="outline" className="w-full text-trust-300 hover:bg-trust-500/20">
                 View All Opportunities
               </Button>
             </div>

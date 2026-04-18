@@ -107,11 +107,11 @@ export function DonationConfirmation({
                 <span className="text-gray-700">Payment processed successfully</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-blue-500" />
+                <Mail className="h-4 w-4 text-trust-600" />
                 <span className="text-gray-700">Confirmation email sent</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Receipt className="h-4 w-4 text-purple-500" />
+                <Receipt className="h-4 w-4 text-trust-600" />
                 <span className="text-gray-700">Receipt sent to your email</span>
               </div>
               <div className="flex items-center space-x-3">
@@ -132,10 +132,10 @@ export function DonationConfirmation({
 
         {/* Share Your Impact */}
         {showShareOptions && (
-          <Card className="border-2 border-blue-200 bg-blue-50">
+          <Card className="border-2 border-trust-200 bg-trust-50">
             <CardHeader>
               <div className="flex items-center space-x-2">
-                <Share2 className="h-5 w-5 text-blue-600" />
+                <Share2 className="h-5 w-5 text-trust-700" />
                 <CardTitle className="text-gray-900">Share Your Impact</CardTitle>
               </div>
               <CardDescription className="text-gray-600">
@@ -152,7 +152,7 @@ export function DonationConfirmation({
                   variant="outline"
                   size="sm"
                   onClick={() => shareOnSocial('twitter')}
-                  className="text-blue-400 border-blue-400 hover:bg-blue-50"
+                  className="text-trust-500 border-trust-400 hover:bg-trust-50"
                 >
                   Twitter
                 </Button>
@@ -160,7 +160,7 @@ export function DonationConfirmation({
                   variant="outline"
                   size="sm"
                   onClick={() => shareOnSocial('facebook')}
-                  className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                  className="text-trust-700 border-trust-600 hover:bg-trust-50"
                 >
                   Facebook
                 </Button>
@@ -168,7 +168,7 @@ export function DonationConfirmation({
                   variant="outline"
                   size="sm"
                   onClick={() => shareOnSocial('linkedin')}
-                  className="text-blue-700 border-blue-700 hover:bg-blue-50"
+                  className="text-trust-800 border-trust-700 hover:bg-trust-50"
                 >
                   LinkedIn
                 </Button>
@@ -187,8 +187,8 @@ export function DonationConfirmation({
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-gradient-to-br from-trust-50 to-trust-100 rounded-xl border border-trust-200">
+              <div className="w-12 h-12 bg-trust-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="h-6 w-6 text-white" />
               </div>
               <h4 className="text-gray-900 font-medium mb-2">Stay Updated</h4>
@@ -224,7 +224,7 @@ export function DonationConfirmation({
         </Link>
         {campaignId && (
           <Link href={`/campaigns/${campaignId}`}>
-            <Button variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50">
+            <Button variant="outline" className="border-trust-500 text-trust-700 hover:bg-trust-50">
               View Campaign
             </Button>
           </Link>

@@ -110,7 +110,7 @@ export default function EventPayoutsPage() {
   const getStatusBadge = (status: string) => {
     const variants: Record<string, string> = {
       pending: 'bg-yellow-100 text-yellow-800',
-      processing: 'bg-blue-100 text-blue-800',
+      processing: 'bg-trust-100 text-trust-800',
       completed: 'bg-green-100 text-green-800',
       failed: 'bg-red-100 text-red-800',
       cancelled: 'bg-gray-100 text-gray-800'
@@ -123,7 +123,7 @@ export default function EventPayoutsPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex items-center space-x-3 text-gray-700" role="status" aria-live="polite">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-trust-500"></div>
           <span>Loading admin payouts…</span>
         </div>
       </div>
@@ -154,8 +154,8 @@ export default function EventPayoutsPage() {
                 ) : (
                   <div className="flex items-center">
                     {i === 0 && <DollarSign className="h-8 w-8 text-green-600" />}
-                    {i === 1 && <TrendingUp className="h-8 w-8 text-blue-600" />}
-                    {i === 2 && <Users className="h-8 w-8 text-purple-600" />}
+                    {i === 1 && <TrendingUp className="h-8 w-8 text-trust-700" />}
+                    {i === 2 && <Users className="h-8 w-8 text-trust-700" />}
                     {i === 3 && <Calendar className="h-8 w-8 text-orange-600" />}
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">{['Total Gross','Total Fees','Net to Organizers','Pending Payouts'][i]}</p>

@@ -118,7 +118,7 @@ export default function OrganizerDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <Calendar className="h-8 w-8 text-blue-600" />
+                <Calendar className="h-8 w-8 text-trust-700" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Total Events</p>
                   <p className="text-2xl font-bold text-gray-900">{events.length}</p>
@@ -142,7 +142,7 @@ export default function OrganizerDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-purple-600" />
+                <TrendingUp className="h-8 w-8 text-trust-700" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Net Earnings</p>
                   <p className="text-2xl font-bold text-gray-900">{formatCurrency(payouts.total_net)}</p>

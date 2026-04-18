@@ -84,7 +84,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-trust-500 focus:border-transparent"
                   />
                 </div>
                 
@@ -99,7 +99,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-trust-500 focus:border-transparent"
                   />
                 </div>
                 
@@ -114,7 +114,7 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-trust-500 focus:border-transparent"
                   />
                 </div>
                 
@@ -129,7 +129,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-trust-500 focus:border-transparent"
                   />
                 </div>
                 
@@ -144,13 +144,13 @@ export default function ContactPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Mail className="h-5 w-5 mr-2 text-blue-600" />
+                  <Mail className="h-5 w-5 mr-2 text-trust-700" />
                   Email Support
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 mb-2">For technical support and general inquiries:</p>
-                <a href="mailto:support@eventraisehub.com" className="text-blue-600 hover:text-blue-800 font-medium">
+                <a href="mailto:support@eventraisehub.com" className="text-trust-700 hover:text-trust-800 font-medium">
                   support@eventraisehub.com
                 </a>
               </CardContent>
@@ -171,7 +171,7 @@ export default function ContactPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Phone className="h-5 w-5 mr-2 text-purple-600" />
+                  <Phone className="h-5 w-5 mr-2 text-trust-700" />
                   Business Hours
                 </CardTitle>
               </CardHeader>

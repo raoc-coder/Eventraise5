@@ -263,7 +263,7 @@ export default function TicketManagement() {
                           id="currency"
                           value={formData.currency}
                           onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-trust-500"
                         >
                           <option value="usd">USD</option>
                           <option value="eur">EUR</option>

@@ -27,14 +27,14 @@ export default function ReportsPage() {
   }))
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-trust-50 to-trust-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="display text-gray-900 mb-2">Admin Reports & Analytics</h1>
           <p className="text-gray-600 text-lg">Cohort monitoring for pSEO rollout and indexing growth</p>
         </div>
 
-        <Card className="mb-6 border-2 border-blue-200 bg-blue-50">
+        <Card className="mb-6 border-2 border-trust-200 bg-trust-50">
           <CardHeader>
             <CardTitle className="text-gray-900">pSEO rollout snapshot</CardTitle>
             <CardDescription className="text-gray-600">
@@ -49,13 +49,13 @@ export default function ReportsPage() {
               </div>
               <div className="rounded-lg border bg-white p-4">
                 <p className="text-sm text-gray-600">Sitemap index</p>
-                <Link className="mt-1 block text-sm font-medium text-blue-700 underline" href="/sitemap.xml">
+                <Link className="mt-1 block text-sm font-medium text-trust-800 underline" href="/sitemap.xml">
                   /sitemap.xml
                 </Link>
               </div>
               <div className="rounded-lg border bg-white p-4">
                 <p className="text-sm text-gray-600">Fundraising hub</p>
-                <Link className="mt-1 block text-sm font-medium text-blue-700 underline" href="/fundraising">
+                <Link className="mt-1 block text-sm font-medium text-trust-800 underline" href="/fundraising">
                   /fundraising
                 </Link>
               </div>

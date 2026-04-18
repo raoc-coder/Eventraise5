@@ -9,7 +9,7 @@ import { MetaPixel } from '@/components/analytics/MetaPixel'
 const inter = Inter({ subsets: ['latin'] })
 
 // Prefer a custom OG image, then brand logo, then keep existing dynamic OG as secondary
-const BRAND_OG = process.env.NEXT_PUBLIC_BRAND_OG_URL || process.env.NEXT_PUBLIC_BRAND_LOGO_URL || '/brand/logo.png'
+const BRAND_OG = process.env.NEXT_PUBLIC_BRAND_OG_URL || process.env.NEXT_PUBLIC_BRAND_LOGO_URL || '/brand/ERBlogo.png'
 const DEFAULT_OG = 'https://eventraisehub.com/api/og?title=EventraiseHub&subtitle=Free Event Management Platform'
 
 export const metadata: Metadata = {
@@ -72,14 +72,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/brand/logo.png', type: 'image/png', sizes: '32x32' },
-      { url: '/brand/logo.png', type: 'image/png', sizes: '48x48' },
-      { url: '/brand/logo.png', type: 'image/png', sizes: '64x64' },
+      { url: '/brand/ERBlogo.png', type: 'image/png', sizes: '32x32' },
+      { url: '/brand/ERBlogo.png', type: 'image/png', sizes: '48x48' },
+      { url: '/brand/ERBlogo.png', type: 'image/png', sizes: '64x64' },
     ],
     shortcut: ['/favicon.ico'],
-    apple: [
-      { url: '/brand/logo.png', sizes: '180x180', type: 'image/png' },
-    ],
+    apple: [{ url: '/brand/ERBlogo.png', sizes: '180x180', type: 'image/png' }],
   },
   manifest: '/site.webmanifest',
 }

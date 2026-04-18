@@ -127,22 +127,22 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
+      <nav className="bg-black/80 backdrop-blur-md border-b border-trust-500/25 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-lg flex items-center justify-center">
                   <Heart className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-gradient-to-r from-trust-300 to-action-500 bg-clip-text text-transparent">
                   EventraiseHub
                 </span>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/dashboard">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Dashboard</Button>
+                <Button variant="ghost" className="text-trust-200 hover:text-white hover:bg-trust-500/25">Dashboard</Button>
               </Link>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default function SettingsPage() {
                         onClick={() => setActiveTab(tab.id)}
                         className={`w-full flex items-center px-4 py-3 text-left transition-colors ${
                           activeTab === tab.id
-                            ? 'bg-cyan-500/20 text-cyan-400 border-r-2 border-cyan-400'
+                            ? 'bg-trust-500/20 text-trust-300 border-r-2 border-action-500'
                             : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
                         }`}
                       >
@@ -286,18 +286,18 @@ export default function SettingsPage() {
                         id="description"
                         value={schoolProfile.description}
                         onChange={(e) => setSchoolProfile(prev => ({ ...prev, description: e.target.value }))}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 min-h-[100px]"
+                        className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-trust-500 min-h-[100px]"
                         placeholder="Tell us about your school..."
                       />
                     </div>
 
                     <div className="space-y-2">
                       <Label className="text-gray-300">School Logo</Label>
-                      <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-cyan-400 transition-colors">
+                      <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-trust-400 transition-colors">
                         <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                         <p className="text-gray-300 mb-2">Upload your school logo</p>
                         <p className="text-gray-400 text-sm mb-4">Recommended size: 200x200px</p>
-                        <Button type="button" variant="outline" className="text-cyan-400 hover:bg-cyan-500/20">
+                        <Button type="button" variant="outline" className="text-trust-300 hover:bg-trust-500/20">
                           <Upload className="h-4 w-4 mr-2" />
                           Choose File
                         </Button>
@@ -327,7 +327,7 @@ export default function SettingsPage() {
                     {paymentMethods.map((method) => (
                       <div key={method.id} className="flex items-center justify-between p-4 rounded-lg bg-gray-800/50">
                         <div className="flex items-center">
-                          <CreditCard className="h-5 w-5 text-cyan-400 mr-3" />
+                          <CreditCard className="h-5 w-5 text-trust-300 mr-3" />
                           <div>
                             <p className="text-white font-semibold">
                               {method.brand} •••• {method.last4}
@@ -340,7 +340,7 @@ export default function SettingsPage() {
                         </div>
                         <div className="flex space-x-2">
                           {!method.isDefault && (
-                            <Button variant="outline" size="sm" className="text-cyan-400 hover:bg-cyan-500/20">
+                            <Button variant="outline" size="sm" className="text-trust-300 hover:bg-trust-500/20">
                               Set Default
                             </Button>
                           )}
@@ -381,7 +381,7 @@ export default function SettingsPage() {
                           type="checkbox"
                           checked={notifications.emailDonations}
                           onChange={(e) => setNotifications(prev => ({ ...prev, emailDonations: e.target.checked }))}
-                          className="rounded border-gray-600 bg-gray-800 text-cyan-500 focus:ring-cyan-500"
+                          className="rounded border-gray-600 bg-gray-800 text-trust-500 focus:ring-trust-500"
                         />
                       </div>
 
@@ -394,7 +394,7 @@ export default function SettingsPage() {
                           type="checkbox"
                           checked={notifications.emailEvents}
                           onChange={(e) => setNotifications(prev => ({ ...prev, emailEvents: e.target.checked }))}
-                          className="rounded border-gray-600 bg-gray-800 text-cyan-500 focus:ring-cyan-500"
+                          className="rounded border-gray-600 bg-gray-800 text-trust-500 focus:ring-trust-500"
                         />
                       </div>
 
@@ -407,7 +407,7 @@ export default function SettingsPage() {
                           type="checkbox"
                           checked={notifications.emailReports}
                           onChange={(e) => setNotifications(prev => ({ ...prev, emailReports: e.target.checked }))}
-                          className="rounded border-gray-600 bg-gray-800 text-cyan-500 focus:ring-cyan-500"
+                          className="rounded border-gray-600 bg-gray-800 text-trust-500 focus:ring-trust-500"
                         />
                       </div>
 
@@ -420,7 +420,7 @@ export default function SettingsPage() {
                           type="checkbox"
                           checked={notifications.smsAlerts}
                           onChange={(e) => setNotifications(prev => ({ ...prev, smsAlerts: e.target.checked }))}
-                          className="rounded border-gray-600 bg-gray-800 text-cyan-500 focus:ring-cyan-500"
+                          className="rounded border-gray-600 bg-gray-800 text-trust-500 focus:ring-trust-500"
                         />
                       </div>
                     </div>
@@ -482,7 +482,7 @@ export default function SettingsPage() {
                           <p className="text-white">Enable 2FA</p>
                           <p className="text-gray-400 text-sm">Add an extra layer of security to your account</p>
                         </div>
-                        <Button variant="outline" className="text-cyan-400 hover:bg-cyan-500/20">
+                        <Button variant="outline" className="text-trust-300 hover:bg-trust-500/20">
                           Enable
                         </Button>
                       </div>

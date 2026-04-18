@@ -12,7 +12,8 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    /* Trust Blue — structural / security tone (~70%) */
+    --primary: 215 43% 32%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 222.2 84% 4.9%;
@@ -24,7 +25,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 215 43% 40%;
     --radius: 0.5rem;
     
   /* Mobile Touch Targets */
@@ -35,10 +36,12 @@
   --mobile-padding: 1rem;
   --mobile-margin: 0.75rem;
     
-    /* EventraiseHUB Design System */
-    --hub-blue: #1D4ED8;
+    /* EventraiseHub — Trust Blue + Action Orange */
+    --hub-blue: #2e4f73;
+    --trust-blue: #2e4f73;
     --success-green: #059669;
-    --energy-orange: #EA580C;
+    --energy-orange: #ea580c;
+    --action-orange: #ea580c;
     --hub-purple: #7C3AED;
     --hub-gold: #F59E0B;
     --charcoal: #1F2937;
@@ -50,16 +53,17 @@
     --font-accent: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     
     /* Gradients */
-    --gradient-hub: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+    --gradient-hub: linear-gradient(135deg, #2e4f73 0%, #243951 100%);
+    --gradient-primary: linear-gradient(135deg, #2e4f73 0%, #1a3454 100%);
     --gradient-success: linear-gradient(135deg, #059669 0%, #047857 100%);
-    --gradient-energy: linear-gradient(135deg, #EA580C 0%, #DC2626 100%);
+    --gradient-energy: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
     --gradient-purple: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
     --gradient-gold: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
     
     /* Shadows */
     --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.1);
     --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.15);
-    --shadow-button: 0 2px 4px rgba(37, 99, 235, 0.2);
+    --shadow-button: 0 2px 4px rgba(46, 79, 115, 0.22);
     --shadow-success: 0 4px 12px rgba(16, 185, 129, 0.3);
   }
 
@@ -215,7 +219,7 @@
   }
   
   .input {
-    @apply flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-trust-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   
   /* Event Raise Design Components */
@@ -258,8 +262,8 @@
   }
   
   .celebration-callout {
-    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-    border: 1px solid var(--warm-orange);
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    border: 1px solid var(--energy-orange);
     border-radius: 12px;
     padding: 20px;
     text-align: center;
@@ -295,15 +299,15 @@
   }
   
   .text-gradient {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-trust-700 to-trust-900 bg-clip-text text-transparent;
   }
   
   .text-gradient-warm {
-    @apply bg-gradient-to-r from-orange-500 to-green-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-action-500 to-action-600 bg-clip-text text-transparent;
   }
   
   .text-gradient-success {
-    @apply bg-gradient-to-r from-green-500 to-blue-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-trust-600 to-action-500 bg-clip-text text-transparent;
   }
 }
 
@@ -330,10 +334,10 @@
 
 @keyframes pulse-glow {
   0% {
-    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 5px rgba(46, 79, 115, 0.28);
   }
   100% {
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6), 0 0 30px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 0 20px rgba(46, 79, 115, 0.45), 0 0 28px rgba(234, 88, 12, 0.2);
   }
 }
 
@@ -422,13 +426,13 @@
   
   /* Mobile-optimized button styles */
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-blue-500 hover:to-blue-600 hover:shadow-xl transition-all duration-200 active:scale-95;
+    @apply bg-gradient-to-r from-action-500 to-action-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-action-400 hover:to-action-500 hover:shadow-xl transition-all duration-200 active:scale-95;
     min-height: var(--touch-target-large);
     font-size: 1rem;
   }
   
   .btn-secondary {
-    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-orange-400 hover:to-orange-500 hover:shadow-xl transition-all duration-200 active:scale-95;
+    @apply bg-gradient-to-r from-trust-700 to-trust-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-trust-600 hover:to-trust-700 hover:shadow-xl transition-all duration-200 active:scale-95;
     min-height: var(--touch-target-large);
     font-size: 1rem;
   }
@@ -466,7 +470,7 @@
   
   /* Mobile navigation improvements */
   .mobile-nav {
-    @apply fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200;
+    @apply fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-trust-100;
   }
   
   /* Mobile touch improvements */
@@ -488,7 +492,7 @@
   
   /* Mobile focus improvements */
   .mobile-focus {
-    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    @apply focus:outline-none focus:ring-2 focus:ring-trust-500 focus:ring-offset-2;
   }
   
   /* Prevent horizontal overflow */

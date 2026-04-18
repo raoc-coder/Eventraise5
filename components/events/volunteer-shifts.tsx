@@ -178,13 +178,13 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
 
   const getSkillsColor = (skill: string) => {
     const colors = {
-      'setup': 'bg-blue-100 text-blue-800',
+      'setup': 'bg-trust-100 text-trust-800',
       'coordination': 'bg-green-100 text-green-800',
       'cleanup': 'bg-orange-100 text-orange-800',
-      'customer_service': 'bg-purple-100 text-purple-800',
-      'communication': 'bg-pink-100 text-pink-800',
+      'customer_service': 'bg-trust-100 text-trust-800',
+      'communication': 'bg-action-100 text-action-900',
       'decorating': 'bg-yellow-100 text-yellow-800',
-      'organization': 'bg-indigo-100 text-indigo-800',
+      'organization': 'bg-trust-100 text-trust-900',
       'teamwork': 'bg-red-100 text-red-800'
     }
     return colors[skill as keyof typeof colors] || 'bg-gray-100 text-gray-800'
@@ -249,12 +249,12 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
 
   if (showSignupForm && selectedShift) {
     return (
-      <Card className="border-2 border-blue-200 bg-blue-50">
+      <Card className="border-2 border-trust-200 bg-trust-50">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-blue-900">Volunteer Signup</CardTitle>
-              <CardDescription className="text-blue-700">
+              <CardTitle className="text-trust-950">Volunteer Signup</CardTitle>
+              <CardDescription className="text-trust-800">
                 {selectedShift.title} - {formatTime(selectedShift.start_time)}
               </CardDescription>
             </div>
@@ -265,7 +265,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                 setShowSignupForm(false)
                 setSelectedShift(null)
               }}
-              className="border-blue-300 text-blue-700 hover:bg-blue-100"
+              className="border-trust-300 text-trust-800 hover:bg-trust-100"
             >
               Back to Shifts
             </Button>
@@ -328,7 +328,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                   id="experienceLevel"
                   value={experienceLevel}
                   onChange={(e) => setExperienceLevel(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-trust-500 focus:ring-trust-500"
                 >
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
@@ -397,7 +397,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
 
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-start space-x-2">
-                <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+                <Shield className="h-5 w-5 text-trust-700 mt-0.5" />
                 <div className="text-sm text-gray-600">
                   <p className="font-medium text-gray-900 mb-2">Volunteer Agreement</p>
                   <ul className="space-y-1 text-xs">
@@ -450,7 +450,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto mb-4"></div>
         <p className="text-gray-600">Loading volunteer shifts...</p>
       </div>
     )
@@ -492,7 +492,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                 isFull 
                   ? 'border-red-200 bg-red-50' 
                   : isActive 
-                    ? 'border-blue-200 bg-blue-50 hover:border-blue-300' 
+                    ? 'border-trust-200 bg-trust-50 hover:border-trust-300' 
                     : 'border-gray-200 bg-gray-50'
               }`}
             >

@@ -156,7 +156,7 @@ export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: Tick
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-medium">{ticket.name}</span>
                     {selectedTicket?.id === ticket.id && (
-                      <Badge className="bg-blue-100 text-blue-800">Selected</Badge>
+                      <Badge className="bg-trust-100 text-trust-800">Selected</Badge>
                     )}
                   </div>
                   <div className="text-lg font-semibold">
@@ -244,15 +244,15 @@ export function TicketPurchase({ event, tickets, onSuccess, fetchTickets }: Tick
 
       {/* Payment Summary */}
       {selectedTicket && (
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+        <div className="bg-trust-50 border border-trust-200 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-700 font-medium">Ticket Price</span>
             <span className="text-gray-900 font-semibold">{formatCurrency(selectedTicket.price_cents / 100)} × {quantity}</span>
           </div>
-          <div className="border-t border-blue-300 mt-2 pt-2">
+          <div className="border-t border-trust-300 mt-2 pt-2">
             <div className="flex justify-between items-center">
               <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
-              <span className="text-blue-600 font-bold text-lg">
+              <span className="text-trust-700 font-bold text-lg">
                 {formatCurrency(totalAmount / 100)}
               </span>
             </div>

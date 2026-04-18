@@ -206,7 +206,7 @@ export default function CreateEventPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <Link href="/dashboard" className="inline-flex items-center text-cyan-700 hover:text-cyan-600 mb-4 transition-colors text-sm sm:text-base">
+          <Link href="/dashboard" className="inline-flex items-center text-trust-700 hover:text-trust-600 mb-4 transition-colors text-sm sm:text-base">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Link>
@@ -468,7 +468,7 @@ export default function CreateEventPage() {
               <div className="space-y-4">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-1">{formData.title || 'Your Event Title'}</h2>
-                  <p className="text-blue-600 font-semibold">
+                  <p className="text-trust-700 font-semibold">
                     {(() => {
                       const map: Record<string, string> = {
                         walkathon: 'Walk-a-thon',
@@ -483,25 +483,25 @@ export default function CreateEventPage() {
                 </div>
 
                 {formData.goal_amount && (
-                  <div className="flex items-center mt-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm">
-                    <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
+                  <div className="flex items-center mt-2 p-3 bg-gradient-to-r from-trust-50 to-trust-100 rounded-xl border-2 border-trust-200 shadow-sm">
+                    <div className="flex items-center justify-center w-10 h-10 bg-trust-500 rounded-full mr-3">
                       <Target className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
-                      <p className="text-xl font-bold text-blue-900">{formatCurrency(Number(formData.goal_amount))}</p>
+                      <p className="text-trust-800 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
+                      <p className="text-xl font-bold text-trust-950">{formatCurrency(Number(formData.goal_amount))}</p>
                     </div>
                   </div>
                 )}
 
                 <div className="grid grid-cols-1 gap-3">
-                  <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200 shadow-sm">
-                    <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
+                  <div className="flex items-center p-4 rounded-xl bg-gradient-to-r from-trust-50 to-trust-100 border-2 border-trust-200 shadow-sm">
+                    <div className="flex items-center justify-center w-10 h-10 bg-trust-500 rounded-full mr-3">
                       <Calendar className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Campaign Period</p>
-                      <p className="text-blue-900 font-bold">{formatDate(formData.start_date)} - {formatDate(formData.end_date)}</p>
+                      <p className="text-sm font-semibold text-trust-800 uppercase tracking-wide">Campaign Period</p>
+                      <p className="text-trust-950 font-bold">{formatDate(formData.start_date)} - {formatDate(formData.end_date)}</p>
                     </div>
                   </div>
                   {formData.location ? (

@@ -111,8 +111,8 @@ export default function OrganizerPayoutsPage() {
   const getStatusBadge = (status: string) => {
     const variants: Record<string, string> = {
       pending: 'bg-yellow-100 text-yellow-800',
-      processing: 'bg-blue-100 text-blue-800',
-      requested: 'bg-purple-100 text-purple-800',
+      processing: 'bg-trust-100 text-trust-800',
+      requested: 'bg-trust-100 text-trust-800',
       completed: 'bg-green-100 text-green-800',
       failed: 'bg-red-100 text-red-800',
       cancelled: 'bg-gray-100 text-gray-800'
@@ -149,7 +149,7 @@ export default function OrganizerPayoutsPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex items-center space-x-3 text-gray-700" role="status" aria-live="polite">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-trust-500"></div>
           <span>Loading your payouts…</span>
         </div>
       </div>
@@ -168,7 +168,7 @@ export default function OrganizerPayoutsPage() {
           <label className="inline-flex items-center gap-2 text-sm text-gray-700">
             <input
               type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-gray-300 text-trust-700 focus:ring-trust-500"
               checked={showEligibleOnly}
               onChange={(e)=>setShowEligibleOnly(e.target.checked)}
             />
@@ -192,8 +192,8 @@ export default function OrganizerPayoutsPage() {
                 ) : (
                   <div className="flex items-center">
                     {i === 0 && <DollarSign className="h-8 w-8 text-green-600" />}
-                    {i === 1 && <TrendingUp className="h-8 w-8 text-blue-600" />}
-                    {i === 2 && <Users className="h-8 w-8 text-purple-600" />}
+                    {i === 1 && <TrendingUp className="h-8 w-8 text-trust-700" />}
+                    {i === 2 && <Users className="h-8 w-8 text-trust-700" />}
                     {i === 3 && <Calendar className="h-8 w-8 text-orange-600" />}
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-600">{['Total Raised','Platform Fees','Net Earnings','Completed Payouts'][i]}</p>
@@ -309,12 +309,12 @@ export default function OrganizerPayoutsPage() {
                 )}
 
                 {payout.payout_status === 'requested' && (
-                  <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div className="mt-4 p-4 bg-trust-50 rounded-lg border border-trust-200">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-medium text-purple-800">Cash Out Requested</p>
-                        <p className="text-sm text-purple-700">Method: {payout.payout_method?.toUpperCase() || '—'}{payout.payout_reference ? ` • ${payout.payout_reference}` : ''}</p>
-                        <p className="text-xs text-purple-700 mt-1">We&apos;ll review and process this request manually. You&apos;ll receive a confirmation once it&apos;s sent.</p>
+                        <p className="text-sm font-medium text-trust-800">Cash Out Requested</p>
+                        <p className="text-sm text-trust-800">Method: {payout.payout_method?.toUpperCase() || '—'}{payout.payout_reference ? ` • ${payout.payout_reference}` : ''}</p>
+                        <p className="text-xs text-trust-800 mt-1">We&apos;ll review and process this request manually. You&apos;ll receive a confirmation once it&apos;s sent.</p>
                       </div>
                       <Button variant="outline" size="sm" onClick={() => setCashoutOpen(payout.id)} aria-label={`Update cash out request for ${payout.event_title}`}>
                         Update Request
@@ -347,7 +347,7 @@ export default function OrganizerPayoutsPage() {
                             <div>
                               <label className="text-sm font-medium text-gray-700">Method</label>
                               <select
-                                className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trust-500"
                                 value={cashoutMethod}
                                 onChange={(e) => setCashoutMethod(e.target.value as any)}
                               >
@@ -360,7 +360,7 @@ export default function OrganizerPayoutsPage() {
                               <label className="text-sm font-medium text-gray-700">Contact Email</label>
                               <input
                                 type="email"
-                                className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trust-500"
                                 placeholder="you@example.com"
                                 value={cashoutEmail}
                                 onChange={(e)=>setCashoutEmail(e.target.value)}

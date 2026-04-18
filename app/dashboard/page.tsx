@@ -39,7 +39,7 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto"></div>
           <p className="mt-4 text-gray-700 font-medium">Loading your dashboard...</p>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function DashboardPage() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <Heart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <Heart className="h-12 w-12 text-trust-700 mx-auto mb-4" />
                 <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Welcome to EventraiseHub</h2>
                 <p className="text-gray-800 mb-4">Create and manage your events</p>
                 <Link href="/events/create">
@@ -115,15 +115,15 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center space-x-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
-                  <Target className="h-5 w-5 text-blue-600" />
+                <div className="flex items-center space-x-4 p-4 rounded-lg bg-trust-50 border border-trust-200">
+                  <Target className="h-5 w-5 text-trust-700" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-900">Set Clear Goals</p>
                     <p className="text-sm text-gray-800">Define specific goals and targets for your event</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4 p-4 rounded-lg bg-indigo-50 border border-indigo-200">
-                  <Sparkles className="h-5 w-5 text-indigo-600" />
+                <div className="flex items-center space-x-4 p-4 rounded-lg bg-trust-50 border border-trust-200">
+                  <Sparkles className="h-5 w-5 text-trust-700" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-900">Share Your Story</p>
                     <p className="text-sm text-gray-800">Connect with donors through compelling descriptions</p>

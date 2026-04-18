@@ -26,16 +26,16 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
+    <nav className="bg-black/80 backdrop-blur-md border-b border-trust-500/25 relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-lg flex items-center justify-center">
                 <Heart className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-trust-300 to-action-500 bg-clip-text text-transparent">
                 EventraiseHub
               </span>
             </Link>
@@ -43,25 +43,25 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/events" className="text-gray-300 hover:text-cyan-400 transition-colors">
+            <Link href="/events" className="text-gray-300 hover:text-trust-300 transition-colors">
               Events
             </Link>
-            <Link href="/campaigns" className="text-gray-300 hover:text-cyan-400 transition-colors">
+            <Link href="/campaigns" className="text-gray-300 hover:text-trust-300 transition-colors">
               Campaigns
             </Link>
-            <Link href="/volunteers" className="text-gray-300 hover:text-cyan-400 transition-colors">
+            <Link href="/volunteers" className="text-gray-300 hover:text-trust-300 transition-colors">
               Volunteer
             </Link>
             
             {loading ? (
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-400"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-trust-500"></div>
             ) : user ? (
               <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-full flex items-center justify-center">
                     <User className="h-4 w-4 text-white" />
                   </div>
                   <span className="hidden lg:block">{user.user_metadata?.full_name || user.email}</span>
@@ -100,7 +100,7 @@ export default function Navbar() {
             ) : (
               <div className="flex items-center space-x-4">
                 <Link href="/auth/login">
-                  <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">
+                  <Button variant="ghost" className="text-trust-200 hover:text-white hover:bg-trust-500/25">
                     Login
                   </Button>
                 </Link>
@@ -190,7 +190,7 @@ export default function Navbar() {
                   </Link>
                   <Link
                     href="/auth/register"
-                    className="block px-3 py-2 text-cyan-400 hover:text-white hover:bg-cyan-500/20 rounded-md"
+                    className="block px-3 py-2 text-trust-200 hover:text-white hover:bg-trust-500/25 rounded-md"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Get Started

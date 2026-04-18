@@ -18,8 +18,8 @@ export default function MarketplacePage() {
               <h3 className="text-gray-900 font-semibold">Verified Campaign #{i}</h3>
               <p className="text-sm text-gray-600">Impact-focused story and transparent allocation</p>
               <div className="mt-3 flex items-center justify-between">
-                <span className="text-blue-600 text-sm">Education</span>
-                <Link href="#" className="text-sm text-blue-600 hover:underline">View</Link>
+                <span className="text-trust-700 text-sm">Education</span>
+                <Link href="#" className="text-sm text-trust-700 hover:underline">View</Link>
               </div>
             </div>
           ))}

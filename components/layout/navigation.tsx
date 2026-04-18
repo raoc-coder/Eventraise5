@@ -58,34 +58,48 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
   const renderLogo = () => {
     if (logoVariant === 'icon') {
       return (
-        <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 ring-2 ring-blue-100 shadow-md flex-shrink-0">
+        <div className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-trust-600 to-trust-800 ring-2 ring-trust-100 shadow-md flex-shrink-0">
           <Shield className="h-5 w-5 text-white" />
         </div>
       )
     }
-    const src = logoVariant === 'env' ? envLogoUrl : logoVariant === 'png' ? '/brand/logo.png' : '/brand/logo.svg'
+    const src =
+      logoVariant === 'env'
+        ? envLogoUrl
+        : logoVariant === 'png'
+          ? '/brand/ERBlogo.png'
+          : '/brand/logo.svg'
+    const isRemote = /^https?:\/\//i.test(src)
     return (
       <Image
         src={src}
         alt="EventraiseHub logo"
         width={36}
         height={36}
-        className="w-9 h-9 rounded-md ring-2 ring-blue-100 shadow-md object-contain bg-white"
-        onError={() => setLogoVariant(logoVariant === 'env' ? 'png' : logoVariant === 'png' ? 'svg' : 'icon')}
+        unoptimized={isRemote}
+        className="w-9 h-9 rounded-md ring-2 ring-trust-100 shadow-md object-contain bg-white"
+        onError={() =>
+          setLogoVariant((v) => {
+            if (v === 'env') return 'png'
+            if (v === 'png') return 'svg'
+            if (v === 'svg') return 'icon'
+            return 'icon'
+          })
+        }
         priority
       />
     )
   }
 
   return (
-    <nav className={`sticky top-0 z-50 bg-white border-b border-gray-200 backdrop-blur supports-[backdrop-filter]:backdrop-saturate-150 shadow-sm w-full overflow-hidden ${className}`}>
+    <nav className={`sticky top-0 z-50 bg-white/95 border-b border-trust-100 backdrop-blur-md supports-[backdrop-filter]:backdrop-saturate-150 shadow-sm shadow-trust-950/5 w-full overflow-hidden ${className}`}>
       <div className="nav-container w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         <div className="flex justify-between items-center h-16 min-h-[64px] sm:h-16">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
               {renderLogo()}
-              <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 tracking-tight truncate">
+              <span className="text-base sm:text-lg lg:text-xl font-bold text-trust-950 tracking-tight truncate">
                 EventraiseHub
               </span>
             </Link>
@@ -190,7 +204,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
         {isMobileMenuOpen && (
           <div
             id="mobile-navigation-menu"
-            className="md:hidden border-t border-gray-200 bg-white backdrop-blur"
+            className="md:hidden border-t border-trust-100 bg-white/98 backdrop-blur"
           >
             <div className="px-4 pt-4 pb-6 space-y-2">
               <Link href="/faqs" onClick={closeMobileMenu}>

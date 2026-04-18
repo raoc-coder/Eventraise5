@@ -23,7 +23,7 @@ export default function TermsOfServicePage() {
           <Card className="event-card">
             <CardHeader>
               <CardTitle className="text-gray-900 flex items-center">
-                <FileText className="h-6 w-6 mr-2 text-cyan-600" />
+                <FileText className="h-6 w-6 mr-2 text-trust-600" />
                 Agreement to Terms
               </CardTitle>
             </CardHeader>
@@ -78,7 +78,7 @@ export default function TermsOfServicePage() {
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-blue-700 mb-3">Content Guidelines</h3>
+                <h3 className="text-lg font-semibold text-trust-800 mb-3">Content Guidelines</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• Provide truthful and accurate information in events</li>
                   <li>• Respect intellectual property rights of others</li>
@@ -115,13 +115,13 @@ export default function TermsOfServicePage() {
           <Card className="event-card">
             <CardHeader>
               <CardTitle className="text-gray-900 flex items-center">
-                <CreditCard className="h-6 w-6 mr-2 text-purple-600" />
+                <CreditCard className="h-6 w-6 mr-2 text-trust-700" />
                 Payment Terms
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-purple-700 mb-3">Donations</h3>
+                <h3 className="text-lg font-semibold text-trust-800 mb-3">Donations</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• All donations are final and non-refundable unless otherwise stated</li>
                   <li>• Payment processing is handled securely through PayPal</li>
@@ -150,7 +150,7 @@ export default function TermsOfServicePage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-cyan-400 mb-2">Current Fee Structure</h3>
+                  <h3 className="text-lg font-semibold text-trust-300 mb-2">Current Fee Structure</h3>
                   <ul className="text-gray-300 space-y-2">
                     <li>• <strong>Donors:</strong> No fees charged to donors</li>
                     <li>• <strong>Campaign Creators:</strong> 2.9% + $0.30 per transaction</li>
@@ -208,7 +208,7 @@ export default function TermsOfServicePage() {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-cyan-700 mb-3">By You</h3>
+                  <h3 className="text-lg font-semibold text-trust-700 mb-3">By You</h3>
                   <p className="text-gray-700">
                     You may terminate your account at any time by contacting us. Upon termination, 
                     your access to the platform will be revoked, but your donation history will be preserved for record-keeping.

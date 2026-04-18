@@ -577,7 +577,7 @@ export default function EventDetailPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-trust-500 mx-auto mb-4"></div>
           <p className="text-gray-700">Loading event...</p>
         </div>
       </div>
@@ -599,7 +599,7 @@ export default function EventDetailPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-trust-50">
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -648,7 +648,7 @@ export default function EventDetailPage() {
                         <textarea 
                           value={draft.description} 
                           onChange={(e)=>setDraft({...draft,description:e.target.value})} 
-                          className="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-300 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-trust-500"
                           rows={4}
                           placeholder="Campaign description"
                         />
@@ -678,28 +678,28 @@ export default function EventDetailPage() {
                       </>
                     )}
                     {event.goal_amount && (
-                      <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                      <div className="mt-4 p-4 bg-trust-50 rounded-xl border border-trust-200">
                         <div className="flex items-center mb-3">
-                          <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full mr-3">
+                          <div className="flex items-center justify-center w-10 h-10 bg-trust-500 rounded-full mr-3">
                             <Target className="h-6 w-6 text-white" />
                           </div>
                           <div>
-                            <p className="text-blue-700 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
-                            <p className="text-2xl font-bold text-blue-900">{formatCurrency(event.goal_amount)}</p>
+                            <p className="text-trust-800 font-medium text-sm uppercase tracking-wide">Fundraising Goal</p>
+                            <p className="text-2xl font-bold text-trust-950">{formatCurrency(event.goal_amount)}</p>
                           </div>
                         </div>
                         {/* Thermometer */}
-                        <div className="w-full bg-white border border-blue-200 rounded-full h-3 overflow-hidden">
+                        <div className="w-full bg-white border border-trust-200 rounded-full h-3 overflow-hidden">
                           {(() => {
                             const raised = getRaisedAmount(event)
                             const goal = Number(event.goal_amount) || 0
                             const pct = goal > 0 ? Math.min(100, Math.max(0, Math.round((raised / goal) * 100))) : 0
                             return (
-                              <div className="h-full bg-blue-500 transition-all" style={{ width: pct + '%' }} />
+                              <div className="h-full bg-action-500 transition-all" style={{ width: pct + '%' }} />
                             )
                           })()}
                         </div>
-                        <div className="flex justify-between mt-1 text-xs text-blue-800">
+                        <div className="flex justify-between mt-1 text-xs text-trust-800">
                           <span>Raised {formatCurrency(getRaisedAmount(event))}</span>
                           <span>{(() => {
                             const goal = Number(event.goal_amount) || 0
@@ -712,7 +712,7 @@ export default function EventDetailPage() {
                   </div>
                 </div>
                   <div className="flex flex-wrap gap-3 mt-6 sm:gap-4">
-                    <Button onClick={handleShare} variant="outline" className="hover:bg-blue-50 transition-colors">
+                    <Button onClick={handleShare} variant="outline" className="hover:bg-trust-50 transition-colors">
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
@@ -776,13 +776,13 @@ export default function EventDetailPage() {
                 <div className="mb-8">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Campaign Details</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200 shadow-sm">
-                    <div className="flex items-center justify-center w-12 h-12 bg-blue-500 rounded-full mr-4">
+                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-trust-50 to-trust-100 border-2 border-trust-200 shadow-sm">
+                    <div className="flex items-center justify-center w-12 h-12 bg-trust-500 rounded-full mr-4">
                       <Calendar className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Campaign Period</p>
-                      <p className="text-blue-900 font-bold text-lg">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
+                      <p className="text-sm font-semibold text-trust-800 uppercase tracking-wide">Campaign Period</p>
+                      <p className="text-trust-950 font-bold text-lg">{formatDate(event.start_date)} - {formatDate(event.end_date)}</p>
                     </div>
                   </div>
                   {event.goal_amount && (
@@ -796,13 +796,13 @@ export default function EventDetailPage() {
                       </div>
                     </div>
                   )}
-                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-purple-50 to-purple-100 border-2 border-purple-200 shadow-sm">
-                    <div className="flex items-center justify-center w-12 h-12 bg-purple-500 rounded-full mr-4">
+                  <div className="flex items-center p-5 rounded-xl bg-gradient-to-r from-trust-100 to-trust-100 border-2 border-trust-200 shadow-sm">
+                    <div className="flex items-center justify-center w-12 h-12 bg-trust-500 rounded-full mr-4">
                       <Heart className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-purple-700 uppercase tracking-wide">Campaign Type</p>
-                      <p className="text-purple-900 font-bold text-lg">
+                      <p className="text-sm font-semibold text-trust-800 uppercase tracking-wide">Campaign Type</p>
+                      <p className="text-trust-950 font-bold text-lg">
                         {(() => {
                           const map: Record<string, string> = {
                             walkathon: 'Walk-a-thon',
@@ -827,12 +827,12 @@ export default function EventDetailPage() {
           <div className="space-y-6">
             <Card className="event-card relative overflow-hidden">
               {/* Decorative background elements */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200/30 to-pink-200/30 rounded-full -translate-y-16 translate-x-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-200/30 to-cyan-200/30 rounded-full translate-y-12 -translate-x-12"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-trust-200/40 to-action-200/30 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-trust-200/35 to-trust-300/25 rounded-full translate-y-12 -translate-x-12"></div>
               
               <CardHeader className="relative z-10">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="w-10 h-10 bg-gradient-to-br from-trust-600 to-action-500 rounded-xl flex items-center justify-center shadow-lg">
                     <Zap className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -880,7 +880,7 @@ export default function EventDetailPage() {
                     {/* 3. RSVP */}
                     <Button 
                       onClick={() => setActiveModal('rsvp')}
-                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
+                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-trust-600 to-trust-800 hover:from-trust-700 hover:to-trust-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] border-0"
                       size="lg"
                     >
                       <Users className="h-5 w-5 mr-2" />
@@ -976,20 +976,20 @@ export default function EventDetailPage() {
                         placeholder="Leave a message of support..."
                         value={donorMessage}
                         onChange={(e) => setDonorMessage(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-trust-500"
                         rows={3}
                       />
                     </div>
 
-                    <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                    <div className="bg-trust-50 border border-trust-200 p-4 rounded-lg">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-gray-700 font-medium">Donation Amount</span>
                         <span className="text-gray-900 font-semibold">{formatCurrency(donationAmount)}</span>
                       </div>
-                      <div className="border-t border-blue-300 mt-2 pt-2">
+                      <div className="border-t border-trust-300 mt-2 pt-2">
                         <div className="flex justify-between items-center">
                           <span className="text-gray-900 font-bold">You’ll Be Charged</span>
-                          <span className="text-blue-600 font-bold text-lg">
+                          <span className="text-trust-700 font-bold text-lg">
                             {formatCurrency(donationAmount)}
                           </span>
                         </div>
@@ -1092,7 +1092,7 @@ export default function EventDetailPage() {
                     <CardContent>
                       {ticketsLoading ? (
                         <div className="text-center py-8">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto"></div>
                           <p className="mt-4 text-gray-700">Loading tickets...</p>
                         </div>
                       ) : tickets.length === 0 && event?.is_ticketed ? (
@@ -1200,7 +1200,7 @@ export default function EventDetailPage() {
                     )}
                     {volunteerLoading ? (
                       <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto"></div>
                         <p className="mt-4 text-gray-700">Loading shifts...</p>
                       </div>
                     ) : volunteerShifts.length === 0 ? (
@@ -1314,20 +1314,20 @@ export default function EventDetailPage() {
                           placeholder="Leave a message of support..."
                           value={donorMessage}
                           onChange={(e) => setDonorMessage(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-trust-500"
                           rows={3}
                         />
                       </div>
 
-                      <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                      <div className="bg-trust-50 border border-trust-200 p-4 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-gray-700 font-medium">Donation Amount</span>
                           <span className="text-gray-900 font-semibold">{formatCurrency(donationAmount)}</span>
                         </div>
-                        <div className="border-t border-blue-300 mt-2 pt-2">
+                        <div className="border-t border-trust-300 mt-2 pt-2">
                           <div className="flex justify-between items-center">
                             <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
-                            <span className="text-blue-600 font-bold text-lg">
+                            <span className="text-trust-700 font-bold text-lg">
                               {formatCurrency(donationAmount)}
                             </span>
                           </div>
@@ -1496,7 +1496,7 @@ export default function EventDetailPage() {
                 {activeModal === 'volunteer' && (
                   <div className="space-y-4">
                     {user && (user.id === (event.organizer_id || event.created_by)) && (
-                      <div className="mb-6 p-4 border rounded-lg bg-blue-50">
+                      <div className="mb-6 p-4 border rounded-lg bg-trust-50">
                         <div className="flex flex-col sm:flex-row sm:items-end gap-3">
                           <div className="flex-1">
                             <Label htmlFor="newShiftTitle" className="text-gray-700 font-medium">Create a quick volunteer ask</Label>
@@ -1554,7 +1554,7 @@ export default function EventDetailPage() {
                     
                     {volunteerLoading ? (
                       <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto"></div>
                         <p className="mt-4 text-gray-700">Loading shifts...</p>
                       </div>
                     ) : volunteerShifts.length === 0 ? (
@@ -1712,20 +1712,20 @@ export default function EventDetailPage() {
                           placeholder="Leave a message of support..."
                           value={donorMessage}
                           onChange={(e) => setDonorMessage(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-trust-500"
                           rows={3}
                         />
                       </div>
 
-                      <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                      <div className="bg-trust-50 border border-trust-200 p-4 rounded-lg">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-gray-700 font-medium">Donation Amount</span>
                           <span className="text-gray-900 font-semibold">{formatCurrency(donationAmount)}</span>
                         </div>
-                        <div className="border-t border-blue-300 mt-2 pt-2">
+                        <div className="border-t border-trust-300 mt-2 pt-2">
                           <div className="flex justify-between items-center">
                             <span className="text-gray-900 font-bold">You&apos;ll Be Charged</span>
-                            <span className="text-blue-600 font-bold text-lg">
+                            <span className="text-trust-700 font-bold text-lg">
                               {formatCurrency(donationAmount)}
                             </span>
                           </div>
@@ -1803,13 +1803,13 @@ export default function EventDetailPage() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <div className="bg-trust-50 p-4 rounded-lg border border-trust-200">
                   <div className="flex items-center mb-2">
-                    <Users className="h-5 w-5 text-blue-600 mr-2" />
-                    <h3 className="font-semibold text-blue-900">Registrations</h3>
+                    <Users className="h-5 w-5 text-trust-700 mr-2" />
+                    <h3 className="font-semibold text-trust-950">Registrations</h3>
                   </div>
-                  <p className="text-2xl font-bold text-blue-600">{analytics.registrations?.total || 0}</p>
-                  <p className="text-sm text-blue-700">{analytics.registrations?.attendees || 0} total attendees</p>
+                  <p className="text-2xl font-bold text-trust-700">{analytics.registrations?.total || 0}</p>
+                  <p className="text-sm text-trust-800">{analytics.registrations?.attendees || 0} total attendees</p>
                 </div>
                 <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                   <div className="flex items-center mb-2">
@@ -1819,15 +1819,15 @@ export default function EventDetailPage() {
                   <p className="text-2xl font-bold text-green-600">{formatCurrency(analytics.revenue?.total || 0)}</p>
                   <p className="text-sm text-green-700">{formatCurrency(analytics.revenue?.donations?.net || 0)} net after fees</p>
                 </div>
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                <div className="bg-trust-50 p-4 rounded-lg border border-trust-200">
                   <div className="flex items-center mb-2">
-                    <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
-                    <h3 className="font-semibold text-purple-900">Breakdown</h3>
+                    <CheckCircle className="h-5 w-5 text-trust-700 mr-2" />
+                    <h3 className="font-semibold text-trust-950">Breakdown</h3>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.rsvp || 0} RSVP</p>
-                    <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.ticket || 0} Tickets</p>
-                    <p className="text-sm text-purple-700">{analytics.registrations?.breakdown?.confirmed || 0} Confirmed</p>
+                    <p className="text-sm text-trust-800">{analytics.registrations?.breakdown?.rsvp || 0} RSVP</p>
+                    <p className="text-sm text-trust-800">{analytics.registrations?.breakdown?.ticket || 0} Tickets</p>
+                    <p className="text-sm text-trust-800">{analytics.registrations?.breakdown?.confirmed || 0} Confirmed</p>
                   </div>
                 </div>
               </div>
@@ -1955,7 +1955,7 @@ export default function EventDetailPage() {
                         toast.error(`Failed to export CSV: ${error instanceof Error ? error.message : 'Unknown error'}`)
                       }
                     }}
-                    className="text-sm text-blue-600 hover:underline flex items-center"
+                    className="text-sm text-trust-700 hover:underline flex items-center"
                   >
                     <ExternalLink className="h-4 w-4 mr-1" />
                     Export CSV
@@ -2032,9 +2032,9 @@ export default function EventDetailPage() {
 
               {/* Bulk Actions */}
               {selectedRegistrations.length > 0 && (
-                <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                <div className="mb-4 p-3 bg-trust-50 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-blue-700">{selectedRegistrations.length} selected</span>
+                    <span className="text-sm text-trust-800">{selectedRegistrations.length} selected</span>
                     <div className="flex gap-2">
                       <Button variant="outline" size="sm" onClick={()=>bulkUpdateStatus('confirmed')}>
                         Mark Confirmed
@@ -2109,7 +2109,7 @@ export default function EventDetailPage() {
                         </td>
                         <td className="py-3 px-3 whitespace-nowrap min-w-[80px]">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            r.type === 'rsvp' ? 'bg-blue-100 text-blue-800' : 
+                            r.type === 'rsvp' ? 'bg-trust-100 text-trust-800' : 
                             r.type === 'ticket' ? 'bg-green-100 text-green-800' : 
                             'bg-gray-100 text-gray-800'
                           }`}>

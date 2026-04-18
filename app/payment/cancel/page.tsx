@@ -56,7 +56,7 @@ function PaymentCancelContent() {
                 <span className="text-gray-300">No donation was processed</span>
               </div>
               <div className="flex items-center space-x-3">
-                <RefreshCw className="h-4 w-4 text-cyan-400" />
+                <RefreshCw className="h-4 w-4 text-trust-300" />
                 <span className="text-white">You can try again anytime</span>
               </div>
             </CardContent>
@@ -66,7 +66,7 @@ function PaymentCancelContent() {
           <Card className="card-soft">
             <CardHeader>
               <div className="flex items-center space-x-2">
-                <Heart className="h-5 w-5 text-cyan-400" />
+                <Heart className="h-5 w-5 text-trust-300" />
                 <CardTitle className="text-white">Your Support Matters</CardTitle>
               </div>
               <CardDescription className="text-gray-300">
@@ -76,7 +76,7 @@ function PaymentCancelContent() {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0" />
+                  <div className="w-2 h-2 bg-action-500 rounded-full mt-2 flex-shrink-0" />
                   <p className="text-gray-300 text-sm">
                     Your contribution helps fund important programs and initiatives
                   </p>
@@ -143,7 +143,7 @@ function PaymentCancelContent() {
             </Link>
           )}
           <Link href="/events">
-            <Button variant="outline" className="border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10">
+            <Button variant="outline" className="border-trust-400/45 text-trust-300 hover:bg-action-500/10">
               Browse Other Campaigns
             </Button>
           </Link>

@@ -18,7 +18,15 @@ describe('Card Components', () => {
     it('applies correct classes', () => {
       render(<Card>Card content</Card>)
       const card = screen.getByText('Card content')
-      expect(card).toHaveClass('rounded-xl', 'border', 'border-gray-200', 'bg-white', 'text-gray-900', 'shadow-sm')
+      expect(card).toHaveClass(
+        'rounded-lg',
+        'border',
+        'border-trust-100/90',
+        'bg-white',
+        'text-gray-900',
+        'shadow-sm',
+        'shadow-trust-950/5'
+      )
     })
 
     it('applies custom className', () => {
@@ -45,7 +53,7 @@ describe('Card Components', () => {
         </Card>
       )
       const header = screen.getByText('Header content')
-      expect(header).toHaveClass('flex', 'flex-col', 'space-y-1.5', 'p-6')
+      expect(header).toHaveClass('flex', 'flex-col', 'space-y-1.5', 'p-4', 'sm:p-6')
     })
   })
 
@@ -66,7 +74,7 @@ describe('Card Components', () => {
         </Card>
       )
       const title = screen.getByText('Card Title')
-      expect(title).toHaveClass('text-2xl', 'font-semibold', 'text-gray-900')
+      expect(title).toHaveClass('text-lg', 'sm:text-xl', 'lg:text-2xl', 'font-semibold', 'text-gray-900')
     })
   })
 
@@ -87,7 +95,7 @@ describe('Card Components', () => {
         </Card>
       )
       const description = screen.getByText('Card description')
-      expect(description).toHaveClass('text-sm', 'text-gray-600')
+      expect(description).toHaveClass('text-sm', 'sm:text-base', 'text-gray-600')
     })
   })
 
@@ -108,7 +116,7 @@ describe('Card Components', () => {
         </Card>
       )
       const content = screen.getByText('Card content')
-      expect(content).toHaveClass('p-6', 'pt-0')
+      expect(content).toHaveClass('p-4', 'sm:p-6', 'pt-0')
     })
   })
 
@@ -129,7 +137,7 @@ describe('Card Components', () => {
         </Card>
       )
       const footer = screen.getByText('Footer content')
-      expect(footer).toHaveClass('flex', 'items-center', 'p-6', 'pt-0')
+      expect(footer).toHaveClass('flex', 'items-center', 'p-4', 'sm:p-6', 'pt-0')
     })
   })
 

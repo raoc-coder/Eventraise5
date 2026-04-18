@@ -140,13 +140,13 @@ export default function VolunteersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-trust-50 via-trust-100 to-action-50">
         <div className="text-center">
           <div className="relative">
-            <Heart className="h-16 w-16 text-pink-500 bounce-animation mx-auto mb-4" />
+            <Heart className="h-16 w-16 text-action-500 bounce-animation mx-auto mb-4" />
             <Sparkles className="h-6 w-6 text-yellow-400 absolute -top-2 -right-2 animate-pulse" />
           </div>
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto"></div>
           <p className="mt-4 text-gradient font-semibold">Loading volunteer opportunities...</p>
         </div>
       </div>
@@ -156,25 +156,25 @@ export default function VolunteersPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="bg-black/80 backdrop-blur-md border-b border-cyan-500/20 relative z-10">
+      <nav className="bg-black/80 backdrop-blur-md border-b border-trust-500/25 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-lg flex items-center justify-center">
                   <Heart className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-gradient-to-r from-trust-300 to-action-500 bg-clip-text text-transparent">
                   EventraiseHub
                 </span>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/dashboard">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Dashboard</Button>
+                <Button variant="ghost" className="text-trust-200 hover:text-white hover:bg-trust-500/25">Dashboard</Button>
               </Link>
               <Link href="/events">
-                <Button variant="ghost" className="text-cyan-400 hover:text-white hover:bg-cyan-500/20">Events</Button>
+                <Button variant="ghost" className="text-trust-200 hover:text-white hover:bg-trust-500/25">Events</Button>
               </Link>
             </div>
           </div>
@@ -309,7 +309,7 @@ export default function VolunteersPage() {
                     <CardTitle className="text-lg text-gray-900">{opportunity.title}</CardTitle>
                     <p className="text-sm text-gray-600 mt-1">{opportunity.event_title}</p>
                   </div>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">
+                  <span className="px-2 py-1 bg-trust-100 text-trust-800 text-xs rounded-full font-semibold">
                     {opportunity.current_volunteers}/{opportunity.max_volunteers} volunteers
                   </span>
                 </div>
@@ -317,16 +317,16 @@ export default function VolunteersPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-blue-50 transition-colors">
-                    <Calendar className="h-4 w-4 mr-2 text-blue-500" />
+                  <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-trust-50 transition-colors">
+                    <Calendar className="h-4 w-4 mr-2 text-trust-600" />
                     <span className="font-medium">{formatDate(opportunity.start_time)} - {formatDate(opportunity.end_time)}</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-green-50 transition-colors">
                     <MapPin className="h-4 w-4 mr-2 text-green-500" />
                     <span className="font-medium">{opportunity.location}</span>
                   </div>
-                  <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-purple-50 transition-colors">
-                    <Clock className="h-4 w-4 mr-2 text-purple-500" />
+                  <div className="flex items-center text-sm text-gray-600 p-2 rounded-lg hover:bg-trust-50 transition-colors">
+                    <Clock className="h-4 w-4 mr-2 text-trust-600" />
                     <span className="font-medium">{opportunity.time_commitment}</span>
                   </div>
                   {opportunity.required_skills.length > 0 && (
@@ -364,7 +364,7 @@ export default function VolunteersPage() {
           <CardContent>
             <div className="space-y-4">
               {signups.map((signup) => (
-                <div key={signup.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-blue-50 transition-all duration-300">
+                <div key={signup.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-trust-50 transition-all duration-300">
                   <div className="flex-1">
                     <div className="flex items-center space-x-4">
                       <div>

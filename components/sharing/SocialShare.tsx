@@ -108,7 +108,7 @@ export default function SocialShare({
         onClick={handleNativeShare}
         variant="ghost"
         size="sm"
-        className="text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/20"
+        className="text-gray-400 hover:text-trust-300 hover:bg-trust-500/20"
       >
         <Share2 className="h-4 w-4" />
       </Button>
@@ -124,7 +124,7 @@ export default function SocialShare({
             onClick={() => setIsExpanded(!isExpanded)}
             variant="ghost"
             size="sm"
-            className="text-gray-400 hover:text-cyan-400"
+            className="text-gray-400 hover:text-trust-300"
           >
             {isExpanded ? 'Less' : 'More'}
           </Button>
@@ -135,7 +135,7 @@ export default function SocialShare({
             onClick={handleNativeShare}
             variant="outline"
             size="sm"
-            className="text-cyan-400 hover:bg-cyan-500/20"
+            className="text-trust-300 hover:bg-trust-500/20"
           >
             <Share2 className="h-4 w-4 mr-2" />
             Share
@@ -157,7 +157,7 @@ export default function SocialShare({
               onClick={handleFacebookShare}
               variant="outline"
               size="sm"
-              className="text-blue-400 hover:bg-blue-500/20"
+              className="text-trust-500 hover:bg-trust-500/20"
             >
               <Facebook className="h-4 w-4 mr-2" />
               Facebook
@@ -166,7 +166,7 @@ export default function SocialShare({
               onClick={handleTwitterShare}
               variant="outline"
               size="sm"
-              className="text-blue-400 hover:bg-blue-500/20"
+              className="text-trust-500 hover:bg-trust-500/20"
             >
               <Twitter className="h-4 w-4 mr-2" />
               Twitter
@@ -202,7 +202,7 @@ export default function SocialShare({
         onClick={handleNativeShare}
         variant="outline"
         size="sm"
-        className="text-cyan-400 hover:bg-cyan-500/20"
+        className="text-trust-300 hover:bg-trust-500/20"
       >
         <Share2 className="h-4 w-4 mr-2" />
         Share
@@ -213,7 +213,7 @@ export default function SocialShare({
           onClick={handleFacebookShare}
           variant="ghost"
           size="sm"
-          className={`${sizeClasses[size]} text-blue-400 hover:bg-blue-500/20`}
+          className={`${sizeClasses[size]} text-trust-500 hover:bg-trust-500/20`}
         >
           <Facebook className={iconSizes[size]} />
         </Button>
@@ -221,7 +221,7 @@ export default function SocialShare({
           onClick={handleTwitterShare}
           variant="ghost"
           size="sm"
-          className={`${sizeClasses[size]} text-blue-400 hover:bg-blue-500/20`}
+          className={`${sizeClasses[size]} text-trust-500 hover:bg-trust-500/20`}
         >
           <Twitter className={iconSizes[size]} />
         </Button>

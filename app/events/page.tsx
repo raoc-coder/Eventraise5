@@ -160,7 +160,7 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-trust-50">
         <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8" aria-live="polite" role="status">
           <div className="mb-6 sm:mb-8">
@@ -191,7 +191,7 @@ export default function EventsPage() {
                   placeholder="Search events by title or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-12 text-base text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="pl-10 h-12 text-base text-gray-900 placeholder:text-gray-400 border-gray-300 focus:border-trust-500 focus:ring-trust-500"
                   aria-label="Search events"
                 />
                 {searchTerm && (
@@ -209,7 +209,7 @@ export default function EventsPage() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="px-4 py-3 border border-gray-300 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base h-12 min-w-[180px]"
+                className="px-4 py-3 border border-gray-300 bg-white text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-trust-500 focus:border-trust-500 text-base h-12 min-w-[180px]"
                 aria-label="Filter events by type"
               >
                 <option value="all">All Types</option>
@@ -224,7 +224,7 @@ export default function EventsPage() {
                 <select
                   value={sortBy}
                   onChange={(e)=>setSortBy(e.target.value as any)}
-                  className="px-3 py-2 h-12 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 h-12 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-trust-500"
                   aria-label="Sort events"
                 >
                   <option value="upcoming">Upcoming</option>
@@ -280,8 +280,8 @@ export default function EventsPage() {
                     <div className="flex items-center gap-2">
                       <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
                         event.is_ticketed 
-                          ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-blue-100 text-blue-800'
+                          ? 'bg-trust-100 text-trust-800' 
+                          : 'bg-trust-100 text-trust-800'
                       }`}>
                         {getEventTypeLabel(event.event_type || '', event.is_ticketed)}
                       </span>
@@ -304,7 +304,7 @@ export default function EventsPage() {
                     {event.is_ticketed ? (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-trust-100 text-trust-800">
                             {formatCurrency(event.ticket_price || 0)}
                           </span>
                           <span className="text-xs text-gray-700">
@@ -315,7 +315,7 @@ export default function EventsPage() {
                         {event.ticket_quantity && (
                           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                             <div 
-                              className="h-2 bg-purple-600" 
+                              className="h-2 bg-action-500" 
                               style={{ 
                                 width: `${Math.min(100, Math.max(0, ((event.tickets_sold || 0) / event.ticket_quantity) * 100))}%` 
                               }} 
@@ -332,11 +332,11 @@ export default function EventsPage() {
                       return (
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Goal: {formatCurrency(goal)}</span>
+                            <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-trust-100 text-trust-800">Goal: {formatCurrency(goal)}</span>
                             <span className="text-xs text-gray-700">Raised {formatCurrency(raised)} • {pct}%</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                            <div className="h-2 bg-blue-600" style={{ width: pct + '%' }} />
+                            <div className="h-2 bg-action-500" style={{ width: pct + '%' }} />
                           </div>
                         </div>
                       )
@@ -351,7 +351,7 @@ export default function EventsPage() {
                     {/* Event Details */}
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-2 text-blue-500" />
+                        <Calendar className="h-4 w-4 mr-2 text-trust-600" />
                         <span className="truncate">{event.start_date ? formatDate(event.start_date) : ''}</span>
                       </div>
                       {(event.location) && (
@@ -374,7 +374,7 @@ export default function EventsPage() {
                       {event.is_ticketed ? (
                         <a
                           href={`/events/${event.id}#tickets`}
-                          className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap bg-purple-600 hover:bg-purple-700 text-white' })}
+                          className={buttonVariants({ variant: 'secondary', className: 'whitespace-nowrap' })}
                           style={{ textDecoration: 'none' }}
                         >
                           <span className="inline-flex items-center"><Ticket className="h-4 w-4 mr-1" />Buy Tickets</span>
@@ -382,7 +382,7 @@ export default function EventsPage() {
                       ) : (event.event_type === 'direct_donation') && (
                         <a
                           href={`/events/${event.id}#donate`}
-                          className={buttonVariants({ className: 'whitespace-nowrap bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white shadow-lg hover:shadow-xl transition-all duration-200' })}
+                          className={buttonVariants({ className: 'whitespace-nowrap' })}
                           style={{ textDecoration: 'none' }}
                         >
                           Donate
