@@ -24,7 +24,7 @@
 | S0.3 | Twilio account + 10DLC brand & A2P campaign submitted | Ops + Eng | **Initiated 2026-05-12** — awaiting Twilio approval (~2–4 wk SLA) |
 | S0.4 | SendGrid domain auth (SPF / DKIM / DMARC) for `eventraisehub.com` | Eng + Marketing | **Initiated 2026-05-12** — awaiting DNS propagation + SendGrid verification |
 | S0.5 | Supabase capacity confirmed — see [Operational Readiness §1](./adrs/operational-readiness.md#1-foundation-gate-pre-sprint-1) | Eng | **Initiated 2026-05-12** — awaiting confirmation per §S0.5 checklist below |
-| S0.6 | VAPID keypair generated and stored in env scopes | Eng | Pending |
+| S0.6 | VAPID keypair generated and stored in env scopes — run `npm run generate:vapid -- --vercel` | Eng | Runner ready 2026-05-12 — awaiting Vercel env paste |
 | S0.7 | Decision on Braintree (keep / sunset / remove) | Eng + Finance | Pending |
 
 ### External-track progress log

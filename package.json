@@ -11,6 +11,7 @@
     "setup": "node scripts/setup-env.js",
     "type-check": "tsc --noEmit",
     "build-check": "node scripts/build-check.js",
+    "generate:vapid": "tsx scripts/generate-vapid.ts",
     "test": "jest",
     "test:unit": "jest --testPathPatterns=__tests__/components --coverage",
     "test:integration": "jest --testPathPatterns=__tests__/integration --coverage --passWithNoTests",
@@ -96,6 +97,7 @@
     "msw": "^2.11.3",
     "semantic-release": "^22.0.7",
     "ts-jest": "^29.4.4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vercel": "^48.1.6"
   }
