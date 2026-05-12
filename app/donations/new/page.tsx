@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -12,13 +12,73 @@ import Image from 'next/image'
 import { useCurrency } from '@/app/providers/currency-provider'
 import { PayPalDonationButton } from '@/lib/paypal-client'
 import { trackMetaPixelDonation } from '@/lib/meta-pixel'
+import { FundraiserAttributionBanner } from '@/components/p2p/FundraiserAttributionBanner'
+import { isUuid } from '@/lib/p2p/personal-campaigns'
+import { supabase } from '@/lib/supabase'
+
+interface AttributedCampaign {
+  id: string
+  display_name: string
+  event_id: string
+}
 
 function DonationForm() {
   const searchParams = useSearchParams()
-  const eventId = searchParams?.get('eventId') || undefined
+  const eventIdParam = searchParams?.get('eventId') || undefined
+  const personalCampaignIdParam =
+    searchParams?.get('personalCampaignId') || undefined
   const [amount, setAmount] = useState(25)
   const [paymentComplete, setPaymentComplete] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [attribution, setAttribution] = useState<AttributedCampaign | null>(
+    null,
+  )
+
+  // Load the personal campaign for display + attribution. Server-side
+  // validation in /api/paypal/create-order remains authoritative; this
+  // client-side fetch is purely for the banner. Anon RLS only returns
+  // active campaigns (migration 021 §5a).
+  useEffect(() => {
+    let cancelled = false
+    async function loadAttribution() {
+      if (!personalCampaignIdParam || !isUuid(personalCampaignIdParam)) {
+        setAttribution(null)
+        return
+      }
+      if (!supabase) return
+      const { data, error } = await supabase
+        .from('personal_campaigns')
+        .select('id, display_name, event_id, status')
+        .eq('id', personalCampaignIdParam)
+        .eq('status', 'active')
+        .maybeSingle()
+      if (cancelled || error || !data) {
+        if (!cancelled) setAttribution(null)
+        return
+      }
+      // If the URL supplied an eventId, only show the banner when it lines
+      // up with the campaign's event_id — prevents a malicious deep link
+      // from misleading the donor about who they're supporting.
+      if (eventIdParam && data.event_id !== eventIdParam) {
+        setAttribution(null)
+        return
+      }
+      setAttribution({
+        id: data.id,
+        display_name: data.display_name,
+        event_id: data.event_id,
+      })
+    }
+    void loadAttribution()
+    return () => {
+      cancelled = true
+    }
+  }, [personalCampaignIdParam, eventIdParam])
+
+  // PayPal needs the event id, and create-order also accepts the personal
+  // campaign id (validated server-side).
+  const eventId = eventIdParam || attribution?.event_id || ''
+  const personalCampaignId = attribution?.id
 
   const handlePaymentSuccess = (transactionId: string) => {
     setPaymentComplete(true)
@@ -49,6 +109,10 @@ function DonationForm() {
 
   return (
     <div className="space-y-6 px-1">
+      {attribution && (
+        <FundraiserAttributionBanner displayName={attribution.display_name} />
+      )}
+
       {/* Donation Amount Section */}
       <div className="space-y-4">
         <div className="text-center">
@@ -149,6 +213,7 @@ function DonationForm() {
           <PayPalDonationButton
             amount={amount}
             eventId={eventId || ''}
+            personalCampaignId={personalCampaignId}
             onSuccess={() => handlePaymentSuccess('paypal')}
             onError={(err) => toast.error(err)}
             disabled={loading || amount < 1}

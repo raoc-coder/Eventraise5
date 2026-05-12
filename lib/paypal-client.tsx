@@ -35,6 +35,7 @@ export function PayPalDonationButton({
   amount,
   eventId,
   currency = 'USD',
+  personalCampaignId,
   onSuccess,
   onError,
   disabled = false
@@ -42,6 +43,13 @@ export function PayPalDonationButton({
   amount: number
   eventId: string
   currency?: string
+  /**
+   * Optional P2P attribution (Sprint 1.5). When set, the server-side
+   * create-order route validates that the campaign is active and tied to
+   * `eventId`. Invalid attributions are dropped silently — donation still
+   * posts to the event.
+   */
+  personalCampaignId?: string
   onSuccess: (orderId: string) => void
   onError: (error: string) => void
   disabled?: boolean
@@ -51,24 +59,39 @@ export function PayPalDonationButton({
 
   const createOrder = async () => {
     try {
-      const createKey = createOrderKeyRef.current || createIdempotencyKey('pp_create', { eventId, amount, currency, type: 'donation' })
+      // Include personalCampaignId in the idempotency fingerprint so two
+      // different attribution paths (event-only vs. P2P) never collapse to
+      // the same key (ADR-0009).
+      const createKey =
+        createOrderKeyRef.current ||
+        createIdempotencyKey('pp_create', {
+          eventId,
+          amount,
+          currency,
+          type: 'donation',
+          pcid: personalCampaignId || 'none',
+        })
       createOrderKeyRef.current = createKey
+      const requestBody: Record<string, unknown> = {
+        eventId,
+        amount,
+        currency,
+        type: 'donation',
+      }
+      if (personalCampaignId) {
+        requestBody.personalCampaignId = personalCampaignId
+      }
       const response = await fetch('/api/paypal/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Idempotency-Key': createKey,
         },
-        body: JSON.stringify({
-          eventId,
-          amount,
-          currency,
-          type: 'donation'
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       const data = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create PayPal order')
       }
@@ -78,6 +101,7 @@ export function PayPalDonationButton({
           eventId,
           orderId: data.orderId,
           type: 'donation',
+          pcid: personalCampaignId || 'none',
         })
       }
       return data.orderId

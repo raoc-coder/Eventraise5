@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createDonationOrder, calculatePlatformFee } from '@/lib/paypal'
 import { supabaseAdmin } from '@/lib/supabase'
+import { loadActivePersonalCampaign } from '@/lib/p2p/personal-campaigns'
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { eventId, amount, type, ticketId, quantity, currency = 'USD' } = body
+    const {
+      eventId,
+      amount,
+      type,
+      ticketId,
+      quantity,
+      currency = 'USD',
+      personalCampaignId,
+    } = body
     const headerIdempotencyKey = req.headers.get('idempotency-key')?.trim()
 
     if (!eventId || !amount || !type) {
@@ -35,6 +44,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Event is not published' }, { status: 400 })
     }
 
+    // Attribute donation to a P2P personal campaign when present and valid
+    // (ADR ref: Sprint 1.5). Failed attribution is silent — the donation
+    // still posts to the event so the donor experience is preserved. We do
+    // log so an unusually high drop rate is investigable.
+    let attributedPersonalCampaignId: string | null = null
+    if (type === 'donation' && personalCampaignId) {
+      const pc = await loadActivePersonalCampaign(
+        supabaseAdmin,
+        personalCampaignId,
+        eventId,
+      )
+      if (pc) {
+        attributedPersonalCampaignId = pc.id
+      } else {
+        console.warn(
+          '[paypal/create-order] dropping personalCampaignId attribution',
+          { personalCampaignId, eventId },
+        )
+      }
+    }
+
     // Calculate fees
     const fees = calculatePlatformFee(amount, currency)
 
@@ -61,20 +91,42 @@ export async function POST(req: NextRequest) {
     }
 
     // Store order details in database for tracking
-    const { error: dbError } = await supabaseAdmin
+    const paypalOrderInsert: Record<string, unknown> = {
+      order_id: orderResult.orderId,
+      event_id: eventId,
+      amount_cents: Math.round(amount * 100),
+      platform_fee_cents: Math.round(fees.platformFee * 100),
+      paypal_fee_cents: Math.round(fees.paypalFee * 100),
+      net_amount_cents: Math.round(fees.netAmount * 100),
+      status: 'pending',
+      type: type,
+      ticket_id: ticketId || null,
+      quantity: quantity || 1,
+    }
+    if (attributedPersonalCampaignId) {
+      paypalOrderInsert.personal_campaign_id = attributedPersonalCampaignId
+    }
+
+    let { error: dbError } = await supabaseAdmin
       .from('paypal_orders')
-      .insert({
-        order_id: orderResult.orderId,
-        event_id: eventId,
-        amount_cents: Math.round(amount * 100),
-        platform_fee_cents: Math.round(fees.platformFee * 100),
-        paypal_fee_cents: Math.round(fees.paypalFee * 100),
-        net_amount_cents: Math.round(fees.netAmount * 100),
-        status: 'pending',
-        type: type,
-        ticket_id: ticketId || null,
-        quantity: quantity || 1
-      })
+      .insert(paypalOrderInsert)
+
+    // Graceful fallback when migration 022 has not yet been applied in this
+    // environment: drop the new column from the insert and retry once.
+    if (dbError && attributedPersonalCampaignId) {
+      const msg = (dbError as { message?: string }).message ?? ''
+      const code = (dbError as { code?: string }).code ?? ''
+      if (
+        code === 'PGRST204' ||
+        code === '42703' ||
+        msg.includes('personal_campaign_id')
+      ) {
+        delete paypalOrderInsert.personal_campaign_id
+        ;({ error: dbError } = await supabaseAdmin
+          .from('paypal_orders')
+          .insert(paypalOrderInsert))
+      }
+    }
 
     if (dbError) {
       console.error('Failed to store PayPal order:', dbError)

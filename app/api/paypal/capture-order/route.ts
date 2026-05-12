@@ -82,20 +82,49 @@ export async function POST(req: NextRequest) {
         .single()
 
       if (orderData) {
-        const { error: donationError } = await supabaseAdmin
+        // P2P attribution (Sprint 1.5): if create-order persisted a
+        // personal_campaign_id on the paypal_orders row, carry it through
+        // to donation_requests so the trigger on `donation_requests` can
+        // credit personal_campaigns.total_raised_cents (migration 021).
+        const donationInsert: Record<string, unknown> = {
+          event_id: eventId,
+          amount_cents: orderData.amount_cents,
+          fee_cents: orderData.platform_fee_cents,
+          net_cents: orderData.net_amount_cents,
+          status: 'succeeded',
+          donor_name: null, // Will be filled from PayPal data
+          donor_email: null, // Will be filled from PayPal data
+          settlement_status: 'pending',
+          paypal_order_id: storedOrder.id,
+          paypal_capture_id: captureResult.captureId,
+        }
+        const personalCampaignId =
+          (orderData as { personal_campaign_id?: string | null })
+            .personal_campaign_id ?? null
+        if (personalCampaignId) {
+          donationInsert.personal_campaign_id = personalCampaignId
+        }
+
+        let { error: donationError } = await supabaseAdmin
           .from('donation_requests')
-          .insert({
-            event_id: eventId,
-            amount_cents: orderData.amount_cents,
-            fee_cents: orderData.platform_fee_cents,
-            net_cents: orderData.net_amount_cents,
-            status: 'succeeded',
-            donor_name: null, // Will be filled from PayPal data
-            donor_email: null, // Will be filled from PayPal data
-            settlement_status: 'pending',
-            paypal_order_id: storedOrder.id,
-            paypal_capture_id: captureResult.captureId
-          })
+          .insert(donationInsert)
+
+        // Graceful fallback if migration 021 has not yet been applied:
+        // retry without the personal_campaign_id column.
+        if (donationError && personalCampaignId) {
+          const msg = (donationError as { message?: string }).message ?? ''
+          const code = (donationError as { code?: string }).code ?? ''
+          if (
+            code === 'PGRST204' ||
+            code === '42703' ||
+            msg.includes('personal_campaign_id')
+          ) {
+            delete donationInsert.personal_campaign_id
+            ;({ error: donationError } = await supabaseAdmin
+              .from('donation_requests')
+              .insert(donationInsert))
+          }
+        }
 
         if (donationError) {
           console.error('Failed to create donation record:', donationError)
