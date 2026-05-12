@@ -42,8 +42,9 @@ Unlocks Sprint 1 scaffolding. Owners: Eng (primary), Ops (Twilio/SendGrid extern
 
 ### 1.4 External-track items kicked off (long-lead, do not block Sprint 1)
 
-- [ ] **Twilio 10DLC** brand registered, A2P campaign submitted. (ADR-0004; 2–4 week approval window.)
-- [ ] **SendGrid domain authentication** DNS records present on `eventraisehub.com` (SPF, DKIM, DMARC). (ADR-0005.)
+- [x] **Twilio 10DLC** brand registered, A2P campaign submitted (initiated 2026-05-12). (ADR-0004; 2–4 week carrier approval window — `APPROVED/VERIFIED` status still pending.)
+- [x] **SendGrid domain authentication** DNS records added on `eventraisehub.com` (initiated 2026-05-12). (ADR-0005; SendGrid "Domain verified" + first test send with `dkim=pass spf=pass` still pending.)
+- [ ] **Supabase project capacity confirmation** (initiated 2026-05-12). Walk §1.1 checklist above — plan tier, Realtime caps, `pg_net`, replication-lag visibility — and tick each box as confirmed.
 - [ ] **VAPID keypair** generated and stored as `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` in Vercel. (ADR-0003.)
 - [ ] **PayPal** production app credentials provisioned in Vercel; Vault enabled on the account. (ADR-0006.)
 

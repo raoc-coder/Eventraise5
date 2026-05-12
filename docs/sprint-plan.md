@@ -21,11 +21,19 @@
 |---|---|---|---|
 | S0.1 | ADR set 0001–0015 in `docs/adrs/` | Tech lead | Done |
 | S0.2 | This sprint plan in `docs/sprint-plan.md` | Tech lead | Done |
-| S0.3 | Twilio account + 10DLC brand & A2P campaign submitted | Ops + Eng | In progress (long lead) |
-| S0.4 | SendGrid domain auth (SPF / DKIM / DMARC) for `eventraisehub.com` | Eng + Marketing | In progress (DNS) |
-| S0.5 | Supabase capacity confirmed — see [Operational Readiness §1](./adrs/operational-readiness.md#1-foundation-gate-pre-sprint-1) | Eng | Pending |
+| S0.3 | Twilio account + 10DLC brand & A2P campaign submitted | Ops + Eng | **Initiated 2026-05-12** — awaiting Twilio approval (~2–4 wk SLA) |
+| S0.4 | SendGrid domain auth (SPF / DKIM / DMARC) for `eventraisehub.com` | Eng + Marketing | **Initiated 2026-05-12** — awaiting DNS propagation + SendGrid verification |
+| S0.5 | Supabase capacity confirmed — see [Operational Readiness §1](./adrs/operational-readiness.md#1-foundation-gate-pre-sprint-1) | Eng | **Initiated 2026-05-12** — awaiting confirmation per §S0.5 checklist below |
 | S0.6 | VAPID keypair generated and stored in env scopes | Eng | Pending |
 | S0.7 | Decision on Braintree (keep / sunset / remove) | Eng + Finance | Pending |
+
+### External-track progress log
+
+| Date | Item | Status | "Done" means |
+|---|---|---|---|
+| 2026-05-12 | Twilio 10DLC brand + A2P campaign | Submitted; awaiting carrier approval | Messaging Service SID exists in Vercel env, STOP/HELP keywords routed, brand status = `APPROVED` and campaign status = `VERIFIED` in Twilio console |
+| 2026-05-12 | SendGrid domain auth | DNS records added; awaiting verification | SPF, DKIM (3 CNAMEs), and DMARC records resolve from a public resolver; SendGrid dashboard shows "Domain verified"; a test send arrives with `dkim=pass` and `spf=pass` |
+| 2026-05-12 | Supabase capacity | Account + plan in motion | Plan tier = Pro (no spend cap)+, Max concurrent connections ≥ 2,000, `pg_net` enabled, `Broadcast from DB Replication Lag` report populates |
 
 **S0.5 — concrete checklist:**
 
