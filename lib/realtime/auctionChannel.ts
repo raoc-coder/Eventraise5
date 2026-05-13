@@ -1,18 +1,22 @@
 /**
- * Realtime subscription helper for live auctions (placeholder).
+ * Supabase Realtime helpers for auction lots (Sprint 4 / ADR-0002, ADR-0012).
  *
- * ADR-0002: live updates ride on Supabase Realtime via `postgres_changes` on
- * `public.bids` plus `broadcast` for system events like `lot_closing` and
- * `lot_extended` (anti-snipe; see ADR-0007). ADR-0012 requires that any
- * payload exposed through Realtime is sanitized (no `bidder_id`, no PII).
- *
- * This stub establishes the public surface; the implementation lands in
- * Sprint 5 alongside the notification fan-out Edge Function.
+ * Uses `postgres_changes` on `public.auction_lots` so payloads are limited to
+ * row fields (no bidder identity). Clients must filter to the lots they care about.
  */
 
-import type { RealtimeChannel } from "@supabase/supabase-js";
+import type { RealtimeChannel, SupabaseClient } from "@supabase/supabase-js";
 
-/** Sanitized bid event delivered to clients via Realtime (ADR-0012). */
+/** Sanitized lot state for UI (no bidder PII). */
+export interface AuctionLotPublicState {
+  lotId: string;
+  currentHighBidCents: number;
+  closesAt: string;
+  extensionCount: number;
+  status?: string;
+}
+
+/** Legacy demo shape — prefer {@link AuctionLotPublicState} + postgres_changes. */
 export interface BidEvent {
   id: string;
   lotId: string;
@@ -21,7 +25,6 @@ export interface BidEvent {
   createdAt: string;
 }
 
-/** System events broadcast by the server (not derived from row changes). */
 export type AuctionSystemEvent =
   | { type: "lot_opened"; lotId: string }
   | { type: "lot_extended"; lotId: string; newClosesAt: string }
@@ -32,35 +35,116 @@ export type AuctionSystemEvent =
 export interface AuctionChannelHandlers {
   onBid?: (event: BidEvent) => void;
   onSystem?: (event: AuctionSystemEvent) => void;
+  onLotState?: (state: AuctionLotPublicState) => void;
   onError?: (error: unknown) => void;
 }
 
 export interface AuctionChannelSubscription {
-  /** Tear down the subscription. Safe to call multiple times. */
   unsubscribe: () => void;
 }
 
-/**
- * Subscribe to the realtime channel for a given auction.
- *
- * NOTE: implementation is intentionally deferred to Sprint 5 (ADR-0002 /
- * ADR-0008). This stub is here so Sprint 1–4 surfaces can import a stable
- * type without forcing the client to know about Supabase channel mechanics.
- */
-export function subscribeToAuctionChannel(
-  _auctionId: string,
-  _handlers: AuctionChannelHandlers,
+function mapLotRow(row: Record<string, unknown>): AuctionLotPublicState | null {
+  if (!row?.id) return null;
+  return {
+    lotId: String(row.id),
+    currentHighBidCents: Number(row.current_high_bid_cents ?? 0),
+    closesAt: String(row.closes_at ?? ""),
+    extensionCount: Number(row.extension_count ?? 0),
+    status: row.status != null ? String(row.status) : undefined,
+  };
+}
+
+/** Subscribe to `UPDATE`s on a single lot (high bid, close time, extensions). */
+export function subscribeToAuctionLot(
+  client: SupabaseClient,
+  lotId: string,
+  handlers: Pick<AuctionChannelHandlers, "onLotState" | "onError">,
 ): AuctionChannelSubscription {
-  // Intentionally a no-op. Sprint 5 wires this to supabase.channel(...).
-  // Returning a stable unsubscribe lets callers code against the final shape now.
+  const channel: RealtimeChannel = client
+    .channel(`public:auction_lots:${lotId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "auction_lots",
+        filter: `id=eq.${lotId}`,
+      },
+      (payload) => {
+        try {
+          const next = mapLotRow((payload.new || {}) as Record<string, unknown>);
+          if (next) handlers.onLotState?.(next);
+        } catch (e) {
+          handlers.onError?.(e);
+        }
+      },
+    )
+    .subscribe((status, err) => {
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        handlers.onError?.(err ?? new Error(`Realtime ${status}`));
+      }
+    });
+
   return {
     unsubscribe: () => {
-      /* no-op until Sprint 5 */
+      void client.removeChannel(channel);
     },
   };
 }
 
-/** Internal helper kept exported for the Sprint 5 implementation/tests. */
+/** Subscribe to all lot updates for an auction (same sanitized payload shape). */
+export function subscribeToAuctionLotsForAuction(
+  client: SupabaseClient,
+  auctionId: string,
+  handlers: Pick<AuctionChannelHandlers, "onLotState" | "onError">,
+): AuctionChannelSubscription {
+  const channel: RealtimeChannel = client
+    .channel(`public:auction_lots:auction:${auctionId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "auction_lots",
+        filter: `auction_id=eq.${auctionId}`,
+      },
+      (payload) => {
+        try {
+          const next = mapLotRow((payload.new || {}) as Record<string, unknown>);
+          if (next) handlers.onLotState?.(next);
+        } catch (e) {
+          handlers.onError?.(e);
+        }
+      },
+    )
+    .subscribe((status, err) => {
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        handlers.onError?.(err ?? new Error(`Realtime ${status}`));
+      }
+    });
+
+  return {
+    unsubscribe: () => {
+      void client.removeChannel(channel);
+    },
+  };
+}
+
+/**
+ * Subscribe to auction-scoped lot updates (Sprint 4).
+ * Pass the browser Supabase client (`lib/supabase` export).
+ */
+export function subscribeToAuctionChannel(
+  client: SupabaseClient,
+  auctionId: string,
+  handlers: AuctionChannelHandlers,
+): AuctionChannelSubscription {
+  return subscribeToAuctionLotsForAuction(client, auctionId, {
+    onLotState: handlers.onLotState,
+    onError: handlers.onError,
+  });
+}
+
 export function _assertRealtimeChannelType(channel: RealtimeChannel | null): void {
   void channel;
 }

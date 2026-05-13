@@ -6,8 +6,9 @@
  * (SendGrid email) define the three external channels; in-app delivery uses
  * the existing `public.notifications` table.
  *
- * To avoid vendor lock-in we route all sends through this dispatcher. Sprint 5
- * will provide concrete implementations and an Edge Function entry point.
+ * To avoid vendor lock-in we route all sends through this dispatcher. Sprint 4.5
+ * enqueues outbid rows from the `notify-outbid` Edge Function; Sprint 4.6+ wires
+ * concrete channel senders here.
  */
 
 export type NotificationChannel = "push" | "sms" | "email" | "in_app";
@@ -75,7 +76,7 @@ export function buildDedupeKey(
  */
 export function getDispatcher(): NotificationDispatcher {
   throw new Error(
-    "NotificationDispatcher is not yet wired (Sprint 5 / ADR-0008). " +
+    "NotificationDispatcher is not yet wired (Sprint 4.6+ / ADR-0008). " +
       "Import the interface only until then.",
   );
 }

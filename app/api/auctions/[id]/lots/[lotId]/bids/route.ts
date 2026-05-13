@@ -70,7 +70,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string;
       return NextResponse.json({ ok: false, ...result }, { status });
     }
 
-    const res = NextResponse.json({ ok: true, bidId: result.bid_id, replay: result.replay === true });
+    const res = NextResponse.json({
+      ok: true,
+      bidId: result.bid_id,
+      replay: result.replay === true,
+      lotExtended: result.lot_extended === true,
+      closesAt: result.closes_at,
+      extensionCount: result.extension_count,
+    });
     res.headers.set("Idempotency-Key", idem);
     return res;
   } catch (e: unknown) {

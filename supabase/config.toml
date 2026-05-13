@@ -235,3 +235,7 @@ secret = "env(SUPABASE_AUTH_EXTERNAL_ZOOM_SECRET)"
 redirect_uri = ""
 
 # Removed deprecated edge_functions config to satisfy latest Supabase CLI
+
+# DB trigger (pg_net) calls this function with the service role Bearer token, not a user JWT.
+[functions.notify-outbid]
+verify_jwt = false

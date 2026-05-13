@@ -169,6 +169,8 @@
 
 **Goal:** sub-second bid visibility; **anti-snipe**; **maximize GMV** via instant outbid alerts (push + Twilio SMS + email).
 
+**Repository progress (2026-05-13):** migrations `025_notifications_realtime.sql` (push subscriptions, prefs, deliveries) + `026_auction_antisnipe_realtime.sql` (anti-snipe in `place_auction_bid`, `auction_lots` on `supabase_realtime`); `027_notify_outbid_pg_net.sql` (Vault-configured `pg_net` POST + `bids` trigger) + `supabase/functions/notify-outbid` (service-role auth, dedupe enqueue to `notification_deliveries`); `lib/realtime/auctionChannel.ts` wired to `postgres_changes`; bid sheet subscribes for live high/close. **Still to ship for GA:** dispatcher + channel sends (S4.6–S4.7), SLO instrumentation (S4.3), full test matrix (S4.8); ops must deploy the Edge function, enable `pg_net`, and create Vault secrets `notify_outbid_edge_url` + `notify_outbid_service_role`.
+
 ### User Story 4.1 — Realtime channels & anti-snipe
 
 | # | Deliverable |

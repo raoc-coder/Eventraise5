@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/app/providers";
 import { minNextBidCents } from "@/lib/auction/bid-rules";
+import { supabase } from "@/lib/supabase";
+import { subscribeToAuctionLot } from "@/lib/realtime/auctionChannel";
 
 type Lot = {
   id: string;
@@ -20,6 +22,7 @@ type Lot = {
   min_increment_cents: number;
   current_high_bid_cents: number;
   closes_at: string;
+  extension_count?: number;
   status: string;
 };
 
@@ -62,6 +65,26 @@ export default function AuctionLotBidPage() {
       cancelled = true;
     };
   }, [auctionId, lotId]);
+
+  useEffect(() => {
+    if (!lotId || !supabase) return;
+    const { unsubscribe } = subscribeToAuctionLot(supabase, lotId, {
+      onLotState: (s) => {
+        setLot((prev) =>
+          prev
+            ? {
+                ...prev,
+                current_high_bid_cents: s.currentHighBidCents,
+                closes_at: s.closesAt,
+                extension_count: s.extensionCount,
+                status: s.status ?? prev.status,
+              }
+            : prev,
+        );
+      },
+    });
+    return unsubscribe;
+  }, [lotId]);
 
   async function submitBid(e: React.FormEvent) {
     e.preventDefault();
@@ -107,13 +130,33 @@ export default function AuctionLotBidPage() {
         toast.error(body.message || body.error || "Bid not accepted.");
         return;
       }
-      toast.success(body.replay ? "Bid confirmed (replay)." : "Your bid is in.");
-      const refetch = await fetch(`/api/auctions/${auctionId}/lots/${lotId}`);
-      const j = await refetch.json();
-      if (refetch.ok && j.lot) {
-        setLot(j.lot);
-        const nextMin = minNextBidCents(j.lot.starting_bid_cents, j.lot.current_high_bid_cents, j.lot.min_increment_cents);
+      if (body.lotExtended) {
+        toast.success("Lot extended — new closing time.", { icon: "⏱️" });
+      } else {
+        toast.success(body.replay ? "Bid confirmed (replay)." : "Your bid is in.");
+      }
+      if (typeof body.closesAt === "string" && lot) {
+        setLot({
+          ...lot,
+          current_high_bid_cents: amountCents,
+          closes_at: body.closesAt,
+          extension_count:
+            typeof body.extensionCount === "number" ? body.extensionCount : lot.extension_count ?? 0,
+        });
+        const nextMin = minNextBidCents(
+          lot.starting_bid_cents,
+          amountCents,
+          lot.min_increment_cents,
+        );
         setAmount(String(Math.max(1, Math.ceil(nextMin / 100))));
+      } else {
+        const refetch = await fetch(`/api/auctions/${auctionId}/lots/${lotId}`);
+        const j = await refetch.json();
+        if (refetch.ok && j.lot) {
+          setLot(j.lot);
+          const nextMin = minNextBidCents(j.lot.starting_bid_cents, j.lot.current_high_bid_cents, j.lot.min_increment_cents);
+          setAmount(String(Math.max(1, Math.ceil(nextMin / 100))));
+        }
       }
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Request failed.");
@@ -161,6 +204,11 @@ export default function AuctionLotBidPage() {
                 </span>
               </p>
               <p className="text-xs text-trust-600">Closes {new Date(lot.closes_at).toLocaleString()}</p>
+              {(lot.extension_count ?? 0) > 0 && (
+                <p className="mt-1 text-xs font-medium text-action-600">
+                  Lot extended {lot.extension_count}× (anti-snipe)
+                </p>
+              )}
             </header>
 
             <Card className="mb-6 border-trust-100">
