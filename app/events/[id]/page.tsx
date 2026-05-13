@@ -43,6 +43,7 @@ import { supabase } from '@/lib/supabase'
 import { EventRegistration } from '@/components/events/event-registration'
 import { VolunteerShifts } from '@/components/events/volunteer-shifts'
 import { TicketPurchase } from '@/components/events/ticket-purchase'
+import { MatchingGiftBanner } from '@/components/p2p/MatchingGiftBanner'
 import { trackMetaPixelDonation, trackMetaPixelViewContent, trackMetaPixelPurchase, trackMetaPixelRegistration } from '@/lib/meta-pixel'
 
 // Use shared Supabase client to avoid multiple GoTrue instances
@@ -844,15 +845,24 @@ export default function EventDetailPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 relative z-10">
+                <MatchingGiftBanner eventId={event.id} />
                 {event.event_type === 'direct_donation' ? (
-                  <Button 
-                    onClick={() => setActiveModal('donation')}
-                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 hover:from-amber-600 hover:via-orange-600 hover:to-red-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-0"
-                    size="lg"
-                  >
-                    <Heart className="h-6 w-6 mr-3" />
-                    💝 Make a Donation
-                  </Button>
+                  <>
+                    <Button 
+                      onClick={() => setActiveModal('donation')}
+                      className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 hover:from-amber-600 hover:via-orange-600 hover:to-red-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] border-0"
+                      size="lg"
+                    >
+                      <Heart className="h-6 w-6 mr-3" />
+                      💝 Make a Donation
+                    </Button>
+                    <Button asChild variant="outline" className="w-full h-11 border-trust-300 text-trust-900 hover:bg-trust-50">
+                      <Link href={`/events/${event.id}/fundraise`}>
+                        <Target className="h-5 w-5 mr-2" aria-hidden />
+                        Become a fundraiser
+                      </Link>
+                    </Button>
+                  </>
                 ) : (
                   <>
                     {/* 1. Donation - Most prominent */}
@@ -863,6 +873,12 @@ export default function EventDetailPage() {
                     >
                       <Heart className="h-6 w-6 mr-3" />
                       💝 Make a Donation
+                    </Button>
+                    <Button asChild variant="outline" className="w-full h-11 border-trust-300 text-trust-900 hover:bg-trust-50">
+                      <Link href={`/events/${event.id}/fundraise`}>
+                        <Target className="h-5 w-5 mr-2" aria-hidden />
+                        Become a fundraiser
+                      </Link>
                     </Button>
                     
                     {/* 2. Purchase Tickets */}
@@ -898,6 +914,9 @@ export default function EventDetailPage() {
                     </Button>
                   </>
                 )}
+                <Button asChild variant="ghost" size="sm" className="w-full text-trust-800 hover:text-trust-950">
+                  <Link href={`/events/${event.id}/teams`}>Team leaderboard</Link>
+                </Button>
               </CardContent>
             </Card>
             
@@ -1380,7 +1399,7 @@ export default function EventDetailPage() {
                             <Heart className="h-4 w-4 mr-2" />
                           Donate {formatCurrency(donationAmount)}
                           </Button>
-                          {/* Removed legacy Braintree method */}
+                          {/* Legacy card checkout removed — PayPal only (ADR-0016) */}
                         </div>
                       </div>
                     </div>

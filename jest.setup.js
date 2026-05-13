@@ -97,7 +97,7 @@ jest.mock('next/link', () => {
 // Mock environment variables
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
-// Stripe removed – using Braintree
+// Legacy card processors removed — PayPal-only (ADR-0016).
 process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
 
 // Mock Supabase client (only if the module exists)

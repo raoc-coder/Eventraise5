@@ -34,8 +34,8 @@ describe('Complete User Journey - EventraiseHUB', () => {
     cy.get('button[type="submit"]').click()
     cy.wait('@createCheckout')
     
-    // Should redirect to Braintree payment page
-    cy.url().should('include', '/payment/braintree')
+    // PayPal-only stack — no Braintree redirect (ADR-0016)
+    cy.url().should('not.include', 'braintree')
   })
 
   it('should complete event registration flow', () => {

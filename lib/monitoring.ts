@@ -21,7 +21,7 @@ export class MonitoringService {
     campaignId: string
     amount: number
     donorEmail?: string
-    processor?: 'braintree'
+    processor?: 'paypal'
   }) {
     Sentry.withScope((scope) => {
       scope.setLevel('error')
@@ -146,7 +146,7 @@ export class HealthCheck {
     }
   }
 
-  // Stripe check removed (migrated to Braintree)
+  // Legacy Stripe / Braintree removed — PayPal-only (ADR-0016).
 
   static async checkSupabaseAuth(): Promise<boolean> {
     try {

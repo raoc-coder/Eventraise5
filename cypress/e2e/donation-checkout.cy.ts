@@ -28,8 +28,8 @@ describe('Donation Checkout Flow', () => {
       })
     })
     
-    // Should redirect to Braintree payment page
-    cy.url().should('include', '/payment/braintree')
+    // Legacy Braintree removed (ADR-0016); checkout should not route to Braintree
+    cy.url().should('not.include', 'braintree')
   })
 
   it('completes donation flow with custom amount', () => {
@@ -83,7 +83,7 @@ describe('Donation Checkout Flow', () => {
       statusCode: 200,
       body: {
         sessionId: 'cs_test_123',
-        sessionUrl: '/payment/braintree',
+        sessionUrl: '/donations/new',
       },
       delay: 1000,
     }).as('createCheckoutDelayed')

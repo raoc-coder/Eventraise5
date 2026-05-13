@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Thermometer } from "@/components/p2p/Thermometer";
 import { supabase } from "@/lib/supabase";
+import { isUuid } from "@/lib/p2p/personal-campaigns";
 
 /**
  * Public Personal Campaign page (Epic 1, US 1.1 / Sprint 1).
@@ -42,20 +43,32 @@ interface PersonalCampaignRow {
 
 interface PageProps {
   params: { slug: string };
+  searchParams?: Record<string, string | string[] | undefined>;
+}
+
+function eventIdFromSearchParams(
+  raw?: string | string[],
+): string | undefined {
+  const v = Array.isArray(raw) ? raw[0] : raw;
+  return typeof v === "string" && isUuid(v) ? v : undefined;
 }
 
 async function loadPersonalCampaign(
   slug: string,
+  eventId?: string,
 ): Promise<PersonalCampaignRow | null> {
   if (!supabase) return null;
-  const { data, error } = await supabase
+  let q = supabase
     .from("personal_campaigns")
     .select(
       "id, event_id, slug, display_name, story, goal_amount_cents, total_raised_cents, cover_image_url, status",
     )
     .eq("slug", slug)
-    .eq("status", "active")
-    .maybeSingle();
+    .eq("status", "active");
+  if (eventId) {
+    q = q.eq("event_id", eventId);
+  }
+  const { data, error } = await q.maybeSingle();
 
   if (error) {
     return null;
@@ -63,8 +76,9 @@ async function loadPersonalCampaign(
   return (data as PersonalCampaignRow | null) ?? null;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const campaign = await loadPersonalCampaign(params.slug);
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+  const eventId = eventIdFromSearchParams(searchParams?.eventId);
+  const campaign = await loadPersonalCampaign(params.slug, eventId);
   if (!campaign) {
     return {
       title: "Personal Fundraiser — EventraiseHub",
@@ -78,8 +92,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function PersonalCampaignPage({ params }: PageProps) {
-  const campaign = await loadPersonalCampaign(params.slug);
+export default async function PersonalCampaignPage({ params, searchParams }: PageProps) {
+  const eventId = eventIdFromSearchParams(searchParams?.eventId);
+  const campaign = await loadPersonalCampaign(params.slug, eventId);
   if (!campaign) {
     notFound();
   }
@@ -167,10 +182,10 @@ export default async function PersonalCampaignPage({ params }: PageProps) {
         <p className="text-center text-xs text-trust-600">
           Part of an EventraiseHub event •{" "}
           <Link
-            href="/events"
+            href={`/events/${campaign.event_id}`}
             className="text-trust-700 underline-offset-2 hover:underline"
           >
-            Browse the event
+            View the event
           </Link>
         </p>
       </main>

@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sweep-auction-lots",
+      "schedule": "15 6 * * *"
+    }
+  ]
+}

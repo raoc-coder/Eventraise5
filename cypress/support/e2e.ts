@@ -19,7 +19,7 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-// Stripe mocks removed (migrated to Braintree)
+// Legacy Stripe / Braintree removed — PayPal-only (ADR-0016)
 
 // Custom command for mocking Supabase
 Cypress.Commands.add('mockSupabase', () => {
@@ -46,7 +46,7 @@ Cypress.Commands.add('mockSupabase', () => {
 // Global test configuration
 beforeEach(() => {
   // Intercept API calls
-  // Replace Stripe create-checkout intercept with Braintree donation checkout if needed
+  // PayPal / create-checkout intercepts live in individual specs as needed
 
   cy.intercept('GET', '/api/campaigns/*', {
     statusCode: 200,

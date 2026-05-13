@@ -1,9 +1,11 @@
 # Operational Readiness — Go-Live Gates
 
-This is the master checklist that maps ADRs 0001–0015 onto concrete,
+This is the master checklist that maps ADRs **0001–0016** onto concrete,
 verifiable gates a release manager can walk before unlocking each Sprint
 or before authorizing a live event. Every checklist item links back to the
 ADR(s) that own the decision so the *why* is one click away.
+
+> **Sprint numbering (management lock 2026-05-12).** Epic 2 work is delivered in **Sprints 3–4** (auction foundation → realtime + outbid). The first gala-grade notification gate is **§5 — Sprint 4**. Braintree removal is **Sprint 0.7** (ADR-0016). See [`docs/sprint-plan.md`](../sprint-plan.md).
 
 > **How to use this doc.** Each section is a gate. Walk every checkbox in
 > order; do **not** advance a Sprint or schedule a live event with any item
@@ -54,7 +56,19 @@ Unlocks Sprint 1 scaffolding. Owners: Eng (primary), Ops (Twilio/SendGrid extern
 - [ ] PostHog project exists with EU/US region matching data-residency policy.
 - [ ] Source-map upload working on Vercel preview builds.
 
-**Gate is GREEN when:** every box in §1.1, §1.2, §1.3, and §1.5 is checked. §1.4 may stay yellow — those only block Sprint 5.
+**Gate is GREEN when:** every box in §1.1, §1.2, §1.3, and §1.5 is checked. §1.4 may stay yellow — those only block **Sprint 4** (outbid SMS / email at scale).
+
+---
+
+## 0.7 Sprint 0.7 exit gate — Braintree removed (ADR-0016)
+
+Unlocks a clean PayPal-only baseline before heavy Sprint 2+ feature work (recommended, not strictly blocking Sprint 2 if product accepts residual Braintree code).
+
+- [x] `package.json` / lockfile contain **no** `braintree`, `braintree-web`, or `braintree-web-drop-in` dependencies.
+- [x] No imports of `lib/braintree-server`, `lib/braintree-client`, or `hooks/use-braintree-checkout` in `app/`, `lib/`, or `components/`.
+- [x] `app/api/braintree/**` removed or consistently returns `410` with JSON body documenting PayPal migration.
+- [x] Cypress / E2E does not assert on `/payment/braintree`.
+- [x] `npm test`, `npm run build`, `tsc --noEmit` green.
 
 ---
 
@@ -91,7 +105,7 @@ Unlocks Sprint 2 (teams + matching gifts).
 
 Unlocks Sprint 3 (auction code).
 
-- [ ] Migrations `022_p2p_teams_matching.sql` applied.
+- [ ] Migrations `023_p2p_teams_matching.sql` applied.
 - [ ] Donation-finalize hook updates `event.total_raised`, `personal_campaign.total_raised_cents`, and `team.total_raised_cents` **atomically** (single transaction or reconciled trigger).
 - [ ] Matching-gift cap exhaustion test green (cannot double-spend a matching pool).
 - [ ] Refund correctly reverses team + personal + event totals.
@@ -99,34 +113,42 @@ Unlocks Sprint 3 (auction code).
 
 ---
 
-## 4. Sprint 3 / Sprint 4 exit gate — auctions live (no notifications yet)
+## 4. Sprint 3 exit gate — auction infrastructure, vaulting, mobile bidding
 
-Unlocks Sprint 5 (notifications + GA polish).
+Unlocks Sprint 4 (realtime + anti-snipe + outbid fan-out).
 
-### 4.1 Bid integrity (ADR-0007, ADR-0009, ADR-0011)
+### 4.1 Bid integrity (ADR-0007 increments, ADR-0009, ADR-0011)
 
 - [ ] Server-side bid validator rejects bids below `current_high_cents + min_increment_cents`.
 - [ ] Idempotency key contract enforced: same `(user_id, lot_id, idempotency_key)` returns the original outcome.
-- [ ] Anti-snipe extension fires when a bid lands inside the configurable window (default 120 s).
 - [ ] Concurrent-bid stress test: 50 simultaneous bidders on one lot, no double-accepts.
 
-### 4.2 Payment lifecycle (ADR-0006)
+### 4.2 Payment lifecycle — vault + capture-on-win (ADR-0006)
 
-- [ ] PayPal Vault stores a payment method at registration time.
+- [ ] PayPal Vault stores a payment method at **auction registration** time.
 - [ ] Auction close triggers capture only for the winning bid.
 - [ ] Capture failure path: lot moves to `capture_failed`, organizer notified, second-highest bid offered the slot.
 - [ ] Vercel Cron sweep runs every minute during a live window; `closes_at` accuracy ≤ 60 s.
 
-### 4.3 Organizer console
+### 4.3 Organizer console (MVP)
 
 - [ ] GMV per lot, sell-through, and platform fees visible per auction.
 - [ ] CSV export of winning bids is available.
 
+### 4.4 Mobile bid UI (Sprint 3)
+
+- [ ] Bid sheet usable on a 375px-wide viewport; sticky primary CTA uses Action Orange per ADR-0013.
+
 ---
 
-## 5. Sprint 5 GA gate — notifications + live auctions
+## 5. Sprint 4 GA gate — realtime, anti-snipe, outbid fan-out
 
-This is the **first booked-gala go-live gate**. All boxes must be green.
+This is the **first booked-gala go-live gate** for Epic 2. All boxes must be green.
+
+### 5.0 Realtime channels + anti-snipe (ADR-0002, ADR-0007)
+
+- [ ] Sub-second bid visibility via Supabase Realtime (sanitized payloads per ADR-0012).
+- [ ] **Anti-snipe:** if a bid lands in the **final 60 seconds** before scheduled `closes_at`, extend the lot close by **120 seconds** (management lock; aligns `docs/sprint-plan.md` Sprint 4).
 
 ### 5.1 Channels operational (ADR-0003, ADR-0004, ADR-0005)
 
@@ -176,7 +198,7 @@ Run this **the day before** and the **hour before** every booked live auction. T
 
 ### T-24 hours
 
-- [ ] Sprint 5 gate (§5) still green for the production project.
+- [ ] Sprint 4 gate (§5) still green for the production project.
 - [ ] Event row is `published`; all lots are `draft` or `scheduled` with non-null `opens_at` and `closes_at`.
 - [ ] Reserve prices and minimum increments are set on every lot.
 - [ ] PayPal account on the platform has not gone into "limited" status; test capture of $1 sandbox transaction succeeds.
@@ -221,10 +243,11 @@ Keep at hand in case a Sprint or event has to be aborted.
 | Gate | Primary owner | Secondary |
 |------|---------------|-----------|
 | §1 Foundation | Eng lead | Ops |
+| §0.7 Braintree sunset | Eng lead | Finance |
 | §2 Sprint 1 exit | Eng lead | QA |
 | §3 Sprint 2 exit | Eng lead | QA |
-| §4 Sprint 3/4 exit | Eng lead | Finance (payments) |
-| §5 GA gate | Eng lead | Ops + Finance |
+| §4 Sprint 3 exit | Eng lead | Finance (payments) |
+| §5 Sprint 4 GA gate | Eng lead | Ops + Finance |
 | §6 Per-event | On-call eng | Event organizer |
 | §7 Rollback | On-call eng | Eng lead |
 

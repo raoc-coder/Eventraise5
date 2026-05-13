@@ -1,4 +1,7 @@
-# Braintree Migration Guide
+# Braintree Migration Guide (historical)
+
+> **Deprecated 2026-05-12.** Braintree has been **sunset**; EventraiseHub is **PayPal-only**. See [`docs/adrs/0016-braintree-sunset.md`](docs/adrs/0016-braintree-sunset.md).  
+> This file is retained for archaeology only — do not follow the procedures below.
 
 This guide documents the migration from Stripe to Braintree payment processing.
 

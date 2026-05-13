@@ -1,8 +1,8 @@
 # Sprint Plan — Epics 1 & 2 (Locked)
 
-- **Status:** Locked 2026-05-12 (Sprint 0 baseline approved)
-- **Cadence:** 2-week sprints (Sprint 0 is a 1-week foundation)
-- **Authoritative decisions:** see [`docs/adrs/`](./adrs)
+- **Status:** Locked 2026-05-12; **re-locked 2026-05-12 (management)** — Braintree sunset **authorized** (ADR-0016); Epic 2 delivery **renumbered** into Sprints **3–4** (was 3–5/6).
+- **Cadence:** 2-week sprints (Sprint 0 is a 1-week foundation).
+- **Authoritative decisions:** see [`docs/adrs/`](./adrs) (includes **ADR-0016** — Braintree sunset).
 - **Epics in scope:**
   - Epic 1 — Native Peer-to-Peer (P2P) Infrastructure
   - Epic 2 — Auctions and Real-Time Mobile Bidding
@@ -12,10 +12,11 @@
 - All schema changes land as Supabase SQL migrations under `supabase/migrations/NNN_*.sql` (ADR-0001).
 - All new monetary columns use **integer cents** with the `_cents` suffix (ADR-0011).
 - All writes carry a **client-supplied idempotency key** (ADR-0009).
-- All new UI uses only the `trust-*` and `action-*` token families (ADR-0013).
+- All new UI uses only the `trust-*` and `action-*` token families (ADR-0013) — **Trust Blue ~70%** for structure and security surfaces; **Action Orange ~30%** for high-impact CTAs and dynamic progress (thermometers, leaderboards, live bid state).
 - Realtime reads via Supabase Realtime with sanitized payloads; writes via server API routes using the service-role key (ADR-0012).
+- **Payments:** PayPal only (Sprint **0.7** executed **2026-05-13** — ADR-0016).
 
-## Sprint 0 — Foundations (1 week, in progress)
+## Sprint 0 — Foundations (1 week)
 
 | # | Deliverable | Owner | Status |
 |---|---|---|---|
@@ -25,132 +26,191 @@
 | S0.4 | SendGrid domain auth (SPF / DKIM / DMARC) for `eventraisehub.com` | Eng + Marketing | **Initiated 2026-05-12** — awaiting DNS propagation + SendGrid verification |
 | S0.5 | Supabase capacity confirmed — see [Operational Readiness §1](./adrs/operational-readiness.md#1-foundation-gate-pre-sprint-1) | Eng | **Initiated 2026-05-12** — awaiting confirmation per §S0.5 checklist below |
 | S0.6 | VAPID keypair generated and stored in env scopes — run `npm run generate:vapid -- --vercel` | Eng | Runner ready 2026-05-12 — awaiting Vercel env paste |
-| S0.7 | Decision on Braintree (keep / sunset / remove) | Eng + Finance | Pending |
+| S0.7 | Braintree sunset — **decision + execution** (ADR-0016) | Eng + Finance | **Done** — code removed 2026-05-13 |
 
 ### External-track progress log
 
 | Date | Item | Status | "Done" means |
 |---|---|---|---|
-| 2026-05-12 | Twilio 10DLC brand + A2P campaign | Submitted; awaiting carrier approval | Messaging Service SID exists in Vercel env, STOP/HELP keywords routed, brand status = `APPROVED` and campaign status = `VERIFIED` in Twilio console |
-| 2026-05-12 | SendGrid domain auth | DNS records added; awaiting verification | SPF, DKIM (3 CNAMEs), and DMARC records resolve from a public resolver; SendGrid dashboard shows "Domain verified"; a test send arrives with `dkim=pass` and `spf=pass` |
-| 2026-05-12 | Supabase capacity | Account + plan in motion | Plan tier = Pro (no spend cap)+, Max concurrent connections ≥ 2,000, `pg_net` enabled, `Broadcast from DB Replication Lag` report populates |
+| 2026-05-12 | Twilio 10DLC brand + A2P campaign | Submitted; awaiting carrier approval | Messaging Service SID in Vercel; brand `APPROVED`; campaign `VERIFIED` |
+| 2026-05-12 | SendGrid domain auth | DNS added; awaiting verification | SPF, DKIM, DMARC pass on test send |
+| 2026-05-12 | Supabase capacity | In motion | Plan ≥ Pro (no spend cap); Realtime connections ≥ 2,000; `pg_net` on; replication-lag report populates |
 
 **S0.5 — concrete checklist:**
 
-1. Plan tier is **Pro (no spend cap)** or higher — confirm in `Dashboard → Settings → Billing`.
+1. Plan tier is **Pro (no spend cap)** or higher — `Dashboard → Settings → Billing`.
 2. **Realtime Settings** — `Dashboard → Project Settings → Realtime`:
    - "Max concurrent connections" set to **≥ 2,000** (target: 2,500 for first booked gala).
    - "Max events per second" set to **≥ 500** (broadcast throughput for live bidding).
    - "Max payload size in KB" left at default (sanitized bid events stay <10 KB per ADR-0012).
-3. **`pg_net` extension** enabled (`Database → Extensions`); verify with
+3. **`pg_net` extension** enabled (`Database → Extensions`); verify with  
    `select extname, extversion from pg_extension where extname = 'pg_net';`.
 4. **Realtime headroom verified** under load — k6 or Artillery to 1,500 concurrent WebSockets for 5 min with zero `tenant_*_rate_limit` errors in `Database → Realtime Logs`.
-5. **Replication-lag visibility** present — `Project Settings → Product Reports → Realtime → Broadcast from DB Replication Lag` populates (Pro+ only); this is the Sprint 5 SLO source for outbid push p95 ≤ 2 s (ADR-0014).
+5. **Replication-lag visibility** — `Project Settings → Product Reports → Realtime → Broadcast from DB Replication Lag` populates (Pro+); supports **Sprint 4** SLOs (ADR-0014).
 
-**Exit criterion:** Sprint 1 can start without any external blockers other than Twilio 10DLC (which only blocks Sprint 5). All Sprint exit criteria below are gated by the corresponding section of [`docs/adrs/operational-readiness.md`](./adrs/operational-readiness.md).
+**Exit criterion:** Sprint 1 can start without Twilio/SendGrid being fully approved; those gates block **Sprint 4** (first gala-grade outbid + SMS). All Sprint exit criteria reference [`docs/adrs/operational-readiness.md`](./adrs/operational-readiness.md).
+
+---
+
+## Sprint 0.7 — Braintree sunset execution (management lock)
+
+**Goal:** remove Braintree entirely; **PayPal is the only supported processor** for web checkout and future auction flows.
+
+| # | Deliverable |
+|---|---|
+| S0.7.1 | Remove `braintree`, `braintree-web`, `braintree-web-drop-in`, `@types/braintree-web` from `package.json` / lockfile |
+| S0.7.2 | Delete or archive: `lib/braintree-server.ts`, `lib/braintree-client.ts`, `hooks/use-braintree-checkout.ts`, `types/braintree.d.ts` |
+| S0.7.3 | Remove or hard-`410` all `app/api/braintree/**` and align `app/api/webhooks/braintree` with product policy |
+| S0.7.4 | Update Cypress / E2E and `scripts/setup-env.js` — no Braintree URLs or env prompts |
+| S0.7.5 | Payouts / migration-status routes: stop depending on Braintree columns for **new** behavior; legacy columns read-only until optional migration |
+| S0.7.6 | Parity sign-off per **ADR-0016** checklist; `npm test`, `npm run build`, `tsc --noEmit` green |
+
+**Exit:** no `braintree` imports in app or `lib/`; donation + ticket PayPal paths verified; docs and ADR index mention sunset complete.
+
+**Status:** **Complete** as of **2026-05-13** (this repository).
+
+**Next:** *Begin Sprint 2* — Epic 1 completion (teams, matching gifts, Become a fundraiser).
+
+---
 
 ## Sprint 1 — P2P foundations (US 1.1)
 
-**Goal:** event attendees and volunteers can spin up a personal fundraising page tied to an event.
+**Goal:** personal fundraising pages at `/p/[slug]` tied to an event.
 
 | # | Deliverable |
 |---|---|
-| S1.1 | Migration `021_p2p_personal_campaigns.sql` — `personal_campaigns` table + `donation_requests.personal_campaign_id` + RLS + rollup trigger |
-| S1.2 | Stub helpers — `lib/money/cents.ts`, `lib/realtime/auctionChannel.ts`, `lib/notifications/dispatcher.ts` (interface only) |
-| S1.3 | Public route shell — `app/p/[slug]/page.tsx` rendering the campaign with the new Thermometer (`action-500` fill) |
-| S1.4 | Thermometer primitive — `components/p2p/Thermometer.tsx` (ARIA `progressbar`, mobile-first) |
-| S1.5 | API stubs — `app/api/personal-campaigns/route.ts` and `app/api/personal-campaigns/[slug]/route.ts` returning `501` until wired in Sprint 1.5 |
-| S1.6 | Tests — cents helper unit tests, Thermometer render tests |
+| S1.1 | Migration `021_p2p_personal_campaigns.sql` — `personal_campaigns` + `donation_requests.personal_campaign_id` + RLS + rollup trigger |
+| S1.2 | Stub helpers — `lib/money/cents.ts`, `lib/realtime/auctionChannel.ts`, `lib/notifications/dispatcher.ts` |
+| S1.3 | Public route — `app/p/[slug]/page.tsx` + `Thermometer` (`action-500` fill) |
+| S1.4 | API stubs — `app/api/personal-campaigns/*` → `501` until wired |
+| S1.5 | Tests — cents + Thermometer |
 
-**Exit:** an event can host N personal pages (data model in place); page renders for any seeded slug; thermometer fills with `action-500`; all changes pass `npm test` and `npm run build`.
+**Exit:** seeded slug renders; thermometer brand-correct; tests + build green.
 
-**Out of scope for Sprint 1:** authenticated "Become a fundraiser" UI flow (lands Sprint 2), donor-attribution server-side wiring (lands Sprint 1.5).
+**Out of scope:** authenticated "Become a fundraiser" creator UI (Sprint 2); donation attribution (Sprint 1.5).
+
+---
 
 ## Sprint 1.5 — P2P donation attribution
 
-**Goal:** a donor arriving from `/p/[slug]` has their succeeded donation credited back to that personal campaign via the existing PayPal flow.
+**Goal:** PayPal donations from `/p/[slug]` credit `personal_campaigns.total_raised_cents` via `donation_requests.personal_campaign_id`.
 
 | # | Deliverable |
 |---|---|
-| S1.5.1 | Migration `022_paypal_orders_personal_campaign.sql` — `paypal_orders.personal_campaign_id` (nullable FK + index) |
-| S1.5.2 | `lib/p2p/personal-campaigns.ts` — server-side `loadActivePersonalCampaign` validator (status + event match) |
-| S1.5.3 | `/api/paypal/create-order` — accept `personalCampaignId`, validate, persist on `paypal_orders` |
-| S1.5.4 | `/api/paypal/capture-order` — propagate `personal_campaign_id` from `paypal_orders` onto the `donation_requests` insert |
-| S1.5.5 | `PayPalDonationButton` — accept `personalCampaignId`, include in idempotency fingerprint |
-| S1.5.6 | `app/donations/new/page.tsx` — read `personalCampaignId` from URL, render `FundraiserAttributionBanner`, pass to button |
-| S1.5.7 | Brand-correct banner — `components/p2p/FundraiserAttributionBanner.tsx` (trust chrome, action accent) |
-| S1.5.8 | Tests — helper rejects invalid pcid / wrong event / non-active, banner renders display name |
+| S1.5.1 | Migration `022_paypal_orders_personal_campaign.sql` |
+| S1.5.2 | `lib/p2p/personal-campaigns.ts` + PayPal create/capture wiring + banner |
 
-**Exit:** end-to-end happy path — donate from `/p/[slug]` → PayPal sandbox capture → `donation_requests` row has `personal_campaign_id` set → migration 021 trigger fires → `personal_campaigns.total_raised_cents` increments. Banner shows the fundraiser's name on the donation page. Invalid `personalCampaignId` drops attribution silently; donation still succeeds against the event. All changes pass `npm test`, `npm run build`, and `tsc --noEmit`.
+**Exit:** sandbox happy path + negative attribution tests per operational readiness §2a.
 
-**Out of scope for Sprint 1.5:** UI for owners to *create* a personal campaign (Sprint 2), team rollups, leaderboards.
+**Out of scope:** authenticated page creation (Sprint 2).
 
-## Sprint 2 — Teams, leaderboards, matching gifts (US 1.2)
+---
 
-| # | Deliverable |
-|---|---|
-| S2.1 | Migration `023_p2p_teams_matching.sql` — `teams`, `team_members`, `matching_gifts`, FK on `personal_campaigns.team_id`, denormalized rollups |
-| S2.x | Authenticated "Become a fundraiser" UI flow (creates a `personal_campaigns` row for the current user) — was deferred from Sprint 1 |
-| S2.2 | API — team CRUD, member add/remove, leaderboard endpoints |
-| S2.3 | UI — team detail page, leaderboards (event / team / individual), matching-gift banner with multiplied counter |
-| S2.4 | Donation finalize hook — evaluates matching gifts, updates team and personal totals atomically |
-| S2.5 | Tests — leaderboard correctness, matching-gift cap exhaustion, rollback on refund |
+## Sprint 2 — Epic 1 completion: teams, matching gifts, auth "Become a fundraiser"
 
-**Exit:** teams form, totals roll up to event / team / personal correctly; leaderboards visible (polled, not yet realtime).
+**Goal:** authenticated users can create personal campaigns; teams, leaderboards, and matching-gift amplification ship. **Mobile-first**; strict **trust / action** ratio (ADR-0013).
 
-## Sprint 3 — Auctions, data model + mobile bidding UI (US 2.1)
+### User Story 2.1 — Authenticated "Become a Fundraiser" flow
 
 | # | Deliverable |
 |---|---|
-| S3.1 | Migration `024_auctions.sql` — `auctions`, `auction_lots`, `bids`, `auction_registrations`, integer-cents columns, unique idempotency-key constraint |
-| S3.2 | Route shells — `app/auctions/[id]/page.tsx`, `app/auctions/[id]/lots/[lotId]/page.tsx`, `app/auctions/[id]/register/page.tsx` |
-| S3.3 | Server bid API — `app/api/auctions/[id]/lots/[lotId]/bid/route.ts` (session check, increment validation, idempotency) |
-| S3.4 | Bid sheet UI — sticky-bottom CTA in `action-500`, security badge in `trust-700` near payment |
-| S3.5 | Tests — bid acceptance rules, idempotency replay, increment enforcement |
+| S2.1 | Auth-gated UI (register / login as required) to create/edit `personal_campaigns` (slug, story, goal, cover) tied to a parent `event_id` |
+| S2.2 | Server routes: replace `501` on `app/api/personal-campaigns` with real POST/PATCH/GET + idempotency (ADR-0009) |
+| S2.3 | RLS alignment tests — owner vs anon vs other user |
 
-**Exit:** an auction can run with manual refresh / 5-second polling; bids are server-authoritative and idempotent.
-
-## Sprint 4 — Live auction + checkout (US 2.1 cont.)
+### User Story 2.2 — Team capabilities & gamification
 
 | # | Deliverable |
 |---|---|
-| S4.1 | Lot lifecycle — open / closing / closed states + organizer console |
-| S4.2 | PayPal vault at registration; capture on close (ADR-0006) |
-| S4.3 | Vercel Cron sweep — closes lots and captures winners during live windows |
-| S4.4 | Organizer reports — GMV per lot, sell-through, fees |
-| S4.5 | Tests — close → capture flow with PayPal sandbox |
+| S2.4 | Migration `023_p2p_teams_matching.sql` — `teams`, `team_members`, `matching_gifts`, `personal_campaigns.team_id` FK, rollups |
+| S2.5 | APIs — team CRUD, members, leaderboards (event / team / individual) |
+| S2.6 | UI — team pages; **leaderboards** with Action Orange for rank movement / highlights; **matching gift** banner + amplified counter |
+| S2.7 | Donation finalize — matching pool caps; atomic updates to event + team + personal totals; refund reversal |
+| S2.8 | Tests — leaderboard math, matching exhaustion, refund |
 
-**Exit:** an auction completes end-to-end with payment capture and basic reporting.
+**Exit:** Epic 1 user stories satisfied for P2P + gamification; leaderboards may be **polled** (Realtime upgrade → Sprint 5 polish).
 
-## Sprint 5 — Realtime + outbid notifications (US 2.2)
+**Out of scope:** auction schema (Sprint 3); sub-second auction broadcast (Sprint 4).
 
-| # | Deliverable |
-|---|---|
-| S5.1 | Migration `025_notifications_realtime.sql` — `push_subscriptions`, `notification_preferences`, `notification_deliveries` |
-| S5.2 | Realtime subscriptions — `lib/realtime/auctionChannel.ts` finalized; sanitized payloads (ADR-0012) |
-| S5.3 | Edge Function `supabase/functions/notify-outbid` — fan-out with idempotent `dedupe_key` |
-| S5.4 | Channel implementations — web push (VAPID), Twilio SMS, SendGrid email, in-app toast |
-| S5.5 | Permission prompts — only after bid intent (ADR-0003) |
-| S5.6 | Tests — fan-out idempotency, channel preferences, retry/backoff |
+---
 
-**Exit:** outbid notifications meet the SLOs in ADR-0014 (push p95 ≤ 2s, SMS p95 ≤ 5s).
+## Sprint 3 — Epic 2 kick-off: auction infrastructure, PayPal vault, mobile bidding
 
-## Sprint 6 — Gamification polish + hardening
+**Goal:** foundation for silent + live auctions; **vault at registration, capture on win** (ADR-0006). All new money in **integer cents**.
+
+**Repository progress (2026-05-13):** migration `024_auctions.sql` + `place_auction_bid` RPC; REST routes under `app/api/auctions/**`, `app/api/events/[id]/auctions`, and `app/api/cron/sweep-auction-lots` (pair with `CRON_SECRET` in Vercel); mobile-first pages under `app/auctions/[id]/…`. **Next in-sprint work:** PayPal vault token persistence (S3.2), capture-on-win server path (S3.3), organizer CSV export (S3.5), bid stress tests (S3.9).
+
+### User Story 3.1 — Auction registration & payment vaulting
 
 | # | Deliverable |
 |---|---|
-| S6.1 | Realtime leaderboards (P2P) switching from polling to Realtime channel |
-| S6.2 | Animated thermometer fill on each donation event (`action-500`) |
-| S6.3 | Donor wall realtime updates (extends `app/api/donor-wall/route.ts`) |
-| S6.4 | Accessibility audit on bid + donate flows (focus mgmt, ARIA live regions) |
-| S6.5 | Load test — 1k concurrent bidders on one auction, 5k donors on one event leaderboard |
-| S6.6 | Observability dashboards + SLO alerts active (ADR-0014) |
+| S3.1 | Migration `024_auctions.sql` — `auctions`, `auction_lots`, `bids`, `auction_registrations` (and related), `_cents` columns, idempotency uniqueness |
+| S3.2 | Registration flow — vault PayPal payment method at sign-up; store vault token server-side (service role); link to `auction_registrations` |
+| S3.3 | Capture-on-win — server path to capture winning amount after lot close (PayPal Orders / vault semantics per ADR-0006) |
+| S3.4 | Vercel Cron (or Edge cron) — sweep lots approaching / past `closes_at`; reconcile status |
+| S3.5 | Organizer console MVP — GMV, sell-through, fees |
 
-**Exit:** GA-ready for the first booked gala; instrumented; brand-compliant; load-validated. Confirm against [Operational Readiness §5 — Sprint 5 GA gate](./adrs/operational-readiness.md#5-sprint-5-ga-gate-notifications--live-auctions) and the [per-event runbook](./adrs/operational-readiness.md#6-per-event-runbook).
+### User Story 3.2 — Mobile-first bidding interface
+
+| # | Deliverable |
+|---|---|
+| S3.6 | Routes — `app/auctions/[id]/…`, `…/lots/[lotId]/…`, `…/register` (exact tree in implementation PR) |
+| S3.7 | Server bid API — auth, increments, idempotency (ADR-0007 base increments; anti-snipe **logic lands Sprint 4**) |
+| S3.8 | Bid sheet UI — sticky-bottom primary CTA uses **Action Orange**; trust framing for payment + security copy |
+| S3.9 | Tests — bid rules, idempotency replay; **polling** acceptable (default 5 s) until Sprint 4 |
+
+**Exit:** bidder can register, vault, browse lots, and place **authoritative** bids from a phone; winner capture path exercised in sandbox.
+
+**Out of scope:** sub-second Realtime fan-out; anti-snipe extension; outbid push/SMS (Sprint 4).
+
+---
+
+## Sprint 4 — Epic 2 completion: realtime bidding, anti-snipe, outbid fan-out
+
+**Goal:** sub-second bid visibility; **anti-snipe**; **maximize GMV** via instant outbid alerts (push + Twilio SMS + email).
+
+### User Story 4.1 — Realtime channels & anti-snipe
+
+| # | Deliverable |
+|---|---|
+| S4.1 | Supabase Realtime — broadcast sanitized bid events (ADR-0012); finalize `lib/realtime/auctionChannel.ts` |
+| S4.2 | **Anti-snipe:** if a bid lands in the **final 60 seconds** before `closes_at`, extend lot close by **120 seconds** (management lock; configurable later per ADR-0007) |
+| S4.3 | Load + SLO instrumentation toward ADR-0014 (push / SMS latency) |
+
+### User Story 4.2 — Outbid notification fan-out
+
+| # | Deliverable |
+|---|---|
+| S4.4 | Migration `025_notifications_realtime.sql` — `push_subscriptions`, `notification_preferences`, `notification_deliveries` |
+| S4.5 | Edge Function `notify-outbid` + `pg_net` trigger from `public.bids` (ADR-0008) |
+| S4.6 | Channels — Web Push (VAPID), Twilio SMS, SendGrid email, in-app; **dispatcher** implementation replaces stub |
+| S4.7 | Permission UX — prompt after bid intent (ADR-0003) |
+| S4.8 | Tests — dedupe keys, fan-out idempotency, channel prefs |
+
+**Exit:** first booked-gala criteria per [Operational Readiness §5 — Sprint 4 GA gate](./adrs/operational-readiness.md); outbid SLOs measurable (ADR-0014).
+
+---
+
+## Sprint 5 — Post-Epic-2 polish & hardening (optional / parallelizable)
+
+**Goal:** GA hardening not strictly blocking Epic 2 narrative closure.
+
+| # | Deliverable |
+|---|---|
+| S5.1 | P2P leaderboards on Realtime (replace polling where needed) |
+| S5.2 | Thermometer micro-animations on donation events |
+| S5.3 | Donor wall realtime (`app/api/donor-wall` evolution) |
+| S5.4 | Accessibility pass — bid sheet + donate + leaderboard focus / live regions |
+| S5.5 | Load test — 1k concurrent bidders / 5k leaderboard viewers |
+| S5.6 | Observability dashboards + alert policies frozen in runbooks |
+
+**Exit:** production hardening complete; per-event runbook rehearsed.
+
+---
 
 ## Cross-sprint guardrails
 
 - Every PR includes a brand-checklist line item against ADR-0013.
-- Every new migration is accompanied by an integration test that asserts RLS shape (read / write under anon, authenticated, owner, and service-role contexts).
-- Every new mutating endpoint enforces and tests the idempotency-key contract (ADR-0009).
-- The single source of truth for currency formatting is `lib/money/cents.ts` (ADR-0011) plus `lib/currency.ts` for legacy `numeric(10,2)` flows during the transition.
+- Every new migration ships with RLS contract tests where feasible (anon / authenticated / owner / service role).
+- Every mutating endpoint enforces client idempotency keys (ADR-0009).
+- Monetary display + new columns: `lib/money/cents.ts` (ADR-0011); legacy `numeric` display may remain on `lib/currency.ts` until fully migrated.

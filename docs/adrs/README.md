@@ -2,6 +2,7 @@
 
 This folder holds the locked architecture decisions for EventraiseHub.
 The first batch (ADR-0001 through ADR-0015) was approved on **2026-05-12** and represents the **Sprint 0 baseline** for Epics 1 (Peer-to-Peer) and 2 (Auctions + Real-Time Bidding).
+**ADR-0016** (Braintree sunset — PayPal-only) was accepted on **2026-05-12** per management authorization; execution is tracked as **Sprint 0.7** in `docs/sprint-plan.md`.
 
 ## Conventions
 
@@ -11,7 +12,7 @@ The first batch (ADR-0001 through ADR-0015) was approved on **2026-05-12** and r
 - One decision per file. If the decision changes, **do not edit** the accepted ADR — create a new ADR and mark the old one `Superseded by ADR-XXXX`.
 - Filenames: `NNNN-short-kebab-title.md`.
 
-## Index (locked baseline)
+## Index (locked baseline + payment processor lock)
 
 | ADR | Title | Status |
 |-----|-------|--------|
@@ -30,6 +31,7 @@ The first batch (ADR-0001 through ADR-0015) was approved on **2026-05-12** and r
 | [0013](./0013-brand-ux-governance.md) | Trust 70 / Action 30 brand governance | Accepted |
 | [0014](./0014-observability-slos.md) | Observability and outbid SLOs | Accepted |
 | [0015](./0015-image-hosting.md) | Supabase Storage for auction lot imagery | Accepted |
+| [0016](./0016-braintree-sunset.md) | Sunset Braintree — PayPal-only payments | Accepted |
 
 ## How to propose a new ADR
 

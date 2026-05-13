@@ -1,5 +1,12 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server";
 
-export async function POST() {
-  return NextResponse.json({ error: 'Braintree is no longer supported' }, { status: 410 })
+/** Braintree webhooks are no longer processed (ADR-0016). */
+const BODY = {
+  error: "braintree_sunset",
+  message:
+    "Braintree webhooks are not accepted. Use PayPal webhooks — docs/adrs/0016-braintree-sunset.md.",
+} as const;
+
+export async function POST(): Promise<NextResponse> {
+  return NextResponse.json(BODY, { status: 410 });
 }

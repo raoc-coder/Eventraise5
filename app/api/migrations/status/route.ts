@@ -42,7 +42,7 @@ export async function GET(_req: NextRequest) {
     { table: 'donation_requests', column: 'fee_cents' },
     { table: 'donation_requests', column: 'net_cents' },
     { table: 'donation_requests', column: 'settlement_status' },
-    { table: 'donation_requests', column: 'braintree_transaction_id' },
+    { table: 'donation_requests', column: 'paypal_order_id' },
     // events core ownership/visibility/type
     { table: 'events', column: 'created_by' },
     { table: 'events', column: 'is_published' },
@@ -65,7 +65,7 @@ export async function GET(_req: NextRequest) {
       fee_cents: results['donation_requests.fee_cents'] === true,
       net_cents: results['donation_requests.net_cents'] === true,
       settlement_status: results['donation_requests.settlement_status'] === true,
-      braintree_transaction_id: results['donation_requests.braintree_transaction_id'] === true,
+      paypal_order_id: results['donation_requests.paypal_order_id'] === true,
     },
     events: {
       created_by: results['events.created_by'] === true,
