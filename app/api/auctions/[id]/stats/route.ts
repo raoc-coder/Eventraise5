@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireEventAccess } from "@/lib/auth-utils";
 import { supabaseAdmin } from "@/lib/supabase";
 import { isUuid } from "@/lib/p2p/personal-campaigns";
+import { auctionPlatformFeeCents, sellThroughPercent } from "@/lib/auction/paypal-vault";
 
 export const dynamic = "force-dynamic";
 
@@ -41,15 +42,24 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const list = lots ?? [];
     const gmvCents = list.reduce((s, l) => s + (l.current_high_bid_cents ?? 0), 0);
     const openLots = list.filter((l) => l.status === "open").length;
-    const closedLots = list.filter((l) => l.status === "closed" || l.status === "settled").length;
+    const closedLots = list.filter(
+      (l) => l.status === "closed" || l.status === "settled" || l.status === "capture_failed",
+    ).length;
+    const settledLots = list.filter((l) => l.status === "settled").length;
+    const withWinner = list.filter((l) => l.winning_bid_id).length;
+    const platformFeeCents = auctionPlatformFeeCents(gmvCents);
+    const sellThroughPct = sellThroughPercent(withWinner, list.length);
 
     return NextResponse.json({
       ok: true,
       auction: { id: auction.id, title: auction.title, status: auction.status },
       gmvCents,
+      platformFeeCents,
+      sellThroughPct,
       lotCount: list.length,
       openLots,
       closedLots,
+      settledLots,
       lots: list,
     });
   } catch (e: unknown) {

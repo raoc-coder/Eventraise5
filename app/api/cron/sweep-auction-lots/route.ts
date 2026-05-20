@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { settleClosedLot } from "@/lib/auction/settle-lot";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Closes lots whose `closes_at` has passed and assigns `winning_bid_id` to the highest bid.
- * Invoke from Vercel Cron with `Authorization: Bearer ${CRON_SECRET}` (Sprint 3 / S3.4).
+ * Closes due lots, assigns winning_bid_id, then captures vaulted winners (S3.3 / S3.4).
  */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const secret = process.env.CRON_SECRET;
@@ -59,5 +59,27 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     if (!uErr) closed += 1;
   }
 
-  return NextResponse.json({ ok: true, closedLots: closed });
+  const { data: toSettle } = await supabaseAdmin
+    .from("auction_lots")
+    .select("id")
+    .in("status", ["closed", "capture_failed"])
+    .not("winning_bid_id", "is", null)
+    .is("paypal_capture_id", null)
+    .limit(100);
+
+  const settlements: { lotId: string; outcome: string; error?: string }[] = [];
+  for (const row of toSettle ?? []) {
+    const result = await settleClosedLot(supabaseAdmin, row.id as string);
+    settlements.push({
+      lotId: result.lotId,
+      outcome: result.outcome,
+      error: result.error,
+    });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    closedLots: closed,
+    settlements,
+  });
 }

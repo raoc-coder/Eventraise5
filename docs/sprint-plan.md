@@ -3,6 +3,7 @@
 - **Status:** Locked 2026-05-12; **re-locked 2026-05-12 (management)** — Braintree sunset **authorized** (ADR-0016); Epic 2 delivery **renumbered** into Sprints **3–4** (was 3–5/6).
 - **Cadence:** 2-week sprints (Sprint 0 is a 1-week foundation).
 - **Authoritative decisions:** see [`docs/adrs/`](./adrs) (includes **ADR-0016** — Braintree sunset).
+- **Internal sprint outputs (recap):** [`docs/internal/sprint-phase-recap.md`](./internal/sprint-phase-recap.md)
 - **Epics in scope:**
   - Epic 1 — Native Peer-to-Peer (P2P) Infrastructure
   - Epic 2 — Auctions and Real-Time Mobile Bidding
@@ -23,9 +24,9 @@
 | S0.1 | ADR set 0001–0015 in `docs/adrs/` | Tech lead | Done |
 | S0.2 | This sprint plan in `docs/sprint-plan.md` | Tech lead | Done |
 | S0.3a | Twilio Verify Service + phone auth (`/api/auth/verify/*`, ADR-0017) | Eng | **Done 2026-05-20** — requires `TWILIO_VERIFY_SERVICE_SID` in env |
-| S0.3b | Twilio 10DLC brand & A2P campaign (outbid SMS) | Ops + Eng | **Initiated 2026-05-12** — awaiting carrier approval (~2–4 wk SLA) |
+| S0.3b | Twilio 10DLC **campaign verification** (outbid SMS) | Ops + Eng | **In process** — `TWILIO_MESSAGING_SERVICE_SID` on Vercel ✓; carrier campaign `VERIFIED` pending (often **weeks**) |
 | S0.4 | ~~SendGrid domain auth~~ → **SendGrid removed** from codebase (ADR-0005 superseded) | Eng | **Done 2026-05-20** |
-| S0.5 | Supabase capacity confirmed — see [Operational Readiness §1](./adrs/operational-readiness.md#1-foundation-gate-pre-sprint-1) | Eng | **Initiated 2026-05-12** — awaiting confirmation per §S0.5 checklist below |
+| S0.5 | Supabase capacity confirmed — see [Operational Readiness §1](./adrs/operational-readiness.md#1-foundation-gate-pre-sprint-1) | Eng | **Done 2026-05-20** — Pro confirmed |
 | S0.6 | VAPID keypair generated and stored in env scopes — run `npm run generate:vapid -- --vercel` | Eng | **Done 2026-05-20** — local + Vercel env |
 | S0.7 | Braintree sunset — **decision + execution** (ADR-0016) | Eng + Finance | **Done** — code removed 2026-05-13 |
 
@@ -33,9 +34,10 @@
 
 | Date | Item | Status | "Done" means |
 |---|---|---|---|
-| 2026-05-12 | Twilio 10DLC brand + A2P campaign | Submitted; awaiting carrier approval | Messaging Service SID in Vercel; brand `APPROVED`; campaign `VERIFIED` |
+| 2026-05-20 | Twilio 10DLC campaign verification | **In process** (carrier review, weeks) | Env done: Messaging Service SID on Vercel; campaign `VERIFIED` + brand `APPROVED` in Console |
 | 2026-05-20 | SendGrid | Removed (ADR-0017) | No `@sendgrid/mail`; notifications: push + SMS + in-app |
-| 2026-05-12 | Supabase capacity | In motion | Plan ≥ Pro (no spend cap); Realtime connections ≥ 2,000; `pg_net` on; replication-lag report populates |
+| 2026-05-20 | Supabase capacity | **Done** — Pro confirmed | Plan ≥ Pro; Realtime/`pg_net` per §S0.5 checklist |
+| 2026-05-20 | Vercel production deploy | **Done** | Phone auth + VAPID env; SendGrid removed |
 
 **S0.5 — concrete checklist:**
 
@@ -70,7 +72,7 @@
 
 **Status:** **Complete** as of **2026-05-13** (this repository).
 
-**Next:** *Begin Sprint 2* — Epic 1 completion (teams, matching gifts, Become a fundraiser).
+**Next:** *Sprint 3* — auction vault + capture-on-win (Sprint 2 Epic 1 shipped 2026-05-20).
 
 ---
 
@@ -139,7 +141,7 @@
 
 **Goal:** foundation for silent + live auctions; **vault at registration, capture on win** (ADR-0006). All new money in **integer cents**.
 
-**Repository progress (2026-05-13):** migration `024_auctions.sql` + `place_auction_bid` RPC; REST routes under `app/api/auctions/**`, `app/api/events/[id]/auctions`, and `app/api/cron/sweep-auction-lots` (pair with `CRON_SECRET` in Vercel); mobile-first pages under `app/auctions/[id]/…`. **Next in-sprint work:** PayPal vault token persistence (S3.2), capture-on-win server path (S3.3), organizer CSV export (S3.5), bid stress tests (S3.9).
+**Repository progress (2026-05-20):** vault setup/confirm APIs, register UI, `029` capture columns, cron settle + `lib/auction/settle-lot.ts`, organizer console + CSV export. **Remaining:** live-window cron schedule on Vercel Pro, full PayPal Vault sandbox E2E, bid stress tests (S3.9).
 
 ### User Story 3.1 — Auction registration & payment vaulting
 
@@ -170,7 +172,7 @@
 
 **Goal:** sub-second bid visibility; **anti-snipe**; **maximize GMV** via instant outbid alerts (push + Twilio SMS + email).
 
-**Repository progress (2026-05-13):** migrations `025_notifications_realtime.sql` (push subscriptions, prefs, deliveries) + `026_auction_antisnipe_realtime.sql` (anti-snipe in `place_auction_bid`, `auction_lots` on `supabase_realtime`); `027_notify_outbid_pg_net.sql` (Vault-configured `pg_net` POST + `bids` trigger) + `supabase/functions/notify-outbid` (service-role auth, dedupe enqueue to `notification_deliveries`); `lib/realtime/auctionChannel.ts` wired to `postgres_changes`; bid sheet subscribes for live high/close. **Still to ship for GA:** dispatcher + channel sends (S4.6–S4.7), SLO instrumentation (S4.3), full test matrix (S4.8); ops must deploy the Edge function, enable `pg_net`, and create Vault secrets `notify_outbid_edge_url` + `notify_outbid_service_role`.
+**Repository progress (2026-05-20):** migrations `025`–`027` + `030_notification_deliveries_user_id.sql`; Realtime + anti-snipe on lot page; Edge `notify-outbid` enqueues push/SMS/in-app (no email); `lib/notifications/send-delivery.ts` + cron `/api/cron/process-notification-deliveries` (5 min); `public/sw.js`, push-subscribe API, post-bid permission UX (S4.7); tests in `__tests__/lib/notifications/`. **Ops for GA:** deploy Edge function, `supabase db push` for `030`, Vault `pg_net` secrets, Vercel `CRON_SECRET` + VAPID env; SLO dashboards (S4.3) optional polish.
 
 ### User Story 4.1 — Realtime channels & anti-snipe
 
@@ -198,16 +200,18 @@
 
 **Goal:** GA hardening not strictly blocking Epic 2 narrative closure.
 
+**Repository progress (2026-05-20):** migration `031_sprint5_realtime_p2p_donor_wall.sql`; `lib/realtime/leaderboardChannel.ts` + `donorWallChannel.ts`; leaderboard live + fallback poll; `LiveThermometer` + celebrate animation; `DonorWall` + `/api/donor-wall`; a11y on bid/donate/leaderboard; k6 scripts + `docs/runbooks/sprint5-observability.md`.
+
 | # | Deliverable |
 |---|---|
-| S5.1 | P2P leaderboards on Realtime (replace polling where needed) |
-| S5.2 | Thermometer micro-animations on donation events |
-| S5.3 | Donor wall realtime (`app/api/donor-wall` evolution) |
-| S5.4 | Accessibility pass — bid sheet + donate + leaderboard focus / live regions |
-| S5.5 | Load test — 1k concurrent bidders / 5k leaderboard viewers |
-| S5.6 | Observability dashboards + alert policies frozen in runbooks |
+| S5.1 | P2P leaderboards on Realtime (replace polling where needed) — **done** |
+| S5.2 | Thermometer micro-animations on donation events — **done** |
+| S5.3 | Donor wall realtime (`app/api/donor-wall` evolution) — **done** |
+| S5.4 | Accessibility pass — bid sheet + donate + leaderboard focus / live regions — **done** |
+| S5.5 | Load test — 1k concurrent bidders / 5k leaderboard viewers — **scripts** (`scripts/load-test/`) |
+| S5.6 | Observability dashboards + alert policies frozen in runbooks — **done** (runbook; wire dashboards in ops) |
 
-**Exit:** production hardening complete; per-event runbook rehearsed.
+**Exit:** production hardening complete; per-event runbook rehearsed. Apply migration `031` on Supabase before live donor wall / P2P Realtime.
 
 ---
 

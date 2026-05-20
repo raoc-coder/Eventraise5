@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { formatCents, progressPercent } from "@/lib/money/cents";
@@ -30,6 +32,8 @@ export interface ThermometerProps {
   size?: "sm" | "md" | "lg";
   /** When true, renders the numeric summary under the bar. Default true. */
   showSummary?: boolean;
+  /** Brief pulse on the fill when `raisedCents` increases (Sprint 5.2). */
+  celebrateOnIncrease?: boolean;
 }
 
 const HEIGHTS: Record<NonNullable<ThermometerProps["size"]>, string> = {
@@ -45,11 +49,25 @@ export function Thermometer({
   className,
   size = "md",
   showSummary = true,
+  celebrateOnIncrease = false,
 }: ThermometerProps) {
   const safeRaised = Math.max(0, Math.trunc(raisedCents) || 0);
   const safeGoal = Math.max(0, Math.trunc(goalCents) || 0);
   const percent = progressPercent(safeRaised, safeGoal);
   const percentRounded = Math.round(percent);
+  const prevRaised = React.useRef(safeRaised);
+  const [celebrate, setCelebrate] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!celebrateOnIncrease) return;
+    if (safeRaised > prevRaised.current) {
+      setCelebrate(true);
+      const t = window.setTimeout(() => setCelebrate(false), 700);
+      prevRaised.current = safeRaised;
+      return () => window.clearTimeout(t);
+    }
+    prevRaised.current = safeRaised;
+  }, [safeRaised, celebrateOnIncrease]);
 
   const raisedLabel = formatCents(safeRaised);
   const goalLabel = formatCents(safeGoal);
@@ -76,9 +94,9 @@ export function Thermometer({
           data-testid="p2p-thermometer-fill"
           className={cn(
             "h-full rounded-full bg-action-500 transition-[width] duration-500 ease-out",
-            // Subtle inner highlight so the orange fill reads as "filling in",
-            // not as a flat block; ADR-0013 brand polish.
             "shadow-[inset_0_-1px_0_rgba(0,0,0,0.06)]",
+            celebrate &&
+              "motion-safe:animate-pulse motion-safe:ring-2 motion-safe:ring-action-400/60",
           )}
           style={{ width: `${percent}%` }}
         />

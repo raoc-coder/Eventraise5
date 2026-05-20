@@ -1,7 +1,7 @@
 // PayPal configuration
 export const paypalConfig = {
-  clientId: process.env.PAYPAL_CLIENT_ID!,
-  clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+  clientId: process.env.PAYPAL_CLIENT_ID || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+  clientSecret: process.env.PAYPAL_CLIENT_SECRET || "",
   environment: process.env.PAYPAL_ENVIRONMENT === 'production' ? 'live' : 'sandbox',
   webhookId: process.env.PAYPAL_WEBHOOK_ID!,
   baseUrl: process.env.PAYPAL_ENVIRONMENT === 'production' 

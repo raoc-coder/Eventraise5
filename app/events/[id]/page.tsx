@@ -44,6 +44,7 @@ import { EventRegistration } from '@/components/events/event-registration'
 import { VolunteerShifts } from '@/components/events/volunteer-shifts'
 import { TicketPurchase } from '@/components/events/ticket-purchase'
 import { MatchingGiftBanner } from '@/components/p2p/MatchingGiftBanner'
+import { DonorWall } from '@/components/engagement/DonorWall'
 import { trackMetaPixelDonation, trackMetaPixelViewContent, trackMetaPixelPurchase, trackMetaPixelRegistration } from '@/lib/meta-pixel'
 
 // Use shared Supabase client to avoid multiple GoTrue instances
@@ -915,10 +916,17 @@ export default function EventDetailPage() {
                   </>
                 )}
                 <Button asChild variant="ghost" size="sm" className="w-full text-trust-800 hover:text-trust-950">
-                  <Link href={`/events/${event.id}/teams`}>Team leaderboard</Link>
+                  <Link href={`/events/${event.id}/leaderboard`}>P2P leaderboard</Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className="w-full text-trust-800 hover:text-trust-950">
+                  <Link href={`/events/${event.id}/teams`}>Teams</Link>
                 </Button>
               </CardContent>
             </Card>
+
+            {event?.id && (event as { is_published?: boolean }).is_published && (
+              <DonorWall eventId={event.id} className="mt-4" />
+            )}
             
             {/* Original content hidden, will be moved to modal */}
             <div className="hidden">

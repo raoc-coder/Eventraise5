@@ -68,6 +68,15 @@ describe("components/p2p/Thermometer", () => {
     expect(bar).toHaveAttribute("aria-label", "Custom label");
   });
 
+  it("applies celebrate class hook when celebrateOnIncrease is enabled", () => {
+    const { rerender } = render(
+      <Thermometer raisedCents={1000} goalCents={10000} celebrateOnIncrease />,
+    );
+    rerender(<Thermometer raisedCents={2500} goalCents={10000} celebrateOnIncrease />);
+    const fill = screen.getByTestId("p2p-thermometer-fill");
+    expect(fill.className).toMatch(/bg-action-500/);
+  });
+
   it("treats negative or non-finite inputs as zero", () => {
     render(
       <Thermometer

@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 type Body = { bid_id?: string; lot_id?: string };
 
-type Channel = "push" | "sms" | "email" | "in_app";
+type Channel = "push" | "sms" | "in_app";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -105,11 +105,10 @@ Deno.serve(async (req: Request) => {
 
   const { data: prefRow } = await supabase
     .from("notification_preferences")
-    .select("email_enabled, push_enabled, sms_enabled")
+    .select("push_enabled, sms_enabled")
     .eq("user_id", outbidUserId)
     .maybeSingle();
 
-  const emailEnabled = prefRow?.email_enabled ?? true;
   const pushEnabled = prefRow?.push_enabled ?? true;
   const smsEnabled = prefRow?.sms_enabled ?? false;
 
@@ -132,6 +131,7 @@ Deno.serve(async (req: Request) => {
     channel: Channel;
     status: string;
     payload: typeof payload;
+    user_id: string;
   }[] = [];
 
   const add = (channel: Channel, enabled: boolean) => {
@@ -141,12 +141,12 @@ Deno.serve(async (req: Request) => {
       channel,
       status: "pending",
       payload,
+      user_id: outbidUserId,
     });
   };
 
   add("push", pushEnabled);
   add("sms", smsEnabled);
-  add("email", emailEnabled);
   add("in_app", true);
 
   let inserted = 0;

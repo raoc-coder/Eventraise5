@@ -13,6 +13,8 @@ import { useCurrency } from '@/app/providers/currency-provider'
 import { PayPalDonationButton } from '@/lib/paypal-client'
 import { trackMetaPixelDonation } from '@/lib/meta-pixel'
 import { FundraiserAttributionBanner } from '@/components/p2p/FundraiserAttributionBanner'
+import { MatchingGiftBanner } from '@/components/p2p/MatchingGiftBanner'
+import { MatchingAmplifiedNote } from '@/components/p2p/MatchingAmplifiedNote'
 import { isUuid } from '@/lib/p2p/personal-campaigns'
 import { supabase } from '@/lib/supabase'
 
@@ -108,9 +110,17 @@ function DonationForm() {
   }
 
   return (
-    <div className="space-y-6 px-1">
+    <div className="space-y-6 px-1" role="form" aria-labelledby="donate-form-title">
+      <h2 id="donate-form-title" className="sr-only">
+        Donation form
+      </h2>
       {attribution && (
         <FundraiserAttributionBanner displayName={attribution.display_name} />
+      )}
+
+      {eventId && <MatchingGiftBanner eventId={eventId} />}
+      {eventId && amount >= 1 && (
+        <MatchingAmplifiedNote eventId={eventId} donationDollars={amount} />
       )}
 
       {/* Donation Amount Section */}
@@ -125,13 +135,14 @@ function DonationForm() {
         </div>
 
         {/* Preset Amount Buttons */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3" role="group" aria-label="Preset donation amounts">
           {[1, 5, 10, 25, 50, 100].map((preset) => (
             <Button
               key={preset}
               type="button"
               variant={amount === preset ? "default" : "outline"}
               onClick={() => setAmount(preset)}
+              aria-pressed={amount === preset}
               className={`h-14 text-lg font-semibold ${
                 amount === preset 
                   ? "bg-action-600 text-white border-action-600 shadow-lg" 
@@ -160,6 +171,8 @@ function DonationForm() {
               type="number" 
               min="1" 
               step="1"
+              aria-label="Custom donation amount in US dollars"
+              inputMode="numeric"
               className="w-32 h-12 text-lg font-semibold text-center border-2 border-gray-300 focus:border-trust-500"
               placeholder="0"
             />
@@ -170,7 +183,12 @@ function DonationForm() {
       
       {/* Payment Summary */}
       {amount > 0 && (
-        <div className="bg-trust-50 border border-trust-200 rounded-xl p-4 space-y-3">
+        <div
+          className="bg-trust-50 border border-trust-200 rounded-xl p-4 space-y-3"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <div className="text-center">
             <h3 className="font-semibold text-gray-900 mb-3">Payment Summary</h3>
           </div>

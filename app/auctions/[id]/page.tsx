@@ -93,12 +93,15 @@ export default function AuctionOverviewPage() {
         </header>
 
         {auction && (
-          <div className="mb-6">
+          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             <Button asChild className="w-full bg-gradient-to-r from-action-500 to-action-600 text-white hover:from-action-600 hover:to-action-700 sm:w-auto">
               <Link href={`/auctions/${id}/register`}>
                 <UserPlus className="mr-2 h-4 w-4" aria-hidden />
                 Register to bid
               </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full border-trust-300 sm:w-auto">
+              <Link href={`/auctions/${id}/organizer`}>Organizer console</Link>
             </Button>
           </div>
         )}

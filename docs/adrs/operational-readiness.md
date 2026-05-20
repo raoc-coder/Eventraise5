@@ -44,7 +44,8 @@ Unlocks Sprint 1 scaffolding. Owners: Eng (primary), Ops (Twilio externals).
 
 ### 1.4 External-track items kicked off (long-lead, do not block Sprint 1)
 
-- [x] **Twilio 10DLC** brand registered, A2P campaign submitted (initiated 2026-05-12). (ADR-0004; 2–4 week carrier approval window — `APPROVED/VERIFIED` status still pending.)
+- [x] **Twilio Messaging Service** — `TWILIO_MESSAGING_SERVICE_SID` in Vercel (2026-05-20).
+- [ ] **Twilio 10DLC campaign verification** — A2P campaign submitted; carrier `VERIFIED` pending (often **weeks**, not blocked on env). (ADR-0004.)
 - [x] **SendGrid removed** (ADR-0017, 2026-05-20). No transactional email vendor.
 - [ ] **Twilio Verify Service** created; `TWILIO_VERIFY_SERVICE_SID` in Vercel + local env (ADR-0017).
 - [ ] **Supabase project capacity confirmation** (initiated 2026-05-12). Walk §1.1 checklist above — plan tier, Realtime caps, `pg_net`, replication-lag visibility — and tick each box as confirmed.

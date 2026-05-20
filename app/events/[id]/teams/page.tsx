@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { ArrowLeft, Users } from "lucide-react";
+import { ArrowLeft, Users, Plus } from "lucide-react";
 
 import { Navigation } from "@/components/layout/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/app/providers";
 
 type TeamRow = {
@@ -28,18 +30,23 @@ export default function EventTeamsPage() {
   const [teams, setTeams] = useState<TeamRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [teamName, setTeamName] = useState("");
+  const [creating, setCreating] = useState(false);
+
+  async function loadTeams() {
+    if (!eventId) return;
+    const res = await fetch(`/api/events/${eventId}/teams`);
+    const body = await res.json();
+    if (res.ok && body.teams) setTeams(body.teams);
+  }
 
   useEffect(() => {
-    if (!eventId) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/events/${eventId}/teams`);
-        const body = await res.json();
-        if (!cancelled && res.ok && body.teams) {
-          setTeams(body.teams);
-        }
+        await loadTeams();
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -48,6 +55,39 @@ export default function EventTeamsPage() {
       cancelled = true;
     };
   }, [eventId]);
+
+  async function createTeam(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
+    if (teamName.trim().length < 2) {
+      toast.error("Team name must be at least 2 characters.");
+      return;
+    }
+    setCreating(true);
+    try {
+      const res = await fetch(`/api/events/${eventId}/teams`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: teamName.trim() }),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        toast.error(body.message || body.error || "Could not create team.");
+        return;
+      }
+      toast.success("Team created.");
+      setTeamName("");
+      setShowCreate(false);
+      await loadTeams();
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Request failed.");
+    } finally {
+      setCreating(false);
+    }
+  }
 
   async function joinTeam(teamId: string) {
     if (!user) {
@@ -86,15 +126,59 @@ export default function EventTeamsPage() {
           </Link>
         </Button>
 
-        <header className="mb-8 flex items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-trust-600 text-white shadow-md">
-            <Users className="h-5 w-5" aria-hidden />
+        <header className="mb-8 flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-trust-600 text-white shadow-md">
+              <Users className="h-5 w-5" aria-hidden />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-trust-950 sm:text-3xl">Teams</h1>
+              <p className="mt-1 text-sm text-trust-800">Ranked by amount raised for this event.</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-trust-950 sm:text-3xl">Teams</h1>
-            <p className="mt-1 text-sm text-trust-800">Leaderboard order by amount raised toward this event.</p>
-          </div>
+          {user && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="border-trust-300"
+              onClick={() => setShowCreate((v) => !v)}
+            >
+              <Plus className="mr-1 h-4 w-4" aria-hidden />
+              New team
+            </Button>
+          )}
         </header>
+
+        {showCreate && user && (
+          <Card className="mb-6 border-trust-100">
+            <CardHeader>
+              <CardTitle className="text-base text-trust-950">Create a team</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={createTeam} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                <div className="flex-1 space-y-2">
+                  <Label htmlFor="teamName">Team name</Label>
+                  <Input
+                    id="teamName"
+                    value={teamName}
+                    onChange={(e) => setTeamName(e.target.value)}
+                    required
+                    minLength={2}
+                    className="border-trust-200"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={creating}
+                  className="bg-action-500 text-white hover:bg-action-600"
+                >
+                  {creating ? "Creating…" : "Create"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
 
         {loading ? (
           <p className="text-trust-700">Loading teams…</p>
@@ -103,7 +187,7 @@ export default function EventTeamsPage() {
             <CardHeader>
               <CardTitle className="text-trust-950">No teams yet</CardTitle>
               <CardDescription className="text-trust-700">
-                Teams appear here once created. Ask your organizer to set one up, or use the API to create a team.
+                Create the first team to start a friendly competition.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -114,7 +198,11 @@ export default function EventTeamsPage() {
                 <Card className="border-trust-100 shadow-sm">
                   <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="text-xs font-semibold uppercase text-action-600">Rank {idx + 1}</p>
+                      <p
+                        className={`text-xs font-semibold uppercase ${idx === 0 ? "text-action-600" : "text-trust-600"}`}
+                      >
+                        Rank {idx + 1}
+                      </p>
                       <p className="text-lg font-semibold text-trust-950">{t.name}</p>
                       <p className="text-sm text-trust-700">
                         {(t.total_raised_cents / 100).toLocaleString(undefined, {

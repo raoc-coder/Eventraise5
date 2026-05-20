@@ -45,11 +45,7 @@ export interface NotificationResult {
   error?: string;
 }
 
-/**
- * The Sprint 5 implementation will provide a concrete class that writes to
- * `public.notification_deliveries`, calls the channel-specific senders, and
- * surfaces metrics for the SLO dashboards (ADR-0014).
- */
+/** Sends via channel-specific adapters (Sprint 4.6). */
 export interface NotificationDispatcher {
   dispatch(request: NotificationRequest): Promise<NotificationResult>;
   dispatchMany(requests: NotificationRequest[]): Promise<NotificationResult[]>;
@@ -69,14 +65,4 @@ export function buildDedupeKey(
   return [topic, ...parts.map(String)].join(":");
 }
 
-/**
- * Throw-on-call placeholder so any accidental import path that tries to
- * actually send during Sprints 1–4 fails fast in dev, rather than silently
- * doing nothing.
- */
-export function getDispatcher(): NotificationDispatcher {
-  throw new Error(
-    "NotificationDispatcher is not yet wired (Sprint 4.6+ / ADR-0008). " +
-      "Import the interface only until then.",
-  );
-}
+export { getDispatcher } from "@/lib/notifications/dispatcher-impl";

@@ -13,6 +13,7 @@ import { useAuth } from "@/app/providers";
 import { minNextBidCents } from "@/lib/auction/bid-rules";
 import { supabase } from "@/lib/supabase";
 import { subscribeToAuctionLot } from "@/lib/realtime/auctionChannel";
+import { OutbidPushPrompt } from "@/components/notifications/OutbidPushPrompt";
 
 type Lot = {
   id: string;
@@ -37,6 +38,7 @@ export default function AuctionLotBidPage() {
   const [loading, setLoading] = useState(true);
   const [amount, setAmount] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [bidJustPlaced, setBidJustPlaced] = useState(false);
 
   useEffect(() => {
     if (!auctionId || !lotId) return;
@@ -135,6 +137,7 @@ export default function AuctionLotBidPage() {
       } else {
         toast.success(body.replay ? "Bid confirmed (replay)." : "Your bid is in.");
       }
+      setBidJustPlaced(true);
       if (typeof body.closesAt === "string" && lot) {
         setLot({
           ...lot,
@@ -199,7 +202,12 @@ export default function AuctionLotBidPage() {
               <h1 className="text-2xl font-bold text-trust-950 sm:text-3xl">{lot.title}</h1>
               <p className="mt-2 text-sm text-trust-800">
                 Current high:{" "}
-                <span className="font-semibold text-action-600">
+                <span
+                  className="font-semibold text-action-600"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  id="lot-current-high"
+                >
                   {(lot.current_high_bid_cents / 100).toLocaleString(undefined, { style: "currency", currency: "USD" })}
                 </span>
               </p>
@@ -221,7 +229,10 @@ export default function AuctionLotBidPage() {
               </CardHeader>
             </Card>
 
-            <form onSubmit={submitBid} className="space-y-4">
+            <form onSubmit={submitBid} className="space-y-4" aria-labelledby="bid-form-heading">
+              <h2 id="bid-form-heading" className="sr-only">
+                Place your bid
+              </h2>
               <div>
                 <label htmlFor="bid-amt" className="mb-1 block text-sm font-medium text-trust-900">
                   Your bid (USD)
@@ -233,12 +244,19 @@ export default function AuctionLotBidPage() {
                   step="0.01"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
+                  aria-describedby="lot-current-high bid-amt-hint"
+                  inputMode="decimal"
+                  autoComplete="off"
                   className="w-full rounded-lg border border-trust-200 px-3 py-3 text-lg text-trust-950 shadow-sm focus:border-trust-500 focus:outline-none focus:ring-2 focus:ring-trust-500/30"
                 />
+                <p id="bid-amt-hint" className="mt-1 text-xs text-trust-600">
+                  Enter an amount at or above the minimum next bid shown after you submit.
+                </p>
               </div>
               <Button
                 type="submit"
                 disabled={submitting || lot.status !== "open" || new Date(lot.closes_at) <= new Date()}
+                aria-busy={submitting}
                 className="w-full bg-gradient-to-r from-action-500 to-action-600 py-6 text-lg font-semibold text-white hover:from-action-600 hover:to-action-700 sm:py-6"
               >
                 {authLoading ? "Checking session…" : submitting ? "Placing bid…" : "Place bid"}
@@ -247,6 +265,7 @@ export default function AuctionLotBidPage() {
                 <p className="text-center text-sm text-trust-700">This lot is not accepting bids ({lot.status}).</p>
               )}
             </form>
+            <OutbidPushPrompt show={!!user && bidJustPlaced} />
           </>
         )}
       </main>

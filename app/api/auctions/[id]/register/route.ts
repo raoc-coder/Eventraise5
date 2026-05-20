@@ -35,10 +35,20 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     const body = await req.json().catch(() => ({}));
+    const practiceVault = !!(body as { practiceVault?: boolean }).practiceVault;
     const token =
       typeof (body as { paymentMethodToken?: unknown }).paymentMethodToken === "string"
         ? String((body as { paymentMethodToken: string }).paymentMethodToken).trim() || null
-        : null;
+        : practiceVault
+          ? "practice_vault"
+          : null;
+
+    if (practiceVault && process.env.PAYPAL_ENVIRONMENT === "production") {
+      return NextResponse.json(
+        { ok: false, error: "practice_not_allowed", message: "Practice registration is disabled in production." },
+        { status: 400 },
+      );
+    }
 
     const row = {
       auction_id: auctionId,

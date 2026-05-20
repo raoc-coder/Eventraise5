@@ -6,7 +6,8 @@ import { ArrowRight, Heart, Share2, Shield } from "lucide-react";
 import { Navigation } from "@/components/layout/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Thermometer } from "@/components/p2p/Thermometer";
+import { LiveThermometer } from "@/components/p2p/LiveThermometer";
+import { MatchingGiftBanner } from "@/components/p2p/MatchingGiftBanner";
 import { supabase } from "@/lib/supabase";
 import { isUuid } from "@/lib/p2p/personal-campaigns";
 
@@ -113,6 +114,10 @@ export default async function PersonalCampaignPage({ params, searchParams }: Pag
           </h1>
         </header>
 
+        <div className="mb-6">
+          <MatchingGiftBanner eventId={campaign.event_id} />
+        </div>
+
         <Card className="mb-8 overflow-hidden border-trust-100/90 shadow-sm shadow-trust-950/5">
           <CardHeader className="space-y-4">
             <div className="flex items-center gap-3">
@@ -127,10 +132,12 @@ export default async function PersonalCampaignPage({ params, searchParams }: Pag
               </div>
             </div>
 
-            <Thermometer
-              raisedCents={campaign.total_raised_cents}
+            <LiveThermometer
+              campaignId={campaign.id}
+              initialRaisedCents={campaign.total_raised_cents}
               goalCents={campaign.goal_amount_cents}
               size="lg"
+              celebrateOnIncrease
             />
           </CardHeader>
 
