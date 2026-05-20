@@ -86,7 +86,7 @@ export default function EventDetailPage() {
   // Temporarily disable client-side title/meta mutations to avoid hydration issues
   // useEffect(() => {}, [event?.title])
   const [shareOpen, setShareOpen] = useState(false)
-  const [shareEmail, setShareEmail] = useState('')
+  const [sharePhone, setSharePhone] = useState('')
   const [shareMsg, setShareMsg] = useState('')
   const [shareSending, setShareSending] = useState(false)
   const [donationAmount, setDonationAmount] = useState<number>(50)
@@ -550,8 +550,8 @@ export default function EventDetailPage() {
 
   const sendDonationInvite = async () => {
     if (!params?.id) return
-    if (!shareEmail) {
-      toast.error('Recipient email required')
+    if (!sharePhone) {
+      toast.error('Recipient phone number required')
       return
     }
     setShareSending(true)
@@ -559,13 +559,13 @@ export default function EventDetailPage() {
       const res = await fetch('/api/donations/share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: shareEmail, eventId: (params as any)?.id, message: shareMsg }),
+        body: JSON.stringify({ phone: sharePhone, eventId: (params as any)?.id, message: shareMsg }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error || 'Failed to send')
-      toast.success('Donation link sent')
+      toast.success('Donation link sent by text')
       setShareOpen(false)
-      setShareEmail('')
+      setSharePhone('')
       setShareMsg('')
     } catch (e: any) {
       toast.error(e.message || 'Failed to send donation link')

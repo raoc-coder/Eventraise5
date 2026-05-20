@@ -16,7 +16,7 @@ ADR(s) that own the decision so the *why* is one click away.
 
 ## 1. Foundation gate — pre-Sprint 1
 
-Unlocks Sprint 1 scaffolding. Owners: Eng (primary), Ops (Twilio/SendGrid externals).
+Unlocks Sprint 1 scaffolding. Owners: Eng (primary), Ops (Twilio externals).
 
 ### 1.1 Supabase project capacity (ADR-0001, ADR-0002, ADR-0008)
 
@@ -45,7 +45,8 @@ Unlocks Sprint 1 scaffolding. Owners: Eng (primary), Ops (Twilio/SendGrid extern
 ### 1.4 External-track items kicked off (long-lead, do not block Sprint 1)
 
 - [x] **Twilio 10DLC** brand registered, A2P campaign submitted (initiated 2026-05-12). (ADR-0004; 2–4 week carrier approval window — `APPROVED/VERIFIED` status still pending.)
-- [x] **SendGrid domain authentication** DNS records added on `eventraisehub.com` (initiated 2026-05-12). (ADR-0005; SendGrid "Domain verified" + first test send with `dkim=pass spf=pass` still pending.)
+- [x] **SendGrid removed** (ADR-0017, 2026-05-20). No transactional email vendor.
+- [ ] **Twilio Verify Service** created; `TWILIO_VERIFY_SERVICE_SID` in Vercel + local env (ADR-0017).
 - [ ] **Supabase project capacity confirmation** (initiated 2026-05-12). Walk §1.1 checklist above — plan tier, Realtime caps, `pg_net`, replication-lag visibility — and tick each box as confirmed.
 - [ ] **VAPID keypair** generated and stored in Vercel env (`VAPID_SUBJECT`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`) across **Production / Preview / Development**. Use the repo runner: `npm run generate:vapid -- --subject mailto:[email protected] --vercel`. (ADR-0003.)
 - [ ] **PayPal** production app credentials provisioned in Vercel; Vault enabled on the account. (ADR-0006.)
@@ -154,7 +155,7 @@ This is the **first booked-gala go-live gate** for Epic 2. All boxes must be gre
 
 - [ ] **Web Push** (VAPID) — subscription persisted in `push_subscriptions`; test push reaches Chrome, Firefox, Safari (macOS + iOS 16.4+).
 - [ ] **SMS** — Twilio 10DLC campaign **approved**; messaging service active; STOP/HELP keywords routed; opt-out persisted in `notification_preferences`.
-- [ ] **Email** — SendGrid domain auth **verified**; bounce + spam handlers writing to `notification_deliveries`; DMARC at `p=quarantine` or stricter.
+- [x] **Email channel** — not used (ADR-0017). Outbid fan-out is push → SMS → in-app only.
 - [ ] **In-app** — toast and `public.notifications` row both fire from a single dispatcher call.
 
 ### 5.2 Fan-out correctness (ADR-0008, ADR-0009)
@@ -203,7 +204,6 @@ Run this **the day before** and the **hour before** every booked live auction. T
 - [ ] Reserve prices and minimum increments are set on every lot.
 - [ ] PayPal account on the platform has not gone into "limited" status; test capture of $1 sandbox transaction succeeds.
 - [ ] Twilio account balance ≥ projected SMS volume × 3 (rough headroom for retries).
-- [ ] SendGrid daily-send quota ≥ projected email volume × 3.
 - [ ] On-call rotation set; PagerDuty / Slack alert routes verified with a synthetic test.
 
 ### T-1 hour

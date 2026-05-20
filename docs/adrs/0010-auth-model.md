@@ -11,7 +11,7 @@ Two user types interact with the new features. **Bidders** carry financial commi
 
 ## Decision
 
-- **Bidding requires an authenticated Supabase Auth user.** Magic-link is the default sign-in. Each `auction_registrations` row binds the user to a paddle number and a vaulted payment token.
+- **Bidding requires an authenticated Supabase Auth user.** **Phone OTP via Twilio Verify** is the default sign-in (ADR-0017). Each `auction_registrations` row binds the user to a paddle number and a vaulted payment token.
 - **Donations remain guest-allowed.** A guest donation captures email and optionally creates a "claim" link in the receipt that lets the user create an account and attribute the donation to their profile.
 - **Personal-campaign creation** (P2P) requires authentication so the owner can manage edits and payouts.
 
@@ -24,7 +24,7 @@ Two user types interact with the new features. **Bidders** carry financial commi
 
 - Positive: clean separation of high-trust (bidders) and low-friction (donors) flows.
 - Negative: P2P fundraisers must register, which is a small added step; balanced by giving them their own page and analytics.
-- Operational: the existing Supabase Auth setup is sufficient; no changes to providers required.
+- Operational: Supabase Auth stores users; OTP proof is Twilio Verify (see ADR-0017).
 
 ## Compliance / acceptance criteria
 

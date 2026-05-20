@@ -20,7 +20,7 @@ The first batch (ADR-0001 through ADR-0015) was approved on **2026-05-12** and r
 | [0002](./0002-supabase-realtime.md) | Supabase Realtime for live auctions and leaderboards | Accepted |
 | [0003](./0003-web-push-vapid.md) | Self-hosted Web Push via VAPID for browser push | Accepted |
 | [0004](./0004-twilio-sms.md) | Twilio for SMS outbid alerts and notifications | Accepted |
-| [0005](./0005-sendgrid-email.md) | SendGrid for transactional email (reuse existing) | Accepted |
+| [0005](./0005-sendgrid-email.md) | SendGrid for transactional email (reuse existing) | Superseded by ADR-0017 |
 | [0006](./0006-auction-vault-capture.md) | Vault payment method, capture on auction win | Accepted |
 | [0007](./0007-anti-snipe-extension.md) | Anti-snipe auto-extension on late bids | Accepted |
 | [0008](./0008-supabase-edge-functions.md) | Supabase Edge Functions for notification fan-out | Accepted |
@@ -32,6 +32,7 @@ The first batch (ADR-0001 through ADR-0015) was approved on **2026-05-12** and r
 | [0014](./0014-observability-slos.md) | Observability and outbid SLOs | Accepted |
 | [0015](./0015-image-hosting.md) | Supabase Storage for auction lot imagery | Accepted |
 | [0016](./0016-braintree-sunset.md) | Sunset Braintree — PayPal-only payments | Accepted |
+| [0017](./0017-twilio-verify-phone-auth.md) | Twilio Verify for phone-only authentication | Accepted |
 
 ## How to propose a new ADR
 

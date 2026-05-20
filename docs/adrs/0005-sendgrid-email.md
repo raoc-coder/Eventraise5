@@ -1,9 +1,10 @@
 # ADR-0005: SendGrid for transactional email (reuse existing)
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0017
 - **Date:** 2026-05-12
 - **Owners:** Engineering, Marketing
 - **Related:** ADR-0008
+- **Superseded by:** [ADR-0017](./0017-twilio-verify-phone-auth.md) (2026-05-20 — SendGrid removed; notifications are push + SMS + in-app only)
 
 ## Context
 

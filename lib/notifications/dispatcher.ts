@@ -2,8 +2,8 @@
  * Notification dispatcher interface (no implementation yet).
  *
  * ADR-0008: outbid and lot-close notifications fan out from a Supabase Edge
- * Function. ADR-0003 (Web Push / VAPID), ADR-0004 (Twilio SMS), and ADR-0005
- * (SendGrid email) define the three external channels; in-app delivery uses
+ * Function. ADR-0003 (Web Push / VAPID) and ADR-0004 (Twilio SMS) define external
+ * channels; in-app delivery uses
  * the existing `public.notifications` table.
  *
  * To avoid vendor lock-in we route all sends through this dispatcher. Sprint 4.5

@@ -220,7 +220,7 @@ export class MonitoringService {
   static trackSystemHealth(healthData: {
     database: boolean
     stripe: boolean
-    sendgrid: boolean
+    twilio: boolean
     supabase: boolean
   }) {
     const healthyServices = Object.values(healthData).filter(Boolean).length
@@ -353,12 +353,14 @@ export class HealthCheckService {
     }
   }
 
-  static async checkSendGrid(): Promise<boolean> {
+  static async checkTwilio(): Promise<boolean> {
     try {
-      // This would check SendGrid API connectivity
-      return true
+      const sid = process.env.TWILIO_ACCOUNT_SID
+      const token = process.env.TWILIO_AUTH_TOKEN
+      const verify = process.env.TWILIO_VERIFY_SERVICE_SID
+      return !!(sid && token && verify)
     } catch (error) {
-      MonitoringService.trackCriticalError(error as Error, { component: 'sendgrid' })
+      MonitoringService.trackCriticalError(error as Error, { component: 'twilio' })
       return false
     }
   }
@@ -376,30 +378,30 @@ export class HealthCheckService {
   static async runHealthCheck(): Promise<{
     database: boolean
     stripe: boolean
-    sendgrid: boolean
+    twilio: boolean
     supabase: boolean
     overall: boolean
   }> {
-    const [database, stripe, sendgrid, supabase] = await Promise.all([
+    const [database, stripe, twilio, supabase] = await Promise.all([
       this.checkDatabase(),
       this.checkStripe(),
-      this.checkSendGrid(),
+      this.checkTwilio(),
       this.checkSupabase()
     ])
 
-    const overall = database && stripe && sendgrid && supabase
+    const overall = database && stripe && twilio && supabase
 
     MonitoringService.trackSystemHealth({
       database,
       stripe,
-      sendgrid,
+      twilio,
       supabase
     })
 
     return {
       database,
       stripe,
-      sendgrid,
+      twilio,
       supabase,
       overall
     }

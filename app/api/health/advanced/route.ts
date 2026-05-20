@@ -99,7 +99,7 @@ async function checkRedis(): Promise<boolean> {
 // Check email service
 async function checkEmailService(): Promise<boolean> {
   try {
-    // This would check SendGrid or other email service
+    // Twilio Verify / Messaging configured (no transactional email vendor)
     // For now, return true as placeholder
     return true
   } catch (error) {

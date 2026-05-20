@@ -22,10 +22,11 @@
 |---|---|---|---|
 | S0.1 | ADR set 0001–0015 in `docs/adrs/` | Tech lead | Done |
 | S0.2 | This sprint plan in `docs/sprint-plan.md` | Tech lead | Done |
-| S0.3 | Twilio account + 10DLC brand & A2P campaign submitted | Ops + Eng | **Initiated 2026-05-12** — awaiting Twilio approval (~2–4 wk SLA) |
-| S0.4 | SendGrid domain auth (SPF / DKIM / DMARC) for `eventraisehub.com` | Eng + Marketing | **Initiated 2026-05-12** — awaiting DNS propagation + SendGrid verification |
+| S0.3a | Twilio Verify Service + phone auth (`/api/auth/verify/*`, ADR-0017) | Eng | **Done 2026-05-20** — requires `TWILIO_VERIFY_SERVICE_SID` in env |
+| S0.3b | Twilio 10DLC brand & A2P campaign (outbid SMS) | Ops + Eng | **Initiated 2026-05-12** — awaiting carrier approval (~2–4 wk SLA) |
+| S0.4 | ~~SendGrid domain auth~~ → **SendGrid removed** from codebase (ADR-0005 superseded) | Eng | **Done 2026-05-20** |
 | S0.5 | Supabase capacity confirmed — see [Operational Readiness §1](./adrs/operational-readiness.md#1-foundation-gate-pre-sprint-1) | Eng | **Initiated 2026-05-12** — awaiting confirmation per §S0.5 checklist below |
-| S0.6 | VAPID keypair generated and stored in env scopes — run `npm run generate:vapid -- --vercel` | Eng | Runner ready 2026-05-12 — awaiting Vercel env paste |
+| S0.6 | VAPID keypair generated and stored in env scopes — run `npm run generate:vapid -- --vercel` | Eng | **Done 2026-05-20** — local + Vercel env |
 | S0.7 | Braintree sunset — **decision + execution** (ADR-0016) | Eng + Finance | **Done** — code removed 2026-05-13 |
 
 ### External-track progress log
@@ -33,7 +34,7 @@
 | Date | Item | Status | "Done" means |
 |---|---|---|---|
 | 2026-05-12 | Twilio 10DLC brand + A2P campaign | Submitted; awaiting carrier approval | Messaging Service SID in Vercel; brand `APPROVED`; campaign `VERIFIED` |
-| 2026-05-12 | SendGrid domain auth | DNS added; awaiting verification | SPF, DKIM, DMARC pass on test send |
+| 2026-05-20 | SendGrid | Removed (ADR-0017) | No `@sendgrid/mail`; notifications: push + SMS + in-app |
 | 2026-05-12 | Supabase capacity | In motion | Plan ≥ Pro (no spend cap); Realtime connections ≥ 2,000; `pg_net` on; replication-lag report populates |
 
 **S0.5 — concrete checklist:**
@@ -185,7 +186,7 @@
 |---|---|
 | S4.4 | Migration `025_notifications_realtime.sql` — `push_subscriptions`, `notification_preferences`, `notification_deliveries` |
 | S4.5 | Edge Function `notify-outbid` + `pg_net` trigger from `public.bids` (ADR-0008) |
-| S4.6 | Channels — Web Push (VAPID), Twilio SMS, SendGrid email, in-app; **dispatcher** implementation replaces stub |
+| S4.6 | Channels — Web Push (VAPID), Twilio SMS, in-app; **dispatcher** implementation replaces stub |
 | S4.7 | Permission UX — prompt after bid intent (ADR-0003) |
 | S4.8 | Tests — dedupe keys, fan-out idempotency, channel prefs |
 
