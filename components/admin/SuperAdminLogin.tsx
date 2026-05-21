@@ -1,27 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Shield, Mail, Phone, KeyRound } from "lucide-react";
 import toast from "react-hot-toast";
-
-import { supabase as sharedSupabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function SuperAdminLogin() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const applySession = async (session: { access_token: string; refresh_token: string }) => {
-    if (!sharedSupabase) throw new Error("Authentication service unavailable");
-    const { error } = await sharedSupabase.auth.setSession({
+    const supabase = createClientComponentClient();
+    const { error } = await supabase.auth.setSession({
       access_token: session.access_token,
       refresh_token: session.refresh_token,
     });
@@ -35,17 +32,24 @@ export function SuperAdminLogin() {
       const res = await fetch("/api/admin/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, phone, password }),
       });
       const json = await res.json();
       if (!res.ok) {
-        toast.error(json.message || "Sign-in failed");
+        const hint =
+          json.error === "misconfigured"
+            ? json.message
+            : json.error === "session_failed"
+              ? "Credentials matched but session setup failed. Try again or check Supabase auth settings."
+              : json.message || "Sign-in failed";
+        toast.error(hint);
         return;
       }
       await applySession(json.session);
       toast.success("Signed in to Admin Console");
-      router.push("/admin");
-      router.refresh();
+      // Full navigation so the server admin layout reads auth cookies (not just localStorage).
+      window.location.assign("/admin");
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Sign-in failed");
     } finally {

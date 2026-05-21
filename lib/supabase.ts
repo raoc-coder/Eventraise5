@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://supabase-indigo-lamp.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+// Do not fall back to a legacy project URL — mismatched keys break admin login and auth.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || ""
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || ""
 
 // Only create client if we have the required keys
 if (!supabaseAnonKey && typeof window !== 'undefined') {

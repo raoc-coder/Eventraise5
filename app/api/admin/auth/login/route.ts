@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, getClientKeyFromHeaders } from "@/lib/rate-limit";
 import { authenticatePlatformAdminStatic, platformAdminUsesTwilio } from "@/lib/platform-admin-login";
@@ -52,6 +54,22 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   try {
     const session = await createSessionForPlatformAdmin(auth.admin);
+    if (!session.access_token || !session.refresh_token) {
+      throw new Error("Session tokens missing");
+    }
+
+    // Persist session in HTTP cookies so server layouts (admin console) see the user.
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const { error: cookieError } = await supabase.auth.setSession({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+    });
+    if (cookieError) {
+      console.error("[admin/auth/login] setSession cookies:", cookieError);
+      throw cookieError;
+    }
+
     return NextResponse.json({
       ok: true,
       role: auth.admin.role,

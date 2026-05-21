@@ -23,14 +23,18 @@ export function normalizeAdminEmail(raw: string): string | null {
   return email;
 }
 
+export type PlatformAdminLookupResult =
+  | { admin: PlatformAdminRow; error?: undefined }
+  | { admin: null; error?: "no_service_role" | "invalid_input" | string };
+
 export async function findPlatformAdminByCredentials(
   email: string,
   phoneRaw: string,
-): Promise<PlatformAdminRow | null> {
-  if (!supabaseAdmin) return null;
+): Promise<PlatformAdminLookupResult> {
+  if (!supabaseAdmin) return { admin: null, error: "no_service_role" };
   const e164 = normalizePhoneE164(phoneRaw);
   const normalizedEmail = normalizeAdminEmail(email);
-  if (!e164 || !normalizedEmail) return null;
+  if (!e164 || !normalizedEmail) return { admin: null, error: "invalid_input" };
 
   const { data, error } = await supabaseAdmin
     .from("platform_admins")
@@ -40,8 +44,12 @@ export async function findPlatformAdminByCredentials(
     .eq("is_active", true)
     .maybeSingle();
 
-  if (error || !data) return null;
-  return data as PlatformAdminRow;
+  if (error) {
+    console.error("[platform_admins] lookup failed:", error.message);
+    return { admin: null, error: error.message };
+  }
+  if (!data) return { admin: null };
+  return { admin: data as PlatformAdminRow };
 }
 
 export async function getPlatformAdminByUserId(

@@ -23,7 +23,7 @@ function safeEqualString(a: string, b: string): boolean {
 export function verifyPlatformAdminPassword(password: string): boolean {
   const expected = process.env.PLATFORM_ADMIN_PASSWORD?.trim();
   if (!expected || !password) return false;
-  return safeEqualString(password, expected);
+  return safeEqualString(password.trim(), expected);
 }
 
 export async function authenticatePlatformAdminStatic(
@@ -45,18 +45,32 @@ export async function authenticatePlatformAdminStatic(
     return {
       ok: false,
       error: "misconfigured",
-      message: "Admin password is not configured on the server.",
+      message: "Admin password is not configured on the server (PLATFORM_ADMIN_PASSWORD).",
     };
   }
 
-  const admin = await findPlatformAdminByCredentials(email, e164);
-  if (!admin || !verifyPlatformAdminPassword(password)) {
+  const roster = await findPlatformAdminByCredentials(email, e164);
+  if (roster.error) {
+    console.error("[platform-admin-login] roster lookup:", roster.error);
+    return {
+      ok: false,
+      error: "misconfigured",
+      message:
+        roster.error === "no_service_role"
+          ? "Server database not configured (SUPABASE_SERVICE_ROLE_KEY)."
+          : "Admin roster unavailable. Check Supabase project and migration 032.",
+    };
+  }
+
+  if (!roster.admin || !verifyPlatformAdminPassword(password)) {
     return {
       ok: false,
       error: "not_authorized",
       message: "Invalid email, phone, or password.",
     };
   }
+
+  const admin = roster.admin;
 
   return { ok: true, admin };
 }

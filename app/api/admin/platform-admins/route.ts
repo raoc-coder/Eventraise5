@@ -90,7 +90,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   const duplicate = await findPlatformAdminByCredentials(email, e164);
-  if (duplicate) {
+  if (duplicate.admin) {
     return NextResponse.json(
       { ok: false, error: "already_exists", message: "An admin with that email and phone already exists." },
       { status: 409 },
