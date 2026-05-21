@@ -42,7 +42,7 @@ async function main() {
   console.log(`  TWILIO_MESSAGING_SERVICE_SID ${flag("TWILIO_MESSAGING_SERVICE_SID", env)}`);
   console.log(`  NEXT_PUBLIC_APP_URL          ${base}`);
 
-  let serviceRole = env.SUPABASE_SERVICE_ROLE_KEY;
+  let serviceRole: string | undefined = env.SUPABASE_SERVICE_ROLE_KEY?.trim() || undefined;
   if (!serviceRole) {
     try {
       const keys = JSON.parse(

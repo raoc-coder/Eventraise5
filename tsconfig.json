@@ -46,6 +46,7 @@
     "cypress/**/*",
     "node_modules",
     "__tests__/**/*",
+    "scripts/**/*",
     "supabase/functions/**/*"
   ]
 }
