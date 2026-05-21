@@ -66,13 +66,13 @@
 **Master checklist:** [`docs/phase-ga-go-live.md`](docs/phase-ga-go-live.md)  
 **Context:** Sprints **0–5** engineering **complete**. No Sprint 6 in `docs/sprint-plan.md` — this phase is **ops + rehearsal + OR sign-off**.
 
-**Commands:** `npm run ga:status` · `npm run p0:smoke` · `npm run validate`
+**Commands:** `npm run ga:status` · `npm run p0:smoke` · `npm run validate` · `npm run test:a11y`
 
 **Authoritative gates:** [`docs/adrs/operational-readiness.md`](docs/adrs/operational-readiness.md) §5 (Sprint 4 GA), §6 (per-event runbook).  
 **Runbook:** [`docs/runbooks/sprint5-observability.md`](docs/runbooks/sprint5-observability.md).  
 **Supabase project:** `yxzypekwyuopbanroobr`
 
-**Snapshot (2026-05-21):** Edge notify-outbid OK; migrations through `032` applied; prod cron **401** until `CRON_SECRET` on Vercel; zero bids/pending deliveries in DB for E2E smoke yet.
+**Snapshot (2026-05-21):** Edge notify-outbid OK; migrations through `032` applied; **`CRON_SECRET` + `NEXT_PUBLIC_APP_URL=https://www.eventraisehub.com` on Vercel** — prod cron drain **200**; zero bids/pending deliveries in DB for E2E smoke yet. (Local `.env.local` may still show apex; `ga:status` probes www either way.)
 
 ### Program status
 
@@ -92,17 +92,17 @@
 | 1 | Deploy Edge: `supabase functions deploy notify-outbid` | Eng/Ops | **Complete** (2026-05-20) — `yxzypekwyuopbanroobr` |
 | 2 | Vault secrets: `notify_outbid_edge_url`, `notify_outbid_service_role` | Eng/Ops | **Complete** — `npx tsx scripts/p0-apply-vault-secrets.ts` |
 | 3 | Confirm `pg_net` + `bids` trigger (`027`) | Eng | **Complete** — trigger + `pg_net` verified via Management API |
-| 4 | `CRON_SECRET` on Vercel + `.env.local` | Eng | **Partial** — generated in `.env.local`; **add same value to Vercel** (prod curl returned 401) |
-| 5 | Smoke: bid → deliveries → cron → push/in-app | Eng/QA | **Partial** — Edge auth OK (404 `bid_not_found`); no bids in DB yet; drain after Vercel `CRON_SECRET` |
+| 4 | `CRON_SECRET` on Vercel + `.env.local` | Eng | **Complete** — on Vercel; manual drain OK via `www` host |
+| 5 | Smoke: bid → deliveries → cron → push/in-app | Eng/QA | **Partial** — Edge auth OK (404 `bid_not_found`); no bids in DB yet; run `npm run p0:smoke` after first bid |
 
 **Helper scripts:** `scripts/p0-apply-vault-secrets.ts`, `scripts/p0-smoke-outbid.ts`, `scripts/p0-print-vault-sql.ts`
 
-Manual cron drain (after Vercel env matches `.env.local`):
+Manual cron drain (use **www** host — apex → www redirect can drop `Authorization`):
 
 ```bash
 source .env.local  # or export CRON_SECRET=…
 curl -sS -H "Authorization: Bearer $CRON_SECRET" \
-  "${NEXT_PUBLIC_APP_URL:-https://eventraisehub.com}/api/cron/process-notification-deliveries"
+  "https://www.eventraisehub.com/api/cron/process-notification-deliveries"
 ```
 
 **Local:** `npm run dev` then same curl against `http://localhost:3000/...`
@@ -129,13 +129,13 @@ curl -sS -H "Authorization: Bearer $CRON_SECRET" \
 
 Walk **§5.0–§5.5** in operational-readiness.md, including:
 
-- [ ] Sub-second Realtime on lot page; anti-snipe extension in final 60s
-- [ ] Web Push: subscribe after bid; outbid received (Chrome + Safari)
-- [ ] In-app `notifications` row + delivery dedupe (no double-send on replay)
-- [ ] `axe` zero serious/critical on bid sheet + `/donations/new`
-- [ ] Brand: `bg-action-500` thermometers; CTA scarcity on bid/donate pages
+- [ ] Sub-second Realtime on lot page; anti-snipe extension in final 60s — **manual QA**
+- [ ] Web Push: subscribe after bid; outbid received (Chrome + Safari) — **manual QA**
+- [ ] In-app `notifications` row + delivery dedupe (no double-send on replay) — **manual QA** (+ unit tests on payload/delivery)
+- [x] `axe` zero serious/critical on bid sheet + donate flow — `npm run test:a11y` (`LotBidForm`, `DonationAmountForm`)
+- [x] Brand: thermometers `bg-action-500`; CTA scarcity on donate presets (trust/secondary only; PayPal = pay CTA); sticky mobile bid CTA
 
-**Status:** **Pending** formal sign-off.
+**Status:** **Engineering checks in repo** — formal OR §5 sign-off still **pending** (Realtime/push/SMS rehearsal).
 
 #### P2 — Load & observability (Sprint 5 ops)
 

@@ -29,7 +29,7 @@ The locked sprint plan ends at **Sprint 5**. There is **no Sprint 6** in [`docs/
 | 1 | Edge `notify-outbid` deployed | HTTP 404 `bid_not_found` on fake id (not 401) |
 | 2 | Vault secrets `notify_outbid_*` | `npm run p0:vault` succeeds |
 | 3 | `pg_net` + `bids` trigger (`027`) | Trigger exists on linked project |
-| 4 | **`CRON_SECRET` on Vercel** (Production + Preview) | `npm run ga:status` → prod cron ≠ 401 |
+| 4 | **`CRON_SECRET` on Vercel** (Production + Preview) | `npm run ga:status` → prod cron **200** on `www` host |
 | 5 | End-to-end smoke | Real bid → `notification_deliveries` → cron drain → push/in-app |
 
 **Scripts:** `npm run p0:vault`, `npm run p0:smoke`, `npm run ga:status`
@@ -67,6 +67,8 @@ Does **not** block: Verify login, Web Push, admin console static login.
 ### P1 — Sprint 4 GA checklist (OR §5)
 
 Walk §5.0–§5.5 in operational-readiness.md (Realtime, anti-snipe, push, dedupe, axe, brand).
+
+**Automated in CI/repo:** `npm run test:a11y` — axe on bid sheet + donate form; brand CTA scarcity on donate presets.
 
 ### P2 — Load & observability (Sprint 5 ops)
 

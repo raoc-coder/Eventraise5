@@ -26,9 +26,25 @@ function flag(name: string, env: Record<string, string>): string {
   return v ? "set" : "missing";
 }
 
+/** Apex redirects to www; use www for cron/API probes so Bearer auth is not lost. */
+function canonicalAppBase(url: string | undefined): string {
+  const raw = (url || "https://www.eventraisehub.com").replace(/\/$/, "");
+  try {
+    const u = new URL(raw);
+    if (u.hostname === "eventraisehub.com") {
+      u.hostname = "www.eventraisehub.com";
+      return u.origin;
+    }
+    return u.origin;
+  } catch {
+    return "https://www.eventraisehub.com";
+  }
+}
+
 async function main() {
   const env = loadEnv();
-  const base = env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "https://eventraisehub.com";
+  const configuredUrl = env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+  const base = canonicalAppBase(configuredUrl);
   const cronSecret = env.CRON_SECRET?.trim();
 
   console.log("=== Phase GA — readiness snapshot ===\n");
@@ -40,7 +56,10 @@ async function main() {
   console.log(`  NEXT_PUBLIC_VAPID_PUBLIC_KEY ${flag("NEXT_PUBLIC_VAPID_PUBLIC_KEY", env)}`);
   console.log(`  PLATFORM_ADMIN_PASSWORD      ${flag("PLATFORM_ADMIN_PASSWORD", env)}`);
   console.log(`  TWILIO_MESSAGING_SERVICE_SID ${flag("TWILIO_MESSAGING_SERVICE_SID", env)}`);
-  console.log(`  NEXT_PUBLIC_APP_URL          ${base}`);
+  console.log(`  NEXT_PUBLIC_APP_URL          ${configuredUrl || "(default)"}`);
+  if (configuredUrl && canonicalAppBase(configuredUrl) !== configuredUrl) {
+    console.log(`  (cron probe uses www)        ${base}`);
+  }
 
   let serviceRole: string | undefined = env.SUPABASE_SERVICE_ROLE_KEY?.trim() || undefined;
   if (!serviceRole) {
@@ -92,15 +111,20 @@ async function main() {
       cronRes.status === 200
         ? "OK"
         : cronRes.status === 401
-          ? "FAIL — add CRON_SECRET to Vercel (same as .env.local) and redeploy"
+          ? "FAIL — CRON_SECRET mismatch or redeploy needed (probe uses www host)"
           : `HTTP ${cronRes.status}`;
     console.log(`\nProduction cron drain (${base}): ${label}`);
+    if (cronRes.status === 200 && configuredUrl?.includes("://eventraisehub.com")) {
+      console.log(
+        "  Tip: align .env.local to https://www.eventraisehub.com (Vercel prod is already www).",
+      );
+    }
   } else {
     console.log("\nProduction cron drain: skipped (CRON_SECRET missing locally)");
   }
 
   console.log("\nNext actions:");
-  console.log("  1. Vercel: CRON_SECRET + PLATFORM_ADMIN_PASSWORD (match .env.local)");
+  console.log("  1. Vercel: PLATFORM_ADMIN_PASSWORD (match .env.local) if not set");
   console.log("  2. npm run p0:smoke — after a real bid exists");
   console.log("  3. Walk docs/adrs/operational-readiness.md §5 then §6");
   console.log("  See docs/phase-ga-go-live.md");

@@ -34,7 +34,17 @@ async function main() {
 
   if (!serviceRole) throw new Error("SUPABASE_SERVICE_ROLE_KEY missing");
 
-  const base = env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  const rawBase = env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  let base = rawBase;
+  try {
+    const u = new URL(rawBase);
+    if (u.hostname === "eventraisehub.com") {
+      u.hostname = "www.eventraisehub.com";
+      base = u.origin;
+    }
+  } catch {
+    /* keep rawBase */
+  }
   const cronSecret = env.CRON_SECRET;
 
   if (!process.argv.includes("--drain-only")) {

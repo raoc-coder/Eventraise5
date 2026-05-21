@@ -14,6 +14,7 @@ import { minNextBidCents } from "@/lib/auction/bid-rules";
 import { supabase } from "@/lib/supabase";
 import { subscribeToAuctionLot } from "@/lib/realtime/auctionChannel";
 import { OutbidPushPrompt } from "@/components/notifications/OutbidPushPrompt";
+import { LotBidForm } from "@/components/auctions/LotBidForm";
 
 type Lot = {
   id: string;
@@ -229,42 +230,14 @@ export default function AuctionLotBidPage() {
               </CardHeader>
             </Card>
 
-            <form onSubmit={submitBid} className="space-y-4" aria-labelledby="bid-form-heading">
-              <h2 id="bid-form-heading" className="sr-only">
-                Place your bid
-              </h2>
-              <div>
-                <label htmlFor="bid-amt" className="mb-1 block text-sm font-medium text-trust-900">
-                  Your bid (USD)
-                </label>
-                <input
-                  id="bid-amt"
-                  type="number"
-                  min={0.01}
-                  step="0.01"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  aria-describedby="lot-current-high bid-amt-hint"
-                  inputMode="decimal"
-                  autoComplete="off"
-                  className="w-full rounded-lg border border-trust-200 px-3 py-3 text-lg text-trust-950 shadow-sm focus:border-trust-500 focus:outline-none focus:ring-2 focus:ring-trust-500/30"
-                />
-                <p id="bid-amt-hint" className="mt-1 text-xs text-trust-600">
-                  Enter an amount at or above the minimum next bid shown after you submit.
-                </p>
-              </div>
-              <Button
-                type="submit"
-                disabled={submitting || lot.status !== "open" || new Date(lot.closes_at) <= new Date()}
-                aria-busy={submitting}
-                className="w-full bg-gradient-to-r from-action-500 to-action-600 py-6 text-lg font-semibold text-white hover:from-action-600 hover:to-action-700 sm:py-6"
-              >
-                {authLoading ? "Checking session…" : submitting ? "Placing bid…" : "Place bid"}
-              </Button>
-              {lot.status !== "open" && (
-                <p className="text-center text-sm text-trust-700">This lot is not accepting bids ({lot.status}).</p>
-              )}
-            </form>
+            <LotBidForm
+              lot={lot}
+              amount={amount}
+              onAmountChange={setAmount}
+              onSubmit={submitBid}
+              submitting={submitting}
+              authLoading={authLoading}
+            />
             <OutbidPushPrompt show={!!user && bidJustPlaced} />
           </>
         )}
