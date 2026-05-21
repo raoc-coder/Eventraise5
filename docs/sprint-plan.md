@@ -213,6 +213,24 @@
 
 **Exit:** production hardening complete; per-event runbook rehearsed. Apply migration `031` on Supabase before live donor wall / P2P Realtime.
 
+**Status:** **Complete** (engineering, 2026-05-20).
+
+---
+
+## Phase GA — Go-live & first live event (post–Sprint 5)
+
+**There is no Sprint 6** in this plan. After Sprint 5, work shifts to **ops, rehearsal, and OR sign-off**.
+
+| Track | Doc | Commands |
+|-------|-----|----------|
+| Master checklist | [`docs/phase-ga-go-live.md`](./phase-ga-go-live.md) | — |
+| GA gates | [`docs/adrs/operational-readiness.md`](./adrs/operational-readiness.md) §5–§6 | — |
+| Status log | [`LEDGER.md`](../LEDGER.md) | `npm run ga:status`, `npm run p0:smoke` |
+
+**P0 blockers (2026-05-21):** `CRON_SECRET` on Vercel (prod cron 401 until set); full bid → outbid → cron smoke; Twilio 10DLC **VERIFIED** for US SMS at scale.
+
+**Optional “Sprint 6+”** (product backlog only): broadcast channels, full `_cents` migration, 1.5× load test — see phase-ga doc.
+
 ---
 
 ## Cross-sprint guardrails

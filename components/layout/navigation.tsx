@@ -43,7 +43,7 @@ export function Navigation({ showAuth = true, className = '' }: NavigationProps)
         }
         const data = await res.json()
         if (!cancelled) {
-          setIsOwnerAdmin(!!data?.isOwnerAdmin)
+          setIsOwnerAdmin(!!(data?.isPlatformAdmin ?? data?.isOwnerAdmin))
         }
       } catch {
         if (!cancelled) setIsOwnerAdmin(false)

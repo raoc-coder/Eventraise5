@@ -1,30 +1,6 @@
-import { ReactNode } from 'react'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { isOwnerAdminUser } from '@/lib/auth-utils'
-import { AdminConsoleNav } from '@/components/admin/AdminConsoleNav'
-import { Navigation } from '@/components/layout/navigation'
+import { ReactNode } from "react";
 
-export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const supabase = createServerComponentClient({ cookies })
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/auth/login')
-  }
-
-  if (!isOwnerAdminUser(user)) {
-    redirect('/access-denied?scope=admin')
-  }
-
-  return (
-    <>
-      <Navigation />
-      <AdminConsoleNav />
-      {children}
-    </>
-  )
+/** Root admin segment — login is public; protected routes use `(console)/layout`. */
+export default function AdminRootLayout({ children }: { children: ReactNode }) {
+  return <>{children}</>;
 }

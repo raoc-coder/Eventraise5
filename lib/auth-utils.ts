@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@supabase/supabase-js'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { resolvePlatformAdminAccess } from '@/lib/platform-admin'
 
 export interface AuthResult {
   user: any
@@ -124,11 +125,12 @@ export async function requireEventAccess(req: NextRequest, eventId: string): Pro
 }
 
 /**
- * Require admin authentication
+ * Require platform admin authentication (console APIs)
  */
 export async function requireAdminAuth(req: NextRequest): Promise<AuthResult> {
   const auth = await requireAuth(req)
-  if (!isOwnerAdminUser(auth.user)) {
+  const access = await resolvePlatformAdminAccess(auth.user)
+  if (!access.isPlatformAdmin) {
     throw new Error('Admin access required')
   }
   return auth

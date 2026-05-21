@@ -23,8 +23,9 @@ This document summarizes **what each sprint phase produced** in the repository: 
 | **Sprint 3** | Auction vault, bids, capture-on-win | **Complete** | PayPal Vault enabled in sandbox; cron on Vercel |
 | **Sprint 4** | Realtime bids, anti-snipe, outbid fan-out | **Complete** | Edge deploy + `pg_net` Vault secrets + 10DLC for SMS |
 | **Sprint 5** | Polish (Realtime P2P, donor wall, a11y, load test) | **Complete** | k6 rehearsal + dashboard wiring per runbook |
+| **Phase GA** | Go-live ops + first live event | **Active** (2026-05-21) | OR §5–§6; see [`phase-ga-go-live.md`](./phase-ga-go-live.md) |
 
-**Bottom line:** Feature work for Epics 1–2 and Sprint 5 polish is **shipped in repo**. Production gala readiness depends on **external verification** (10DLC, PayPal Vault live, Edge/cron ops) per [`docs/adrs/operational-readiness.md`](../adrs/operational-readiness.md).
+**Bottom line:** Feature work for Epics 1–2 and Sprint 5 polish is **shipped in repo**. **Current phase:** Phase GA — production env, cron/outbid smoke, PayPal Vault E2E, 10DLC, per-event rehearsal ([`operational-readiness.md`](../adrs/operational-readiness.md)).
 
 ---
 
