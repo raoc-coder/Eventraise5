@@ -1,7 +1,7 @@
 # Sprint Phase Output — Internal Recap
 
 **Document type:** Internal engineering & ops reference  
-**Last updated:** 2026-05-20  
+**Last updated:** 2026-05-21  
 **Program:** Epics 1 (P2P) + 2 (Auctions & real-time bidding)  
 **Authoritative plan:** [`docs/sprint-plan.md`](../sprint-plan.md)  
 **Living status log:** [`LEDGER.md`](../../LEDGER.md) at repo root  
@@ -23,7 +23,7 @@ This document summarizes **what each sprint phase produced** in the repository: 
 | **Sprint 3** | Auction vault, bids, capture-on-win | **Complete** | PayPal Vault enabled in sandbox; cron on Vercel |
 | **Sprint 4** | Realtime bids, anti-snipe, outbid fan-out | **Complete** | Edge deploy + `pg_net` Vault secrets + 10DLC for SMS |
 | **Sprint 5** | Polish (Realtime P2P, donor wall, a11y, load test) | **Complete** | k6 rehearsal + dashboard wiring per runbook |
-| **Phase GA** | Go-live ops + first live event | **Active** (2026-05-21) | OR §5–§6; see [`phase-ga-go-live.md`](./phase-ga-go-live.md) |
+| **Phase GA** | Go-live ops + first live event | **Active** (2026-05-21) | OR §5–§6; engineering deploy **complete** — see [`phase-ga-engineering-sprint-2026-05-21.md`](./phase-ga-engineering-sprint-2026-05-21.md) |
 
 **Bottom line:** Feature work for Epics 1–2 and Sprint 5 polish is **shipped in repo**. **Current phase:** Phase GA — production env, cron/outbid smoke, PayPal Vault E2E, 10DLC, per-event rehearsal ([`operational-readiness.md`](../adrs/operational-readiness.md)).
 
@@ -305,19 +305,35 @@ All payloads follow ADR-0012 (no bidder email/PII on auction channels; donor wal
 | P2P matching / leaderboard | `__tests__/lib/p2p/matching-gifts.test.ts`, `leaderboard.test.ts` |
 | Auction rules / settle | `__tests__/lib/auction/bid-rules.test.ts`, `anti-snipe.test.ts`, `settle-lot.test.ts` |
 | Notifications | `__tests__/lib/notifications/vapid.test.ts`, `outbid-payload.test.ts`, `send-delivery.test.ts` |
+| GA a11y (OR §5.5) | `__tests__/a11y/ga-critical-flows.test.tsx`; `__tests__/components/auctions/LotBidForm.test.tsx` |
 
-Run: `npm run validate` (lint + type-check + `test:ci`).
+Run: `npm run validate` (lint + type-check + `test:ci`); `npm run test:a11y` for bid/donate axe gate.
 
 ---
 
-## Open ops backlog (post–Sprint 5)
+## Phase GA engineering sprint (2026-05-21)
+
+**Deploy:** Vercel production **successful**. Full recap: [`phase-ga-engineering-sprint-2026-05-21.md`](./phase-ga-engineering-sprint-2026-05-21.md).
+
+| Deliverable | Status |
+|-------------|--------|
+| `LotBidForm` + sticky mobile bid CTA | Shipped |
+| `DonationAmountForm` + trust tokens / CTA scarcity | Shipped |
+| `npm run test:a11y` (jest-axe) | Shipped |
+| `ga:status` / `p0:smoke` www cron probe | Shipped |
+| `CRON_SECRET` + `NEXT_PUBLIC_APP_URL` on Vercel | Verified |
+| Supabase vs Neon evaluation | **Stay on Supabase** |
+
+---
+
+## Open ops backlog (post–Sprint 5 / Phase GA)
 
 | Priority | Item | Owner | Blocks |
 |----------|------|-------|--------|
+| P0 | Outbid E2E smoke (bid → deliveries → cron) | Eng/QA | Full notification path proof |
 | P0 | Twilio 10DLC campaign **VERIFIED** | Ops | Reliable US outbid SMS |
-| P0 | Deploy Edge `notify-outbid` + Vault `pg_net` secrets | Eng/Ops | Outbid enqueue from bids |
-| P1 | `CRON_SECRET` in `.env.local` + Vercel (all cron routes) | Eng | Manual/automated delivery drain |
 | P1 | PayPal Vault enabled (sandbox → live) | Eng/Finance | Winner capture |
+| P1 | OR §5 manual sign-off (Realtime, push, dedupe replay) | Eng/QA | Gala GA gate |
 | P2 | k6 leaderboard @ 5k VUs; document p95 in runbook | Eng | Capacity sign-off (OR §6) |
 | P2 | Wire Sentry/Vercel panels per `sprint5-observability.md` | Eng | SLO alerting (ADR-0014) |
 

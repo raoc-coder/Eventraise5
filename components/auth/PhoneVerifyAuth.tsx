@@ -60,6 +60,7 @@ export function PhoneVerifyAuth({ mode }: PhoneVerifyAuthProps) {
     try {
       const res = await fetch('/api/auth/verify/send', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone }),
       })
@@ -83,6 +84,7 @@ export function PhoneVerifyAuth({ mode }: PhoneVerifyAuthProps) {
     try {
       const res = await fetch('/api/auth/verify/check', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone,
@@ -94,7 +96,13 @@ export function PhoneVerifyAuth({ mode }: PhoneVerifyAuthProps) {
       })
       const json = await res.json()
       if (!res.ok) {
-        toast.error(json.message || 'Invalid code')
+        const hint =
+          json.error === 'misconfigured'
+            ? json.message
+            : json.error === 'session_failed'
+              ? json.detail || json.message || 'Sign-in succeeded but session could not be created.'
+              : json.message || 'Invalid code'
+        toast.error(hint)
         return
       }
       await applySession(json.session)

@@ -1,4 +1,4 @@
-import type { Session } from "@supabase/supabase-js";
+import type { EmailOtpType, Session } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/lib/supabase";
 import {
   ensureProfileAdminRole,
@@ -75,9 +75,10 @@ export async function createSessionForPlatformAdmin(
   const tokenHash = linkData.properties?.hashed_token;
   if (!tokenHash) throw new Error("Failed to generate auth link");
 
+  const otpType = (linkData.properties?.verification_type || "magiclink") as EmailOtpType;
   const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.verifyOtp({
     token_hash: tokenHash,
-    type: "email",
+    type: otpType,
   });
   if (sessionError) throw sessionError;
   if (!sessionData.session) throw new Error("Failed to create session");

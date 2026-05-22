@@ -1,10 +1,15 @@
-import type { Session, User } from "@supabase/supabase-js";
+import type { EmailOtpType, Session, User } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/lib/supabase";
 import { phoneToSyntheticEmail } from "@/lib/phone";
 
 export interface PhoneProfileMetadata {
   full_name?: string;
   organization_name?: string;
+}
+
+function phoneFromMetadata(user: User): string | null {
+  const meta = user.user_metadata?.phone;
+  return typeof meta === "string" && meta.startsWith("+") ? meta : null;
 }
 
 async function findUserByPhone(e164: string): Promise<User | null> {
@@ -18,12 +23,36 @@ async function findUserByPhone(e164: string): Promise<User | null> {
     const users = data.users ?? [];
     const found =
       users.find((u) => u.phone === e164) ??
+      users.find((u) => phoneFromMetadata(u) === e164) ??
       users.find((u) => (u.email || "").toLowerCase() === synthetic.toLowerCase());
     if (found) return found;
     if (users.length < perPage) break;
     page += 1;
   }
   return null;
+}
+
+async function exchangeMagicLinkForSession(email: string): Promise<Session> {
+  if (!supabaseAdmin) throw new Error("Database unavailable");
+
+  const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+    type: "magiclink",
+    email,
+  });
+  if (linkError) throw linkError;
+
+  const tokenHash = linkData.properties?.hashed_token;
+  if (!tokenHash) throw new Error("Failed to generate auth link");
+
+  const otpType = (linkData.properties?.verification_type || "magiclink") as EmailOtpType;
+  const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.verifyOtp({
+    token_hash: tokenHash,
+    type: otpType,
+  });
+  if (sessionError) throw sessionError;
+  if (!sessionData.session) throw new Error("Failed to create session");
+
+  return sessionData.session;
 }
 
 async function upsertPhoneUser(
@@ -57,7 +86,25 @@ async function upsertPhoneUser(
     phone_confirm: true,
     user_metadata: metadata,
   });
-  if (error) throw error;
+  if (error) {
+    const msg = error.message?.toLowerCase() ?? "";
+    if (msg.includes("already") || msg.includes("registered") || msg.includes("exists")) {
+      const retry = await findUserByPhone(e164);
+      if (retry) {
+        const { data: updated, error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+          retry.id,
+          {
+            phone: e164,
+            phone_confirm: true,
+            user_metadata: { ...retry.user_metadata, ...metadata },
+          },
+        );
+        if (updateError) throw updateError;
+        return updated.user;
+      }
+    }
+    throw error;
+  }
   return data.user;
 }
 
@@ -70,22 +117,5 @@ export async function createSessionForPhoneUser(
 
   const user = await upsertPhoneUser(e164, profile);
   const email = user.email || phoneToSyntheticEmail(e164);
-
-  const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-    type: "magiclink",
-    email,
-  });
-  if (linkError) throw linkError;
-
-  const tokenHash = linkData.properties?.hashed_token;
-  if (!tokenHash) throw new Error("Failed to generate auth link");
-
-  const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.verifyOtp({
-    token_hash: tokenHash,
-    type: "email",
-  });
-  if (sessionError) throw sessionError;
-  if (!sessionData.session) throw new Error("Failed to create session");
-
-  return sessionData.session;
+  return exchangeMagicLinkForSession(email);
 }

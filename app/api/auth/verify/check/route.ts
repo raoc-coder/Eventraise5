@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { normalizePhoneE164 } from "@/lib/phone";
 import { checkVerification } from "@/lib/twilio-verify";
 import { createSessionForPhoneUser } from "@/lib/auth-phone-session";
 import { rateLimit, getClientKeyFromHeaders } from "@/lib/rate-limit";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -45,11 +48,38 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
+  if (!supabaseAdmin) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "misconfigured",
+        message:
+          "Server auth is not configured (SUPABASE_SERVICE_ROLE_KEY). Add it in Vercel env and redeploy.",
+      },
+      { status: 503 },
+    );
+  }
+
   try {
     const session = await createSessionForPhoneUser(e164, {
       full_name: body.fullName,
       organization_name: body.organizationName,
     });
+    if (!session.access_token || !session.refresh_token) {
+      throw new Error("Session tokens missing");
+    }
+
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const { error: cookieError } = await supabase.auth.setSession({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+    });
+    if (cookieError) {
+      console.error("[auth/verify/check] setSession cookies:", cookieError);
+      throw cookieError;
+    }
+
     return NextResponse.json({
       ok: true,
       session: {
@@ -62,9 +92,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       },
     });
   } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
     console.error("[auth/verify/check]", err);
     return NextResponse.json(
-      { ok: false, error: "session_failed", message: "Sign-in succeeded but session could not be created." },
+      {
+        ok: false,
+        error: "session_failed",
+        message: "Sign-in succeeded but session could not be created.",
+        ...(process.env.NODE_ENV === "development" ? { detail } : {}),
+      },
       { status: 500 },
     );
   }

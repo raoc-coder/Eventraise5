@@ -1,6 +1,6 @@
 # Project Ledger
 
-**Internal sprint outputs (full recap):** [`docs/internal/sprint-phase-recap.md`](docs/internal/sprint-phase-recap.md)
+**Internal sprint outputs (full recap):** [`docs/internal/sprint-phase-recap.md`](docs/internal/sprint-phase-recap.md) · **Phase GA sprint (2026-05-21):** [`docs/internal/phase-ga-engineering-sprint-2026-05-21.md`](docs/internal/phase-ga-engineering-sprint-2026-05-21.md)
 
 ## Sprint 0 — status (2026-05-20)
 
@@ -40,9 +40,9 @@
 | S4.7 Push permission UX | **Complete** | `public/sw.js`, push-subscribe API, post-bid prompt |
 | S4.8 Tests | **Complete** | `outbid-payload.test.ts`, `send-delivery.test.ts` |
 | Migration `030` | **Complete** | Applied on `yxzypekwyuopbanroobr` |
-| Ops | **Partial** | Edge deployed + Vault secrets done; Vercel `CRON_SECRET` + full bid smoke pending |
+| Ops | **Complete** (2026-05-21) | Edge + Vault + `CRON_SECRET` on Vercel; prod cron drain **200** on www |
 
-**Sprint 4 exit (engineering):** Code path enqueue → cron → push/SMS/in-app. GA still needs ops checklist (§5 Sprint 4 gate) + 10DLC for reliable US SMS.
+**Sprint 4 exit (engineering):** Code path enqueue → cron → push/SMS/in-app. **Full bid→delivery E2E smoke** still pending (no bids in DB). 10DLC for reliable US SMS.
 
 ## Sprint 5 — Polish & hardening (2026-05-20)
 
@@ -63,6 +63,8 @@
 ## Phase GA — Go-live & first live event (ACTIVE)
 
 **Date started:** 2026-05-21  
+**Engineering deploy:** **Complete** (2026-05-21) — Vercel production successful  
+**Internal recap (copy/paste):** [`docs/internal/phase-ga-engineering-sprint-2026-05-21.md`](docs/internal/phase-ga-engineering-sprint-2026-05-21.md)  
 **Master checklist:** [`docs/phase-ga-go-live.md`](docs/phase-ga-go-live.md)  
 **Context:** Sprints **0–5** engineering **complete**. No Sprint 6 in `docs/sprint-plan.md` — this phase is **ops + rehearsal + OR sign-off**.
 
@@ -70,9 +72,20 @@
 
 **Authoritative gates:** [`docs/adrs/operational-readiness.md`](docs/adrs/operational-readiness.md) §5 (Sprint 4 GA), §6 (per-event runbook).  
 **Runbook:** [`docs/runbooks/sprint5-observability.md`](docs/runbooks/sprint5-observability.md).  
-**Supabase project:** `yxzypekwyuopbanroobr`
+**Supabase project:** `yxzypekwyuopbanroobr`  
+**Production URL:** `https://www.eventraisehub.com`
 
-**Snapshot (2026-05-21):** Edge notify-outbid OK; migrations through `032` applied; **`CRON_SECRET` + `NEXT_PUBLIC_APP_URL=https://www.eventraisehub.com` on Vercel** — prod cron drain **200**; zero bids/pending deliveries in DB for E2E smoke yet. (Local `.env.local` may still show apex; `ga:status` probes www either way.)
+**Snapshot (2026-05-21, post-deploy):** P0 steps 1–4 **complete**; OR §5.5 engineering checks **complete** (`test:a11y`, brand/CTA, sticky bid CTA). **Pending:** P0 step 5 (bid E2E), 10DLC, PayPal Vault rehearsal, OR §5 manual sign-off, P2 k6/dashboards.
+
+### Phase GA engineering sprint — shipped (2026-05-21)
+
+| Item | Status |
+|------|--------|
+| `LotBidForm` + sticky mobile Place bid | **Deployed** |
+| `DonationAmountForm` — trust tokens, CTA scarcity | **Deployed** |
+| `npm run test:a11y` (jest-axe) | **Deployed** |
+| `ga:status` / `p0:smoke` www cron probe fix | **Deployed** |
+| Supabase vs Neon evaluation | **Decision: stay on Supabase** |
 
 ### Program status
 
@@ -80,8 +93,9 @@
 |------|-------------------|----------|
 | Epic 1 P2P (Sprints 1–2, 5) | **Complete** | OR §2–§3, §5.5 brand/a11y as needed |
 | Epic 2 auctions (Sprints 3–4) | **Complete** | OR §4–§5 |
-| Notifications (Sprint 4) | **Complete** | Edge deploy, cron, 10DLC |
+| Notifications (Sprint 4) | **Complete** | Cron verified on prod; 10DLC pending |
 | Polish (Sprint 5) | **Complete** | k6 + dashboards |
+| Phase GA engineering (2026-05-21) | **Deployed** | a11y/brand/cron scripts; see internal recap |
 
 ### Ordered steps (do in sequence where possible)
 
@@ -207,3 +221,9 @@ Only if product prioritizes after first gala:
 - **Console:** `/admin` — reports, payouts, **Admins** roster (super admin only) at `/admin/admins`.
 - **Create admins:** Super admin POST `/api/admin/platform-admins`; new admins use same static login.
 - **Later:** set `PLATFORM_ADMIN_USE_TWILIO=true` and re-enable OTP routes when ready.
+
+## Platform — database vendor (2026-05-21)
+
+- **Evaluated:** Neon vs Supabase (cost).
+- **Decision:** **Remain on Supabase** — ERH depends on Auth, Realtime, Edge/`pg_net`, RLS, and Storage ADRs; Neon is Postgres-only.
+- **Cost follow-up:** Right-size Supabase tier; 10DLC when verified — not a DB migration.
