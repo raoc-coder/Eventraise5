@@ -884,7 +884,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             {/* Opportunity Details */}
             &lt;div className="bg-gray-800/30 p-4 rounded-lg space-y-3"&gt;
               &lt;div className="flex items-center text-sm text-gray-300"&gt;
-                &lt;Calendar className="h-4 w-4 text-cyan-400 mr-2" /&gt;
+                &lt;Calendar className="h-4 w-4 text-trust-300 mr-2" /&gt;
                 &lt;span&gt;{formatDate(startTime)} - {formatDate(endTime)}&lt;/span&gt;
               &lt;/div&gt;
               &lt;div className="flex items-center text-sm text-gray-300"&gt;
@@ -892,7 +892,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
                 &lt;span&gt;{location}&lt;/span&gt;
               &lt;/div&gt;
               &lt;div className="flex items-center text-sm text-gray-300"&gt;
-                &lt;Users className="h-4 w-4 text-cyan-400 mr-2" /&gt;
+                &lt;Users className="h-4 w-4 text-trust-300 mr-2" /&gt;
                 &lt;span&gt;{spotsRemaining} spots remaining&lt;/span&gt;
               &lt;/div&gt;
               {<span class="branch-0 cbranch-no" title="branch not covered" >requiredSkills.length &gt; 0 &amp;&amp; (</span>
@@ -993,7 +993,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
                   placeholder="Describe any relevant experience or skills..."
                   value={formData.experience}
                   onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleInputChange('experience', e.target.value)}</span>
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-trust-500"
                   rows={3}
                 /&gt;
               &lt;/div&gt;
@@ -1005,7 +1005,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
                   placeholder="Any specific availability constraints or preferences..."
                   value={formData.availability}
                   onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleInputChange('availability', e.target.value)}</span>
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-trust-500"
                   rows={2}
                 /&gt;
               &lt;/div&gt;
@@ -1017,13 +1017,13 @@ export default function <span class="cstat-no" title="statement not covered" ><s
                   placeholder="Any additional information or special requests..."
                   value={formData.notes}
                   onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleInputChange('notes', e.target.value)}</span>
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-trust-500"
                   rows={2}
                 /&gt;
               &lt;/div&gt;
             &lt;/div&gt;
 &nbsp;
-            &lt;Button type="submit" disabled={loading} className="w-full btn-primary"&gt;
+            &lt;Button type="submit" disabled={loading} className="w-full"&gt;
               &lt;Users className="h-4 w-4 mr-2" /&gt;
               {loading ? 'Signing Up...' : 'Sign Up as Volunteer'}
             &lt;/Button&gt;
@@ -1040,10 +1040,10 @@ export default function <span class="cstat-no" title="statement not covered" ><s
               Thank you for volunteering! You&amp;apos;ll receive a confirmation email with event details.
             &lt;/p&gt;
             &lt;div className="space-y-2"&gt;
-              &lt;Button onClick={resetForm} className="btn-primary"&gt;
+              &lt;Button onClick={resetForm}&gt;
                 Sign Up for Another Opportunity
               &lt;/Button&gt;
-              &lt;Button variant="outline" className="w-full text-cyan-400 hover:bg-cyan-500/20"&gt;
+              &lt;Button variant="outline" className="w-full text-trust-300 hover:bg-trust-500/20"&gt;
                 View All Opportunities
               &lt;/Button&gt;
             &lt;/div&gt;
@@ -1060,7 +1060,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

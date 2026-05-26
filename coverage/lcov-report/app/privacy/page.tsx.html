@@ -273,11 +273,7 @@
 <a name='L208'></a><a href='#L208'>208</a>
 <a name='L209'></a><a href='#L209'>209</a>
 <a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L211'></a><a href='#L211'>211</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -487,39 +483,37 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use client'
-&nbsp;
-import { Navigation } from <span class="cstat-no" title="statement not covered" >'@/components/layout/navigation'</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Navigation } from <span class="cstat-no" title="statement not covered" >'@/components/layout/navigation'</span>
 import { Card, CardContent, CardHeader, CardTitle } from <span class="cstat-no" title="statement not covered" >'@/components/ui/card'</span>
 import { Shield, Eye, Lock, Database, Users, Mail } from <span class="cstat-no" title="statement not covered" >'lucide-react'</span>
 &nbsp;
 export default function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >PrivacyPolicyPage() {</span></span>
   return (
-    &lt;div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800"&gt;
+    &lt;div className="min-h-screen bg-white"&gt;
       &lt;Navigation /&gt;
       
       &lt;div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"&gt;
         &lt;div className="text-center mb-12"&gt;
-          &lt;h1 className="text-4xl font-bold text-white mb-4"&gt;Privacy Policy&lt;/h1&gt;
-          &lt;p className="text-xl text-gray-300"&gt;
+          &lt;h1 className="text-4xl font-bold text-gray-900 mb-2"&gt;Privacy Policy&lt;/h1&gt;
+          &lt;p className="text-lg text-gray-600"&gt;
             Your privacy and data security are our top priorities
           &lt;/p&gt;
-          &lt;p className="text-sm text-gray-400 mt-2"&gt;
+          &lt;p className="text-sm text-gray-500 mt-2"&gt;
             Last updated: {new Date().toLocaleDateString()}
           &lt;/p&gt;
         &lt;/div&gt;
 &nbsp;
         &lt;div className="space-y-8"&gt;
           {/* Introduction */}
-          &lt;Card className="card-soft"&gt;
+          &lt;Card className="event-card"&gt;
             &lt;CardHeader&gt;
-              &lt;CardTitle className="text-white flex items-center"&gt;
-                &lt;Shield className="h-6 w-6 mr-2 text-cyan-400" /&gt;
+              &lt;CardTitle className="text-gray-900 flex items-center"&gt;
+                &lt;Shield className="h-6 w-6 mr-2 text-trust-600" /&gt;
                 Our Commitment to Privacy
               &lt;/CardTitle&gt;
             &lt;/CardHeader&gt;
             &lt;CardContent&gt;
-              &lt;p className="text-gray-300 leading-relaxed"&gt;
+              &lt;p className="text-gray-700 leading-relaxed"&gt;
                 Event Raise is committed to protecting your privacy and ensuring the security of your personal information. 
                 This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use 
                 our platform to create campaigns, make donations, or participate in events.
@@ -528,27 +522,27 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;/Card&gt;
 &nbsp;
           {/* Information We Collect */}
-          &lt;Card className="card-soft"&gt;
+          &lt;Card className="event-card"&gt;
             &lt;CardHeader&gt;
-              &lt;CardTitle className="text-white flex items-center"&gt;
-                &lt;Database className="h-6 w-6 mr-2 text-orange-400" /&gt;
+              &lt;CardTitle className="text-gray-900 flex items-center"&gt;
+                &lt;Database className="h-6 w-6 mr-2 text-orange-600" /&gt;
                 Information We Collect
               &lt;/CardTitle&gt;
             &lt;/CardHeader&gt;
             &lt;CardContent className="space-y-4"&gt;
               &lt;div&gt;
-                &lt;h3 className="text-lg font-semibold text-cyan-400 mb-2"&gt;Personal Information&lt;/h3&gt;
-                &lt;ul className="text-gray-300 space-y-2"&gt;
+                &lt;h3 className="text-lg font-semibold text-trust-700 mb-2"&gt;Personal Information&lt;/h3&gt;
+                &lt;ul className="text-gray-700 space-y-2"&gt;
                   &lt;li&gt;• Name and email address (required for account creation)&lt;/li&gt;
                   &lt;li&gt;• Organization name (optional, for campaign creators)&lt;/li&gt;
-                  &lt;li&gt;• Payment information (processed securely through Stripe)&lt;/li&gt;
+                  &lt;li&gt;• Payment information (processed securely through PayPal)&lt;/li&gt;
                   &lt;li&gt;• Profile information you choose to share&lt;/li&gt;
                 &lt;/ul&gt;
               &lt;/div&gt;
               
               &lt;div&gt;
-                &lt;h3 className="text-lg font-semibold text-orange-400 mb-2"&gt;Usage Information&lt;/h3&gt;
-                &lt;ul className="text-gray-300 space-y-2"&gt;
+                &lt;h3 className="text-lg font-semibold text-orange-700 mb-2"&gt;Usage Information&lt;/h3&gt;
+                &lt;ul className="text-gray-700 space-y-2"&gt;
                   &lt;li&gt;• Campaign and event participation data&lt;/li&gt;
                   &lt;li&gt;• Donation history and amounts&lt;/li&gt;
                   &lt;li&gt;• Platform usage patterns and preferences&lt;/li&gt;
@@ -559,18 +553,18 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;/Card&gt;
 &nbsp;
           {/* How We Use Information */}
-          &lt;Card className="card-soft"&gt;
+          &lt;Card className="event-card"&gt;
             &lt;CardHeader&gt;
-              &lt;CardTitle className="text-white flex items-center"&gt;
-                &lt;Eye className="h-6 w-6 mr-2 text-green-400" /&gt;
+              &lt;CardTitle className="text-gray-900 flex items-center"&gt;
+                &lt;Eye className="h-6 w-6 mr-2 text-green-600" /&gt;
                 How We Use Your Information
               &lt;/CardTitle&gt;
             &lt;/CardHeader&gt;
             &lt;CardContent&gt;
               &lt;div className="grid grid-cols-1 md:grid-cols-2 gap-6"&gt;
                 &lt;div&gt;
-                  &lt;h3 className="text-lg font-semibold text-green-400 mb-3"&gt;Platform Operations&lt;/h3&gt;
-                  &lt;ul className="text-gray-300 space-y-2"&gt;
+                  &lt;h3 className="text-lg font-semibold text-green-700 mb-3"&gt;Platform Operations&lt;/h3&gt;
+                  &lt;ul className="text-gray-700 space-y-2"&gt;
                     &lt;li&gt;• Process donations and payments&lt;/li&gt;
                     &lt;li&gt;• Manage campaigns and events&lt;/li&gt;
                     &lt;li&gt;• Provide customer support&lt;/li&gt;
@@ -579,8 +573,8 @@ export default function <span class="cstat-no" title="statement not covered" ><s
                 &lt;/div&gt;
                 
                 &lt;div&gt;
-                  &lt;h3 className="text-lg font-semibold text-blue-400 mb-3"&gt;Communication&lt;/h3&gt;
-                  &lt;ul className="text-gray-300 space-y-2"&gt;
+                  &lt;h3 className="text-lg font-semibold text-trust-800 mb-3"&gt;Communication&lt;/h3&gt;
+                  &lt;ul className="text-gray-700 space-y-2"&gt;
                     &lt;li&gt;• Send campaign updates&lt;/li&gt;
                     &lt;li&gt;• Provide donation receipts&lt;/li&gt;
                     &lt;li&gt;• Share platform improvements&lt;/li&gt;
@@ -592,28 +586,28 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;/Card&gt;
 &nbsp;
           {/* Data Security */}
-          &lt;Card className="card-soft"&gt;
+          &lt;Card className="event-card"&gt;
             &lt;CardHeader&gt;
-              &lt;CardTitle className="text-white flex items-center"&gt;
-                &lt;Lock className="h-6 w-6 mr-2 text-red-400" /&gt;
+              &lt;CardTitle className="text-gray-900 flex items-center"&gt;
+                &lt;Lock className="h-6 w-6 mr-2 text-red-600" /&gt;
                 Data Security &amp; Protection
               &lt;/CardTitle&gt;
             &lt;/CardHeader&gt;
             &lt;CardContent className="space-y-4"&gt;
               &lt;div className="grid grid-cols-1 md:grid-cols-2 gap-6"&gt;
                 &lt;div&gt;
-                  &lt;h3 className="text-lg font-semibold text-red-400 mb-3"&gt;Technical Safeguards&lt;/h3&gt;
-                  &lt;ul className="text-gray-300 space-y-2"&gt;
+                  &lt;h3 className="text-lg font-semibold text-red-700 mb-3"&gt;Technical Safeguards&lt;/h3&gt;
+                  &lt;ul className="text-gray-700 space-y-2"&gt;
                     &lt;li&gt;• HTTPS encryption for all data transmission&lt;/li&gt;
                     &lt;li&gt;• Secure database with Row Level Security (RLS)&lt;/li&gt;
-                    &lt;li&gt;• PCI-compliant payment processing via Stripe&lt;/li&gt;
+                    &lt;li&gt;• PCI-compliant payment processing via PayPal&lt;/li&gt;
                     &lt;li&gt;• Regular security audits and updates&lt;/li&gt;
                   &lt;/ul&gt;
                 &lt;/div&gt;
                 
                 &lt;div&gt;
-                  &lt;h3 className="text-lg font-semibold text-purple-400 mb-3"&gt;Access Controls&lt;/h3&gt;
-                  &lt;ul className="text-gray-300 space-y-2"&gt;
+                  &lt;h3 className="text-lg font-semibold text-trust-800 mb-3"&gt;Access Controls&lt;/h3&gt;
+                  &lt;ul className="text-gray-700 space-y-2"&gt;
                     &lt;li&gt;• Multi-factor authentication support&lt;/li&gt;
                     &lt;li&gt;• Role-based access permissions&lt;/li&gt;
                     &lt;li&gt;• Secure API endpoints&lt;/li&gt;
@@ -625,20 +619,20 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;/Card&gt;
 &nbsp;
           {/* Data Sharing */}
-          &lt;Card className="card-soft"&gt;
+          &lt;Card className="event-card"&gt;
             &lt;CardHeader&gt;
-              &lt;CardTitle className="text-white flex items-center"&gt;
-                &lt;Users className="h-6 w-6 mr-2 text-yellow-400" /&gt;
+              &lt;CardTitle className="text-gray-900 flex items-center"&gt;
+                &lt;Users className="h-6 w-6 mr-2 text-yellow-600" /&gt;
                 Information Sharing
               &lt;/CardTitle&gt;
             &lt;/CardHeader&gt;
             &lt;CardContent&gt;
-              &lt;p className="text-gray-300 mb-4"&gt;
+              &lt;p className="text-gray-700 mb-4"&gt;
                 We do not sell, trade, or rent your personal information to third parties. We may share information only in these limited circumstances:
               &lt;/p&gt;
-              &lt;ul className="text-gray-300 space-y-2"&gt;
+              &lt;ul className="text-gray-700 space-y-2"&gt;
                 &lt;li&gt;• &lt;strong&gt;Campaign Organizers:&lt;/strong&gt; Donor information (name, amount) for campaign management&lt;/li&gt;
-                &lt;li&gt;• &lt;strong&gt;Payment Processing:&lt;/strong&gt; Necessary information with Stripe for transaction processing&lt;/li&gt;
+                &lt;li&gt;• &lt;strong&gt;Payment Processing:&lt;/strong&gt; Necessary information with PayPal for transaction processing&lt;/li&gt;
                 &lt;li&gt;• &lt;strong&gt;Legal Requirements:&lt;/strong&gt; When required by law or to protect our rights&lt;/li&gt;
                 &lt;li&gt;• &lt;strong&gt;Service Providers:&lt;/strong&gt; Trusted partners who assist in platform operations&lt;/li&gt;
               &lt;/ul&gt;
@@ -646,15 +640,15 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;/Card&gt;
 &nbsp;
           {/* Your Rights */}
-          &lt;Card className="card-soft"&gt;
+          &lt;Card className="event-card"&gt;
             &lt;CardHeader&gt;
-              &lt;CardTitle className="text-white"&gt;Your Privacy Rights&lt;/CardTitle&gt;
+              &lt;CardTitle className="text-gray-900"&gt;Your Privacy Rights&lt;/CardTitle&gt;
             &lt;/CardHeader&gt;
             &lt;CardContent&gt;
               &lt;div className="grid grid-cols-1 md:grid-cols-2 gap-6"&gt;
                 &lt;div&gt;
-                  &lt;h3 className="text-lg font-semibold text-cyan-400 mb-3"&gt;Access &amp; Control&lt;/h3&gt;
-                  &lt;ul className="text-gray-300 space-y-2"&gt;
+                  &lt;h3 className="text-lg font-semibold text-trust-700 mb-3"&gt;Access &amp; Control&lt;/h3&gt;
+                  &lt;ul className="text-gray-700 space-y-2"&gt;
                     &lt;li&gt;• View and update your profile information&lt;/li&gt;
                     &lt;li&gt;• Access your donation history&lt;/li&gt;
                     &lt;li&gt;• Download your data&lt;/li&gt;
@@ -663,8 +657,8 @@ export default function <span class="cstat-no" title="statement not covered" ><s
                 &lt;/div&gt;
                 
                 &lt;div&gt;
-                  &lt;h3 className="text-lg font-semibold text-orange-400 mb-3"&gt;Communication Preferences&lt;/h3&gt;
-                  &lt;ul className="text-gray-300 space-y-2"&gt;
+                  &lt;h3 className="text-lg font-semibold text-orange-700 mb-3"&gt;Communication Preferences&lt;/h3&gt;
+                  &lt;ul className="text-gray-700 space-y-2"&gt;
                     &lt;li&gt;• Opt out of marketing emails&lt;/li&gt;
                     &lt;li&gt;• Control notification settings&lt;/li&gt;
                     &lt;li&gt;• Manage campaign updates&lt;/li&gt;
@@ -676,18 +670,18 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;/Card&gt;
 &nbsp;
           {/* Contact Information */}
-          &lt;Card className="card-soft"&gt;
+          &lt;Card className="event-card"&gt;
             &lt;CardHeader&gt;
-              &lt;CardTitle className="text-white flex items-center"&gt;
-                &lt;Mail className="h-6 w-6 mr-2 text-blue-400" /&gt;
+              &lt;CardTitle className="text-gray-900 flex items-center"&gt;
+                &lt;Mail className="h-6 w-6 mr-2 text-trust-700" /&gt;
                 Contact Us
               &lt;/CardTitle&gt;
             &lt;/CardHeader&gt;
             &lt;CardContent&gt;
-              &lt;p className="text-gray-300 mb-4"&gt;
+              &lt;p className="text-gray-700 mb-4"&gt;
                 If you have questions about this Privacy Policy or our data practices, please contact us:
               &lt;/p&gt;
-              &lt;div className="space-y-2 text-gray-300"&gt;
+              &lt;div className="space-y-2 text-gray-700"&gt;
                 &lt;p&gt;Email: privacy@eventraise.com&lt;/p&gt;
                 &lt;p&gt;Address: [Your Business Address]&lt;/p&gt;
                 &lt;p&gt;Phone: [Your Contact Number]&lt;/p&gt;
@@ -706,7 +700,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

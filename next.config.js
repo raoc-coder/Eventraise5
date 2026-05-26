@@ -3,7 +3,12 @@ const { withSentryConfig } = require('@sentry/nextjs')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['images.unsplash.com', 'via.placeholder.com', 'www.paypalobjects.com'],
+    domains: [
+      'images.unsplash.com',
+      'via.placeholder.com',
+      'www.paypalobjects.com',
+      'api.dicebear.com',
+    ],
     remotePatterns: [
       {
         protocol: 'https',

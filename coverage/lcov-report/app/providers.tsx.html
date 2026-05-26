@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/46</span>
+                <span class='fraction'>0/45</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/43</span>
+                <span class='fraction'>0/41</span>
             </div>
         
             
@@ -152,14 +152,12 @@
 <a name='L87'></a><a href='#L87'>87</a>
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L90'></a><a href='#L90'>90</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -188,25 +186,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -238,6 +224,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -250,9 +244,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use client'
 &nbsp;
 import { createContext, useContext, useEffect, useState } from <span class="cstat-no" title="statement not covered" >'react'</span>
-import { createClient } from <span class="cstat-no" title="statement not covered" >'@supabase/supabase-js'</span>
+import { supabase as sharedSupabase } from <span class="cstat-no" title="statement not covered" >'@/lib/supabase'</span>
 import { User } from '@supabase/supabase-js'
 import { Toaster } from <span class="cstat-no" title="statement not covered" >'react-hot-toast'</span>
+import { CurrencyProvider } from <span class="cstat-no" title="statement not covered" >'@/app/providers/currency-provider'</span>
 &nbsp;
 interface AuthContextType {
   user: User | null
@@ -266,7 +261,7 @@ const AuthContext = <span class="cstat-no" title="statement not covered" >create
   signOut: <span class="fstat-no" title="function not covered" >async () =&gt; {}</span>,
 })
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >useAuth = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>) =&gt; {</span></span>
+export const <span class="cstat-no" title="statement not covered" >useAuth </span>= <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
   const context = <span class="cstat-no" title="statement not covered" >useContext(AuthContext)</span>
 <span class="cstat-no" title="statement not covered" >  if (!context) {</span>
 <span class="cstat-no" title="statement not covered" >    throw new Error('useAuth must be used within an AuthProvider')</span>
@@ -274,31 +269,19 @@ export const <span class="cstat-no" title="statement not covered" >useAuth = <sp
 <span class="cstat-no" title="statement not covered" >  return context</span>
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >Providers({</span></span> children }: { children: React.ReactNode }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >Providers(</span></span>{ children }: { children: React.ReactNode }) {
   const [user, setUser] = <span class="cstat-no" title="statement not covered" >useState&lt;User | null&gt;(null)</span>
   const [loading, setLoading] = <span class="cstat-no" title="statement not covered" >useState(true)</span>
   const [supabase, setSupabase] = <span class="cstat-no" title="statement not covered" >useState&lt;any&gt;(null)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-    // Only initialize Supabase client on the client side
-<span class="cstat-no" title="statement not covered" >    if (typeof window !== 'undefined') {</span>
-<span class="cstat-no" title="statement not covered" >      try {</span>
-        const supabaseUrl = <span class="cstat-no" title="statement not covered" >process.env.NEXT_PUBLIC_SUPABASE_URL</span>
-        const supabaseAnonKey = <span class="cstat-no" title="statement not covered" >process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY</span>
-        
-<span class="cstat-no" title="statement not covered" >        if (!supabaseUrl || !supabaseAnonKey) {</span>
-<span class="cstat-no" title="statement not covered" >          console.error('Missing Supabase environment variables')</span>
-<span class="cstat-no" title="statement not covered" >          setLoading(false)</span>
-<span class="cstat-no" title="statement not covered" >          return</span>
-        }
-&nbsp;
-        const client = <span class="cstat-no" title="statement not covered" >createClient(supabaseUrl, supabaseAnonKey)</span>
-<span class="cstat-no" title="statement not covered" >        setSupabase(client)</span>
-      } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error('Failed to initialize Supabase client:', error)</span>
-<span class="cstat-no" title="statement not covered" >        setLoading(false)</span>
-      }
+<span class="cstat-no" title="statement not covered" >    if (typeof window === 'undefined') <span class="cstat-no" title="statement not covered" >return</span></span>
+<span class="cstat-no" title="statement not covered" >    if (!sharedSupabase) {</span>
+<span class="cstat-no" title="statement not covered" >      console.error('Missing Supabase environment variables')</span>
+<span class="cstat-no" title="statement not covered" >      setLoading(false)</span>
+<span class="cstat-no" title="statement not covered" >      return</span>
     }
+<span class="cstat-no" title="statement not covered" >    setSupabase(sharedSupabase)</span>
   }, [])
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
@@ -330,13 +313,21 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
   const signOut = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (supabase) {</span>
 <span class="cstat-no" title="statement not covered" >      await supabase.auth.signOut()</span>
+      // Clear user state immediately
+<span class="cstat-no" title="statement not covered" >      setUser(null)</span>
+      // Redirect to home page
+<span class="cstat-no" title="statement not covered" >      if (typeof window !== 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >        window.location.href = '/'</span>
+      }
     }
   }
 &nbsp;
   return (
     &lt;AuthContext.Provider value={{ user, loading, signOut }}&gt;
-      {children}
-      &lt;Toaster position="top-right" /&gt;
+      &lt;CurrencyProvider&gt;
+        {children}
+        &lt;Toaster position="top-right" /&gt;
+      &lt;/CurrencyProvider&gt;
     &lt;/AuthContext.Provider&gt;
   )
 }</pre></td></tr></table></pre>
@@ -346,7 +337,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../prettify.js"></script>
         <script>

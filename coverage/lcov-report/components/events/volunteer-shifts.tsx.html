@@ -1433,13 +1433,13 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
 &nbsp;
   const getSkillsColor = (skill: string) =&gt; {
     const colors = {
-      'setup': 'bg-blue-100 text-blue-800',
+      'setup': 'bg-trust-100 text-trust-800',
       'coordination': 'bg-green-100 text-green-800',
       'cleanup': 'bg-orange-100 text-orange-800',
-      'customer_service': 'bg-purple-100 text-purple-800',
-      'communication': 'bg-pink-100 text-pink-800',
+      'customer_service': 'bg-trust-100 text-trust-800',
+      'communication': 'bg-action-100 text-action-900',
       'decorating': 'bg-yellow-100 text-yellow-800',
-      'organization': 'bg-indigo-100 text-indigo-800',
+      'organization': 'bg-trust-100 text-trust-900',
       'teamwork': 'bg-red-100 text-red-800'
     }
     return colors[skill as keyof typeof colors] || <span class="branch-1 cbranch-no" title="branch not covered" >'bg-gray-100 text-gray-800'</span>
@@ -1504,12 +1504,12 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
 &nbsp;
   if (showSignupForm &amp;&amp; selectedShift) {
     return (
-      &lt;Card className="border-2 border-blue-200 bg-blue-50"&gt;
+      &lt;Card className="border-2 border-trust-200 bg-trust-50"&gt;
         &lt;CardHeader&gt;
           &lt;div className="flex items-center justify-between"&gt;
             &lt;div&gt;
-              &lt;CardTitle className="text-blue-900"&gt;Volunteer Signup&lt;/CardTitle&gt;
-              &lt;CardDescription className="text-blue-700"&gt;
+              &lt;CardTitle className="text-trust-950"&gt;Volunteer Signup&lt;/CardTitle&gt;
+              &lt;CardDescription className="text-trust-800"&gt;
                 {selectedShift.title} - {formatTime(selectedShift.start_time)}
               &lt;/CardDescription&gt;
             &lt;/div&gt;
@@ -1520,7 +1520,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                 setShowSignupForm(false)
                 setSelectedShift(null)
               }}
-              className="border-blue-300 text-blue-700 hover:bg-blue-100"
+              className="border-trust-300 text-trust-800 hover:bg-trust-100"
             &gt;
               Back to Shifts
             &lt;/Button&gt;
@@ -1583,7 +1583,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                   id="experienceLevel"
                   value={experienceLevel}
                   onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >setExperienceLevel(e.target.value)}</span>
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-trust-500 focus:ring-trust-500"
                 &gt;
                   &lt;option value="beginner"&gt;Beginner&lt;/option&gt;
                   &lt;option value="intermediate"&gt;Intermediate&lt;/option&gt;
@@ -1652,7 +1652,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
 &nbsp;
             &lt;div className="bg-gray-50 rounded-lg p-4"&gt;
               &lt;div className="flex items-start space-x-2"&gt;
-                &lt;Shield className="h-5 w-5 text-blue-600 mt-0.5" /&gt;
+                &lt;Shield className="h-5 w-5 text-trust-700 mt-0.5" /&gt;
                 &lt;div className="text-sm text-gray-600"&gt;
                   &lt;p className="font-medium text-gray-900 mb-2"&gt;Volunteer Agreement&lt;/p&gt;
                   &lt;ul className="space-y-1 text-xs"&gt;
@@ -1705,7 +1705,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
   if (loading) {
     return (
       &lt;div className="text-center py-8"&gt;
-        &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"&gt;&lt;/div&gt;
+        &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto mb-4"&gt;&lt;/div&gt;
         &lt;p className="text-gray-600"&gt;Loading volunteer shifts...&lt;/p&gt;
       &lt;/div&gt;
     )
@@ -1747,7 +1747,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                 isFull 
                   ? 'border-red-200 bg-red-50' 
                   : isActive 
-                    ? 'border-blue-200 bg-blue-50 hover:border-blue-300' 
+                    ? 'border-trust-200 bg-trust-50 hover:border-trust-300' 
                     : 'border-gray-200 bg-gray-50'
               }`}
             &gt;
@@ -1818,9 +1818,9 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
                   className={`w-full ${
                     isFull 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : isActive 
-                        ? 'btn-primary' 
-                        : 'bg-gray-400 cursor-not-allowed'
+                      : !isActive 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : ''
                   }`}
                 &gt;
                   {isFull ? (
@@ -1855,7 +1855,7 @@ export function VolunteerShifts({ eventId, eventTitle, onSignupSuccess }: Volunt
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

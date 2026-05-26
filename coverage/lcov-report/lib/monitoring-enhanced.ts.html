@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/85</span>
+                <span class='fraction'>0/88</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/25</span>
+                <span class='fraction'>0/28</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/85</span>
+                <span class='fraction'>0/88</span>
             </div>
         
             
@@ -470,7 +470,9 @@
 <a name='L405'></a><a href='#L405'>405</a>
 <a name='L406'></a><a href='#L406'>406</a>
 <a name='L407'></a><a href='#L407'>407</a>
-<a name='L408'></a><a href='#L408'>408</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L408'></a><a href='#L408'>408</a>
+<a name='L409'></a><a href='#L409'>409</a>
+<a name='L410'></a><a href='#L410'>410</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -827,7 +829,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -880,7 +884,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as Sentry from <span class="cstat-no" title="statement not covered" >'@sentry/nextjs'</span>
 &nbsp;
 // Enhanced monitoring service for EventraiseHUB
-export class <span class="cstat-no" title="statement not covered" >MonitoringService {</span>
+export class <span class="cstat-no" title="statement not covered" >MonitoringService </span>{
   // Track business metrics
 <span class="fstat-no" title="function not covered" >  static t</span>rackBusinessMetric(metric: string, value: number, tags?: Record&lt;string, string&gt;) {
 <span class="cstat-no" title="statement not covered" >    Sentry.addBreadcrumb({</span>
@@ -1099,7 +1103,7 @@ export class <span class="cstat-no" title="statement not covered" >MonitoringSer
 <span class="fstat-no" title="function not covered" >  static t</span>rackSystemHealth(healthData: {
     database: boolean
     stripe: boolean
-    sendgrid: boolean
+    twilio: boolean
     supabase: boolean
   }) {
     const healthyServices = <span class="cstat-no" title="statement not covered" >Object.values(healthData).filter(Boolean).length</span>
@@ -1174,7 +1178,7 @@ export class <span class="cstat-no" title="statement not covered" >MonitoringSer
 }
 &nbsp;
 // Performance monitoring utilities
-export class <span class="cstat-no" title="statement not covered" >PerformanceMonitor {</span>
+export class <span class="cstat-no" title="statement not covered" >PerformanceMonitor </span>{
   private static <span class="cstat-no" title="statement not covered" >timers: Map&lt;string, number&gt; = new Map()</span>
 &nbsp;
 <span class="fstat-no" title="function not covered" >  static s</span>tartTimer(name: string): void {
@@ -1211,7 +1215,7 @@ export class <span class="cstat-no" title="statement not covered" >PerformanceMo
 }
 &nbsp;
 // Health check service
-export class <span class="cstat-no" title="statement not covered" >HealthCheckService {</span>
+export class <span class="cstat-no" title="statement not covered" >HealthCheckService </span>{
 <span class="fstat-no" title="function not covered" >  static async c</span>heckDatabase(): Promise&lt;boolean&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       // This would be implemented based on your database setup
@@ -1232,12 +1236,14 @@ export class <span class="cstat-no" title="statement not covered" >HealthCheckSe
     }
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  static async c</span>heckSendGrid(): Promise&lt;boolean&gt; {
+<span class="fstat-no" title="function not covered" >  static async c</span>heckTwilio(): Promise&lt;boolean&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      // This would check SendGrid API connectivity
-<span class="cstat-no" title="statement not covered" >      return true</span>
+      const sid = <span class="cstat-no" title="statement not covered" >process.env.TWILIO_ACCOUNT_SID</span>
+      const token = <span class="cstat-no" title="statement not covered" >process.env.TWILIO_AUTH_TOKEN</span>
+      const verify = <span class="cstat-no" title="statement not covered" >process.env.TWILIO_VERIFY_SERVICE_SID</span>
+<span class="cstat-no" title="statement not covered" >      return !!(sid &amp;&amp; token &amp;&amp; verify)</span>
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      MonitoringService.trackCriticalError(error as Error, { component: 'sendgrid' })</span>
+<span class="cstat-no" title="statement not covered" >      MonitoringService.trackCriticalError(error as Error, { component: 'twilio' })</span>
 <span class="cstat-no" title="statement not covered" >      return false</span>
     }
   }
@@ -1255,30 +1261,30 @@ export class <span class="cstat-no" title="statement not covered" >HealthCheckSe
 <span class="fstat-no" title="function not covered" >  static async r</span>unHealthCheck(): Promise&lt;{
     database: boolean
     stripe: boolean
-    sendgrid: boolean
+    twilio: boolean
     supabase: boolean
     overall: boolean
   }&gt; {
-    const [database, stripe, sendgrid, supabase] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
+    const [database, stripe, twilio, supabase] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
       this.checkDatabase(),
       this.checkStripe(),
-      this.checkSendGrid(),
+      this.checkTwilio(),
       this.checkSupabase()
     ])
 &nbsp;
-    const overall = <span class="cstat-no" title="statement not covered" >database &amp;&amp; stripe &amp;&amp; sendgrid &amp;&amp; supabase</span>
+    const overall = <span class="cstat-no" title="statement not covered" >database &amp;&amp; stripe &amp;&amp; twilio &amp;&amp; supabase</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    MonitoringService.trackSystemHealth({</span>
       database,
       stripe,
-      sendgrid,
+      twilio,
       supabase
     })
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return {</span>
       database,
       stripe,
-      sendgrid,
+      twilio,
       supabase,
       overall
     }
@@ -1291,7 +1297,7 @@ export class <span class="cstat-no" title="statement not covered" >HealthCheckSe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../prettify.js"></script>
         <script>

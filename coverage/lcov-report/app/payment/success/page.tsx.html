@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>0/15</span>
             </div>
         
             
@@ -124,12 +124,42 @@
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -188,15 +218,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use client'
 &nbsp;
 import { useEffect, useState, Suspense } from <span class="cstat-no" title="statement not covered" >'react'</span>
+import dynamic from <span class="cstat-no" title="statement not covered" >'next/dynamic'</span>
 import { useSearchParams } from <span class="cstat-no" title="statement not covered" >'next/navigation'</span>
 import { Navigation } from <span class="cstat-no" title="statement not covered" >'@/components/layout/navigation'</span>
-import { DonationConfirmation } from <span class="cstat-no" title="statement not covered" >'@/components/payments/donation-confirmation'</span>
+&nbsp;
+const DonationConfirmation = dynamic(
+<span class="fstat-no" title="function not covered" >  () =&gt; <span class="cstat-no" title="statement not covered" ><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >i</span>mport('</span>@/components/payments/donation-confirmation').t</span>hen(<span class="fstat-no" title="function not covered" >m =&gt; <span class="cstat-no" title="statement not covered" >m</span>.DonationConfirmation)</span>,</span>
+  {
+    ssr: false,
+    loading: () =&gt; (
+      &lt;div className="flex items-center justify-center min-h-[40vh]"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto mb-4"&gt;&lt;/div&gt;
+          &lt;p className="text-gray-600"&gt;Loading confirmation...&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    )
+  }
+)
 &nbsp;
 function <span class="fstat-no" title="function not covered" >PaymentSuccessContent() {</span>
   const searchParams = <span class="cstat-no" title="statement not covered" >useSearchParams()</span>
-  const sessionId = <span class="cstat-no" title="statement not covered" >searchParams.get('session_id')</span>
-  const campaignId = <span class="cstat-no" title="statement not covered" >searchParams.get('campaign')</span>
-  const amount = <span class="cstat-no" title="statement not covered" >searchParams.get('amount')</span>
+  const sessionId = <span class="cstat-no" title="statement not covered" >searchParams?.get('session_id') || null</span>
+  const campaignId = <span class="cstat-no" title="statement not covered" >searchParams?.get('campaign') || null</span>
+  const amount = <span class="cstat-no" title="statement not covered" >searchParams?.get('amount') || null</span>
   const [loading, setLoading] = <span class="cstat-no" title="statement not covered" >useState(true)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
@@ -209,7 +254,7 @@ function <span class="fstat-no" title="function not covered" >PaymentSuccessCont
     return (
       &lt;div className="flex items-center justify-center min-h-[60vh]"&gt;
         &lt;div className="text-center"&gt;
-          &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"&gt;&lt;/div&gt;
+          &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto mb-4"&gt;&lt;/div&gt;
           &lt;p className="text-gray-600"&gt;Processing your donation...&lt;/p&gt;
         &lt;/div&gt;
       &lt;/div&gt;
@@ -231,12 +276,12 @@ function <span class="fstat-no" title="function not covered" >PaymentSuccessCont
 &nbsp;
 export default function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >PaymentSuccessPage() {</span></span>
   return (
-    &lt;div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"&gt;
+    &lt;div className="min-h-screen bg-gradient-to-br from-trust-50 to-trust-100"&gt;
       &lt;Navigation /&gt;
       &lt;Suspense fallback={
         &lt;div className="flex items-center justify-center min-h-[60vh]"&gt;
           &lt;div className="text-center"&gt;
-            &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"&gt;&lt;/div&gt;
+            &lt;div className="animate-spin rounded-full h-8 w-8 border-b-2 border-trust-500 mx-auto mb-4"&gt;&lt;/div&gt;
             &lt;p className="text-gray-600"&gt;Loading...&lt;/p&gt;
           &lt;/div&gt;
         &lt;/div&gt;
@@ -253,7 +298,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

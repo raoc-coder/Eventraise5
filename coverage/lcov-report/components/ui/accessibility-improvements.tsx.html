@@ -734,7 +734,7 @@ export interface AccessibleButtonProps extends AccessibilityProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleButton({</span></span>
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleButton(</span></span>{
   children,
   onClick,
   disabled = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
@@ -747,7 +747,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
   const baseClasses = <span class="cstat-no" title="statement not covered" >'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'</span>
   
   const variantClasses = <span class="cstat-no" title="statement not covered" >{</span>
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
+    primary: 'bg-action-600 text-white hover:bg-action-700',
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
     outline: 'border border-gray-300 bg-transparent hover:bg-gray-50',
     ghost: 'hover:bg-gray-100',
@@ -788,7 +788,7 @@ export interface AccessibleInputProps extends AccessibilityProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleInput({</span></span>
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleInput(</span></span>{
   label,
   type = <span class="branch-0 cbranch-no" title="branch not covered" >'text',</span>
   placeholder,
@@ -815,7 +815,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
         placeholder={placeholder}
         value={value}
         onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >onChange?.(e.target.value)}</span>
-        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${error ? 'border-red-500' : ''} ${className}`}
+        className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-trust-500 focus:border-trust-500 ${error ? 'border-red-500' : ''} ${className}`}
         aria-invalid={!!error}
         aria-describedby={describedBy}
         aria-required={required}
@@ -838,7 +838,7 @@ export interface AccessibleCardProps extends AccessibilityProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleCard({</span></span>
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleCard(</span></span>{
   children,
   title,
   description,
@@ -879,7 +879,7 @@ export interface AccessibleLoadingProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleLoading({</span></span>
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleLoading(</span></span>{
   text = <span class="branch-0 cbranch-no" title="branch not covered" >'Loading...',</span>
   size = <span class="branch-0 cbranch-no" title="branch not covered" >'md',</span>
   className = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span>
@@ -909,7 +909,7 @@ export interface AccessibleProgressProps {
   className?: string
 }
 &nbsp;
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleProgress({</span></span>
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >AccessibleProgress(</span></span>{
   value,
   max = <span class="branch-0 cbranch-no" title="branch not covered" >100,</span>
   label,
@@ -928,7 +928,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
       &lt;div className="w-full bg-gray-200 rounded-full h-2"&gt;
         &lt;div
           id={id}
-          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          className="bg-action-500 h-2 rounded-full transition-all duration-300"
           style={{ width: `${percentage}%` }}
           role="progressbar"
           aria-valuenow={value}
@@ -945,11 +945,11 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
 }
 &nbsp;
 // Skip link for keyboard navigation
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >SkipLink({</span></span> href, children }: { href: string; children: React.ReactNode }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >SkipLink(</span></span>{ href, children }: { href: string; children: React.ReactNode }) {
   return (
     &lt;a
       href={href}
-      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-trust-800 text-white px-4 py-2 rounded-md z-50"
     &gt;
       {children}
     &lt;/a&gt;
@@ -957,12 +957,12 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
 }
 &nbsp;
 // Screen reader only text
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >ScreenReaderOnly({</span></span> children }: { children: React.ReactNode }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >ScreenReaderOnly(</span></span>{ children }: { children: React.ReactNode }) {
   return &lt;span className="sr-only"&gt;{children}&lt;/span&gt;
 }
 &nbsp;
 // Focus trap for modals
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >FocusTrap({</span></span> children, active }: { children: React.ReactNode; active: boolean }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >FocusTrap(</span></span>{ children, active }: { children: React.ReactNode; active: boolean }) {
   const trapRef = <span class="cstat-no" title="statement not covered" >React.useRef&lt;HTMLDivElement&gt;(null)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  React.useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
@@ -1006,7 +1006,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
 }
 &nbsp;
 // Announcement for screen readers
-export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >Announcement({</span></span> message, priority = <span class="branch-0 cbranch-no" title="branch not covered" >'polite' </span>}: { message: string; priority?: 'polite' | 'assertive' }) {
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >Announcement(</span></span>{ message, priority = <span class="branch-0 cbranch-no" title="branch not covered" >'polite' </span>}: { message: string; priority?: 'polite' | 'assertive' }) {
   return (
     &lt;div
       className="sr-only"
@@ -1024,7 +1024,7 @@ export function <span class="cstat-no" title="statement not covered" ><span clas
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

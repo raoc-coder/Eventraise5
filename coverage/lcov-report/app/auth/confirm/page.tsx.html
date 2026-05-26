@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/35</span>
+                <span class='fraction'>0/45</span>
             </div>
         
             
@@ -509,7 +509,7 @@
 &nbsp;
 import { useState, useEffect, Suspense } from <span class="cstat-no" title="statement not covered" >'react'</span>
 import { useRouter, useSearchParams } from <span class="cstat-no" title="statement not covered" >'next/navigation'</span>
-import { createClient } from <span class="cstat-no" title="statement not covered" >'@supabase/supabase-js'</span>
+import { supabase as sharedSupabase } from <span class="cstat-no" title="statement not covered" >'@/lib/supabase'</span>
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from <span class="cstat-no" title="statement not covered" >'@/components/ui/card'</span>
 import { Button } from <span class="cstat-no" title="statement not covered" >'@/components/ui/button'</span>
 import { Heart, CheckCircle, XCircle, Loader2 } from <span class="cstat-no" title="statement not covered" >'lucide-react'</span>
@@ -537,7 +537,7 @@ function <span class="fstat-no" title="function not covered" >EmailConfirmConten
 <span class="cstat-no" title="statement not covered" >          return</span>
         }
 &nbsp;
-        const client = <span class="cstat-no" title="statement not covered" >createClient(supabaseUrl, supabaseAnonKey)</span>
+        const client = <span class="cstat-no" title="statement not covered" >sharedSupabase!</span>
 <span class="cstat-no" title="statement not covered" >        setSupabase(client)</span>
       } catch (error) {
 <span class="cstat-no" title="statement not covered" >        console.error('Failed to initialize Supabase client:', error)</span>
@@ -551,18 +551,18 @@ function <span class="fstat-no" title="function not covered" >EmailConfirmConten
 <span class="cstat-no" title="statement not covered" >    if (!supabase) <span class="cstat-no" title="statement not covered" >return</span></span>
 &nbsp;
     const handleEmailConfirmation = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
-      const token_hash = <span class="cstat-no" title="statement not covered" >searchParams.get('token_hash')</span>
-      const type = <span class="cstat-no" title="statement not covered" >searchParams.get('type')</span>
-      const access_token = <span class="cstat-no" title="statement not covered" >searchParams.get('access_token')</span>
-      const refresh_token = <span class="cstat-no" title="statement not covered" >searchParams.get('refresh_token')</span>
-      const next = <span class="cstat-no" title="statement not covered" >searchParams.get('next') ?? '/dashboard'</span>
+      const token_hash = <span class="cstat-no" title="statement not covered" >searchParams?.get('token_hash') || null</span>
+      const type = <span class="cstat-no" title="statement not covered" >searchParams?.get('type') || null</span>
+      const access_token = <span class="cstat-no" title="statement not covered" >searchParams?.get('access_token') || null</span>
+      const refresh_token = <span class="cstat-no" title="statement not covered" >searchParams?.get('refresh_token') || null</span>
+      const next = <span class="cstat-no" title="statement not covered" >searchParams?.get('next') ?? '/dashboard'</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      console.log('Email confirmation params:', {</span>
         token_hash,
         type,
         access_token,
         refresh_token,
-        allParams: Object.fromEntries(searchParams.entries())
+        allParams: searchParams ? Object.fromEntries(searchParams.entries()) : {}
       })
 &nbsp;
       // Handle different types of confirmation links
@@ -629,15 +629,15 @@ function <span class="fstat-no" title="function not covered" >EmailConfirmConten
   }, [supabase, searchParams, router])
 &nbsp;
   return (
-    &lt;div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4"&gt;
+    &lt;div className="min-h-screen bg-white flex items-center justify-center p-4"&gt;
       &lt;Card className="w-full max-w-md card-soft"&gt;
         &lt;CardHeader className="text-center"&gt;
           &lt;div className="flex justify-center mb-4"&gt;
             &lt;div className="flex items-center space-x-2"&gt;
-              &lt;div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center"&gt;
+              &lt;div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-lg flex items-center justify-center"&gt;
                 &lt;Heart className="h-5 w-5 text-white" /&gt;
               &lt;/div&gt;
-              &lt;span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent"&gt;
+              &lt;span className="text-lg font-bold bg-gradient-to-r from-trust-300 to-action-500 bg-clip-text text-transparent"&gt;
                 EventraiseHub
               &lt;/span&gt;
             &lt;/div&gt;
@@ -652,7 +652,7 @@ function <span class="fstat-no" title="function not covered" >EmailConfirmConten
         &lt;CardContent className="text-center"&gt;
           {<span class="branch-0 cbranch-no" title="branch not covered" >status === 'loading' &amp;&amp; (</span>
             &lt;div className="flex flex-col items-center space-y-4"&gt;
-              &lt;Loader2 className="h-8 w-8 text-cyan-400 animate-spin" /&gt;
+              &lt;Loader2 className="h-8 w-8 text-trust-300 animate-spin" /&gt;
               &lt;p className="text-gray-300"&gt;Please wait while we confirm your email...&lt;/p&gt;
             &lt;/div&gt;
           )}
@@ -663,7 +663,7 @@ function <span class="fstat-no" title="function not covered" >EmailConfirmConten
               &lt;p className="text-green-400 font-medium"&gt;{message}&lt;/p&gt;
               &lt;p className="text-gray-300 text-sm"&gt;Redirecting to dashboard...&lt;/p&gt;
               &lt;Link href="/auth/login"&gt;
-                &lt;Button className="btn-primary"&gt;Sign In&lt;/Button&gt;
+                &lt;Button&gt;Sign In&lt;/Button&gt;
               &lt;/Link&gt;
             &lt;/div&gt;
           )}
@@ -674,12 +674,12 @@ function <span class="fstat-no" title="function not covered" >EmailConfirmConten
               &lt;p className="text-red-400 font-medium"&gt;{message}&lt;/p&gt;
               &lt;div className="flex flex-col space-y-2"&gt;
                 &lt;Link href="/auth/register"&gt;
-                  &lt;Button variant="outline" className="btn-secondary w-full"&gt;
+                  &lt;Button variant="outline" className="w-full"&gt;
                     Try Again
                   &lt;/Button&gt;
                 &lt;/Link&gt;
                 &lt;Link href="/auth/login"&gt;
-                  &lt;Button className="btn-primary w-full"&gt;
+                  &lt;Button className="w-full"&gt;
                     Sign In
                   &lt;/Button&gt;
                 &lt;/Link&gt;
@@ -700,10 +700,10 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;CardHeader className="text-center"&gt;
             &lt;div className="flex justify-center mb-4"&gt;
               &lt;div className="flex items-center space-x-2"&gt;
-                &lt;div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center"&gt;
+                &lt;div className="w-8 h-8 bg-gradient-to-br from-trust-400 to-trust-700 rounded-lg flex items-center justify-center"&gt;
                   &lt;Heart className="h-5 w-5 text-white" /&gt;
                 &lt;/div&gt;
-                &lt;span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-orange-500 bg-clip-text text-transparent"&gt;
+                &lt;span className="text-lg font-bold bg-gradient-to-r from-trust-300 to-action-500 bg-clip-text text-transparent"&gt;
                   EventraiseHub
                 &lt;/span&gt;
               &lt;/div&gt;
@@ -715,7 +715,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
           &lt;/CardHeader&gt;
           &lt;CardContent className="text-center"&gt;
             &lt;div className="flex flex-col items-center space-y-4"&gt;
-              &lt;Loader2 className="h-8 w-8 text-cyan-400 animate-spin" /&gt;
+              &lt;Loader2 className="h-8 w-8 text-trust-300 animate-spin" /&gt;
               &lt;p className="text-gray-300"&gt;Please wait...&lt;/p&gt;
             &lt;/div&gt;
           &lt;/CardContent&gt;
@@ -733,7 +733,7 @@ export default function <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

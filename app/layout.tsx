@@ -91,7 +91,7 @@ export default function RootLayout({
   
   return (
     <html lang="en" data-meta-pixel-id={metaPixelId || undefined}>
-      <body className={`${inter.className} bg-[hsl(var(--background))] text-[hsl(var(--foreground))]`}>
+      <body className={`${inter.className} bg-background text-foreground`}>
         <MetaPixel />
         <AnalyticsProvider>
           <Providers>

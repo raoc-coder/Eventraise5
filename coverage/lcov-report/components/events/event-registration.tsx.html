@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.93% </span>
+                <span class="strong">85.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>62/73</span>
+                <span class='fraction'>59/69</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">77.41% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>25/35</span>
+                <span class='fraction'>24/31</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.93% </span>
+                <span class="strong">85.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>62/73</span>
+                <span class='fraction'>59/69</span>
             </div>
         
             
@@ -476,28 +476,7 @@
 <a name='L411'></a><a href='#L411'>411</a>
 <a name='L412'></a><a href='#L412'>412</a>
 <a name='L413'></a><a href='#L413'>413</a>
-<a name='L414'></a><a href='#L414'>414</a>
-<a name='L415'></a><a href='#L415'>415</a>
-<a name='L416'></a><a href='#L416'>416</a>
-<a name='L417'></a><a href='#L417'>417</a>
-<a name='L418'></a><a href='#L418'>418</a>
-<a name='L419'></a><a href='#L419'>419</a>
-<a name='L420'></a><a href='#L420'>420</a>
-<a name='L421'></a><a href='#L421'>421</a>
-<a name='L422'></a><a href='#L422'>422</a>
-<a name='L423'></a><a href='#L423'>423</a>
-<a name='L424'></a><a href='#L424'>424</a>
-<a name='L425'></a><a href='#L425'>425</a>
-<a name='L426'></a><a href='#L426'>426</a>
-<a name='L427'></a><a href='#L427'>427</a>
-<a name='L428'></a><a href='#L428'>428</a>
-<a name='L429'></a><a href='#L429'>429</a>
-<a name='L430'></a><a href='#L430'>430</a>
-<a name='L431'></a><a href='#L431'>431</a>
-<a name='L432'></a><a href='#L432'>432</a>
-<a name='L433'></a><a href='#L433'>433</a>
-<a name='L434'></a><a href='#L434'>434</a>
-<a name='L435'></a><a href='#L435'>435</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L414'></a><a href='#L414'>414</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -624,27 +603,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1055,31 +1013,10 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
       }
 &nbsp;
       if (event.ticket_price &gt; 0) {
-        // Redirect to payment if ticket has a price
-        const paymentResponse = await fetch('/api/create-checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: totalAmount,
-            campaign_id: event.id,
-            donor_name: participantName.trim(),
-            donor_email: participantEmail.trim(),
-            success_url: `${window.location.origin}/events/${event.id}/success?registration_id=${data.registration_id}`,
-            cancel_url: `${window.location.origin}/events/${event.id}`,
-          }),
-        })
-&nbsp;
-        const paymentData = await paymentResponse.json()
-&nbsp;
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (!paymentResponse.ok) {
-<span class="cstat-no" title="statement not covered" >          throw new Error(paymentData.error || 'Failed to create payment session')</span>
-        }
-&nbsp;
-        // Redirect to Stripe Checkout
+        // Redirect to PayPal payment if ticket has a price
         toast.loading('Redirecting to secure payment...', { duration: 2000 })
-        window.location.href = paymentData.sessionUrl
+        // Redirect to PayPal donation flow
+        window.location.href = `/donations/new?eventId=${encodeURIComponent(event.id)}&amp;amount=${totalAmount}`
       } else {
         // Free event - confirm registration
         setRegistrationId(data.registration_id)
@@ -1122,10 +1059,10 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
   }
 &nbsp;
   return (
-    &lt;Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-100"&gt;
+    &lt;Card className="border-2 border-trust-200 bg-gradient-to-br from-trust-50 to-trust-100"&gt;
       &lt;CardHeader&gt;
         &lt;div className="flex items-center space-x-2"&gt;
-          &lt;Ticket className="h-6 w-6 text-blue-600" /&gt;
+          &lt;Ticket className="h-6 w-6 text-trust-700" /&gt;
           &lt;CardTitle className="text-gray-900"&gt;Register for Event&lt;/CardTitle&gt;
         &lt;/div&gt;
         &lt;CardDescription className="text-gray-600"&gt;
@@ -1155,7 +1092,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
             &lt;div className="flex items-center space-x-2"&gt;
               &lt;Gift className="h-4 w-4 text-gray-500" /&gt;
               &lt;span className="text-gray-600"&gt;Price:&lt;/span&gt;
-              &lt;span className="font-semibold text-blue-600"&gt;
+              &lt;span className="font-semibold text-trust-700"&gt;
                 ${(event.ticket_price * ticketQuantity).toFixed(2)}
               &lt;/span&gt;
             &lt;/div&gt;
@@ -1303,7 +1240,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
           {/* Terms and Conditions */}
           &lt;div className="bg-gray-50 rounded-lg p-4"&gt;
             &lt;div className="flex items-start space-x-2"&gt;
-              &lt;Shield className="h-5 w-5 text-blue-600 mt-0.5" /&gt;
+              &lt;Shield className="h-5 w-5 text-trust-700 mt-0.5" /&gt;
               &lt;div className="text-sm text-gray-600"&gt;
                 &lt;p className="font-medium text-gray-900 mb-2"&gt;Terms and Conditions&lt;/p&gt;
                 &lt;ul className="space-y-1 text-xs"&gt;
@@ -1321,7 +1258,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
             &lt;Button
               type="submit"
               disabled={isLoading || isSoldOut || !isRegistrationOpen}
-              className="btn-primary flex-1"
+              className="flex-1"
             &gt;
               {isLoading ? (
                 &lt;&gt;
@@ -1372,7 +1309,7 @@ export function EventRegistration({ event, onSuccess }: EventRegistrationProps) 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

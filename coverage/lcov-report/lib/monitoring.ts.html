@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/73</span>
+                <span class='fraction'>0/66</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/70</span>
+                <span class='fraction'>0/64</span>
             </div>
         
             
@@ -249,19 +249,7 @@
 <a name='L184'></a><a href='#L184'>184</a>
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
-<a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a>
-<a name='L195'></a><a href='#L195'>195</a>
-<a name='L196'></a><a href='#L196'>196</a>
-<a name='L197'></a><a href='#L197'>197</a>
-<a name='L198'></a><a href='#L198'>198</a>
-<a name='L199'></a><a href='#L199'>199</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L187'></a><a href='#L187'>187</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -410,15 +398,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -439,18 +418,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -462,7 +438,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as Sentry from <span class="cstat-no" title="statement not covered" >'@sentry/nextjs'</span>
 &nbsp;
 // Error monitoring and alerting
-export class <span class="cstat-no" title="statement not covered" >MonitoringService {</span>
+export class <span class="cstat-no" title="statement not covered" >MonitoringService </span>{
   // Critical error tracking
 <span class="fstat-no" title="function not covered" >  static t</span>rackCriticalError(error: Error, context?: Record&lt;string, any&gt;) {
 <span class="cstat-no" title="statement not covered" >    Sentry.withScope(<span class="fstat-no" title="function not covered" >(s</span>cope) =&gt; {</span>
@@ -482,7 +458,7 @@ export class <span class="cstat-no" title="statement not covered" >MonitoringSer
     campaignId: string
     amount: number
     donorEmail?: string
-    stripeSessionId?: string
+    processor?: 'paypal'
   }) {
 <span class="cstat-no" title="statement not covered" >    Sentry.withScope(<span class="fstat-no" title="function not covered" >(s</span>cope) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      scope.setLevel('error')</span>
@@ -558,7 +534,7 @@ export class <span class="cstat-no" title="statement not covered" >MonitoringSer
 }
 &nbsp;
 // Database monitoring utilities
-export class <span class="cstat-no" title="statement not covered" >DatabaseMonitoring {</span>
+export class <span class="cstat-no" title="statement not covered" >DatabaseMonitoring </span>{
 <span class="fstat-no" title="function not covered" >  static async t</span>rackQueryPerformance&lt;T&gt;(
     operation: string,
     query: () =&gt; Promise&lt;T&gt;,
@@ -592,7 +568,7 @@ export class <span class="cstat-no" title="statement not covered" >DatabaseMonit
 }
 &nbsp;
 // Health check utilities
-export class <span class="cstat-no" title="statement not covered" >HealthCheck {</span>
+export class <span class="cstat-no" title="statement not covered" >HealthCheck </span>{
 <span class="fstat-no" title="function not covered" >  static async c</span>heckDatabase(): Promise&lt;boolean&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { supabase } = <span class="cstat-no" title="statement not covered" >await <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >import('</span>@/lib/supabase')</span></span>
@@ -607,16 +583,7 @@ export class <span class="cstat-no" title="statement not covered" >HealthCheck {
     }
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  static async c</span>heckStripe(): Promise&lt;boolean&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-      const { stripe } = <span class="cstat-no" title="statement not covered" >await <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >import('</span>@/lib/stripe')</span></span>
-<span class="cstat-no" title="statement not covered" >      await stripe.prices.list({ limit: 1 })</span>
-<span class="cstat-no" title="statement not covered" >      return true</span>
-    } catch (error) {
-<span class="cstat-no" title="statement not covered" >      MonitoringService.trackCriticalError(error as Error, { component: 'stripe' })</span>
-<span class="cstat-no" title="statement not covered" >      return false</span>
-    }
-  }
+  // Legacy Stripe / Braintree removed — PayPal-only (ADR-0016).
 &nbsp;
 <span class="fstat-no" title="function not covered" >  static async c</span>heckSupabaseAuth(): Promise&lt;boolean&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
@@ -634,27 +601,24 @@ export class <span class="cstat-no" title="statement not covered" >HealthCheck {
 &nbsp;
 <span class="fstat-no" title="function not covered" >  static async r</span>unFullHealthCheck(): Promise&lt;{
     database: boolean
-    stripe: boolean
     auth: boolean
     overall: boolean
   }&gt; {
-    const [database, stripe, auth] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
+    const [database, auth] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
       this.checkDatabase(),
-      this.checkStripe(),
       this.checkSupabaseAuth(),
     ])
 &nbsp;
-    const overall = <span class="cstat-no" title="statement not covered" >database &amp;&amp; stripe &amp;&amp; auth</span>
+    const overall = <span class="cstat-no" title="statement not covered" >database &amp;&amp; auth</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (!overall) {</span>
 <span class="cstat-no" title="statement not covered" >      MonitoringService.alertCriticalEvent('health_check_failed', {</span>
         database,
-        stripe,
         auth,
       })
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return { database, stripe, auth, overall }</span>
+<span class="cstat-no" title="statement not covered" >    return { database, auth, overall }</span>
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -664,7 +628,7 @@ export class <span class="cstat-no" title="statement not covered" >HealthCheck {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-22T14:45:27.920Z
+                at 2026-05-26T09:56:26.608Z
             </div>
         <script src="../prettify.js"></script>
         <script>
