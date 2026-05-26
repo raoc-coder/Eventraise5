@@ -10,7 +10,7 @@ import {
   Vercel,
 } from '@/components/ui/sparkles-demo-logos'
 
-export function SparklesDemo() {
+function SparklesDemo() {
   const sparklesColor = useSparklesColor()
 
   return (

@@ -73,7 +73,7 @@ const eventraiseBentoItems: BentoItem[] = [
   },
 ]
 
-export function BentoGridDemo() {
+function BentoGridDemo() {
   return <BentoGrid items={eventraiseBentoItems} />
 }
 

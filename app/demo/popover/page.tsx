@@ -60,11 +60,6 @@ function QuickActionsDemo() {
   )
 }
 
-/** Matches the task demo export name */
-export function ShareDemo() {
-  return <SharePopoverDemo />
-}
-
 export default function PopoverDemoPage() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center gap-10 bg-background p-6">

@@ -107,5 +107,3 @@ export default function UseItemOverflowDemoPage() {
     </div>
   )
 }
-
-export { OverflowDemo }

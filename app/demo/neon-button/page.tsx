@@ -55,5 +55,3 @@ export default function NeonButtonDemoPage() {
     </div>
   )
 }
-
-export { Default, WithNoNeon, Solid }

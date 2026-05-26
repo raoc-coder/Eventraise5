@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import MemberList from '@/components/ui/member-list'
 
-export function MemberListDemo() {
+function MemberListDemo() {
   return (
     <div className="flex min-h-[480px] w-full items-center justify-center p-4">
       <div className="mx-auto w-full max-w-4xl overflow-hidden rounded-lg border shadow-lg">
@@ -12,8 +12,6 @@ export function MemberListDemo() {
     </div>
   )
 }
-
-export { MemberListDemo as DemoOne }
 
 export default function MemberListDemoPage() {
   return (
