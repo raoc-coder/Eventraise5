@@ -11,40 +11,54 @@ async function findUserByPhone(e164: string): Promise<User | null> {
   if (!supabaseAdmin) return null;
   const synthetic = phoneToSyntheticEmail(e164);
 
-  // Use the service-role client to query auth.users directly — fast O(1) lookup
-  // by the deterministic synthetic email rather than scanning all users.
-  const { data: row, error: dbError } = await supabaseAdmin
+  const fetchUserById = async (id: string): Promise<User | null> => {
+    const { data: userResp, error: userErr } = await supabaseAdmin.auth.admin.getUserById(id);
+    if (userErr) throw userErr;
+    return userResp.user ?? null;
+  };
+
+  // Fast path 1: deterministic synthetic email.
+  const { data: byEmail, error: emailError } = await supabaseAdmin
     .schema("auth")
     .from("users")
     .select("id")
     .eq("email", synthetic)
     .limit(1)
     .maybeSingle();
+  if (!emailError && byEmail?.id) return fetchUserById(byEmail.id);
 
-  if (dbError) {
-    // If direct schema access is blocked, fall back to paginated search (slow but safe)
-    console.warn("[findUserByPhone] schema query failed, falling back to list scan:", dbError.message);
-    let page = 1;
-    const perPage = 500;
-    while (page <= 20) {
-      const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
-      if (error) throw error;
-      const users = data.users ?? [];
-      const found =
-        users.find((u) => (u.email || "").toLowerCase() === synthetic.toLowerCase()) ??
-        users.find((u) => u.phone === e164);
-      if (found) return found;
-      if (users.length < perPage) break;
-      page += 1;
-    }
-    return null;
+  // Fast path 2: direct phone match for legacy users that don't use synthetic email.
+  const { data: byPhone, error: phoneError } = await supabaseAdmin
+    .schema("auth")
+    .from("users")
+    .select("id")
+    .eq("phone", e164)
+    .limit(1)
+    .maybeSingle();
+  if (!phoneError && byPhone?.id) return fetchUserById(byPhone.id);
+
+  const schemaBlocked = Boolean(emailError || phoneError);
+  if (!schemaBlocked) return null;
+
+  // Fallback if schema access is blocked: scan users and match on email/phone/metadata.
+  let page = 1;
+  const perPage = 500;
+  while (page <= 20) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+    if (error) throw error;
+    const users = data.users ?? [];
+    const found =
+      users.find((u) => (u.email || "").toLowerCase() === synthetic.toLowerCase()) ??
+      users.find((u) => u.phone === e164) ??
+      users.find((u) => {
+        const metaPhone = u.user_metadata?.phone;
+        return typeof metaPhone === "string" && metaPhone === e164;
+      });
+    if (found) return found;
+    if (users.length < perPage) break;
+    page += 1;
   }
-
-  if (!row) return null;
-
-  const { data: userResp, error: userErr } = await supabaseAdmin.auth.admin.getUserById(row.id);
-  if (userErr) throw userErr;
-  return userResp.user ?? null;
+  return null;
 }
 
 async function exchangeMagicLinkForSession(email: string): Promise<Session> {
