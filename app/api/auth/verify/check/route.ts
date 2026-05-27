@@ -93,13 +93,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
-    console.error("[auth/verify/check]", err);
+    console.error("[auth/verify/check] session creation failed:", detail, err);
     return NextResponse.json(
       {
         ok: false,
         error: "session_failed",
         message: "Sign-in succeeded but session could not be created.",
-        ...(process.env.NODE_ENV === "development" ? { detail } : {}),
+        detail,
       },
       { status: 500 },
     );

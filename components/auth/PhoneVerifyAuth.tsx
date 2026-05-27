@@ -40,12 +40,18 @@ export function PhoneVerifyAuth({ mode }: PhoneVerifyAuthProps) {
     access_token: string
     refresh_token: string
   }) => {
-    if (!sharedSupabase) throw new Error('Authentication service is not available')
-    const { error } = await sharedSupabase.auth.setSession({
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-    })
-    if (error) throw error
+    // Server already set auth cookies; also sync to client-side localStorage/memory
+    // so the browser Supabase client is immediately aware of the session.
+    if (sharedSupabase) {
+      const { error } = await sharedSupabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      })
+      if (error) {
+        console.warn('[PhoneVerifyAuth] client setSession warning:', error.message)
+        // Non-fatal: server cookies were set; the page redirect will pick up the session.
+      }
+    }
   }
 
   const sendCode = async (e: React.FormEvent) => {

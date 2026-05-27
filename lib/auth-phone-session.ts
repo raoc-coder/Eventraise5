@@ -7,50 +7,73 @@ export interface PhoneProfileMetadata {
   organization_name?: string;
 }
 
-function phoneFromMetadata(user: User): string | null {
-  const meta = user.user_metadata?.phone;
-  return typeof meta === "string" && meta.startsWith("+") ? meta : null;
-}
-
 async function findUserByPhone(e164: string): Promise<User | null> {
   if (!supabaseAdmin) return null;
   const synthetic = phoneToSyntheticEmail(e164);
-  let page = 1;
-  const perPage = 500;
-  while (page <= 20) {
-    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
-    if (error) throw error;
-    const users = data.users ?? [];
-    const found =
-      users.find((u) => u.phone === e164) ??
-      users.find((u) => phoneFromMetadata(u) === e164) ??
-      users.find((u) => (u.email || "").toLowerCase() === synthetic.toLowerCase());
-    if (found) return found;
-    if (users.length < perPage) break;
-    page += 1;
+
+  // Use the service-role client to query auth.users directly — fast O(1) lookup
+  // by the deterministic synthetic email rather than scanning all users.
+  const { data: row, error: dbError } = await supabaseAdmin
+    .schema("auth")
+    .from("users")
+    .select("id")
+    .eq("email", synthetic)
+    .limit(1)
+    .maybeSingle();
+
+  if (dbError) {
+    // If direct schema access is blocked, fall back to paginated search (slow but safe)
+    console.warn("[findUserByPhone] schema query failed, falling back to list scan:", dbError.message);
+    let page = 1;
+    const perPage = 500;
+    while (page <= 20) {
+      const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+      if (error) throw error;
+      const users = data.users ?? [];
+      const found =
+        users.find((u) => (u.email || "").toLowerCase() === synthetic.toLowerCase()) ??
+        users.find((u) => u.phone === e164);
+      if (found) return found;
+      if (users.length < perPage) break;
+      page += 1;
+    }
+    return null;
   }
-  return null;
+
+  if (!row) return null;
+
+  const { data: userResp, error: userErr } = await supabaseAdmin.auth.admin.getUserById(row.id);
+  if (userErr) throw userErr;
+  return userResp.user ?? null;
 }
 
 async function exchangeMagicLinkForSession(email: string): Promise<Session> {
   if (!supabaseAdmin) throw new Error("Database unavailable");
 
+  console.log("[auth-phone-session] generating magic link for:", email);
   const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
     type: "magiclink",
     email,
   });
-  if (linkError) throw linkError;
+  if (linkError) {
+    console.error("[auth-phone-session] generateLink error:", linkError);
+    throw linkError;
+  }
 
   const tokenHash = linkData.properties?.hashed_token;
-  if (!tokenHash) throw new Error("Failed to generate auth link");
+  if (!tokenHash) throw new Error("Failed to generate auth link: no hashed_token in response");
 
   const otpType = (linkData.properties?.verification_type || "magiclink") as EmailOtpType;
+  console.log("[auth-phone-session] verifyOtp type:", otpType);
   const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.verifyOtp({
     token_hash: tokenHash,
     type: otpType,
   });
-  if (sessionError) throw sessionError;
-  if (!sessionData.session) throw new Error("Failed to create session");
+  if (sessionError) {
+    console.error("[auth-phone-session] verifyOtp error:", sessionError);
+    throw sessionError;
+  }
+  if (!sessionData.session) throw new Error("verifyOtp succeeded but returned no session");
 
   return sessionData.session;
 }
@@ -115,7 +138,9 @@ export async function createSessionForPhoneUser(
 ): Promise<Session> {
   if (!supabaseAdmin) throw new Error("Database unavailable");
 
+  console.log("[auth-phone-session] upsertPhoneUser for:", e164);
   const user = await upsertPhoneUser(e164, profile);
+  console.log("[auth-phone-session] upserted user id:", user.id, "email:", user.email);
   const email = user.email || phoneToSyntheticEmail(e164);
   return exchangeMagicLinkForSession(email);
 }
