@@ -9,16 +9,17 @@ export interface PhoneProfileMetadata {
 
 async function findUserByPhone(e164: string): Promise<User | null> {
   if (!supabaseAdmin) return null;
+  const admin = supabaseAdmin;
   const synthetic = phoneToSyntheticEmail(e164);
 
   const fetchUserById = async (id: string): Promise<User | null> => {
-    const { data: userResp, error: userErr } = await supabaseAdmin.auth.admin.getUserById(id);
+    const { data: userResp, error: userErr } = await admin.auth.admin.getUserById(id);
     if (userErr) throw userErr;
     return userResp.user ?? null;
   };
 
   // Fast path 1: deterministic synthetic email.
-  const { data: byEmail, error: emailError } = await supabaseAdmin
+  const { data: byEmail, error: emailError } = await admin
     .schema("auth")
     .from("users")
     .select("id")
@@ -28,7 +29,7 @@ async function findUserByPhone(e164: string): Promise<User | null> {
   if (!emailError && byEmail?.id) return fetchUserById(byEmail.id);
 
   // Fast path 2: direct phone match for legacy users that don't use synthetic email.
-  const { data: byPhone, error: phoneError } = await supabaseAdmin
+  const { data: byPhone, error: phoneError } = await admin
     .schema("auth")
     .from("users")
     .select("id")
@@ -44,7 +45,7 @@ async function findUserByPhone(e164: string): Promise<User | null> {
   let page = 1;
   const perPage = 500;
   while (page <= 20) {
-    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage });
     if (error) throw error;
     const users = data.users ?? [];
     const found =
