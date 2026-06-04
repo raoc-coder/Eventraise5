@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { normalizePhoneE164 } from "@/lib/phone";
 import { checkVerification } from "@/lib/twilio-verify";
 import { createSessionForPhoneUser } from "@/lib/auth-phone-session";
+import { createSessionForPlatformAdmin } from "@/lib/auth-admin-session";
+import { findActivePlatformAdminByPhone } from "@/lib/platform-admin";
 import { rateLimit, getClientKeyFromHeaders } from "@/lib/rate-limit";
 import { supabaseAdmin } from "@/lib/supabase";
 
@@ -61,10 +63,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const session = await createSessionForPhoneUser(e164, {
-      full_name: body.fullName,
-      organization_name: body.organizationName,
-    });
+    // Platform admins share the same phone as organizer login — issue their admin session
+    // instead of creating a conflicting phone-only auth user.
+    const platformAdmin = await findActivePlatformAdminByPhone(e164);
+    const session = platformAdmin
+      ? await createSessionForPlatformAdmin(platformAdmin)
+      : await createSessionForPhoneUser(e164, {
+          full_name: body.fullName,
+          organization_name: body.organizationName,
+        });
     if (!session.access_token || !session.refresh_token) {
       throw new Error("Session tokens missing");
     }
@@ -82,6 +89,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
       ok: true,
+      is_platform_admin: Boolean(platformAdmin),
       session: {
         access_token: session.access_token,
         refresh_token: session.refresh_token,

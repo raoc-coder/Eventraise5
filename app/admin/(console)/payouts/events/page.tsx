@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase as sharedSupabase } from '@/lib/supabase'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -91,12 +91,12 @@ export default function EventPayoutsPage() {
   }
 
   useEffect(() => {
-    const supabaseClient = sharedSupabase!
+    const supabaseClient = createClientComponentClient()
     setSupabase(supabaseClient)
 
     supabaseClient.auth.getUser().then(({ data: { user } }) => {
       if (!user) {
-        router.push('/auth/login')
+        router.push('/admin/login')
         return
       }
       setUser(user)

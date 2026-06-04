@@ -27,6 +27,29 @@ export type PlatformAdminLookupResult =
   | { admin: PlatformAdminRow; error?: undefined }
   | { admin: null; error?: "no_service_role" | "invalid_input" | string };
 
+/** Active platform admin roster row for a verified E.164 phone (organizer OTP bridge). */
+export async function findActivePlatformAdminByPhone(
+  phoneRaw: string,
+): Promise<PlatformAdminRow | null> {
+  if (!supabaseAdmin) return null;
+  const e164 = normalizePhoneE164(phoneRaw);
+  if (!e164) return null;
+
+  const { data, error } = await supabaseAdmin
+    .from("platform_admins")
+    .select("id, email, phone_e164, role, display_name, user_id, is_active, created_by, created_at")
+    .eq("phone_e164", e164)
+    .eq("is_active", true)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[platform_admins] phone lookup failed:", error.message);
+    return null;
+  }
+  return (data as PlatformAdminRow | null) ?? null;
+}
+
 export async function findPlatformAdminByCredentials(
   email: string,
   phoneRaw: string,

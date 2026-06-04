@@ -178,7 +178,14 @@ async function upsertPhoneUser(
           email_confirm: true,
           user_metadata: metadata,
         });
-      if (emailOnlyError) throw emailOnlyError;
+      if (emailOnlyError) {
+        const emailMsg = emailOnlyError.message?.toLowerCase() ?? "";
+        if (emailMsg.includes("already") || emailMsg.includes("registered") || emailMsg.includes("exists")) {
+          const existingSynthetic = await findUserByPhone(e164);
+          if (existingSynthetic) return existingSynthetic;
+        }
+        throw emailOnlyError;
+      }
       return emailOnly.user;
     }
 

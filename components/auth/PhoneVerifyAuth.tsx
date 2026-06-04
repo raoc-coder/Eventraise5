@@ -113,6 +113,10 @@ export function PhoneVerifyAuth({ mode }: PhoneVerifyAuthProps) {
       }
       await applySession(json.session)
       toast.success(mode === 'register' ? 'Account ready!' : 'Signed in!')
+      if (json.is_platform_admin) {
+        router.push('/admin')
+        return
+      }
       redirectAfterAuth()
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Verification failed'

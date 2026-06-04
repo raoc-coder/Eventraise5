@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase as sharedSupabase } from '@/lib/supabase'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -75,16 +75,8 @@ export default function AdminPayoutsPage() {
   }
 
   useEffect(() => {
-    // Initialize Supabase client
-    if (typeof window !== 'undefined') {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      
-      if (supabaseUrl && supabaseAnonKey) {
-        const client = sharedSupabase!
-        setSupabase(client)
-      }
-    }
+    const client = createClientComponentClient()
+    setSupabase(client)
   }, [])
 
   useEffect(() => {
@@ -94,7 +86,7 @@ export default function AdminPayoutsPage() {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (!user) {
-        router.push('/auth/login')
+        router.push('/admin/login')
         return
       }
       setUser(user)
