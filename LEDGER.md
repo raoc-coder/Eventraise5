@@ -195,7 +195,7 @@ Only if product prioritizes after first gala:
 - **Practice path:** **PASS** — register (`practice_vault`) → bid → close → `settleClosedLot` → `paypal_capture_id=practice_capture`
 - **Sweep cron:** **PASS** — `GET /api/cron/sweep-auction-lots` returns **200** on `www.eventraisehub.com`
 - **Real PayPal vault:** **Pending** — browser test on **Vercel** (Twilio not on local): `npm run paypal:seed` then walk URLs on `https://www.eventraisehub.com`
-- **Vercel flow:** login → `/auctions/{id}/register` (Link PayPal) → bid on lot → `npm run paypal:rehearsal -- --close-lot {lotId}`
+- **Vercel flow (Option B practice vault):** login → register page → practice register (API or button after `NEXT_PUBLIC_PAYPAL_ENVIRONMENT=sandbox` deploy) → bid → `--close-lot`
 - **Cleanup rehearsal rows:** `npm run paypal:rehearsal -- --cleanup`
 
 ## Authentication — Twilio Verify (S0.3a)

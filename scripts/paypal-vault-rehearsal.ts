@@ -54,9 +54,19 @@ function appBase(env: Record<string, string>): string {
 
 function printVercelBrowserSteps(env: Record<string, string>, auctionId: string, lotId: string): void {
   const base = appBase(env);
+  const sandbox = env.PAYPAL_ENVIRONMENT !== "production";
   console.log("\n--- Vercel browser test (Twilio + PayPal on deployed app) ---");
   console.log(`  1. Sign in:     ${base}/auth/login`);
-  console.log(`  2. Vault:       ${base}/auctions/${auctionId}/register`);
+  if (sandbox) {
+    console.log(`  2a. Practice:   ${base}/auctions/${auctionId}/register`);
+    console.log(`      → "Practice register" button (needs NEXT_PUBLIC_PAYPAL_ENVIRONMENT=sandbox on Vercel + redeploy)`);
+    console.log(`      → Or paste in browser DevTools console while on that page:`);
+    console.log(
+      `      fetch('/api/auctions/${auctionId}/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({practiceVault:true})}).then(r=>r.json()).then(console.log)`,
+    );
+  } else {
+    console.log(`  2. Vault:       ${base}/auctions/${auctionId}/register`);
+  }
   console.log(`  3. Bid:         ${base}/auctions/${auctionId}/lots/${lotId}`);
   console.log(`  4. Close+sweep: npm run paypal:rehearsal -- --close-lot ${lotId}`);
   console.log(`  Cleanup:        npm run paypal:rehearsal -- --cleanup`);
