@@ -8,14 +8,14 @@
 |------|--------|--------|
 | S0.1–S0.2 ADRs + sprint plan | **Complete** | Locked baseline |
 | S0.3a Twilio Verify auth | **Complete** | ADR-0017; phone OTP on `/auth/login`, `/auth/register`; env on Vercel |
-| S0.3b Twilio 10DLC campaign verification | **In process** | `TWILIO_MESSAGING_SERVICE_SID` on Vercel ✓; awaiting carrier **campaign `VERIFIED`** (often weeks) |
+| S0.3b Twilio 10DLC campaign verification | **Complete** | Campaign **VERIFIED** + brand **APPROVED** (2026-06-07) |
 | S0.4 SendGrid removed | **Complete** | No `@sendgrid/mail`; push + SMS + in-app only |
 | S0.5 Supabase Pro | **Complete** | Pro confirmed; capacity gate satisfied for feature work |
 | S0.6 VAPID | **Complete** | Keys in `.env.local` + Vercel |
 | S0.7 Braintree sunset | **Complete** | 2026-05-13 |
 | Vercel deployment | **Complete** | Production deploy successful (2026-05-20) |
 
-**Sprint 0 exit:** Green for engineering. Infra/env for Twilio Messaging is done; **carrier campaign verification** is the only long-lead wait (weeks, not a code task).
+**Sprint 0 exit:** Green — including 10DLC campaign verification (2026-06-07).
 
 ## Sprint 2 — Epic 1 P2P (2026-05-20)
 
@@ -75,7 +75,7 @@
 **Supabase project:** `yxzypekwyuopbanroobr`  
 **Production URL:** `https://www.eventraisehub.com`
 
-**Snapshot (2026-05-21, post-deploy):** P0 steps 1–4 **complete**; OR §5.5 engineering checks **complete** (`test:a11y`, brand/CTA, sticky bid CTA). **Pending:** P0 step 5 (bid E2E), 10DLC, PayPal Vault rehearsal, OR §5 manual sign-off, P2 k6/dashboards.
+**Snapshot (2026-06-07):** P0 steps 1–4 **complete**; 10DLC **complete**; OR §5.5 engineering checks **complete**. **Pending:** P0 step 5 (bid E2E), PayPal Vault rehearsal (in progress), OR §5 manual sign-off, P2 k6/dashboards.
 
 ### Phase GA engineering sprint — shipped (2026-05-21)
 
@@ -93,7 +93,7 @@
 |------|-------------------|----------|
 | Epic 1 P2P (Sprints 1–2, 5) | **Complete** | OR §2–§3, §5.5 brand/a11y as needed |
 | Epic 2 auctions (Sprints 3–4) | **Complete** | OR §4–§5 |
-| Notifications (Sprint 4) | **Complete** | Cron verified on prod; 10DLC pending |
+| Notifications (Sprint 4) | **Complete** | Cron verified on prod; 10DLC verified (2026-06-07) |
 | Polish (Sprint 5) | **Complete** | k6 + dashboards |
 | Phase GA engineering (2026-05-21) | **Deployed** | a11y/brand/cron scripts; see internal recap |
 
@@ -125,7 +125,7 @@ curl -sS -H "Authorization: Bearer $CRON_SECRET" \
 
 | # | Step | Owner | Status |
 |---|------|-------|--------|
-| 1 | Campaign **VERIFIED** + brand **APPROVED** in Twilio Console | Ops | **In process** |
+| 1 | Campaign **VERIFIED** + brand **APPROVED** in Twilio Console | Ops | **Complete** (2026-06-07) |
 | 2 | Test US outbid SMS; no 30034/21610 | Eng/QA | **Pending** |
 | 3 | STOP/HELP on Messaging Service | Ops | **Pending** |
 
@@ -135,8 +135,8 @@ curl -sS -H "Authorization: Bearer $CRON_SECRET" \
 
 | # | Step | Owner | Status |
 |---|------|-------|--------|
-| 1 | PayPal Vault enabled — sandbox E2E, then live credentials on Vercel | Eng/Finance | **Pending** |
-| 2 | Test lot close → `sweep-auction-lots` → `paypal_capture_id` set | Eng/QA | **Pending** |
+| 1 | PayPal Vault enabled — sandbox E2E, then live credentials on Vercel | Eng/Finance | **Partial** — practice capture PASS (`npm run paypal:rehearsal`); real PayPal creds not in `.env.local` |
+| 2 | Test lot close → `sweep-auction-lots` → `paypal_capture_id` set | Eng/QA | **Partial** — practice `paypal_capture_id=practice_capture`; prod sweep cron **200** on www |
 | 3 | Organizer console + CSV on a real auction | Eng/QA | **Pending** |
 
 #### P1 — Sprint 4 GA checklist (OR §5)
@@ -180,17 +180,22 @@ Only if product prioritizes after first gala:
 
 ---
 
-## Twilio 10DLC campaign verification (S0.3b) — in process
+## Twilio 10DLC campaign verification (S0.3b) — complete
 
-- Date logged: 2026-05-20 (updated: Messaging Service env already deployed)
+- Date completed: 2026-06-07
 - Context: US A2P **campaign** registration for Programmable Messaging (outbid alerts, donation-share SMS). Separate from **Twilio Verify** (login OTP).
-- **Already done (engineering):** `TWILIO_MESSAGING_SERVICE_SID` (+ account/token) in Vercel and `.env.local`; Messaging Service wired in code (`lib/twilio-sms.ts`).
-- **Still waiting (carriers / Twilio Trust Hub):** A2P campaign status → **`VERIFIED`** (and brand **`APPROVED`** if not already). This step often takes **several weeks**; no further app deploy required when it lands.
-- **Done when:** Twilio Console shows campaign **Verified**; test US outbound delivers without 30034/21610-style errors; optional: confirm STOP/HELP on the Messaging Service.
-- **Does not block:** Verify sign-in, Vercel deploy, Sprint 2–3 feature work, Web Push.
-- **Blocks:** Sprint 4 GA gate for **reliable US bulk SMS** (Operational Readiness §5.1 SMS).
+- **Done:** Campaign **VERIFIED** + brand **APPROVED** in Twilio Trust Hub; `TWILIO_MESSAGING_SERVICE_SID` on Vercel and `.env.local`.
+- **Remaining QA:** Test US outbid SMS (no 30034/21610); confirm STOP/HELP on Messaging Service (OR §5.1).
 
 ---
+
+## PayPal Vault rehearsal (2026-06-07)
+
+- **Script:** `npm run paypal:rehearsal` (`scripts/paypal-vault-rehearsal.ts`)
+- **Practice path:** **PASS** — register (`practice_vault`) → bid → close → `settleClosedLot` → `paypal_capture_id=practice_capture`
+- **Sweep cron:** **PASS** — `GET /api/cron/sweep-auction-lots` returns **200** on `www.eventraisehub.com`
+- **Real PayPal vault:** **Pending** — add `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `NEXT_PUBLIC_PAYPAL_CLIENT_ID` to `.env.local` + Vercel; enable Vault in PayPal sandbox app; complete `/auctions/{id}/register` flow in browser
+- **Cleanup rehearsal rows:** `npm run paypal:rehearsal -- --cleanup`
 
 ## Authentication — Twilio Verify (S0.3a)
 

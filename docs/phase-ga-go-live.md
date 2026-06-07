@@ -48,11 +48,11 @@ curl -sS -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/
 
 ### P0 — Twilio 10DLC (external)
 
-| # | Task | Blocks |
+| # | Task | Status |
 |---|------|--------|
-| 1 | Campaign **VERIFIED** + brand **APPROVED** | Reliable US bulk outbid SMS |
-| 2 | Test US outbid SMS | — |
-| 3 | STOP/HELP on Messaging Service | Compliance |
+| 1 | Campaign **VERIFIED** + brand **APPROVED** | **Complete** (2026-06-07) |
+| 2 | Test US outbid SMS | Pending |
+| 3 | STOP/HELP on Messaging Service | Pending |
 
 Does **not** block: Verify login, Web Push, admin console static login.
 
@@ -60,8 +60,8 @@ Does **not** block: Verify login, Web Push, admin console static login.
 
 | # | Task |
 |---|------|
-| 1 | PayPal Vault sandbox E2E → live credentials on Vercel |
-| 2 | Lot close → `sweep-auction-lots` → `paypal_capture_id` |
+| 1 | PayPal Vault sandbox E2E → live credentials on Vercel — `npm run paypal:rehearsal` (practice PASS; real vault needs PayPal env) |
+| 2 | Lot close → `sweep-auction-lots` → `paypal_capture_id` — practice PASS; prod sweep cron 200 |
 | 3 | Organizer console + CSV on a real auction |
 
 ### P1 — Sprint 4 GA checklist (OR §5)
@@ -110,4 +110,5 @@ Not scheduled until after first gala:
 npm run validate          # lint + tsc + unit tests
 npm run ga:status         # env + DB + cron smoke summary
 npm run p0:smoke          # Edge + pending deliveries + cron drain
+npm run paypal:rehearsal  # vault practice E2E + optional --check / --sweep / --cleanup
 ```

@@ -15,6 +15,7 @@
     "p0:vault": "tsx scripts/p0-apply-vault-secrets.ts",
     "p0:smoke": "tsx scripts/p0-smoke-outbid.ts",
     "ga:status": "tsx scripts/ga-status.ts",
+    "paypal:rehearsal": "tsx scripts/paypal-vault-rehearsal.ts",
     "test": "jest",
     "test:unit": "jest --testPathPatterns=__tests__/components --coverage",
     "test:integration": "jest --testPathPatterns=__tests__/integration --coverage --passWithNoTests",
