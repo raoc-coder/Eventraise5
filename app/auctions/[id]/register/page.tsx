@@ -32,9 +32,8 @@ function RegisterForm() {
     return `reg_${Date.now()}_${Math.random().toString(16).slice(2)}`;
   }, []);
 
-  const isSandbox =
-    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID?.includes("sandbox") ||
-    process.env.NODE_ENV !== "production";
+  // Sandbox when explicitly set or not production (Vercel can be NODE_ENV=production + PAYPAL_ENVIRONMENT=sandbox).
+  const isSandbox = process.env.NEXT_PUBLIC_PAYPAL_ENVIRONMENT !== "production";
 
   useEffect(() => {
     if (authLoading) return;

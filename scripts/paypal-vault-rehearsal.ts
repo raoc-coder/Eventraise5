@@ -3,6 +3,7 @@
  *
  *   npx tsx scripts/paypal-vault-rehearsal.ts           # practice vault E2E (DB + capture)
  *   npx tsx scripts/paypal-vault-rehearsal.ts --check   # PayPal OAuth + env only
+ *   npx tsx scripts/paypal-vault-rehearsal.ts --seed    # open lot for browser test on Vercel (no auto-settle)
  *   npx tsx scripts/paypal-vault-rehearsal.ts --cleanup # remove rehearsal rows (tagged slug)
  */
 import { readFileSync, existsSync } from "fs";
@@ -38,6 +39,27 @@ function applyEnv(env: Record<string, string>): void {
 
 function flag(name: string, env: Record<string, string>): boolean {
   return !!env[name]?.trim();
+}
+
+function appBase(env: Record<string, string>): string {
+  let base = (env.NEXT_PUBLIC_APP_URL || "https://www.eventraisehub.com").replace(/\/$/, "");
+  try {
+    const u = new URL(base);
+    if (u.hostname === "eventraisehub.com") u.hostname = "www.eventraisehub.com";
+    return u.origin;
+  } catch {
+    return "https://www.eventraisehub.com";
+  }
+}
+
+function printVercelBrowserSteps(env: Record<string, string>, auctionId: string, lotId: string): void {
+  const base = appBase(env);
+  console.log("\n--- Vercel browser test (Twilio + PayPal on deployed app) ---");
+  console.log(`  1. Sign in:     ${base}/auth/login`);
+  console.log(`  2. Vault:       ${base}/auctions/${auctionId}/register`);
+  console.log(`  3. Bid:         ${base}/auctions/${auctionId}/lots/${lotId}`);
+  console.log(`  4. Close+sweep: npm run paypal:rehearsal -- --close-lot ${lotId}`);
+  console.log(`  Cleanup:        npm run paypal:rehearsal -- --cleanup`);
 }
 
 async function serviceRole(env: Record<string, string>): Promise<string> {
@@ -138,7 +160,10 @@ async function cleanupRehearsal(admin: SupabaseClient): Promise<void> {
   console.log("Cleanup: removed rehearsal event/auction/lots (if any).");
 }
 
-async function runPracticeRehearsal(admin: SupabaseClient, userId: string): Promise<void> {
+async function seedRehearsalAuction(
+  admin: SupabaseClient,
+  userId: string,
+): Promise<{ eventId: string; auctionId: string; lotId: string }> {
   await cleanupRehearsal(admin);
 
   const now = new Date();
@@ -184,7 +209,7 @@ async function runPracticeRehearsal(admin: SupabaseClient, userId: string): Prom
     .insert({
       auction_id: auction.id,
       title: "Rehearsal Lot",
-      description: "Practice vault capture test",
+      description: "PayPal vault capture test — Vercel browser rehearsal",
       starting_bid_cents: 1000,
       min_increment_cents: 500,
       closes_at: closesAt,
@@ -194,6 +219,35 @@ async function runPracticeRehearsal(admin: SupabaseClient, userId: string): Prom
     .single();
 
   if (lErr || !lot) throw new Error(`lot insert failed: ${lErr?.message}`);
+
+  return {
+    eventId: event.id as string,
+    auctionId: auction.id as string,
+    lotId: lot.id as string,
+  };
+}
+
+async function runSeedForVercel(
+  admin: SupabaseClient,
+  userId: string,
+  env: Record<string, string>,
+): Promise<void> {
+  const { auctionId, lotId } = await seedRehearsalAuction(admin, userId);
+  console.log("\n--- Seeded open lot for Vercel test ---");
+  console.log(`  auction_id: ${auctionId}`);
+  console.log(`  lot_id:     ${lotId}`);
+  printVercelBrowserSteps(env, auctionId, lotId);
+}
+
+async function runPracticeRehearsal(
+  admin: SupabaseClient,
+  userId: string,
+  env: Record<string, string>,
+): Promise<void> {
+  const { eventId, auctionId, lotId } = await seedRehearsalAuction(admin, userId);
+  const auction = { id: auctionId };
+  const lot = { id: lotId };
+  const now = new Date();
 
   const { error: regErr } = await admin.from("auction_registrations").insert({
     auction_id: auction.id,
@@ -248,7 +302,7 @@ async function runPracticeRehearsal(admin: SupabaseClient, userId: string): Prom
     settled?.paypal_capture_id === "practice_capture";
 
   console.log("\n--- Practice vault rehearsal ---");
-  console.log(`  event_id:    ${event.id}`);
+  console.log(`  event_id:    ${eventId}`);
   console.log(`  auction_id:  ${auction.id}`);
   console.log(`  lot_id:      ${lot.id}`);
   console.log(`  bid_id:      ${bid.id}`);
@@ -260,26 +314,51 @@ async function runPracticeRehearsal(admin: SupabaseClient, userId: string): Prom
     process.exit(1);
   }
 
-  console.log("\nNext (real PayPal vault in sandbox):");
-  console.log(`  1. Add PAYPAL_* vars to .env.local (see env.example)`);
-  console.log(`  2. npm run dev`);
-  console.log(`  3. Sign in → /auctions/${auction.id}/register → Link PayPal`);
-  console.log(`  4. Place bid → wait for closes_at → npm run paypal:rehearsal -- --sweep`);
-  console.log(`  Cleanup: npm run paypal:rehearsal -- --cleanup`);
+  printVercelBrowserSteps(env, auction.id as string, lot.id as string);
+}
+
+async function closeLotAndSweep(
+  admin: SupabaseClient,
+  env: Record<string, string>,
+  lotId: string,
+): Promise<void> {
+  const { data: lot, error: lotErr } = await admin
+    .from("auction_lots")
+    .select("id, status")
+    .eq("id", lotId)
+    .maybeSingle();
+  if (lotErr || !lot) throw new Error(`lot not found: ${lotId}`);
+
+  const { data: top } = await admin
+    .from("bids")
+    .select("id")
+    .eq("lot_id", lotId)
+    .order("amount_cents", { ascending: false })
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (!top?.id) throw new Error("no bids on lot — place a bid on Vercel first");
+
+  const past = new Date(Date.now() - 60_000).toISOString();
+  await admin
+    .from("auction_lots")
+    .update({
+      status: "closed",
+      winning_bid_id: top.id,
+      closes_at: past,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", lotId);
+
+  await runSweep(env);
 }
 
 async function runSweep(env: Record<string, string>): Promise<void> {
   const cronSecret = env.CRON_SECRET?.trim();
   if (!cronSecret) throw new Error("CRON_SECRET missing");
 
-  let base = (env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
-  try {
-    const u = new URL(base);
-    if (u.hostname === "eventraisehub.com") u.hostname = "www.eventraisehub.com";
-    base = u.origin;
-  } catch {
-    /* keep */
-  }
+  const base = appBase(env);
 
   const res = await fetch(`${base}/api/cron/sweep-auction-lots`, {
     headers: { Authorization: `Bearer ${cronSecret}` },
@@ -320,13 +399,27 @@ async function main() {
     return;
   }
 
+  const closeIdx = args.indexOf("--close-lot");
+  if (closeIdx >= 0) {
+    const lotId = args[closeIdx + 1];
+    if (!lotId) throw new Error("Usage: --close-lot <lot-uuid>");
+    await closeLotAndSweep(admin, env, lotId);
+    return;
+  }
+
+  if (args.includes("--seed")) {
+    const userId = await findRehearsalUser(admin);
+    await runSeedForVercel(admin, userId, env);
+    return;
+  }
+
   const pp = await checkPayPal(env);
   console.log(`\nPayPal API: ${pp.ok ? "OK" : "not configured"} — ${pp.detail}`);
 
   const userId = await findRehearsalUser(admin);
   console.log(`\nRehearsal user: ${userId}`);
 
-  await runPracticeRehearsal(admin, userId);
+  await runPracticeRehearsal(admin, userId, env);
 }
 
 main().catch((e) => {
