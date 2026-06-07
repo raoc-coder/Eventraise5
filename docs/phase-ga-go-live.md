@@ -60,8 +60,8 @@ Does **not** block: Verify login, Web Push, admin console static login.
 
 | # | Task |
 |---|------|
-| 1 | PayPal Vault sandbox E2E → live credentials on Vercel — `npm run paypal:rehearsal` (practice PASS; real vault needs PayPal env) |
-| 2 | Lot close → `sweep-auction-lots` → `paypal_capture_id` — practice PASS; prod sweep cron 200 |
+| 1 | PayPal Vault sandbox E2E → live credentials on Vercel — **Option B complete** on Vercel (2026-06-07); Option A pending — [`docs/runbooks/paypal-vault-rehearsal.md`](./runbooks/paypal-vault-rehearsal.md) |
+| 2 | Lot close → `sweep-auction-lots` → `paypal_capture_id` — **Complete** (practice path) |
 | 3 | Organizer console + CSV on a real auction |
 
 ### P1 — Sprint 4 GA checklist (OR §5)
@@ -111,4 +111,7 @@ npm run validate          # lint + tsc + unit tests
 npm run ga:status         # env + DB + cron smoke summary
 npm run p0:smoke          # Edge + pending deliveries + cron drain
 npm run paypal:rehearsal  # vault practice E2E + optional --check / --sweep / --cleanup
+npm run paypal:seed       # open lot for Vercel browser rehearsal
 ```
+
+PayPal vault runbook: [`docs/runbooks/paypal-vault-rehearsal.md`](./runbooks/paypal-vault-rehearsal.md)

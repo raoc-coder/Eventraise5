@@ -56,6 +56,9 @@ async function main() {
   console.log(`  NEXT_PUBLIC_VAPID_PUBLIC_KEY ${flag("NEXT_PUBLIC_VAPID_PUBLIC_KEY", env)}`);
   console.log(`  PLATFORM_ADMIN_PASSWORD      ${flag("PLATFORM_ADMIN_PASSWORD", env)}`);
   console.log(`  TWILIO_MESSAGING_SERVICE_SID ${flag("TWILIO_MESSAGING_SERVICE_SID", env)}`);
+  console.log(`  PAYPAL_CLIENT_ID             ${flag("PAYPAL_CLIENT_ID", env) || flag("NEXT_PUBLIC_PAYPAL_CLIENT_ID", env) ? "set" : "missing"}`);
+  console.log(`  PAYPAL_ENVIRONMENT           ${env.PAYPAL_ENVIRONMENT || "sandbox (default)"}`);
+  console.log(`  NEXT_PUBLIC_PAYPAL_ENVIRONMENT ${env.NEXT_PUBLIC_PAYPAL_ENVIRONMENT || "sandbox (default)"}`);
   console.log(`  NEXT_PUBLIC_APP_URL          ${configuredUrl || "(default)"}`);
   if (configuredUrl && canonicalAppBase(configuredUrl) !== configuredUrl) {
     console.log(`  (cron probe uses www)        ${base}`);
@@ -126,7 +129,8 @@ async function main() {
   console.log("\nNext actions:");
   console.log("  1. Vercel: PLATFORM_ADMIN_PASSWORD (match .env.local) if not set");
   console.log("  2. npm run p0:smoke — after a real bid exists");
-  console.log("  3. Walk docs/adrs/operational-readiness.md §5 then §6");
+  console.log("  3. PayPal vault: docs/runbooks/paypal-vault-rehearsal.md");
+  console.log("  4. Walk docs/adrs/operational-readiness.md §5 then §6");
   console.log("  See docs/phase-ga-go-live.md");
 }
 

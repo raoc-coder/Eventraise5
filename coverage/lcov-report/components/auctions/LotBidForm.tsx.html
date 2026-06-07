@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.72% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/11</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.77% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/9</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/4</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/9</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -168,7 +168,7 @@
 <a name='L103'></a><a href='#L103'>103</a>
 <a name='L104'></a><a href='#L104'>104</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -191,26 +191,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -271,7 +271,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use client";
 &nbsp;
-import { Button } from "@/components/ui/button";
+import { Button } from <span class="cstat-no" title="statement not covered" >"@/components/ui/button";</span>
 &nbsp;
 export type LotBidFormLot = {
   title: string;
@@ -293,27 +293,27 @@ export interface LotBidFormProps {
   formId?: string;
 }
 &nbsp;
-function bidDisabled(lot: LotBidFormLot, submitting: boolean): boolean {
-  return submitting || lot.status !== "open" || new Date(lot.closes_at) &lt;= new Date();
+function <span class="fstat-no" title="function not covered" >bidDisabled(l</span>ot: LotBidFormLot, submitting: boolean): boolean {
+<span class="cstat-no" title="statement not covered" >  return submitting || lot.status !== "open" || new Date(lot.closes_at) &lt;= new Date();</span>
 }
 &nbsp;
-function submitLabel(authLoading: boolean, submitting: boolean): string {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (authLoading) <span class="cstat-no" title="statement not covered" >return "Checking session…";</span>
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (submitting) <span class="cstat-no" title="statement not covered" >return "Placing bid…";</span>
-  return "Place bid";
+function <span class="fstat-no" title="function not covered" >submitLabel(a</span>uthLoading: boolean, submitting: boolean): string {
+<span class="cstat-no" title="statement not covered" >  if (authLoading) <span class="cstat-no" title="statement not covered" >return "Checking session…";</span></span>
+<span class="cstat-no" title="statement not covered" >  if (submitting) <span class="cstat-no" title="statement not covered" >return "Placing bid…";</span></span>
+<span class="cstat-no" title="statement not covered" >  return "Place bid";</span>
 }
 &nbsp;
-export function LotBidForm({
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >LotBidForm({</span></span>
   lot,
   amount,
   onAmountChange,
   onSubmit,
   submitting,
   authLoading,
-  formId = "lot-bid-form",
+  formId = <span class="branch-0 cbranch-no" title="branch not covered" >"lot-bid-form",</span>
 }: LotBidFormProps) {
-  const disabled = bidDisabled(lot, submitting);
-  const label = submitLabel(authLoading, submitting);
+  const disabled = <span class="cstat-no" title="statement not covered" >bidDisabled(lot, submitting);</span>
+  const label = <span class="cstat-no" title="statement not covered" >submitLabel(authLoading, submitting);</span>
 &nbsp;
   const submitButton = (
     &lt;Button
@@ -353,7 +353,7 @@ export function LotBidForm({
           &lt;/p&gt;
         &lt;/div&gt;
         &lt;div className="hidden sm:block"&gt;{submitButton}&lt;/div&gt;
-        {lot.status !== "open" &amp;&amp; (
+        {<span class="branch-0 cbranch-no" title="branch not covered" >lot.status !== "open" &amp;&amp; (</span>
           &lt;p className="text-center text-sm text-trust-700"&gt;This lot is not accepting bids ({lot.status}).&lt;/p&gt;
         )}
       &lt;/form&gt;
@@ -379,7 +379,7 @@ export function LotBidForm({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-26T09:56:26.608Z
+                at 2026-06-07T09:50:28.873Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

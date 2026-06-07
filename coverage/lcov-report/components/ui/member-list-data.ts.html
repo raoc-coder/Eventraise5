@@ -1,0 +1,511 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for components/ui/member-list-data.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/ui</a> member-list-data.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/17</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/10</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type React from 'react'
+import {
+  BacklogIcon,
+  CompletedIcon,
+  HighPriorityIcon,
+  InProgressIcon,
+  LowPriorityIcon,
+  MediumPriorityIcon,
+  NoPriorityIcon,
+  PausedIcon,
+  TechnicalReviewIcon,
+  ToDoIcon,
+  UrgentPriorityIcon,
+} from <span class="cstat-no" title="statement not covered" >'@/components/ui/member-list-icons'</span>
+&nbsp;
+export interface User {
+  id: string
+  name: string
+  avatarUrl: string
+  email: string
+  status: 'online' | 'offline' | 'away'
+  role: 'Member' | 'Admin' | 'Guest'
+  joinedDate: string
+  teamIds: string[]
+}
+&nbsp;
+const avatarUrl = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>eed: string) =&gt;</span>
+<span class="cstat-no" title="statement not covered" >  `https://api.dicebear.com/9.x/glass/svg?seed=${seed}`</span>
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >statusUserColors </span>= <span class="cstat-no" title="statement not covered" >{</span>
+  online: '#00cc66',
+  offline: '#969696',
+  away: '#ffcc00',
+} as const
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >users:</span> User[] = <span class="cstat-no" title="statement not covered" >[</span>
+  { id: 'ln', name: 'leonel.ngoya', avatarUrl: avatarUrl('ln'), email: 'leonelngoya@gmail.com', status: 'online', role: 'Admin', joinedDate: '2022-01-01', teamIds: ['CORE', 'PERF', 'DESIGN', 'WEB'] },
+  { id: 'sophia', name: 'sophia.reed', avatarUrl: avatarUrl('sophiareed'), email: 'sophiareed@gmail.com', status: 'offline', role: 'Admin', joinedDate: '2023-06-04', teamIds: ['CORE', 'PERF'] },
+  { id: 'mason', name: 'mason.carter', avatarUrl: avatarUrl('mason'), email: 'masoncarter@gmail.com', status: 'away', role: 'Member', joinedDate: '2023-11-01', teamIds: ['CORE', 'DESIGN'] },
+  { id: 'emma', name: 'emma.jones', avatarUrl: avatarUrl('emmajones'), email: 'emmajones@gmail.com', status: 'online', role: 'Member', joinedDate: '2023-03-20', teamIds: ['CORE'] },
+  { id: 'alex', name: 'alex.zhang', avatarUrl: avatarUrl('alexzhang'), email: 'alexzhang@gmail.com', status: 'online', role: 'Member', joinedDate: '2023-05-15', teamIds: ['DESIGN', 'PERF'] },
+  { id: 'olivia', name: 'olivia.wilson', avatarUrl: avatarUrl('oliviawilson'), email: 'oliviawilson@gmail.com', status: 'offline', role: 'Admin', joinedDate: '2022-08-22', teamIds: ['PERF'] },
+  { id: 'lucas', name: 'lucas.martin', avatarUrl: avatarUrl('lucasmartin'), email: 'lucasmartin@gmail.com', status: 'away', role: 'Member', joinedDate: '2023-02-14', teamIds: ['CORE', 'DESIGN', 'PERF'] },
+  { id: 'isabella', name: 'isabella.garcia', avatarUrl: avatarUrl('isabellagarcia'), email: 'isabellagarcia@gmail.com', status: 'online', role: 'Member', joinedDate: '2022-11-30', teamIds: ['DESIGN'] },
+  { id: 'ethan', name: 'ethan.brown', avatarUrl: avatarUrl('ethanbrown'), email: 'ethanbrown@gmail.com', status: 'offline', role: 'Member', joinedDate: '2023-07-18', teamIds: ['PERF'] },
+  { id: 'amelia', name: 'amelia.kim', avatarUrl: avatarUrl('ameliakim'), email: 'ameliakim@gmail.com', status: 'online', role: 'Guest', joinedDate: '2022-05-09', teamIds: ['DESIGN'] },
+  { id: 'noah', name: 'noah.davis', avatarUrl: avatarUrl('noahdavis'), email: 'noahdavis@gmail.com', status: 'away', role: 'Member', joinedDate: '2023-09-27', teamIds: ['PERF', 'DESIGN'] },
+  { id: 'charlotte', name: 'charlotte.miller', avatarUrl: avatarUrl('charlottemiller'), email: 'charlottemiller@gmail.com', status: 'online', role: 'Guest', joinedDate: '2022-04-03', teamIds: ['PERF'] },
+  { id: 'aiden', name: 'aiden.thompson', avatarUrl: avatarUrl('aidenthompson'), email: 'aidenthompson@gmail.com', status: 'offline', role: 'Admin', joinedDate: '2023-01-12', teamIds: ['DESIGN'] },
+  { id: 'mia', name: 'mia.patel', avatarUrl: avatarUrl('miapatel'), email: 'miapatel@gmail.com', status: 'online', role: 'Member', joinedDate: '2022-10-05', teamIds: ['DESIGN', 'PERF'] },
+  { id: 'logan', name: 'logan.wright', avatarUrl: avatarUrl('loganwright'), email: 'loganwright@gmail.com', status: 'away', role: 'Guest', joinedDate: '2023-08-14', teamIds: ['PERF', 'DESIGN'] },
+  { id: 'harper', name: 'harper.robinson', avatarUrl: avatarUrl('harperrobinson'), email: 'harperrobinson@gmail.com', status: 'offline', role: 'Member', joinedDate: '2022-07-29', teamIds: ['PERF'] },
+  { id: 'gabriel', name: 'gabriel.nguyen', avatarUrl: avatarUrl('gabrielnguyen'), email: 'gabrielnguyen@gmail.com', status: 'online', role: 'Member', joinedDate: '2023-04-17', teamIds: ['DESIGN'] },
+  { id: 'victoria', name: 'victoria.lee', avatarUrl: avatarUrl('victorialee'), email: 'victorialee@gmail.com', status: 'away', role: 'Guest', joinedDate: '2022-12-08', teamIds: ['DESIGN'] },
+  { id: 'daniel', name: 'daniel.taylor', avatarUrl: avatarUrl('danieltaylor'), email: 'danieltaylor@gmail.com', status: 'offline', role: 'Member', joinedDate: '2023-10-21', teamIds: ['PERF'] },
+  { id: 'abigail', name: 'abigail.moore', avatarUrl: avatarUrl('abigailmoore'), email: 'abigailmoore@gmail.com', status: 'online', role: 'Member', joinedDate: '2022-06-17', teamIds: ['DESIGN', 'PERF'] },
+]
+&nbsp;
+export interface Priority {
+  id: string
+  name: string
+  icon: React.FC&lt;React.SVGProps&lt;SVGSVGElement&gt;&gt;
+}
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >priorities:</span> Priority[] = <span class="cstat-no" title="statement not covered" >[</span>
+  { id: 'no-priority', name: 'No priority', icon: NoPriorityIcon },
+  { id: 'urgent', name: 'Urgent', icon: UrgentPriorityIcon },
+  { id: 'high', name: 'High', icon: HighPriorityIcon },
+  { id: 'medium', name: 'Medium', icon: MediumPriorityIcon },
+  { id: 'low', name: 'Low', icon: LowPriorityIcon },
+]
+&nbsp;
+export interface Status {
+  id: string
+  name: string
+  color: string
+  icon: React.FC
+}
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >status:</span> Status[] = <span class="cstat-no" title="statement not covered" >[</span>
+  { id: 'in-progress', name: 'In Progress', color: '#facc15', icon: InProgressIcon },
+  { id: 'technical-review', name: 'Technical Review', color: '#22c55e', icon: TechnicalReviewIcon },
+  { id: 'completed', name: 'Completed', color: '#8b5cf6', icon: CompletedIcon },
+  { id: 'paused', name: 'Paused', color: '#0ea5e9', icon: PausedIcon },
+  { id: 'to-do', name: 'Todo', color: '#f97316', icon: ToDoIcon },
+  { id: 'backlog', name: 'Backlog', color: '#ec4899', icon: BacklogIcon },
+]
+&nbsp;
+interface Health {
+  id: 'no-update' | 'off-track' | 'on-track' | 'at-risk'
+  name: string
+  color: string
+  description: string
+}
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >health:</span> Health[] = <span class="cstat-no" title="statement not covered" >[</span>
+  { id: 'no-update', name: 'No Update', color: '#FF0000', description: 'The project has not been updated in the last 30 days.' },
+  { id: 'off-track', name: 'Off Track', color: '#FF0000', description: 'The project is not on track and may be delayed.' },
+  { id: 'on-track', name: 'On Track', color: '#00FF00', description: 'The project is on track and on schedule.' },
+  { id: 'at-risk', name: 'At Risk', color: '#FF0000', description: 'The project is at risk and may be delayed.' },
+]
+&nbsp;
+export interface Project {
+  id: string
+  name: string
+  status: Status
+  icon: string
+  percentComplete: number
+  startDate: string
+  lead: User
+  priority: Priority
+  health: Health
+}
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >projects:</span> Project[] = <span class="cstat-no" title="statement not covered" >[</span>
+  { id: '1', name: 'LNDev UI - Core Components', status: status[0], icon: 'Cuboid', percentComplete: 80, startDate: '2025-03-08', lead: users[2], priority: priorities[1], health: health[0] },
+  { id: '2', name: 'LNDev UI - Theming', status: status[1], icon: 'Blocks', percentComplete: 50, startDate: '2025-03-14', lead: users[0], priority: priorities[0], health: health[3] },
+  { id: '3', name: 'LNDev UI - Modals', status: status[2], icon: 'Vault', percentComplete: 0, startDate: '2025-03-09', lead: users[1], priority: priorities[2], health: health[1] },
+  { id: '4', name: 'LNDev UI - Navigation', status: status[3], icon: 'BrickWall', percentComplete: 0, startDate: '2025-03-10', lead: users[2], priority: priorities[0], health: health[2] },
+  { id: '5', name: 'LNDev UI - Layout', status: status[4], icon: 'Wallpaper', percentComplete: 0, startDate: '2025-03-11', lead: users[0], priority: priorities[0], health: health[3] },
+  { id: '6', name: 'LNDev UI - Sidebar', status: status[5], icon: 'TrafficCone', percentComplete: 0, startDate: '2025-03-12', lead: users[1], priority: priorities[0], health: health[1] },
+  { id: '7', name: 'LNDev UI - Cards', status: status[1], icon: 'Grid2X2', percentComplete: 0, startDate: '2025-03-13', lead: users[2], priority: priorities[0], health: health[2] },
+  { id: '8', name: 'LNDev UI - Tooltip', status: status[2], icon: 'Bomb', percentComplete: 0, startDate: '2025-03-14', lead: users[0], priority: priorities[0], health: health[3] },
+  { id: '9', name: 'LNDev UI - Dropdown', status: status[3], icon: 'Shapes', percentComplete: 50, startDate: '2025-03-15', lead: users[1], priority: priorities[0], health: health[3] },
+  { id: '10', name: 'LNDev UI - Data Tables', status: status[0], icon: 'Table', percentComplete: 65, startDate: '2025-03-18', lead: users[2], priority: priorities[1], health: health[0] },
+]
+&nbsp;
+export interface Team {
+  id: string
+  name: string
+  icon: string
+  joined: boolean
+  color: string
+  members: User[]
+  projects: Project[]
+}
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >teams:</span> Team[] = <span class="cstat-no" title="statement not covered" >[</span>
+  { id: 'CORE', name: 'LNDev Core', icon: '🛠️', joined: true, color: '#FF0000', members: [users[8], users[10], users[2], users[3], users[4]], projects: [projects[5], projects[8], projects[3]] },
+  { id: 'DESIGN', name: 'Design System', icon: '🎨', joined: true, color: '#00FF00', members: [users[7], users[3]], projects: [projects[1], projects[1], projects[2], projects[3]] },
+  { id: 'PERF', name: 'Performance Lab', icon: '☀️', joined: false, color: '#0000FF', members: [users[5], users[0], users[1], users[2], users[3], users[4], users[6]], projects: [projects[8], projects[8]] },
+]
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-06-07T09:50:28.873Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    

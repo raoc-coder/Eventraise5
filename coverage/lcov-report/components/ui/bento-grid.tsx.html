@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>0/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -223,14 +223,14 @@
 <a name='L158'></a><a href='#L158'>158</a>
 <a name='L159'></a><a href='#L159'>159</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -249,7 +249,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -296,7 +296,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -350,7 +350,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -378,17 +378,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use client'
 &nbsp;
-import * as React from 'react'
+import * as React from <span class="cstat-no" title="statement not covered" >'react'</span>
 import {
   CheckCircle,
   Globe,
   TrendingUp,
   Video,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
+} from <span class="cstat-no" title="statement not covered" >'lucide-react'</span>
+import { cn } from <span class="cstat-no" title="statement not covered" >'@/lib/utils'</span>
 &nbsp;
 export interface BentoItem {
   title: string
@@ -407,7 +407,7 @@ export interface BentoGridProps {
   className?: string
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >bentoSampleItems:</span> BentoItem[] = [
+export const <span class="cstat-no" title="statement not covered" >bentoSampleItems:</span> BentoItem[] = <span class="cstat-no" title="statement not covered" >[</span>
   {
     title: 'Analytics Dashboard',
     meta: 'v2.4.1',
@@ -445,7 +445,7 @@ export const <span class="cstat-no" title="statement not covered" >bentoSampleIt
   },
 ]
 &nbsp;
-function BentoGrid({ items = bentoSampleItems, className }: BentoGridProps) {
+function <span class="fstat-no" title="function not covered" >BentoGrid({</span> items = <span class="branch-0 cbranch-no" title="branch not covered" >bentoSampleItems,</span> className }: BentoGridProps) {
   return (
     &lt;div
       className={cn(
@@ -453,8 +453,8 @@ function BentoGrid({ items = bentoSampleItems, className }: BentoGridProps) {
         className,
       )}
     &gt;
-      {items.map((item, index) =&gt; (
-        &lt;div
+      {items.map(<span class="fstat-no" title="function not covered" >(i</span>tem, index) =&gt; (
+<span class="cstat-no" title="statement not covered" >        &lt;div</span>
           key={`${item.title}-${index}`}
           className={cn(
             'group relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300',
@@ -494,7 +494,7 @@ function BentoGrid({ items = bentoSampleItems, className }: BentoGridProps) {
             &lt;div className="space-y-2"&gt;
               &lt;h3 className="text-[15px] font-medium tracking-tight text-foreground"&gt;
                 {item.title}
-                {item.meta &amp;&amp; (
+                {<span class="branch-0 cbranch-no" title="branch not covered" >item.meta </span>&amp;&amp; (
                   &lt;span className="ml-2 text-xs font-normal text-muted-foreground"&gt;
                     {item.meta}
                   &lt;/span&gt;
@@ -507,8 +507,8 @@ function BentoGrid({ items = bentoSampleItems, className }: BentoGridProps) {
 &nbsp;
             &lt;div className="mt-2 flex items-center justify-between"&gt;
               &lt;div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground"&gt;
-                {item.tags?.map((tag) =&gt; (
-                  &lt;span
+                {item.tags?.map(<span class="fstat-no" title="function not covered" >(t</span>ag) =&gt; (
+<span class="cstat-no" title="statement not covered" >                  &lt;span</span>
                     key={tag}
                     className="rounded-md bg-foreground/5 px-2 py-1 backdrop-blur-sm transition-all duration-200 hover:bg-foreground/10"
                   &gt;
@@ -536,7 +536,7 @@ function BentoGrid({ items = bentoSampleItems, className }: BentoGridProps) {
   )
 }
 &nbsp;
-export { BentoGrid }
+export { <span class="cstat-no" title="statement not covered" >BentoGrid </span>}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -544,7 +544,7 @@ export { BentoGrid }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-26T09:56:26.608Z
+                at 2026-06-07T09:50:28.873Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

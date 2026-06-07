@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/10</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -135,11 +135,11 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -169,7 +169,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,17 +201,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as React from <span class="cstat-no" title="statement not covered" >'react'</span>
+import { cva, type VariantProps } from <span class="cstat-no" title="statement not covered" >'class-variance-authority'</span>
+import { cn } from <span class="cstat-no" title="statement not covered" >'@/lib/utils'</span>
 &nbsp;
-const neonButtonVariants = cva(
+const neonButtonVariants = <span class="cstat-no" title="statement not covered" >cva(</span>
   'relative group border text-foreground mx-auto text-center rounded-full',
   {
     variants: {
@@ -241,9 +241,9 @@ export interface NeonButtonProps
   neon?: boolean
 }
 &nbsp;
-const NeonButton = React.forwardRef&lt;HTMLButtonElement, NeonButtonProps&gt;(
-  (
-    { className, neon = true, size, variant, children, type = 'button', ...props },
+const NeonButton = <span class="cstat-no" title="statement not covered" >React.forwardRef&lt;HTMLButtonElement, NeonButtonProps&gt;(</span>
+<span class="fstat-no" title="function not covered" >  (</span>
+    { className, neon = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span> size, variant, children, type = <span class="branch-0 cbranch-no" title="branch not covered" >'button',</span> ...props },
     ref,
   ) =&gt; {
     return (
@@ -273,12 +273,12 @@ const NeonButton = React.forwardRef&lt;HTMLButtonElement, NeonButtonProps&gt;(
   },
 )
 &nbsp;
-NeonButton.displayName = 'NeonButton'
+<span class="cstat-no" title="statement not covered" >NeonButton.displayName = 'NeonButton'</span>
 &nbsp;
 /** @deprecated Use named export `NeonButton` to avoid confusion with `components/ui/button`. */
-const Button = NeonButton
+const Button = <span class="cstat-no" title="statement not covered" >NeonButton</span>
 &nbsp;
-export { NeonButton, <span class="cstat-no" title="statement not covered" >Button,</span> <span class="cstat-no" title="statement not covered" >neonButtonVariants as b</span>uttonVariants }
+export { <span class="cstat-no" title="statement not covered" >NeonButton,</span> <span class="cstat-no" title="statement not covered" >Button,</span> <span class="cstat-no" title="statement not covered" >neonButtonVariants as b</span>uttonVariants }
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -286,7 +286,7 @@ export { NeonButton, <span class="cstat-no" title="statement not covered" >Butto
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-26T09:56:26.608Z
+                at 2026-06-07T09:50:28.873Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

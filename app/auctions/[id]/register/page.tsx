@@ -10,6 +10,7 @@ import { Navigation } from "@/components/layout/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/app/providers";
+import { isPayPalSandboxClient } from "@/lib/paypal-env";
 
 const SETUP_TOKEN_KEY = "auction_vault_setup_token";
 
@@ -32,8 +33,7 @@ function RegisterForm() {
     return `reg_${Date.now()}_${Math.random().toString(16).slice(2)}`;
   }, []);
 
-  // Sandbox when explicitly set or not production (Vercel can be NODE_ENV=production + PAYPAL_ENVIRONMENT=sandbox).
-  const isSandbox = process.env.NEXT_PUBLIC_PAYPAL_ENVIRONMENT !== "production";
+  const isSandbox = isPayPalSandboxClient();
 
   useEffect(() => {
     if (authLoading) return;

@@ -75,7 +75,7 @@
 **Supabase project:** `yxzypekwyuopbanroobr`  
 **Production URL:** `https://www.eventraisehub.com`
 
-**Snapshot (2026-06-07):** P0 steps 1–4 **complete**; 10DLC **complete**; OR §5.5 engineering checks **complete**. **Pending:** P0 step 5 (bid E2E), PayPal Vault rehearsal (in progress), OR §5 manual sign-off, P2 k6/dashboards.
+**Snapshot (2026-06-07):** P0 steps 1–4 **complete**; 10DLC **complete**; PayPal vault **practice path on Vercel complete**; OR §5.5 engineering checks **complete**. **Pending:** P0 step 5 (bid E2E), real PayPal vault (Option A), OR §5 manual sign-off, P2 k6/dashboards.
 
 ### Phase GA engineering sprint — shipped (2026-05-21)
 
@@ -135,8 +135,8 @@ curl -sS -H "Authorization: Bearer $CRON_SECRET" \
 
 | # | Step | Owner | Status |
 |---|------|-------|--------|
-| 1 | PayPal Vault enabled — sandbox E2E, then live credentials on Vercel | Eng/Finance | **Partial** — practice capture PASS (`npm run paypal:rehearsal`); real PayPal creds not in `.env.local` |
-| 2 | Test lot close → `sweep-auction-lots` → `paypal_capture_id` set | Eng/QA | **Partial** — practice `paypal_capture_id=practice_capture`; prod sweep cron **200** on www |
+| 1 | PayPal Vault enabled — sandbox E2E, then live credentials on Vercel | Eng/Finance | **Partial** — Option B on Vercel **complete**; Option A (real sandbox vault) pending |
+| 2 | Test lot close → `sweep-auction-lots` → `paypal_capture_id` set | Eng/QA | **Complete** (practice) — verified on Vercel 2026-06-07; runbook: `docs/runbooks/paypal-vault-rehearsal.md` |
 | 3 | Organizer console + CSV on a real auction | Eng/QA | **Pending** |
 
 #### P1 — Sprint 4 GA checklist (OR §5)
@@ -189,14 +189,15 @@ Only if product prioritizes after first gala:
 
 ---
 
-## PayPal Vault rehearsal (2026-06-07)
+## PayPal Vault rehearsal (2026-06-07) — hardwired
 
-- **Script:** `npm run paypal:rehearsal` (`scripts/paypal-vault-rehearsal.ts`)
-- **Practice path:** **PASS** — register (`practice_vault`) → bid → close → `settleClosedLot` → `paypal_capture_id=practice_capture`
-- **Sweep cron:** **PASS** — `GET /api/cron/sweep-auction-lots` returns **200** on `www.eventraisehub.com`
-- **Real PayPal vault:** **Pending** — browser test on **Vercel** (Twilio not on local): `npm run paypal:seed` then walk URLs on `https://www.eventraisehub.com`
-- **Vercel flow (Option B practice vault):** login → register page → practice register (API or button after `NEXT_PUBLIC_PAYPAL_ENVIRONMENT=sandbox` deploy) → bid → `--close-lot`
-- **Cleanup rehearsal rows:** `npm run paypal:rehearsal -- --cleanup`
+- **Runbook:** [`docs/runbooks/paypal-vault-rehearsal.md`](docs/runbooks/paypal-vault-rehearsal.md)
+- **Scripts:** `npm run paypal:rehearsal` · `npm run paypal:seed` · `--check` · `--close-lot` · `--cleanup`
+- **Env helpers:** `lib/paypal-env.ts` — `PAYPAL_ENVIRONMENT` (server) + `NEXT_PUBLIC_PAYPAL_ENVIRONMENT` (client practice button)
+- **Option B (practice vault) on Vercel:** **Complete** — Twilio login → practice register → bid → `--close-lot` → `practice_capture`
+- **Option A (real sandbox vault):** **Pending** — Sandbox Personal buyer at `/register` → Link PayPal
+- **Vercel required:** `NEXT_PUBLIC_PAYPAL_ENVIRONMENT=sandbox` when `PAYPAL_ENVIRONMENT=sandbox` (shows practice button)
+- **Go-live:** switch both to `production` + live PayPal Vault credentials
 
 ## Authentication — Twilio Verify (S0.3a)
 

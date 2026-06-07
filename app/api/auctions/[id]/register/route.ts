@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth-utils";
 import { rateLimit, getClientKeyFromHeaders } from "@/lib/rate-limit";
 import { isUuid } from "@/lib/p2p/personal-campaigns";
+import { isPayPalSandboxServer } from "@/lib/paypal-env";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           ? "practice_vault"
           : null;
 
-    if (practiceVault && process.env.PAYPAL_ENVIRONMENT === "production") {
+    if (practiceVault && !isPayPalSandboxServer()) {
       return NextResponse.json(
         { ok: false, error: "practice_not_allowed", message: "Practice registration is disabled in production." },
         { status: 400 },

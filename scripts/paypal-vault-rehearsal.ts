@@ -334,10 +334,16 @@ async function closeLotAndSweep(
 ): Promise<void> {
   const { data: lot, error: lotErr } = await admin
     .from("auction_lots")
-    .select("id, status")
+    .select("id, status, paypal_capture_id")
     .eq("id", lotId)
     .maybeSingle();
   if (lotErr || !lot) throw new Error(`lot not found: ${lotId}`);
+
+  if (lot.paypal_capture_id || lot.status === "settled") {
+    console.log(`Lot ${lotId} already settled (capture: ${lot.paypal_capture_id ?? "n/a"}) — sweep only`);
+    await runSweep(env);
+    return;
+  }
 
   const { data: top } = await admin
     .from("bids")
@@ -359,7 +365,8 @@ async function closeLotAndSweep(
       closes_at: past,
       updated_at: new Date().toISOString(),
     })
-    .eq("id", lotId);
+    .eq("id", lotId)
+    .eq("status", "open");
 
   await runSweep(env);
 }

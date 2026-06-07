@@ -127,8 +127,10 @@ Unlocks Sprint 4 (realtime + anti-snipe + outbid fan-out).
 
 ### 4.2 Payment lifecycle — vault + capture-on-win (ADR-0006)
 
-- [ ] PayPal Vault stores a payment method at **auction registration** time.
-- [ ] Auction close triggers capture only for the winning bid.
+Rehearsal runbook: [`docs/runbooks/paypal-vault-rehearsal.md`](../runbooks/paypal-vault-rehearsal.md). Option B (practice vault on Vercel) verified **2026-06-07**.
+
+- [ ] PayPal Vault stores a payment method at **auction registration** time (real sandbox vault — Option A).
+- [x] Auction close triggers capture only for the winning bid (practice path on Vercel).
 - [ ] Capture failure path: lot moves to `capture_failed`, organizer notified, second-highest bid offered the slot.
 - [ ] Vercel Cron sweep runs every minute during a live window; `closes_at` accuracy ≤ 60 s.
 
