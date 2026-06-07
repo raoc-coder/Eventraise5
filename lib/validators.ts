@@ -2,21 +2,31 @@ import { z } from 'zod'
 
 export const dateStringSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional()
 
+/** Accept number|string; treat null/NaN/empty as absent (JSON.stringify(NaN) => null). */
+export const optionalNumericField = z.preprocess(
+  (val) => {
+    if (val === null || val === undefined || val === '') return undefined
+    if (typeof val === 'number' && Number.isNaN(val)) return undefined
+    return val
+  },
+  z.union([z.number(), z.string()]).optional(),
+)
+
 export const createEventSchema = z.object({
   title: z.string().trim().min(0).optional(),
   description: z.string().trim().min(0).optional(),
   event_type: z.string().trim().min(0).optional(),
   start_date: dateStringSchema,
   end_date: dateStringSchema,
-  goal_amount: z.union([z.number(), z.string()]).optional(),
+  goal_amount: optionalNumericField,
   location: z.string().trim().min(0).optional(),
   is_public: z.boolean().optional(),
   invite_emails: z.string().trim().optional(),
   // Ticketing fields
   is_ticketed: z.boolean().optional(),
-  ticket_price: z.union([z.number(), z.string()]).optional(),
+  ticket_price: optionalNumericField,
   ticket_currency: z.string().trim().optional(),
-  ticket_quantity: z.union([z.number(), z.string()]).optional(),
+  ticket_quantity: optionalNumericField,
 })
 
 export type CreateEventInput = z.infer<typeof createEventSchema>

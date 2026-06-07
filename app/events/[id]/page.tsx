@@ -32,7 +32,8 @@ import {
   Mail,
   Globe,
   Edit,
-  Trash2
+  Trash2,
+  Gavel
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -758,6 +759,10 @@ export default function EventDetailPage() {
                                 Manage Tickets
                               </Button>
                             )}
+                            <Button variant="outline" onClick={() => window.open(`/events/${event.id}/auctions/manage`, '_blank')} className="hover:bg-gray-50 transition-colors h-11 text-sm">
+                              <Gavel className="h-4 w-4 mr-2" />
+                              Manage Auction
+                            </Button>
                             <Button variant="outline" onClick={deleteEvent} className="border-red-500 text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors h-11 text-sm">
                               <Trash2 className="h-4 w-4 mr-2" />
                               Delete Event

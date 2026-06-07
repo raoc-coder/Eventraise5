@@ -68,7 +68,15 @@ export async function PATCH(req: NextRequest, { params }: any) {
   await requireEventAccess(req, id)
   
   const raw = await req.json().catch(() => ({}))
-  const body = updateEventSchema.parse(raw)
+  const parsed = updateEventSchema.safeParse(raw)
+  if (!parsed.success) {
+    const first = parsed.error.issues[0]
+    const field = first?.path?.join('.') || 'input'
+    return fail(`Invalid ${field}: ${first?.message || 'validation failed'}`, 400, {
+      issues: parsed.error.issues,
+    })
+  }
+  const body = parsed.data
   const toIso = (d?: string) => (d ? new Date(`${d}T00:00:00Z`).toISOString() : undefined)
   const update: any = {}
   if (body.title !== undefined) {

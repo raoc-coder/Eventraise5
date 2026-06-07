@@ -6,6 +6,39 @@ import { normalizeCampaignSlug } from "@/lib/p2p/slug";
 
 export const dynamic = "force-dynamic";
 
+export async function GET(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+  try {
+    const eventId = params?.id;
+    if (!eventId || !isUuid(eventId)) {
+      return NextResponse.json({ ok: false, error: "invalid_request" }, { status: 400 });
+    }
+
+    const { db } = await requireEventAccess(req, eventId);
+    const { data, error } = await db
+      .from("auctions")
+      .select("id, event_id, title, slug, status, mode, anti_snipe_enabled, created_at")
+      .eq("event_id", eventId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("[events auctions GET]", error);
+      return NextResponse.json({ ok: false, error: "query_failed", message: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true, auctions: data ?? [] });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (msg === "Authentication required") {
+      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+    }
+    if (msg === "Forbidden") {
+      return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
+    }
+    console.error("[events auctions GET]", e);
+    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
   try {
     const eventId = params?.id;

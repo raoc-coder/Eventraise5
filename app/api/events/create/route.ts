@@ -19,7 +19,15 @@ export async function POST(req: NextRequest) {
     if (!rateLimit(`evt-create:${clientKey}`, 10)) return fail('Too many requests', 429)
 
     const raw = await req.json().catch(() => ({}))
-    const body = createEventSchema.parse(raw)
+    const parsed = createEventSchema.safeParse(raw)
+    if (!parsed.success) {
+      const first = parsed.error.issues[0]
+      const field = first?.path?.join('.') || 'input'
+      return fail(`Invalid ${field}: ${first?.message || 'validation failed'}`, 400, {
+        issues: parsed.error.issues,
+      })
+    }
+    const body = parsed.data
     const { title, description, event_type, start_date, end_date, goal_amount, location, is_public, invite_emails, is_ticketed, ticket_price, ticket_currency, ticket_quantity } = body
 
     const todayIso = new Date().toISOString().slice(0, 10) // YYYY-MM-DD

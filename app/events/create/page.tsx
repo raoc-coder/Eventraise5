@@ -81,11 +81,25 @@ export default function CreateEventPage() {
     })
   }
 
+  const parseOptionalNumber = (raw: string): number | undefined => {
+    const trimmed = raw.trim()
+    if (!trimmed) return undefined
+    const value = Number(trimmed)
+    return Number.isFinite(value) ? value : undefined
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
+      if (formData.is_ticketed && parseOptionalNumber(formData.ticket_price) === undefined) {
+        setErrors({ ticket_price: 'Enter a ticket price for ticketed events' })
+        toast.error('Please enter a ticket price.')
+        setLoading(false)
+        return
+      }
+
       // Client-side validation for friendlier errors
       try {
         setErrors({})
@@ -97,6 +111,13 @@ export default function CreateEventPage() {
           end_date: formData.end_date || undefined,
           goal_amount: formData.goal_amount ? Number(formData.goal_amount) : undefined,
           location: formData.location,
+          is_ticketed: formData.is_ticketed,
+          ticket_price: formData.is_ticketed ? parseOptionalNumber(formData.ticket_price) : undefined,
+          ticket_currency: formData.is_ticketed ? formData.ticket_currency : undefined,
+          ticket_quantity:
+            formData.is_ticketed && formData.ticket_quantity
+              ? parseOptionalNumber(formData.ticket_quantity)
+              : undefined,
         })
       } catch (err: any) {
         const fieldErrors: Record<string, string> = {}
@@ -123,9 +144,12 @@ export default function CreateEventPage() {
         is_public: formData.is_public,
         // Ticketing data
         is_ticketed: formData.is_ticketed,
-        ticket_price: formData.is_ticketed ? parseFloat(formData.ticket_price) : undefined,
+        ticket_price: formData.is_ticketed ? parseOptionalNumber(formData.ticket_price) : undefined,
         ticket_currency: formData.is_ticketed ? formData.ticket_currency : undefined,
-        ticket_quantity: formData.is_ticketed && formData.ticket_quantity ? parseInt(formData.ticket_quantity) : undefined,
+        ticket_quantity:
+          formData.is_ticketed && formData.ticket_quantity
+            ? parseOptionalNumber(formData.ticket_quantity)
+            : undefined,
       }
       // Try to include user JWT to satisfy RLS (authenticated role)
       let authHeader: Record<string, string> = {}
