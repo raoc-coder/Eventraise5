@@ -13,7 +13,7 @@
 | S0.5 Supabase Pro | **Complete** | Pro confirmed; capacity gate satisfied for feature work |
 | S0.6 VAPID | **Complete** | Keys in `.env.local` + Vercel |
 | S0.7 Braintree sunset | **Complete** | 2026-05-13 |
-| Vercel deployment | **Complete** | Production deploy successful (2026-05-20) |
+| Vercel deployment | **Complete** | Production deploy successful (2026-05-20); **PayPal live** env + redeploy (2026-06-07) |
 
 **Sprint 0 exit:** Green — including 10DLC campaign verification (2026-06-07).
 
@@ -25,10 +25,10 @@
 
 ## Sprint 3 — Epic 2 auctions (2026-05-20)
 
-- PayPal Vault setup/confirm APIs; register UI; practice vault in sandbox.
+- PayPal Vault setup/confirm APIs; register UI; practice vault rehearsed in sandbox (2026-06-07).
 - Cron sweep closes lots + `settleClosedLot` capture (migration `029`).
 - Organizer console `/auctions/[id]/organizer` + CSV export.
-- Apply migrations `029` on Supabase; enable PayPal Vault in sandbox app settings.
+- **Live:** PayPal Vault + live REST credentials on Vercel (`PAYPAL_ENVIRONMENT=production`) — deployed 2026-06-07.
 
 ## Sprint 4 — Realtime, anti-snipe, outbid fan-out (2026-05-20)
 
@@ -60,7 +60,7 @@
 
 ---
 
-## Phase GA — Go-live & first live event (ACTIVE)
+## Phase GA — Go-live & first live event (ACTIVE — paused for live PayPal smoke)
 
 **Date started:** 2026-05-21  
 **Engineering deploy:** **Complete** (2026-05-21) — Vercel production successful  
@@ -75,7 +75,7 @@
 **Supabase project:** `yxzypekwyuopbanroobr`  
 **Production URL:** `https://www.eventraisehub.com`
 
-**Snapshot (2026-06-07):** P0 steps 1–4 **complete**; 10DLC **complete**; PayPal vault **practice path on Vercel complete**; OR §5.5 engineering checks **complete**. **Pending:** P0 step 5 (bid E2E), real PayPal vault (Option A), OR §5 manual sign-off, P2 k6/dashboards.
+**Snapshot (2026-06-07, post go-live deploy):** P0 steps 1–4 **complete**; 10DLC **complete**; **PayPal live on Vercel** deployed; sandbox rehearsal **complete**. **Paused:** live vault+capture smoke — organizer has no **personal PayPal** yet (must create before bidder vault on www). **Pending when resumed:** live smoke (below), P0 step 5, OR §5, P2, OR §6.
 
 ### Phase GA engineering sprint — shipped (2026-05-21)
 
@@ -96,6 +96,7 @@
 | Notifications (Sprint 4) | **Complete** | Cron verified on prod; 10DLC verified (2026-06-07) |
 | Polish (Sprint 5) | **Complete** | k6 + dashboards |
 | Phase GA engineering (2026-05-21) | **Deployed** | a11y/brand/cron scripts; see internal recap |
+| PayPal live (2026-06-07) | **Deployed** | Vercel Production: live creds, `PAYPAL_ENVIRONMENT=production`, webhook; practice vault disabled |
 
 ### Ordered steps (do in sequence where possible)
 
@@ -135,8 +136,8 @@ curl -sS -H "Authorization: Bearer $CRON_SECRET" \
 
 | # | Step | Owner | Status |
 |---|------|-------|--------|
-| 1 | PayPal Vault enabled — sandbox E2E, then live credentials on Vercel | Eng/Finance | **Partial** — Option B on Vercel **complete**; Option A (real sandbox vault) pending |
-| 2 | Test lot close → `sweep-auction-lots` → `paypal_capture_id` set | Eng/QA | **Complete** (practice) — verified on Vercel 2026-06-07; runbook: `docs/runbooks/paypal-vault-rehearsal.md` |
+| 1 | PayPal Vault enabled — live credentials on Vercel | Eng/Finance | **Complete** (2026-06-07) — live REST app + Vault + `PAYPAL_WEBHOOK_ID` on Vercel Production |
+| 2 | Test lot close → `sweep-auction-lots` → `paypal_capture_id` set | Eng/QA | **Complete** (practice); **live capture smoke blocked** — need personal PayPal (see § Live smoke paused) |
 | 3 | Organizer console + CSV on a real auction | Eng/QA | **Pending** |
 
 #### P1 — Sprint 4 GA checklist (OR §5)
@@ -189,15 +190,35 @@ Only if product prioritizes after first gala:
 
 ---
 
-## PayPal Vault rehearsal (2026-06-07) — hardwired
+## PayPal — live go-live (2026-06-07)
+
+- **Status:** **Deployed** on Vercel Production (`https://www.eventraisehub.com`)
+- **Vercel env (Production):** `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `NEXT_PUBLIC_PAYPAL_CLIENT_ID`, `PAYPAL_ENVIRONMENT=production`, `NEXT_PUBLIC_PAYPAL_ENVIRONMENT=production`, `PAYPAL_WEBHOOK_ID`
+- **PayPal Dashboard (Live):** REST app with **Vault** enabled; webhook → `https://www.eventraisehub.com/api/paypal/webhook`
+- **Practice vault:** **Disabled** in production (by design when `PAYPAL_ENVIRONMENT=production`)
+- **Env split (canonical):** **Vercel Production = live** (`PAYPAL_ENVIRONMENT=production`); **local `.env.local` = sandbox** — CLI scripts (`paypal:rehearsal`, `ga:status`, `p0:smoke`) hit production Supabase/crons via `NEXT_PUBLIC_APP_URL=www` but PayPal OAuth from laptop uses sandbox creds unless you mirror live keys locally
+- **Post-deploy smoke:** **Paused (2026-06-07)** — no personal PayPal account yet; create at [paypal.com](https://www.paypal.com) (Personal, not Business REST admin). Return to § **Live smoke paused** below.
+- **Cron note:** `sweep-auction-lots` is daily in `vercel.json`; during live gala use manual `--close-lot` or tighten cron on Vercel Pro
+
+## Live smoke paused (2026-06-07) — resume after break
+
+- **Blocker:** Live vault on www requires a **personal PayPal** login at register — Business/developer credentials are not the payer account. Account not set up yet.
+- **Seeded lot (may need refresh):** `npm run paypal:seed` if `closes_at` passed  
+  - Last seed: auction `f6c0eed9-5e0a-4b55-aa0b-5524d6d1dff1` · lot `92ff23a8-9b37-44b5-9ecd-bcb793240a33` (slug `ga-vault-rehearsal`)
+- **Resume checklist:**
+  1. Create/link **personal PayPal**
+  2. `npm run paypal:seed` (fresh open lot)
+  3. www sign-in → `/auctions/{id}/register` → **Link PayPal** (live)
+  4. Bid on lot (min $10)
+  5. `npm run paypal:rehearsal -- --close-lot {lot_id}` → confirm real `paypal_capture_id`
+  6. `npm run paypal:rehearsal -- --cleanup`
+
+## PayPal Vault rehearsal (2026-06-07) — sandbox, complete
 
 - **Runbook:** [`docs/runbooks/paypal-vault-rehearsal.md`](docs/runbooks/paypal-vault-rehearsal.md)
 - **Scripts:** `npm run paypal:rehearsal` · `npm run paypal:seed` · `--check` · `--close-lot` · `--cleanup`
-- **Env helpers:** `lib/paypal-env.ts` — `PAYPAL_ENVIRONMENT` (server) + `NEXT_PUBLIC_PAYPAL_ENVIRONMENT` (client practice button)
-- **Option B (practice vault) on Vercel:** **Complete** — Twilio login → practice register → bid → `--close-lot` → `practice_capture`
-- **Option A (real sandbox vault):** **Pending** — Sandbox Personal buyer at `/register` → Link PayPal
-- **Vercel required:** `NEXT_PUBLIC_PAYPAL_ENVIRONMENT=sandbox` when `PAYPAL_ENVIRONMENT=sandbox` (shows practice button)
-- **Go-live:** switch both to `production` + live PayPal Vault credentials
+- **Env helpers:** `lib/paypal-env.ts`
+- **Option B (practice vault):** **Complete** on Vercel sandbox (2026-06-07) — superseded for production by live vault above
 
 ## Authentication — Twilio Verify (S0.3a)
 
@@ -233,4 +254,17 @@ Only if product prioritizes after first gala:
 
 - **Evaluated:** Neon vs Supabase (cost).
 - **Decision:** **Remain on Supabase** — ERH depends on Auth, Realtime, Edge/`pg_net`, RLS, and Storage ADRs; Neon is Postgres-only.
-- **Cost follow-up:** Right-size Supabase tier; 10DLC when verified — not a DB migration.
+- **Cost follow-up:** Right-size Supabase tier — not a DB migration.
+
+## Go-live deploy log (2026-06-07)
+
+| Area | Action | Status |
+|------|--------|--------|
+| PayPal | Live REST credentials + Vault + webhook on Vercel Production | **Deployed** |
+| PayPal env | `PAYPAL_ENVIRONMENT` / `NEXT_PUBLIC_PAYPAL_ENVIRONMENT` → `production` | **Deployed** |
+| Twilio | Verify + Messaging (10DLC verified) — unchanged on deploy | **Live** |
+| Supabase | `yxzypekwyuopbanroobr` — no migration required for flip | **Live** |
+| Crons | `process-notification-deliveries` (5m), `sweep-auction-lots` (daily) | **Live** |
+| Rehearsal data | `npm run paypal:rehearsal -- --cleanup` | **Complete** |
+| Env model | Vercel Production = **live** PayPal; `.env.local` = **sandbox** | **Confirmed** |
+| Live smoke | Personal PayPal + vault → bid → capture on www | **Paused** — resume per § Live smoke paused |

@@ -1,6 +1,6 @@
 # PayPal Vault rehearsal runbook
 
-**Platform:** Vercel production (`https://www.eventraisehub.com`) — Twilio Verify and PayPal env live there, not required locally.  
+**Platform:** Vercel production (`https://www.eventraisehub.com`) — Twilio Verify and **live PayPal** on Vercel. **Local `.env.local` stays sandbox** for CLI rehearsal; browser traffic on www uses Vercel live env.  
 **ADR:** [0006 — vault + capture-on-win](../adrs/0006-auction-vault-capture.md)  
 **Living log:** [LEDGER.md](../../LEDGER.md)
 

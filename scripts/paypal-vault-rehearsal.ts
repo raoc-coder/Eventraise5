@@ -54,21 +54,29 @@ function appBase(env: Record<string, string>): string {
 
 function printVercelBrowserSteps(env: Record<string, string>, auctionId: string, lotId: string): void {
   const base = appBase(env);
-  const sandbox = env.PAYPAL_ENVIRONMENT !== "production";
-  console.log("\n--- Vercel browser test (Twilio + PayPal on deployed app) ---");
+  const localSandbox = env.PAYPAL_ENVIRONMENT !== "production";
+  const prodSite = base.includes("eventraisehub.com");
+  const liveSmoke = prodSite && localSandbox;
+
+  console.log(
+    liveSmoke
+      ? "\n--- LIVE smoke on www (Vercel=live PayPal; CLI=local sandbox) ---"
+      : "\n--- Vercel browser test ---",
+  );
   console.log(`  1. Sign in:     ${base}/auth/login`);
-  if (sandbox) {
+  if (liveSmoke) {
+    console.log(`  2. Live vault:  ${base}/auctions/${auctionId}/register`);
+    console.log(`      → Link PayPal (real personal account). Practice vault disabled on www.`);
+  } else if (localSandbox) {
     console.log(`  2a. Practice:   ${base}/auctions/${auctionId}/register`);
-    console.log(`      → "Practice register" button (needs NEXT_PUBLIC_PAYPAL_ENVIRONMENT=sandbox on Vercel + redeploy)`);
-    console.log(`      → Or paste in browser DevTools console while on that page:`);
-    console.log(
-      `      fetch('/api/auctions/${auctionId}/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({practiceVault:true})}).then(r=>r.json()).then(console.log)`,
-    );
+    console.log(`      → Practice button when NEXT_PUBLIC_PAYPAL_ENVIRONMENT=sandbox on host`);
   } else {
     console.log(`  2. Vault:       ${base}/auctions/${auctionId}/register`);
   }
-  console.log(`  3. Bid:         ${base}/auctions/${auctionId}/lots/${lotId}`);
+  console.log(`  3. Bid:         ${base}/auctions/${auctionId}/lots/${lotId}  (min $10.00)`);
   console.log(`  4. Close+sweep: npm run paypal:rehearsal -- --close-lot ${lotId}`);
+  console.log(`      (closes lot in DB; capture runs on Vercel via prod cron + live PayPal)`);
+  console.log(`  5. Verify:      paypal_capture_id in DB is NOT practice_capture`);
   console.log(`  Cleanup:        npm run paypal:rehearsal -- --cleanup`);
 }
 
