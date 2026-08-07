@@ -1,7 +1,6 @@
 # Phase Audit Hardening — Sprint Phase Plan
 
-- **Status:** **Engineering complete (2026-08-07)** — Sprints 6–8 on `main`; P0 ops residual (migrations 033/034, webhook ID, password rotate) still required for production hardened claim
-- **Cadence:** 1-week phases (P0 ops gate) then **2-week sprints** (S6–S8)
+- **Status:** **Complete (2026-08-07)** — Sprints 6–8 on `main`; P0 ops applied (migrations 033/034, webhook ID, password rotate); production hardened claim met
 - **Cadence:** 1-week phases (P0 ops gate) then **2-week sprints** (S6–S8)
 - **Source of truth (findings):** [`docs/PLATFORM_AUDIT_2026-08-07.md`](./PLATFORM_AUDIT_2026-08-07.md)
 - **P0 runbook:** [`docs/runbooks/audit-p0-ops-gate.md`](./runbooks/audit-p0-ops-gate.md)
