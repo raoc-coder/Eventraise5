@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createDonationOrder } from '@/lib/paypal'
-import { requireEventAccess } from '@/lib/auth-utils'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
@@ -91,15 +90,17 @@ export async function POST(req: NextRequest, { params }: any) {
     
     console.log('[api/tickets/checkout] Registration created:', registration.id)
 
-    // Create PayPal order for ticket purchase
+    // Create PayPal order for ticket purchase (server-priced; name/email are metadata only)
     const totalAmount = totalCents / 100
     console.log('[api/tickets/checkout] Creating PayPal order for amount:', totalAmount)
     
+    const currency = String(ticket.currency || 'USD')
     const paypalOrder = await createDonationOrder(
-      id, // eventId
-      totalAmount, // amount
-      name, // donorName
-      email // donorEmail
+      id,
+      totalAmount,
+      currency,
+      name || undefined,
+      email || undefined,
     )
 
     if (!paypalOrder?.success) {
@@ -108,6 +109,41 @@ export async function POST(req: NextRequest, { params }: any) {
     }
 
     console.log('[api/tickets/checkout] PayPal order created:', paypalOrder.orderId)
+
+    // Persist order so /tickets/process can reconcile capture → registration
+    const { error: orderInsertError } = await supabaseAdmin.from('paypal_orders').insert({
+      order_id: paypalOrder.orderId,
+      event_id: id,
+      amount_cents: totalCents,
+      platform_fee_cents: feeCents,
+      paypal_fee_cents: 0,
+      net_amount_cents: netCents,
+      status: 'pending',
+      type: 'ticket',
+      ticket_id: ticket.id,
+      quantity,
+      registration_id: registration.id,
+    })
+    if (orderInsertError) {
+      // registration_id column may be absent in older schemas — retry without it
+      const msg = (orderInsertError as { message?: string }).message ?? ''
+      if (msg.includes('registration_id')) {
+        await supabaseAdmin.from('paypal_orders').insert({
+          order_id: paypalOrder.orderId,
+          event_id: id,
+          amount_cents: totalCents,
+          platform_fee_cents: feeCents,
+          paypal_fee_cents: 0,
+          net_amount_cents: netCents,
+          status: 'pending',
+          type: 'ticket',
+          ticket_id: ticket.id,
+          quantity,
+        })
+      } else {
+        console.error('[api/tickets/checkout] Failed to store paypal order:', orderInsertError)
+      }
+    }
 
     return NextResponse.json({
       success: true,

@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 })
     }
     const ownerId = eventRow.organizer_id || eventRow.created_by
-    if (ownerId && ownerId !== userId) {
+    // Deny when ownership is missing or does not match — never allow orphan bypass.
+    if (!ownerId || ownerId !== userId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

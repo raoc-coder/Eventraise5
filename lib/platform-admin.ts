@@ -95,7 +95,11 @@ export type PlatformAdminAccess = {
   row: PlatformAdminRow | null;
 };
 
-/** Env allowlist (legacy) + platform_admins + profiles.role = admin */
+/**
+ * Env allowlist (legacy owner) + active platform_admins roster only.
+ * Do NOT trust profiles.role — that column is self-updatable via RLS unless
+ * migration 033 is applied, and must never grant platform console access.
+ */
 export async function resolvePlatformAdminAccess(user: User | null): Promise<PlatformAdminAccess> {
   if (!user) {
     return { isPlatformAdmin: false, isSuperAdmin: false, role: null, row: null };
@@ -113,17 +117,6 @@ export async function resolvePlatformAdminAccess(user: User | null): Promise<Pla
       role: row.role,
       row,
     };
-  }
-
-  if (supabaseAdmin) {
-    const { data: profile } = await supabaseAdmin
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-    if (profile?.role === "admin") {
-      return { isPlatformAdmin: true, isSuperAdmin: false, role: "admin", row: null };
-    }
   }
 
   return { isPlatformAdmin: false, isSuperAdmin: false, role: null, row: null };

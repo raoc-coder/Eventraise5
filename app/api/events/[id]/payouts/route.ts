@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireEventAccess } from '@/lib/auth-utils'
+import { resolvePlatformAdminAccess } from '@/lib/platform-admin'
+
+/** Statuses organizers may set. Settlement completion is platform-admin only. */
+const ORGANIZER_ALLOWED_STATUSES = new Set(['requested'])
+const PLATFORM_COMPLETION_STATUSES = new Set(['processing', 'completed', 'failed', 'cancelled'])
 
 export async function GET(req: NextRequest, { params }: any) {
   try {
@@ -8,7 +13,7 @@ export async function GET(req: NextRequest, { params }: any) {
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
     // Use standardized authentication
-    const { user, db, event } = await requireEventAccess(req, id)
+    const { event } = await requireEventAccess(req, id)
 
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
@@ -88,12 +93,13 @@ export async function POST(req: NextRequest, { params }: any) {
     if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
 
     // Use standardized authentication
-    const { user, db, event } = await requireEventAccess(req, id)
+    const { user } = await requireEventAccess(req, id)
 
     if (!supabaseAdmin) return NextResponse.json({ error: 'Database unavailable' }, { status: 500 })
 
     const body = await req.json().catch(() => ({}))
     const { action } = body
+    const platform = await resolvePlatformAdminAccess(user)
 
     if (action === 'create_payout') {
       // Create a new payout for this event
@@ -119,11 +125,27 @@ export async function POST(req: NextRequest, { params }: any) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
       }
 
-      const updateData: any = { payout_status: status }
+      const nextStatus = String(status)
+
+      // Organizers may only request cashout; platform admins settle.
+      if (PLATFORM_COMPLETION_STATUSES.has(nextStatus) && !platform.isPlatformAdmin) {
+        return NextResponse.json(
+          { error: 'Only platform admins can mark payouts processing/completed/failed' },
+          { status: 403 },
+        )
+      }
+      if (!platform.isPlatformAdmin && !ORGANIZER_ALLOWED_STATUSES.has(nextStatus)) {
+        return NextResponse.json(
+          { error: 'Organizers may only set payout status to requested' },
+          { status: 403 },
+        )
+      }
+
+      const updateData: any = { payout_status: nextStatus }
       if (method) updateData.payout_method = method
       if (reference) updateData.payout_reference = reference
       if (notes) updateData.payout_notes = notes
-      if (status === 'completed') updateData.payout_date = new Date().toISOString()
+      if (nextStatus === 'completed') updateData.payout_date = new Date().toISOString()
 
       const { data, error: updateError } = await supabaseAdmin
         .from('event_payouts')

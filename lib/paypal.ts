@@ -215,8 +215,13 @@ export async function captureOrder(orderId: string, requestId?: string) {
 
 // Verify PayPal webhook signature
 export async function verifyWebhookSignature(headers: any, body: string): Promise<boolean> {
-  // Skip verification in development
-  if (process.env.NODE_ENV === 'development') {
+  // Explicit local-only bypass — never infer from NODE_ENV alone (staging
+  // misconfig must not accept forged webhooks).
+  if (
+    process.env.PAYPAL_WEBHOOK_SKIP_VERIFY === 'true' &&
+    process.env.NODE_ENV !== 'production'
+  ) {
+    console.warn('[paypal] webhook signature verification skipped (PAYPAL_WEBHOOK_SKIP_VERIFY)')
     return true
   }
   

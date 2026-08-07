@@ -2,27 +2,32 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createDonationOrder, calculatePlatformFee } from '@/lib/paypal'
 import { supabaseAdmin } from '@/lib/supabase'
 import { loadActivePersonalCampaign } from '@/lib/p2p/personal-campaigns'
+import { centsToDollars, dollarsToCents } from '@/lib/money/cents'
+
+/** Soft upper bound for free-form donations (USD). Tickets use DB price. */
+const MAX_DONATION_DOLLARS = 50_000
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const {
       eventId,
-      amount,
+      amount: clientAmount,
       type,
       ticketId,
-      quantity,
+      quantity: rawQuantity,
       currency = 'USD',
       personalCampaignId,
     } = body
     const headerIdempotencyKey = req.headers.get('idempotency-key')?.trim()
+    const quantity = Math.max(1, Math.min(100, Number(rawQuantity) || 1))
 
-    if (!eventId || !amount || !type) {
+    if (!eventId || !type) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    if (amount <= 0) {
-      return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
+    if (!['donation', 'ticket'].includes(String(type))) {
+      return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
     }
 
     // Verify event exists
@@ -42,6 +47,63 @@ export async function POST(req: NextRequest) {
 
     if (event.is_published === false) {
       return NextResponse.json({ error: 'Event is not published' }, { status: 400 })
+    }
+
+    // Server-authoritative amount: never trust client price for tickets.
+    let amount: number
+    let resolvedTicketId: string | null = ticketId || null
+
+    if (type === 'ticket') {
+      if (!ticketId) {
+        return NextResponse.json({ error: 'ticketId required for ticket orders' }, { status: 400 })
+      }
+      const { data: ticket, error: ticketError } = await supabaseAdmin
+        .from('event_tickets')
+        .select('id, event_id, price_cents, quantity_total, quantity_sold, sales_start_at, sales_end_at')
+        .eq('id', ticketId)
+        .eq('event_id', eventId)
+        .single()
+
+      if (ticketError || !ticket) {
+        return NextResponse.json({ error: 'Ticket not found' }, { status: 404 })
+      }
+
+      const now = Date.now()
+      if (ticket.sales_start_at && new Date(ticket.sales_start_at).getTime() > now) {
+        return NextResponse.json({ error: 'Ticket sales have not started' }, { status: 400 })
+      }
+      if (ticket.sales_end_at && new Date(ticket.sales_end_at).getTime() < now) {
+        return NextResponse.json({ error: 'Ticket sales have ended' }, { status: 400 })
+      }
+      if (
+        ticket.quantity_total != null &&
+        Number(ticket.quantity_sold || 0) + quantity > Number(ticket.quantity_total)
+      ) {
+        return NextResponse.json({ error: 'Not enough tickets available' }, { status: 400 })
+      }
+
+      const unitCents = Number(ticket.price_cents)
+      if (!Number.isFinite(unitCents) || unitCents < 0) {
+        return NextResponse.json({ error: 'Invalid ticket price' }, { status: 400 })
+      }
+      amount = centsToDollars(unitCents * quantity)
+      resolvedTicketId = ticket.id
+    } else {
+      if (clientAmount == null || Number(clientAmount) <= 0) {
+        return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
+      }
+      try {
+        const cents = dollarsToCents(Number(clientAmount))
+        if (cents > MAX_DONATION_DOLLARS * 100) {
+          return NextResponse.json(
+            { error: `Donation amount exceeds maximum of $${MAX_DONATION_DOLLARS}` },
+            { status: 400 },
+          )
+        }
+        amount = centsToDollars(cents)
+      } catch {
+        return NextResponse.json({ error: 'Invalid amount' }, { status: 400 })
+      }
     }
 
     // Attribute donation to a P2P personal campaign when present and valid
@@ -72,9 +134,9 @@ export async function POST(req: NextRequest) {
     const requestFingerprint = [
       eventId,
       String(type),
-      String(ticketId || 'none'),
+      String(resolvedTicketId || 'none'),
       String(Math.round(Number(amount) * 100)),
-      String(quantity || 1),
+      String(quantity),
       String(currency)
     ].join('_')
     const paypalRequestId = (headerIdempotencyKey || `create_${eventId}_${requestFingerprint}`).slice(0, 108)
@@ -100,8 +162,8 @@ export async function POST(req: NextRequest) {
       net_amount_cents: Math.round(fees.netAmount * 100),
       status: 'pending',
       type: type,
-      ticket_id: ticketId || null,
-      quantity: quantity || 1,
+      ticket_id: resolvedTicketId,
+      quantity,
     }
     if (attributedPersonalCampaignId) {
       paypalOrderInsert.personal_campaign_id = attributedPersonalCampaignId

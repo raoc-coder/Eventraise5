@@ -44,14 +44,12 @@ npm run ga:status
 
 Open: `https://www.eventraisehub.com/api/admin/auth/preflight`
 
+Expect JSON like `{ "ok": true, "ready": true }` when service role, admin password, Supabase URL, and an active platform admin roster row are configured. `ready: false` means ops config is incomplete (details are intentionally not exposed publicly).
+
 **Pass when JSON shows:**
 
-- `serviceRoleConfigured`: true
-- `adminPasswordConfigured`: true
-- `projectRefMatches`: true
-- `twilioAdminMode`: false (static admin login)
-- `activePlatformAdmins`: ≥ 1
-- `rosterError`: null
+- `ok`: true
+- `ready`: true
 
 ### 2.3 Test log template
 

@@ -69,7 +69,9 @@ export async function authenticateRequest(req: NextRequest): Promise<AuthResult>
 }
 
 /**
- * Check if user is owner or admin of an event
+ * Check if user is owner of an event.
+ * Platform-admin bypass is applied in requireEventAccess via the roster /
+ * owner allowlist — never via profiles.role (privilege-escalation vector).
  */
 export async function checkEventAccess(db: any, userId: string, eventId: string): Promise<{ isOwner: boolean; isAdmin: boolean; event: any }> {
   const { data: ev, error: evErr } = await db
@@ -84,16 +86,7 @@ export async function checkEventAccess(db: any, userId: string, eventId: string)
   
   const isOwner = userId === (ev.organizer_id ?? ev.created_by)
   
-  // Check if user is admin
-  const { data: profile } = await db
-    .from('profiles')
-    .select('role')
-    .eq('id', userId)
-    .single()
-  
-  const isAdmin = profile?.role === 'admin'
-  
-  return { isOwner, isAdmin, event: ev }
+  return { isOwner, isAdmin: false, event: ev }
 }
 
 /**
@@ -110,14 +103,15 @@ export async function requireAuth(req: NextRequest): Promise<AuthResult> {
 }
 
 /**
- * Standardized event owner/admin check
+ * Standardized event owner / platform-admin check
  */
 export async function requireEventAccess(req: NextRequest, eventId: string): Promise<AuthResult & { event: any }> {
   const auth = await requireAuth(req)
   
-  const { isOwner, isAdmin, event } = await checkEventAccess(auth.db, auth.user.id, eventId)
+  const { isOwner, event } = await checkEventAccess(auth.db, auth.user.id, eventId)
+  const platform = await resolvePlatformAdminAccess(auth.user)
   
-  if (!isOwner && !isAdmin) {
+  if (!isOwner && !platform.isPlatformAdmin) {
     throw new Error('Forbidden')
   }
   

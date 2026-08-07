@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { updateEventSchema } from '@/lib/validators'
 import { ok, fail } from '@/lib/api'
-import { requireAuth, requireEventAccess } from '@/lib/auth-utils'
+import { authenticateRequest, requireAuth, requireEventAccess, checkEventAccess } from '@/lib/auth-utils'
+import { resolvePlatformAdminAccess } from '@/lib/platform-admin'
 
-export async function GET(_req: Request, { params }: any) {
+export async function GET(req: NextRequest, { params }: any) {
   try {
     // Prefer admin client to avoid auth/env issues; fall back to public client
     const db = supabaseAdmin || supabase
@@ -39,6 +40,23 @@ export async function GET(_req: Request, { params }: any) {
   }
   
   if (error) return NextResponse.json({ error: error.message }, { status: 404 })
+
+  // Draft / unpublished events: owner or platform admin only (no public IDOR).
+  if (data && data.is_published === false) {
+    const auth = await authenticateRequest(req)
+    if (!auth.user || !auth.db) {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 })
+    }
+    try {
+      const { isOwner } = await checkEventAccess(auth.db, auth.user.id, id)
+      const platform = await resolvePlatformAdminAccess(auth.user)
+      if (!isOwner && !platform.isPlatformAdmin) {
+        return NextResponse.json({ error: 'Event not found' }, { status: 404 })
+      }
+    } catch {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 })
+    }
+  }
   
   // Process event with ticket data
   if (data && data.event_tickets && data.event_tickets.length > 0) {
@@ -48,7 +66,7 @@ export async function GET(_req: Request, { params }: any) {
     data.ticket_currency = ticket.currency
     data.ticket_quantity = ticket.quantity_total
     data.tickets_sold = ticket.quantity_sold || 0
-  } else {
+  } else if (data) {
     data.is_ticketed = false
   }
   
