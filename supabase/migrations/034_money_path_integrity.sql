@@ -1,5 +1,17 @@
 -- Migration 034: Sprint 7 money-path integrity
 -- Unique capture ids, atomic ticket inventory, auction vault setup binding.
+-- Ensures PayPal capture columns exist (may be missing if 010 never applied).
+
+-- ---------------------------------------------------------------------------
+-- 0) Ensure PayPal capture columns exist (from migration 010 intent)
+-- ---------------------------------------------------------------------------
+ALTER TABLE public.donation_requests
+  ADD COLUMN IF NOT EXISTS paypal_order_id TEXT,
+  ADD COLUMN IF NOT EXISTS paypal_capture_id TEXT;
+
+ALTER TABLE public.event_registrations
+  ADD COLUMN IF NOT EXISTS paypal_order_id TEXT,
+  ADD COLUMN IF NOT EXISTS paypal_capture_id TEXT;
 
 -- ---------------------------------------------------------------------------
 -- 1) Idempotent donation / ticket settlement keys

@@ -89,7 +89,21 @@ npm run audit:migrate:034 -- --dry-run
 
 ---
 
-## If 034 unique index fails
+## If 034 fails: `column "paypal_capture_id" does not exist`
+
+Your DB is missing columns that migration **010** was supposed to add. Re-run the **updated** `034` file from `main` (it now includes `ADD COLUMN IF NOT EXISTS` first), or paste this repair block then re-run 034:
+
+```sql
+ALTER TABLE public.donation_requests
+  ADD COLUMN IF NOT EXISTS paypal_order_id TEXT,
+  ADD COLUMN IF NOT EXISTS paypal_capture_id TEXT;
+
+ALTER TABLE public.event_registrations
+  ADD COLUMN IF NOT EXISTS paypal_order_id TEXT,
+  ADD COLUMN IF NOT EXISTS paypal_capture_id TEXT;
+```
+
+Then run the rest of `034_money_path_integrity.sql` (indexes + function + `auction_vault_setups`).
 
 Duplicate `paypal_capture_id` values can block the unique index. Find them:
 
