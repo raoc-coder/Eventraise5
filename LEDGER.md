@@ -272,7 +272,11 @@ Only if product prioritizes after first gala:
 ## Phase Audit Hardening (2026-08-07)
 
 - **Plan:** [`docs/phase-audit-hardening.md`](docs/phase-audit-hardening.md)
+- **P0 runbook:** [`docs/runbooks/audit-p0-ops-gate.md`](docs/runbooks/audit-p0-ops-gate.md)
 - **Audit:** [`docs/PLATFORM_AUDIT_2026-08-07.md`](docs/PLATFORM_AUDIT_2026-08-07.md)
 - **Code on `main`:** Critical remediations (C1–C5) + selected High/Medium (`88ab3ac`)
-- **Next:** P0 ops gate — apply migration `033`, set `PAYPAL_WEBHOOK_ID`, audit `profiles.role`, rotate admin password
-- **Then:** Sprint 6 (auth/edge) → Sprint 7 (money integrity) → Sprint 8 (defense in depth)
+- **P0 progress (2026-08-07):**
+  - Added `npm run audit:p0:status|apply|smoke` + SQL helpers under `scripts/sql/`
+  - Role audit via service role: only `raoc@onthemarc.net` has `profiles.role=admin` (matches `platform_admins`) — **P0.4 OK pending owner sign-off**
+  - **Blocked on ops:** `supabase login` → `audit:p0:apply` (033); Vercel `PAYPAL_WEBHOOK_ID`; password rotate (P0.5)
+- **Then:** Sprint 6 (auth/edge) after P0 exit

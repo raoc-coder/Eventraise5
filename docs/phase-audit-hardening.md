@@ -1,8 +1,9 @@
 # Phase Audit Hardening — Sprint Phase Plan
 
-- **Status:** Proposed 2026-08-07 (post–platform audit)
+- **Status:** **P0 in progress** (2026-08-07) — tooling on `main`; migration apply needs `supabase login`
 - **Cadence:** 1-week phases (P0 ops gate) then **2-week sprints** (S6–S8)
 - **Source of truth (findings):** [`docs/PLATFORM_AUDIT_2026-08-07.md`](./PLATFORM_AUDIT_2026-08-07.md)
+- **P0 runbook:** [`docs/runbooks/audit-p0-ops-gate.md`](./runbooks/audit-p0-ops-gate.md)
 - **Code already on `main`:** Critical C1–C5 + selected High/Medium remediations (commit `88ab3ac`)
 - **Does not replace:** Locked Epics 1–2 plan ([`docs/sprint-plan.md`](./sprint-plan.md)) or Phase GA ([`docs/phase-ga-go-live.md`](./phase-ga-go-live.md)) — this phase runs **in parallel / immediately after** GA ops for security debt
 - **Conventions:** same as locked sprint plan (migrations ADR-0001, integer cents ADR-0011, idempotency ADR-0009, PayPal-only ADR-0016)
@@ -43,14 +44,14 @@ flowchart LR
 
 **Goal:** Deploy the audit remediations that only work after DB/env work. No new features.
 
-| # | Deliverable | Owner | Done when |
-|---|-------------|-------|-----------|
-| P0.1 | Apply `033_security_hardening.sql` on **staging** | Ops / Eng | Triggers exist; client cannot `UPDATE profiles.role`; `paypal_orders` client INSERT denied |
-| P0.2 | Apply `033` on **production** | Ops | Same checks on prod project |
-| P0.3 | Set `PAYPAL_WEBHOOK_ID` on Vercel (Production + Preview) | Ops | Webhook verify succeeds; `PAYPAL_WEBHOOK_SKIP_VERIFY` **unset** in prod |
-| P0.4 | Audit `profiles.role = 'admin'` rows | Eng + Owner | Spreadsheet of rows; revoke any not tied to `platform_admins` / `OWNER_*` |
-| P0.5 | Rotate `PLATFORM_ADMIN_PASSWORD` | Ops | New secret in Vercel; old password fails login |
-| P0.6 | Manual smoke (staging) | Eng / QA | (1) ticket create-order ignores underpayment (2) register rejects `type=ticket` (3) organizer cannot set payout `completed` (4) cashout 403 with null owner (5) draft event GET 404 for anon |
+| # | Deliverable | Owner | Done when | Status |
+|---|-------------|-------|-----------|--------|
+| P0.1 | Apply `033_security_hardening.sql` on **staging** | Ops / Eng | Triggers exist; client cannot `UPDATE profiles.role`; `paypal_orders` client INSERT denied | **Tooling ready** — `npm run audit:p0:apply` (needs `supabase login`) |
+| P0.2 | Apply `033` on **production** | Ops | Same checks on prod project | **Pending** apply (same linked project as staging today) |
+| P0.3 | Set `PAYPAL_WEBHOOK_ID` on Vercel (Production + Preview) | Ops | Webhook verify succeeds; `PAYPAL_WEBHOOK_SKIP_VERIFY` **unset** in prod | **Pending** — tracked by `audit:p0:status` |
+| P0.4 | Audit `profiles.role = 'admin'` rows | Eng + Owner | Spreadsheet of rows; revoke any not tied to `platform_admins` / `OWNER_*` | **Scripted** — `audit:p0:status` + `scripts/sql/audit-p0-role-audit.sql` |
+| P0.5 | Rotate `PLATFORM_ADMIN_PASSWORD` | Ops | New secret in Vercel; old password fails login | **Pending** (manual — do not commit secret) |
+| P0.6 | Manual smoke (staging) | Eng / QA | (1)–(5) per plan | **Partial** — `npm run audit:p0:smoke`; auth’d payout/cashout still manual |
 
 **Exit:** P0.1–P0.6 complete → start Sprint 6.  
 **Rollback:** Keep previous migration backup; password rotate is one-way — store new secret in password manager first.
