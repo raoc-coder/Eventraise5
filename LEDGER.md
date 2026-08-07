@@ -268,3 +268,11 @@ Only if product prioritizes after first gala:
 | Rehearsal data | `npm run paypal:rehearsal -- --cleanup` | **Complete** |
 | Env model | Vercel Production = **live** PayPal; `.env.local` = **sandbox** | **Confirmed** |
 | Live smoke | Personal PayPal + vault → bid → capture on www | **Paused** — resume per § Live smoke paused |
+
+## Phase Audit Hardening (2026-08-07)
+
+- **Plan:** [`docs/phase-audit-hardening.md`](docs/phase-audit-hardening.md)
+- **Audit:** [`docs/PLATFORM_AUDIT_2026-08-07.md`](docs/PLATFORM_AUDIT_2026-08-07.md)
+- **Code on `main`:** Critical remediations (C1–C5) + selected High/Medium (`88ab3ac`)
+- **Next:** P0 ops gate — apply migration `033`, set `PAYPAL_WEBHOOK_ID`, audit `profiles.role`, rotate admin password
+- **Then:** Sprint 6 (auth/edge) → Sprint 7 (money integrity) → Sprint 8 (defense in depth)

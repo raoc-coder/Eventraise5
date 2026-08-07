@@ -8,6 +8,8 @@
 
 The locked sprint plan ends at **Sprint 5**. There is **no Sprint 6** in [`docs/sprint-plan.md`](./sprint-plan.md). This phase is **ops, rehearsal, and sign-off** — not new epic scaffolding.
 
+**Security follow-on:** After the 2026-08-07 platform audit, use [`docs/phase-audit-hardening.md`](./phase-audit-hardening.md) for **P0 ops + Sprints 6–8** (auth, money integrity, defense in depth). Ticketed / high-volume donation events should wait for that plan’s Sprint 7 exit.
+
 ---
 
 ## Program position

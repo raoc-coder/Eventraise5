@@ -118,6 +118,8 @@ Several Critical/High issues are **fixed in code** in this PR. Remaining High/Me
 
 ## Recommended follow-ups (not in this PR)
 
+See the sprint phase plan: [`docs/phase-audit-hardening.md`](./phase-audit-hardening.md) (P0 ops gate → Sprints 6–8).
+
 1. Per-admin secrets or Twilio OTP for platform admin (retire shared password).
 2. Unique constraints + conditional updates on donation/order capture ids; verify PayPal capture amount server-side.
 3. Atomic ticket inventory (`quantity_sold` via SQL `WHERE quantity_sold + n <= quantity_total`).
