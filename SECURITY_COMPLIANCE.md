@@ -205,11 +205,11 @@ Engineering closeout for [`docs/phase-audit-hardening.md`](docs/phase-audit-hard
 - Sprint 7 money integrity (settle writer, migration 034)
 - Sprint 8 defense in depth (CORS check, health gating, stub 410s, authz regression tests)
 
-**Ops residual (required for production “hardened” claim):** apply migrations `033` + `034`, set `PAYPAL_WEBHOOK_ID`, rotate `PLATFORM_ADMIN_PASSWORD`, optionally configure Upstash.
+**Ops (owner-confirmed 2026-08-07):** migrations `033` + `034` applied; `PAYPAL_WEBHOOK_ID` set; `PLATFORM_ADMIN_PASSWORD` rotated. Optional: Upstash for durable rate limits.
 
 ---
 
 **Last Updated**: 2026-08-07  
-**Version**: 1.1  
+**Version**: 1.2  
 **Review Schedule**: Quarterly  
 **Related**: ADR-0016, ADR-0018, Phase Audit Hardening

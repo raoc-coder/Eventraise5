@@ -278,9 +278,9 @@ Only if product prioritizes after first gala:
 - **P0 progress (2026-08-07):**
   - Added `npm run audit:p0:status|apply|smoke` + SQL helpers under `scripts/sql/`
   - Role audit via service role: only `raoc@onthemarc.net` has `profiles.role=admin` (matches `platform_admins`) — **P0.4 OK pending owner sign-off**
-  - **Blocked on ops:** `supabase login` → `audit:p0:apply` (033); Vercel `PAYPAL_WEBHOOK_ID`; password rotate (P0.5)
+  - **Ops applied (owner-confirmed 2026-08-07):** migrations **033 + 034** on Supabase (incl. `paypal_capture_id` columns + unique indexes); `PAYPAL_WEBHOOK_ID` on Vercel; `PLATFORM_ADMIN_PASSWORD` rotated
 - **Sprint 6 (2026-08-07):** **Complete in repo** — ADR-0018; no phone→admin elevation; cookie-only admin sessions; Upstash-backed rate limit + middleware; admin Twilio OTP+password wired when `PLATFORM_ADMIN_USE_TWILIO=true`
 - **Sprint 7 (2026-08-07):** **Complete in repo** — `settlePaypalCapture`, amount reconcile, migration `034` (capture uniqueness, atomic tickets, `auction_vault_setups`), integer-cents fees (`lib/money/fees.ts`)
 - **Sprint 8 (2026-08-07):** **Complete in repo** — CORS validation (`audit:cors`), health/advanced gating, stub APIs → 410, authz regression tests, `SECURITY_COMPLIANCE.md` refresh
 - **Vercel Production deploy (2026-08-07):** **Successful** — Phase Audit Hardening code (Sprints 6–8 + critical remediations) live on www
-- **Phase status:** **Engineering complete + prod deployed** — no open High findings in code. **Ops residual for production hardened claim:** apply migrations **033 + 034**, set `PAYPAL_WEBHOOK_ID`, rotate `PLATFORM_ADMIN_PASSWORD`, optional Upstash env
+- **Phase status:** **Production hardened claim met (2026-08-07)** — engineering on `main` + prod deploy + P0 ops (033/034, webhook ID, password rotate). Optional: Upstash env for durable rate limits; optional `audit:p0:smoke` against www
