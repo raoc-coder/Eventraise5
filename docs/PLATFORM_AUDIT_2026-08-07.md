@@ -67,13 +67,13 @@ Several Critical/High issues are **fixed in code** in this PR. Remaining High/Me
 | ID | Status | Summary |
 |----|--------|---------|
 | H1 | **Fixed** | `/api/donations/share` — added rate limit, event publish check, message length cap |
-| H2 | Open | Shared `PLATFORM_ADMIN_PASSWORD`; access/refresh tokens returned in JSON bodies |
-| H3 | Open | Phone OTP for roster phone auto-mints platform-admin session (SIM-swap risk) |
+| H2 | **Fixed (Sprint 6)** | Admin sessions cookie-only; Twilio OTP+password path when `PLATFORM_ADMIN_USE_TWILIO=true` (ADR-0018) |
+| H3 | **Fixed (Sprint 6)** | Phone OTP no longer auto-mints platform-admin session |
 | H4 | **Fixed** | Cashout null-owner bypass (see C5) |
 | H5 | **Fixed** | Webhook verify no longer skips on `NODE_ENV=development` alone; needs `PAYPAL_WEBHOOK_SKIP_VERIFY=true` and non-production. Documented `PAYPAL_WEBHOOK_ID` in `env.example` |
-| H6 | Open | In-memory rate limiter ineffective across serverless instances |
+| H6 | **Fixed (Sprint 6)** | `lib/rate-limit.ts` uses Upstash Redis REST when configured; memory fallback otherwise |
 | H7 | **Fixed** | Admin preflight reduced to `{ ok, ready }` (no project ref / secret flags / admin counts) |
-| H8 | Open | No Next.js middleware for global auth/bot/rate controls |
+| H8 | **Fixed (Sprint 6)** | `middleware.ts` rate-limits auth/admin-auth/SMS share + security headers |
 
 ---
 
