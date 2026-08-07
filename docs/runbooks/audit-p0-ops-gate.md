@@ -21,17 +21,18 @@ npm run audit:p0:smoke -- --base https://www.eventraisehub.com
 
 ## Checklist
 
-Apply `034_money_path_integrity.sql` the same way (Sprint 7) after 033:
+### P0.1 / P0.2 — Migrations 033 + 034
 
-```bash
-# After supabase login — or paste scripts/sql contents / migration file in SQL editor
-npx tsx -e "/* use audit:p0:apply pattern or SQL editor for 034 */"
-```
+**Full guide:** [`docs/runbooks/apply-audit-migrations.md`](./apply-audit-migrations.md)
 
-Or open `supabase/migrations/034_money_path_integrity.sql` in the Supabase SQL editor.
+1. `npx supabase login` (or set `SUPABASE_ACCESS_TOKEN`), **or** use Supabase SQL Editor.
+2. Apply **033** then **034**:
+   - CLI: `npm run audit:p0:apply` then `npm run audit:migrate:034`
+   - SQL Editor: paste each file from `supabase/migrations/`
+3. Verify: `scripts/sql/audit-p0-verify-033.sql` + `scripts/sql/audit-verify-034.sql`
+4. Confirm `npm run audit:p0:status` (login required for trigger check).
 
-
-### P0.3 — PayPal webhook ID
+**Staging:** if you use a separate Supabase project, change `PROJECT_REF` in the apply scripts or run the SQL files manually there first.
 
 1. PayPal Developer Dashboard → Webhooks → copy Webhook ID.
 2. Vercel → Project → Settings → Environment Variables:

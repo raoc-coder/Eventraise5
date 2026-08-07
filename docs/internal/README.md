@@ -10,6 +10,7 @@ Engineering-only references (not end-user docs).
 | [`../phase-ga-go-live.md`](../phase-ga-go-live.md) | **Phase GA** — go-live & first live event gates |
 | [`../phase-audit-hardening.md`](../phase-audit-hardening.md) | **Phase Audit Hardening** — P0 ops + Sprints 6–8 from platform security audit |
 | [`../runbooks/audit-p0-ops-gate.md`](../runbooks/audit-p0-ops-gate.md) | **P0 runbook** — apply 033, webhook ID, role audit, smoke scripts |
+| [`../runbooks/apply-audit-migrations.md`](../runbooks/apply-audit-migrations.md) | **Migrations 033 + 034** — SQL Editor / CLI apply + verify |
 | [`../PLATFORM_AUDIT_2026-08-07.md`](../PLATFORM_AUDIT_2026-08-07.md) | **Platform audit** — findings and remediations (2026-08-07) |
 | [`../runbooks/sprint5-observability.md`](../runbooks/sprint5-observability.md) | Alerts, dashboards, load-test rehearsal |
 | [`../../LEDGER.md`](../../LEDGER.md) | Dated status log and external-track items |
