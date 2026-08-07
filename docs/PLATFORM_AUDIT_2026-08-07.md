@@ -84,8 +84,8 @@ Several Critical/High issues are **fixed in code** in this PR. Remaining High/Me
 | M1 | **Fixed** | Unpublished event IDOR on `GET /api/events/[id]` — drafts require owner/platform admin |
 | M2 | **Fixed (Sprint 7)** | Capture amount reconciled vs stored order; mismatch rejected |
 | M3 | **Fixed** | Ticket checkout called `createDonationOrder` with wrong arity (name→currency); now persists `paypal_orders` |
-| M4 | Open | CORS credentials on `/api/*` tied to `NEXT_PUBLIC_APP_URL` — misconfig risk |
-| M5 | Open | Advanced health endpoint exposes process/env fingerprinting |
+| M4 | **Fixed (Sprint 8)** | `validateAppUrl` / `audit:cors`; next.config uses exact origin |
+| M5 | **Fixed (Sprint 8)** | `/api/health/advanced` details gated; anon gets liveness only |
 | M6 | **Fixed (Sprint 7)** | Shared settle writer + unique `paypal_capture_id` indexes (migration 034) |
 | M7 | Open | `personal_campaigns.total_raised_cents` client-editable — **DB trigger in 033** mitigates when applied |
 | M8 | Open | Legacy `donations` / `paypal_orders` open INSERT — **RLS deny in 033** when applied |

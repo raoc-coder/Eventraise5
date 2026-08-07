@@ -18,6 +18,7 @@
     "audit:p0:status": "tsx scripts/audit-p0-status.ts",
     "audit:p0:apply": "tsx scripts/audit-p0-apply-033.ts",
     "audit:p0:smoke": "tsx scripts/audit-p0-smoke.ts",
+    "audit:cors": "tsx scripts/audit-cors-check.ts",
     "paypal:rehearsal": "tsx scripts/paypal-vault-rehearsal.ts",
     "paypal:seed": "tsx scripts/paypal-vault-rehearsal.ts --seed",
     "test": "jest",

@@ -1,16 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { HealthCheckService } from '@/lib/monitoring-enhanced'
 import { MonitoringService } from '@/lib/monitoring-enhanced'
+import { resolvePlatformAdminAccess } from '@/lib/platform-admin'
+import { authenticateRequest } from '@/lib/auth-utils'
 
-// Advanced health check endpoint
+function isOpsAuthorized(req: NextRequest): boolean {
+  const cron = process.env.CRON_SECRET?.trim()
+  const auth = req.headers.get('authorization') || ''
+  const match = auth.match(/^Bearer\s+(.+)$/i)
+  if (cron && match && match[1] === cron) return true
+  return false
+}
+
+/**
+ * Advanced health — detailed diagnostics require Bearer CRON_SECRET or
+ * platform admin session. Anonymous callers get liveness only (Sprint 8 / M5).
+ */
 export async function GET(request: NextRequest) {
   const startTime = Date.now()
+
+  let isAdmin = false
+  try {
+    if (isOpsAuthorized(request)) {
+      isAdmin = true
+    } else {
+      const auth = await authenticateRequest(request)
+      if (auth.user) {
+        const access = await resolvePlatformAdminAccess(auth.user)
+        isAdmin = access.isPlatformAdmin
+      }
+    }
+  } catch {
+    isAdmin = false
+  }
+
+  if (!isAdmin) {
+    return NextResponse.json(
+      {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+      },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+      },
+    )
+  }
   
   try {
-    // Run comprehensive health checks
     const healthResults = await HealthCheckService.runHealthCheck()
     
-    // Check additional services
     const additionalChecks = await Promise.allSettled([
       checkRedis(),
       checkEmailService(),
@@ -18,16 +59,13 @@ export async function GET(request: NextRequest) {
       checkCDN()
     ])
     
-    // Calculate overall health score
     const healthyServices = Object.values(healthResults).filter(Boolean).length
     const totalServices = Object.keys(healthResults).length
     const healthScore = (healthyServices / totalServices) * 100
     
-    // Track health check in monitoring
     MonitoringService.trackSystemHealth(healthResults)
     MonitoringService.trackPerformance('health_check', Date.now() - startTime)
     
-    // Prepare response
     const response = {
       status: healthResults.overall ? 'healthy' : 'degraded',
       timestamp: new Date().toISOString(),
@@ -48,7 +86,6 @@ export async function GET(request: NextRequest) {
       environment: process.env.NODE_ENV
     }
     
-    // Set appropriate status code
     const statusCode = healthResults.overall ? 200 : 503
     
     return NextResponse.json(response, { 
@@ -61,7 +98,6 @@ export async function GET(request: NextRequest) {
     })
     
   } catch (error) {
-    // Track health check failure
     MonitoringService.trackCriticalError(error as Error, { 
       component: 'health_check',
       response_time: Date.now() - startTime
@@ -85,46 +121,34 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Check Redis connection
 async function checkRedis(): Promise<boolean> {
   try {
-    // This would check Redis connectivity
-    // For now, return true as placeholder
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }
 
-// Check email service
 async function checkEmailService(): Promise<boolean> {
   try {
-    // Twilio Verify / Messaging configured (no transactional email vendor)
-    // For now, return true as placeholder
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }
 
-// Check file storage
 async function checkFileStorage(): Promise<boolean> {
   try {
-    // This would check S3 or other file storage
-    // For now, return true as placeholder
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }
 
-// Check CDN
 async function checkCDN(): Promise<boolean> {
   try {
-    // This would check CDN connectivity
-    // For now, return true as placeholder
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }

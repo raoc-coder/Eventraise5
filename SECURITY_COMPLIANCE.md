@@ -17,28 +17,38 @@ This document outlines the comprehensive security and compliance measures implem
 ## 🔐 Authentication & Authorization
 
 ### Supabase Authentication
-- **Multi-factor Authentication**: Supported for enhanced security
-- **Session Management**: Secure session handling with automatic refresh
-- **Password Policies**: Strong password requirements enforced
+- **Phone OTP**: Twilio Verify for organizers/bidders (ADR-0017)
+- **Platform admin**: Separate `/admin/login` — cookie-only sessions; phone OTP never elevates to admin (ADR-0018)
+- **Session Management**: Secure session handling with httpOnly cookies
+- **Password Policies**: Platform admin password (and optional Twilio OTP second factor)
 
 ### Row Level Security (RLS)
 - **Database-level Security**: All tables protected with RLS policies
+- **Profile role lock**: Trigger blocks self-escalation of `profiles.role` (migration 033)
 - **User Isolation**: Users can only access their own data
 - **Campaign Access**: Campaign owners can manage their campaigns
 - **Donation Privacy**: Donor information protected appropriately
 
+### Edge & abuse controls
+- **Middleware**: Rate limits on `/api/auth/*`, `/api/admin/auth/*`, `/api/donations/share`
+- **Durable rate limit**: Upstash Redis REST when configured; in-memory fallback
+- **CORS**: Exact `NEXT_PUBLIC_APP_URL` origin only (`npm run audit:cors`)
+- **Health**: `/api/health` public liveness; `/api/health/advanced` details require ops/admin auth
+
 ## 💳 Payment Security
 
 ### PCI Compliance
-- **Stripe Checkout**: PCI-compliant payment processing
+- **PayPal Checkout / Vault**: Card data handled by PayPal (ADR-0016 — Braintree/Stripe sunset)
 - **No Card Storage**: Zero card data stored on our servers
-- **Tokenized Payments**: Secure token-based transactions
-- **Webhook Validation**: Stripe signature verification for all webhooks
+- **Tokenized Payments**: Vaulted payment methods for auction capture-on-win
+- **Webhook Validation**: PayPal signature verification (`PAYPAL_WEBHOOK_ID`); skip only via explicit non-prod flag
 
 ### Payment Processing
 - **Secure API**: All payment APIs use HTTPS
-- **Webhook Security**: Signature validation prevents unauthorized requests
-- **Audit Logging**: All payment events logged for compliance
+- **Server-priced tickets**: Ticket amounts come from `event_tickets.price_cents`, never client input
+- **Capture reconcile**: Captured amount must match stored `paypal_orders.amount_cents`
+- **Idempotent settlement**: Shared `settlePaypalCapture` for capture API + webhook; unique `paypal_capture_id`
+- **Audit Logging**: Payment lifecycle events logged for compliance
 
 ## 🗄️ Data Protection
 
@@ -186,6 +196,20 @@ STRIPE_WEBHOOK_SECRET=whsec_your-webhook-secret
 
 ---
 
-**Last Updated**: [Current Date]
-**Version**: 1.0
-**Review Schedule**: Quarterly
+## Platform audit hardening (2026-08-07)
+
+Engineering closeout for [`docs/phase-audit-hardening.md`](docs/phase-audit-hardening.md) / [`docs/PLATFORM_AUDIT_2026-08-07.md`](docs/PLATFORM_AUDIT_2026-08-07.md):
+
+- Critical authz/payment fixes on `main` (privilege escalation, ticket pricing, unpaid tickets, payout completion, cashout ownership)
+- Sprint 6 auth/edge (ADR-0018, middleware, durable rate limits)
+- Sprint 7 money integrity (settle writer, migration 034)
+- Sprint 8 defense in depth (CORS check, health gating, stub 410s, authz regression tests)
+
+**Ops residual (required for production “hardened” claim):** apply migrations `033` + `034`, set `PAYPAL_WEBHOOK_ID`, rotate `PLATFORM_ADMIN_PASSWORD`, optionally configure Upstash.
+
+---
+
+**Last Updated**: 2026-08-07  
+**Version**: 1.1  
+**Review Schedule**: Quarterly  
+**Related**: ADR-0016, ADR-0018, Phase Audit Hardening

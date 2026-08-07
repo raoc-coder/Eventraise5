@@ -64,6 +64,17 @@ async function main() {
     console.log(`  (cron probe uses www)        ${base}`);
   }
 
+  // Sprint 8 — CORS / app URL safety
+  try {
+    const { validateAppUrl } = await import("../lib/config/app-url");
+    const cors = validateAppUrl(configuredUrl);
+    console.log(
+      `  CORS app URL                 ${cors.ok ? `PASS (${cors.origin})` : `FAIL (${cors.error})`}`,
+    );
+  } catch (e) {
+    console.log(`  CORS app URL                 error: ${e instanceof Error ? e.message : e}`);
+  }
+
   let serviceRole: string | undefined = env.SUPABASE_SERVICE_ROLE_KEY?.trim() || undefined;
   if (!serviceRole) {
     try {

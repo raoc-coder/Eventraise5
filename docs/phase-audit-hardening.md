@@ -1,6 +1,7 @@
 # Phase Audit Hardening — Sprint Phase Plan
 
-- **Status:** **Sprint 7 complete in repo (2026-08-07)**; Sprint 6 done; P0 ops still pending (migration 033/034 / webhook ID / password rotate)
+- **Status:** **Engineering complete (2026-08-07)** — Sprints 6–8 on `main`; P0 ops residual (migrations 033/034, webhook ID, password rotate) still required for production hardened claim
+- **Cadence:** 1-week phases (P0 ops gate) then **2-week sprints** (S6–S8)
 - **Cadence:** 1-week phases (P0 ops gate) then **2-week sprints** (S6–S8)
 - **Source of truth (findings):** [`docs/PLATFORM_AUDIT_2026-08-07.md`](./PLATFORM_AUDIT_2026-08-07.md)
 - **P0 runbook:** [`docs/runbooks/audit-p0-ops-gate.md`](./runbooks/audit-p0-ops-gate.md)
@@ -100,16 +101,17 @@ flowchart LR
 
 ## Sprint 8 — Defense in depth & hygiene (2 weeks)
 
-**Goal:** Remaining Medium/Low surfaces, observability, and regression harness.
+**Goal:** Remaining Medium/Low surfaces, observability, and regression harness.  
+**Status:** **Complete in repo (2026-08-07)** — engineering closeout; ops residual listed in LEDGER.
 
-| # | Finding | Deliverable | Done when |
-|---|---------|-------------|-----------|
-| S8.1 | M4 | CORS: document required exact `NEXT_PUBLIC_APP_URL`; fail CI/preview check if missing/wildcard | Runbook + env validation script or `ga:status` check |
-| S8.2 | M5 | Harden `/api/health/advanced` — auth or strip memory/uptime/env detail for anon | Public response is liveness only |
-| S8.3 | L stubs | Gate or remove open stubs (`/api/ai/suggestions`, `/api/insights`, `/api/impact`, `/api/templates`, `/api/verification`) | 401/410/501 with no echo of organizer ids |
-| S8.4 | — | Authz API tests: register, payouts, cashout, create-order, draft event GET | Coverage listed in audit Testing notes automated |
-| S8.5 | — | Update `SECURITY_COMPLIANCE.md` + LEDGER with hardening complete date | Docs match shipped controls |
-| S8.6 | — | Re-run focused audit checklist; mark Phase Audit Hardening **Complete** in LEDGER | No open High; Medium accepted or closed |
+| # | Finding | Deliverable | Done when | Status |
+|---|---------|-------------|-----------|--------|
+| S8.1 | M4 | `validateAppUrl` + `npm run audit:cors` + `ga:status` CORS line; next.config uses origin only | No wildcards | **Done** |
+| S8.2 | M5 | `/api/health/advanced` public liveness; details need CRON_SECRET or platform admin | Anon stripped | **Done** |
+| S8.3 | L stubs | AI/insights/impact/templates/verification → **410** | No organizer echo | **Done** |
+| S8.4 | — | `__tests__/lib/sprint8-defense.test.ts` authz/wiring guards | Jest green | **Done** |
+| S8.5 | — | `SECURITY_COMPLIANCE.md` + LEDGER updated | Docs match | **Done** |
+| S8.6 | — | Phase marked engineering-complete; ops checklist residual | See LEDGER | **Done** |
 
 **Exit:** Phase exit criteria §1–6 all true.
 

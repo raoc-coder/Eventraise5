@@ -1,5 +1,17 @@
 const { withSentryConfig } = require('@sentry/nextjs')
 
+function corsAllowOrigin() {
+  const raw = (process.env.NEXT_PUBLIC_APP_URL || '').trim()
+  if (!raw || raw === '*' || raw.includes('*')) {
+    return 'https://www.eventraisehub.com'
+  }
+  try {
+    return new URL(raw).origin
+  } catch {
+    return 'https://www.eventraisehub.com'
+  }
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -33,7 +45,7 @@ const nextConfig = {
           },
           {
             key: 'Access-Control-Allow-Origin',
-            value: process.env.NEXT_PUBLIC_APP_URL || 'https://www.eventraisehub.com',
+            value: corsAllowOrigin(),
           },
           {
             key: 'Access-Control-Allow-Methods',
