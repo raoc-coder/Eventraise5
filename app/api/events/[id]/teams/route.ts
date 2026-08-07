@@ -73,7 +73,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const { user, db } = await requireAuth(req);
     const rlKey = `teams_post:${user.id}:${getClientKeyFromHeaders(req.headers)}`;
-    if (!rateLimit(rlKey, 20)) {
+    if (!(await rateLimit(rlKey, 20))) {
       return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
     }
 

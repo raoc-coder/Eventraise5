@@ -65,7 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const { user } = await requireEventAccess(req, eventId);
     const rlKey = `matching_gift_post:${user.id}:${getClientKeyFromHeaders(req.headers)}`;
-    if (!rateLimit(rlKey, 10)) {
+    if (!(await rateLimit(rlKey, 10))) {
       return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
     }
 

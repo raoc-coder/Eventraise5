@@ -1,6 +1,6 @@
 # Phase Audit Hardening — Sprint Phase Plan
 
-- **Status:** **P0 in progress** (2026-08-07) — tooling on `main`; migration apply needs `supabase login`
+- **Status:** **Sprint 6 complete in repo (2026-08-07)**; P0 ops still pending (migration 033 / webhook ID / password rotate)
 - **Cadence:** 1-week phases (P0 ops gate) then **2-week sprints** (S6–S8)
 - **Source of truth (findings):** [`docs/PLATFORM_AUDIT_2026-08-07.md`](./PLATFORM_AUDIT_2026-08-07.md)
 - **P0 runbook:** [`docs/runbooks/audit-p0-ops-gate.md`](./runbooks/audit-p0-ops-gate.md)
@@ -60,16 +60,17 @@ flowchart LR
 
 ## Sprint 6 — Auth & edge controls (2 weeks)
 
-**Goal:** Close remaining **High** auth findings (H2, H3, H6, H8).
+**Goal:** Close remaining **High** auth findings (H2, H3, H6, H8).  
+**Status:** **Complete in repo (2026-08-07)** — set Upstash env on Vercel for durable limits; optional `PLATFORM_ADMIN_USE_TWILIO=true` for OTP+password admin flow.
 
-| # | Finding | Deliverable | Done when |
-|---|---------|-------------|-----------|
-| S6.1 | H2 | Retire shared-only admin model: prefer Twilio Verify OTP for `/admin/login` (`PLATFORM_ADMIN_USE_TWILIO=true`) **or** per-admin secrets; stop returning `refresh_token` in JSON where cookies suffice | Admin login works without shared password as sole factor; tokens not in response body (or httpOnly cookie only) |
-| S6.2 | H3 | Phone OTP on roster number must **not** auto-mint full platform-admin session without second factor (password or admin OTP step) | `/api/auth/verify/check` no longer elevates to admin solely from phone match |
-| S6.3 | H6 | Durable rate limit (Upstash Redis / Vercel KV) behind `lib/rate-limit.ts` | Auth, admin login, SMS share, cashout share one store across instances |
-| S6.4 | H8 | Add `middleware.ts`: security headers consistency, basic bot/abuse hooks, rate-limit attachment for `/api/auth/*`, `/api/admin/auth/*`, `/api/donations/share` | Middleware present; public donate/bid paths not broken |
-| S6.5 | — | ADR: “Platform admin authentication” (successor note to ADR-0010 / admin console) | ADR accepted in `docs/adrs/` |
-| S6.6 | — | Tests: admin elevation negative cases; rate limit unit with mocked store | Jest green |
+| # | Finding | Deliverable | Done when | Status |
+|---|---------|-------------|-----------|--------|
+| S6.1 | H2 | Cookie-only admin sessions; Twilio OTP+password path wired | No `refresh_token` in JSON; `/api/admin/auth/send|check` implemented | **Done** |
+| S6.2 | H3 | Phone OTP must not mint platform-admin session | `/api/auth/verify/check` uses phone user only (ADR-0018) | **Done** |
+| S6.3 | H6 | Durable rate limit via Upstash REST behind `lib/rate-limit.ts` | Env optional; memory fallback; all callers async | **Done** |
+| S6.4 | H8 | `middleware.ts` for auth/admin-auth/SMS share + security headers | Matcher live | **Done** |
+| S6.5 | — | ADR-0018 platform admin authentication | Accepted in `docs/adrs/` | **Done** |
+| S6.6 | — | Tests: elevation negative + rate limit memory | Jest green | **Done** |
 
 **Out of scope:** Redesigning organizer UX; new payment providers.
 

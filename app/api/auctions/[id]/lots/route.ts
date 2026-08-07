@@ -71,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const { user, db } = await requireAuth(req);
     const rlKey = `lot_create:${user.id}:${getClientKeyFromHeaders(req.headers)}`;
-    if (!rateLimit(rlKey, 30)) {
+    if (!(await rateLimit(rlKey, 30))) {
       return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
     }
 

@@ -36,7 +36,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const { user } = await requireAuth(req);
     const rlKey = `vault_confirm:${user.id}:${getClientKeyFromHeaders(req.headers)}`;
-    if (!rateLimit(rlKey, 15)) {
+    if (!(await rateLimit(rlKey, 15))) {
       return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
     }
 

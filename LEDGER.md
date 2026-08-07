@@ -279,4 +279,5 @@ Only if product prioritizes after first gala:
   - Added `npm run audit:p0:status|apply|smoke` + SQL helpers under `scripts/sql/`
   - Role audit via service role: only `raoc@onthemarc.net` has `profiles.role=admin` (matches `platform_admins`) — **P0.4 OK pending owner sign-off**
   - **Blocked on ops:** `supabase login` → `audit:p0:apply` (033); Vercel `PAYPAL_WEBHOOK_ID`; password rotate (P0.5)
-- **Then:** Sprint 6 (auth/edge) after P0 exit
+- **Sprint 6 (2026-08-07):** **Complete in repo** — ADR-0018; no phone→admin elevation; cookie-only admin sessions; Upstash-backed rate limit + middleware; admin Twilio OTP+password wired when `PLATFORM_ADMIN_USE_TWILIO=true`
+- **Next:** Sprint 7 (money integrity) after P0 ops exit preferred for ticketed galas

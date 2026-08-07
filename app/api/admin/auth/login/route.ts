@@ -8,8 +8,9 @@ import { createSessionForPlatformAdmin } from "@/lib/auth-admin-session";
 export const dynamic = "force-dynamic";
 
 /**
- * Platform admin sign-in (static credentials — no Twilio).
+ * Platform admin sign-in (static credentials).
  * Body: { email, phone, password }
+ * Session is stored in httpOnly cookies only (ADR-0018).
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   if (platformAdminUsesTwilio()) {
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   const clientKey = getClientKeyFromHeaders(req.headers);
-  if (!rateLimit(`admin-auth-login:${clientKey}`, 12)) {
+  if (!(await rateLimit(`admin-auth-login:${clientKey}`, 12))) {
     return NextResponse.json(
       { ok: false, error: "rate_limited", message: "Too many attempts. Try again shortly." },
       { status: 429 },
@@ -58,7 +59,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       throw new Error("Session tokens missing");
     }
 
-    // Persist session in HTTP cookies so server layouts (admin console) see the user.
     const cookieStore = cookies();
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
     const { error: cookieError } = await supabase.auth.setSession({
@@ -73,13 +73,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({
       ok: true,
       role: auth.admin.role,
-      session: {
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-        expires_in: session.expires_in,
-        expires_at: session.expires_at,
-        token_type: session.token_type,
-        user: session.user,
+      user: {
+        id: session.user?.id,
+        email: session.user?.email,
       },
     });
   } catch (err) {

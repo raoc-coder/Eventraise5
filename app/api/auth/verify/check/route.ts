@@ -4,16 +4,20 @@ import { cookies } from "next/headers";
 import { normalizePhoneE164 } from "@/lib/phone";
 import { checkVerification } from "@/lib/twilio-verify";
 import { createSessionForPhoneUser } from "@/lib/auth-phone-session";
-import { createSessionForPlatformAdmin } from "@/lib/auth-admin-session";
 import { findActivePlatformAdminByPhone } from "@/lib/platform-admin";
 import { rateLimit, getClientKeyFromHeaders } from "@/lib/rate-limit";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Organizer / fundraiser phone OTP check.
+ * Never mints a platform-admin session here (ADR-0018) — roster phones still
+ * get a normal phone-user session; console access requires /admin/login.
+ */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const clientKey = getClientKeyFromHeaders(req.headers);
-  if (!rateLimit(`verify-check:${clientKey}`, 12)) {
+  if (!(await rateLimit(`verify-check:${clientKey}`, 12))) {
     return NextResponse.json(
       { ok: false, error: "rate_limited", message: "Too many attempts. Try again in a minute." },
       { status: 429 },
@@ -63,15 +67,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // Platform admins share the same phone as organizer login — issue their admin session
-    // instead of creating a conflicting phone-only auth user.
-    const platformAdmin = await findActivePlatformAdminByPhone(e164);
-    const session = platformAdmin
-      ? await createSessionForPlatformAdmin(platformAdmin)
-      : await createSessionForPhoneUser(e164, {
-          full_name: body.fullName,
-          organization_name: body.organizationName,
-        });
+    const rosterHit = await findActivePlatformAdminByPhone(e164);
+    const session = await createSessionForPhoneUser(e164, {
+      full_name: body.fullName,
+      organization_name: body.organizationName,
+    });
     if (!session.access_token || !session.refresh_token) {
       throw new Error("Session tokens missing");
     }
@@ -87,16 +87,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       throw cookieError;
     }
 
+    // Tokens stay in httpOnly cookies only — do not echo refresh_token to JS.
     return NextResponse.json({
       ok: true,
-      is_platform_admin: Boolean(platformAdmin),
-      session: {
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-        expires_in: session.expires_in,
-        expires_at: session.expires_at,
-        token_type: session.token_type,
-        user: session.user,
+      is_platform_admin: false,
+      platform_admin_console_available: Boolean(rosterHit),
+      user: {
+        id: session.user?.id,
+        phone: session.user?.phone,
+        email: session.user?.email,
       },
     });
   } catch (err) {

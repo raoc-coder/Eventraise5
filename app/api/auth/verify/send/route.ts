@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const clientKey = getClientKeyFromHeaders(req.headers);
-  if (!rateLimit(`verify-send:${clientKey}`, 8)) {
+  if (!(await rateLimit(`verify-send:${clientKey}`, 8))) {
     return NextResponse.json(
       { ok: false, error: "rate_limited", message: "Too many attempts. Try again in a minute." },
       { status: 429 },

@@ -33,6 +33,7 @@ The first batch (ADR-0001 through ADR-0015) was approved on **2026-05-12** and r
 | [0015](./0015-image-hosting.md) | Supabase Storage for auction lot imagery | Accepted |
 | [0016](./0016-braintree-sunset.md) | Sunset Braintree — PayPal-only payments | Accepted |
 | [0017](./0017-twilio-verify-phone-auth.md) | Twilio Verify for phone-only authentication | Accepted |
+| [0018](./0018-platform-admin-authentication.md) | Platform admin auth, cookies-only sessions, no phone elevation | Accepted |
 
 ## How to propose a new ADR
 

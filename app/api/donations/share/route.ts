@@ -12,7 +12,7 @@ const MAX_MESSAGE_LEN = 160;
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const key = getClientKeyFromHeaders(req.headers);
-    if (!rateLimit(`donations-share:${key}`, 5)) {
+    if (!(await rateLimit(`donations-share:${key}`, 5))) {
       return NextResponse.json({ ok: false, error: "Too many requests" }, { status: 429 });
     }
 

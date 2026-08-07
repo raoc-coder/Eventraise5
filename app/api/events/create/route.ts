@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const { user, db } = await requireAuth(req)
 
     const clientKey = getClientKeyFromHeaders(req.headers as any)
-    if (!rateLimit(`evt-create:${clientKey}`, 10)) return fail('Too many requests', 429)
+    if (!(await rateLimit(`evt-create:${clientKey}`, 10))) return fail('Too many requests', 429)
 
     const raw = await req.json().catch(() => ({}))
     const parsed = createEventSchema.safeParse(raw)

@@ -1,9 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { supabase as sharedSupabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -18,41 +16,12 @@ interface PhoneVerifyAuthProps {
 }
 
 export function PhoneVerifyAuth({ mode }: PhoneVerifyAuthProps) {
-  const router = useRouter()
   const [step, setStep] = useState<'phone' | 'code'>('phone')
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [fullName, setFullName] = useState('')
   const [organizationName, setOrganizationName] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const redirectAfterAuth = () => {
-    const redirectTo = localStorage.getItem('redirectAfterLogin')
-    if (redirectTo) {
-      localStorage.removeItem('redirectAfterLogin')
-      router.push(redirectTo)
-    } else {
-      router.push('/dashboard')
-    }
-  }
-
-  const applySession = async (session: {
-    access_token: string
-    refresh_token: string
-  }) => {
-    // Server already set auth cookies; also sync to client-side localStorage/memory
-    // so the browser Supabase client is immediately aware of the session.
-    if (sharedSupabase) {
-      const { error } = await sharedSupabase.auth.setSession({
-        access_token: session.access_token,
-        refresh_token: session.refresh_token,
-      })
-      if (error) {
-        console.warn('[PhoneVerifyAuth] client setSession warning:', error.message)
-        // Non-fatal: server cookies were set; the page redirect will pick up the session.
-      }
-    }
-  }
 
   const sendCode = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -111,13 +80,18 @@ export function PhoneVerifyAuth({ mode }: PhoneVerifyAuthProps) {
         toast.error(hint)
         return
       }
-      await applySession(json.session)
+      // Session lives in httpOnly cookies from the API (ADR-0018).
       toast.success(mode === 'register' ? 'Account ready!' : 'Signed in!')
-      if (json.is_platform_admin) {
-        router.push('/admin')
-        return
+      if (json.platform_admin_console_available) {
+        toast('Use Admin Console sign-in for platform tools.', { icon: 'ℹ️' })
       }
-      redirectAfterAuth()
+      const redirectTo = localStorage.getItem('redirectAfterLogin')
+      if (redirectTo) {
+        localStorage.removeItem('redirectAfterLogin')
+        window.location.assign(redirectTo)
+      } else {
+        window.location.assign('/dashboard')
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Verification failed'
       toast.error(message)

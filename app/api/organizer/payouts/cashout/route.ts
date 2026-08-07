@@ -6,7 +6,7 @@ import { requireAuth } from '@/lib/auth-utils'
 export async function POST(req: NextRequest) {
   try {
     const key = getClientKeyFromHeaders(req.headers)
-    if (!rateLimit(`cashout:${key}`, 10)) {
+    if (!(await rateLimit(`cashout:${key}`, 10))) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
     const { event_id, payout_id, method, contact_email, notes } = await req.json().catch(() => ({}))

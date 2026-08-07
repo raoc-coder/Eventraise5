@@ -27,7 +27,7 @@ function processEventsWithTickets(events: any[]) {
 }
 
 export async function GET(req: NextRequest) {
-  if (!rateLimit(`events:${getClientKeyFromHeaders(req.headers)}`, 60)) {
+  if (!(await rateLimit(`events:${getClientKeyFromHeaders(req.headers)}`, 60))) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
   console.log('[api/events] GET request received')

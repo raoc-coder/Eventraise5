@@ -66,7 +66,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { slug: stri
 
     const { user, db } = await requireAuth(req);
     const rlKey = `pc_patch:${user.id}:${getClientKeyFromHeaders(req.headers)}`;
-    if (!rateLimit(rlKey, 40)) {
+    if (!(await rateLimit(rlKey, 40))) {
       return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
     }
 
@@ -179,7 +179,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { slug: str
 
     const { user, db } = await requireAuth(req);
     const rlKey = `pc_del:${user.id}:${getClientKeyFromHeaders(req.headers)}`;
-    if (!rateLimit(rlKey, 20)) {
+    if (!(await rateLimit(rlKey, 20))) {
       return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
     }
 

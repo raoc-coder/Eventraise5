@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Shield, Mail, Phone, KeyRound } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -15,15 +14,6 @@ export function SuperAdminLogin() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const applySession = async (session: { access_token: string; refresh_token: string }) => {
-    const supabase = createClientComponentClient();
-    const { error } = await supabase.auth.setSession({
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-    });
-    if (error) throw error;
-  };
 
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,13 +32,14 @@ export function SuperAdminLogin() {
             ? json.message
             : json.error === "session_failed"
               ? "Credentials matched but session setup failed. Try again or check Supabase auth settings."
-              : json.message || "Sign-in failed";
+              : json.error === "use_legacy_otp"
+                ? "Twilio admin mode is on — use the OTP admin flow."
+                : json.message || "Sign-in failed";
         toast.error(hint);
         return;
       }
-      await applySession(json.session);
+      // Session is in httpOnly cookies from the API — do not handle refresh tokens in JS.
       toast.success("Signed in to Admin Console");
-      // Full navigation so the server admin layout reads auth cookies (not just localStorage).
       window.location.assign("/admin");
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Sign-in failed");
