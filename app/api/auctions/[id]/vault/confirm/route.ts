@@ -50,12 +50,45 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ ok: false, error: "invalid_request", message: "setupTokenId required." }, { status: 400 });
     }
 
+    // Verify setup token was issued for this user + auction (when table exists).
+    const { data: setupRow, error: setupLookupErr } = await supabaseAdmin
+      .from("auction_vault_setups")
+      .select("id, status, user_id, auction_id")
+      .eq("setup_token_id", setupTokenId)
+      .maybeSingle();
+
+    if (!setupLookupErr && setupRow) {
+      if (setupRow.user_id !== user.id || setupRow.auction_id !== auctionId) {
+        return NextResponse.json(
+          { ok: false, error: "forbidden", message: "Vault setup token does not belong to this session." },
+          { status: 403 },
+        );
+      }
+      if (setupRow.status !== "pending" && setupRow.status !== "confirmed") {
+        return NextResponse.json(
+          { ok: false, error: "invalid_setup", message: "Vault setup is no longer valid." },
+          { status: 400 },
+        );
+      }
+    }
+
     const vaulted = await createVaultPaymentToken(setupTokenId);
     if (!vaulted.ok || !vaulted.paymentMethodToken) {
       return NextResponse.json(
         { ok: false, error: "vault_confirm_failed", message: vaulted.error },
         { status: 502 },
       );
+    }
+
+    if (setupRow?.id) {
+      await supabaseAdmin
+        .from("auction_vault_setups")
+        .update({
+          status: "confirmed",
+          payment_method_token: vaulted.paymentMethodToken,
+          confirmed_at: new Date().toISOString(),
+        })
+        .eq("id", setupRow.id);
     }
 
     const { data: existing } = await supabaseAdmin

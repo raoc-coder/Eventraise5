@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createDonationOrder, calculatePlatformFee } from '@/lib/paypal'
+import { createDonationOrder } from '@/lib/paypal'
 import { supabaseAdmin } from '@/lib/supabase'
 import { loadActivePersonalCampaign } from '@/lib/p2p/personal-campaigns'
 import { centsToDollars, dollarsToCents } from '@/lib/money/cents'
+import { calculatePlatformFeeCents } from '@/lib/money/fees'
 
 /** Soft upper bound for free-form donations (USD). Tickets use DB price. */
 const MAX_DONATION_DOLLARS = 50_000
@@ -127,15 +128,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Calculate fees
-    const fees = calculatePlatformFee(amount, currency)
+    // Calculate fees (integer cents)
+    const amountCents = dollarsToCents(amount)
+    const feeCents = calculatePlatformFeeCents(amountCents, currency)
+    const fees = {
+      platformFee: centsToDollars(feeCents.platformFeeCents),
+      paypalFee: centsToDollars(feeCents.paypalFeeCents),
+      totalFees: centsToDollars(feeCents.totalFeesCents),
+      netAmount: centsToDollars(feeCents.netAmountCents),
+    }
 
     // Deterministic request id for upstream idempotency (PayPal-Request-Id).
     const requestFingerprint = [
       eventId,
       String(type),
       String(resolvedTicketId || 'none'),
-      String(Math.round(Number(amount) * 100)),
+      String(amountCents),
       String(quantity),
       String(currency)
     ].join('_')
@@ -156,10 +164,10 @@ export async function POST(req: NextRequest) {
     const paypalOrderInsert: Record<string, unknown> = {
       order_id: orderResult.orderId,
       event_id: eventId,
-      amount_cents: Math.round(amount * 100),
-      platform_fee_cents: Math.round(fees.platformFee * 100),
-      paypal_fee_cents: Math.round(fees.paypalFee * 100),
-      net_amount_cents: Math.round(fees.netAmount * 100),
+      amount_cents: feeCents.amountCents,
+      platform_fee_cents: feeCents.platformFeeCents,
+      paypal_fee_cents: feeCents.paypalFeeCents,
+      net_amount_cents: feeCents.netAmountCents,
       status: 'pending',
       type: type,
       ticket_id: resolvedTicketId,

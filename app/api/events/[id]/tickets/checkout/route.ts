@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createDonationOrder } from '@/lib/paypal'
+import { calculatePlatformFeeCents } from '@/lib/money/fees'
 
 export async function POST(req: NextRequest, { params }: any) {
   try {
@@ -57,10 +58,11 @@ export async function POST(req: NextRequest, { params }: any) {
       return NextResponse.json({ error: 'Ticket sales ended' }, { status: 400 })
     }
 
-    // Calculate total
+    // Calculate total (integer cents)
     const totalCents = ticket.price_cents * quantity
-    const feeCents = Math.floor(totalCents * 0.0899) // 8.99% platform fee
-    const netCents = totalCents - feeCents
+    const fees = calculatePlatformFeeCents(totalCents, String(ticket.currency || 'USD'))
+    const feeCents = fees.platformFeeCents
+    const netCents = fees.netAmountCents
 
     // Create registration record (use admin client to bypass RLS)
     if (!supabaseAdmin) {

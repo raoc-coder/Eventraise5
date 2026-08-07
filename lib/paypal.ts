@@ -1,3 +1,5 @@
+import { calculatePlatformFeeFromDollars } from "@/lib/money/fees"
+
 // PayPal configuration
 export const paypalConfig = {
   clientId: process.env.PAYPAL_CLIENT_ID || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
@@ -45,39 +47,14 @@ async function getPayPalAccessToken(): Promise<string> {
   return data.access_token
 }
 
-// Fee calculation utilities
+// Fee calculation utilities (integer cents under the hood — ADR-0011 / Sprint 7)
 export function calculatePlatformFee(amount: number, currency: string = 'USD'): {
   platformFee: number
   netAmount: number
   paypalFee: number
   totalFees: number
 } {
-  const platformFeeRate = 0.0899 // 8.99%
-  
-  let paypalFeeRate: number
-  let paypalFixedFee: number
-  
-  if (currency === 'INR') {
-    // PayPal India fees (approximate)
-    paypalFeeRate = 0.02 // 2% for INR
-    paypalFixedFee = 3 // ₹3 fixed fee
-  } else {
-    // PayPal US fees (approximate)
-    paypalFeeRate = 0.029 // 2.9%
-    paypalFixedFee = 0.49 // $0.49 fixed fee
-  }
-  
-  const platformFee = Math.round(amount * platformFeeRate * 100) / 100
-  const paypalFee = Math.round((amount * paypalFeeRate + paypalFixedFee) * 100) / 100
-  const totalFees = platformFee + paypalFee
-  const netAmount = Math.round((amount - totalFees) * 100) / 100
-  
-  return {
-    platformFee,
-    netAmount,
-    paypalFee,
-    totalFees
-  }
+  return calculatePlatformFeeFromDollars(amount, currency)
 }
 
 // Create PayPal order for donation
@@ -198,11 +175,13 @@ export async function captureOrder(orderId: string, requestId?: string) {
       throw new Error(capture?.message || `Failed to capture PayPal order (${response.status})`)
     }
 
+    const capturePayment = capture?.purchase_units?.[0]?.payments?.captures?.[0]
     return {
       success: true,
-      captureId: capture.id,
+      captureId: capturePayment?.id || capture.id,
       status: capture.status,
-      amount: capture.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value
+      amount: capturePayment?.amount?.value ?? null,
+      currency: capturePayment?.amount?.currency_code ?? null,
     }
   } catch (error) {
     console.error('PayPal order capture failed:', error)

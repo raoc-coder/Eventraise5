@@ -280,4 +280,5 @@ Only if product prioritizes after first gala:
   - Role audit via service role: only `raoc@onthemarc.net` has `profiles.role=admin` (matches `platform_admins`) — **P0.4 OK pending owner sign-off**
   - **Blocked on ops:** `supabase login` → `audit:p0:apply` (033); Vercel `PAYPAL_WEBHOOK_ID`; password rotate (P0.5)
 - **Sprint 6 (2026-08-07):** **Complete in repo** — ADR-0018; no phone→admin elevation; cookie-only admin sessions; Upstash-backed rate limit + middleware; admin Twilio OTP+password wired when `PLATFORM_ADMIN_USE_TWILIO=true`
-- **Next:** Sprint 7 (money integrity) after P0 ops exit preferred for ticketed galas
+- **Sprint 7 (2026-08-07):** **Complete in repo** — `settlePaypalCapture`, amount reconcile, migration `034` (capture uniqueness, atomic tickets, `auction_vault_setups`), integer-cents fees (`lib/money/fees.ts`)
+- **Next:** Sprint 8 (defense in depth); apply migrations **033 + 034** on Supabase

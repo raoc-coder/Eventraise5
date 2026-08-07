@@ -21,14 +21,15 @@ npm run audit:p0:smoke -- --base https://www.eventraisehub.com
 
 ## Checklist
 
-### P0.1 / P0.2 — Migration 033
+Apply `034_money_path_integrity.sql` the same way (Sprint 7) after 033:
 
-1. `npx supabase login` (or set `SUPABASE_ACCESS_TOKEN`).
-2. `npm run audit:p0:apply`
-3. Confirm `audit:p0:status` shows triggers + `paypal_orders_insert_deny_clients`.
-4. Optional: paste [`scripts/sql/audit-p0-verify-033.sql`](../../scripts/sql/audit-p0-verify-033.sql) in Supabase SQL editor.
+```bash
+# After supabase login — or paste scripts/sql contents / migration file in SQL editor
+npx tsx -e "/* use audit:p0:apply pattern or SQL editor for 034 */"
+```
 
-**Staging:** if you use a separate Supabase project, change `PROJECT_REF` in the apply script or run the SQL file manually there first.
+Or open `supabase/migrations/034_money_path_integrity.sql` in the Supabase SQL editor.
+
 
 ### P0.3 — PayPal webhook ID
 

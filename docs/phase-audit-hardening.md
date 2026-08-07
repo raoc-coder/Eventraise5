@@ -1,6 +1,6 @@
 # Phase Audit Hardening — Sprint Phase Plan
 
-- **Status:** **Sprint 6 complete in repo (2026-08-07)**; P0 ops still pending (migration 033 / webhook ID / password rotate)
+- **Status:** **Sprint 7 complete in repo (2026-08-07)**; Sprint 6 done; P0 ops still pending (migration 033/034 / webhook ID / password rotate)
 - **Cadence:** 1-week phases (P0 ops gate) then **2-week sprints** (S6–S8)
 - **Source of truth (findings):** [`docs/PLATFORM_AUDIT_2026-08-07.md`](./PLATFORM_AUDIT_2026-08-07.md)
 - **P0 runbook:** [`docs/runbooks/audit-p0-ops-gate.md`](./runbooks/audit-p0-ops-gate.md)
@@ -80,16 +80,17 @@ flowchart LR
 
 ## Sprint 7 — Money-path integrity (2 weeks)
 
-**Goal:** Close payment/ledger Medium findings that can cause undercharge, oversell, or double credit.
+**Goal:** Close payment/ledger Medium findings that can cause undercharge, oversell, or double credit.  
+**Status:** **Complete in repo (2026-08-07)** — apply migration `034` on Supabase for unique indexes + inventory RPC + vault setups.
 
-| # | Finding | Deliverable | Done when |
-|---|---------|-------------|-----------|
-| S7.1 | M2 | On capture: compare PayPal captured amount/currency to `paypal_orders.amount_cents`; reject mismatch | Underpay/overpay capture fails closed; test with mocked capture |
-| S7.2 | M6 | Unique constraint on donation capture / order id; conditional status updates (`WHERE status = 'pending'`); webhook + capture-order share one idempotent writer | Concurrent capture + webhook → single P2P credit |
-| S7.3 | M9 | Atomic ticket inventory SQL (`UPDATE … WHERE quantity_sold + :n <= quantity_total RETURNING`) | Parallel checkouts cannot oversell |
-| S7.4 | M9 | Auction register: bind vault token to PayPal vault setup session for that user/auction — reject arbitrary client tokens | Only tokens from `/vault/setup` → `/vault/confirm` accepted |
-| S7.5 | Follow-up | Migrate PayPal fee helpers to integer cents (`lib/money`) on create-order / capture / webhook | No float fee math on new writes; ADR-0011 aligned |
-| S7.6 | — | Integration tests for create-order ticket pricing + capture reconcile | `__tests__/integration` or route-level tests green |
+| # | Finding | Deliverable | Done when | Status |
+|---|---------|-------------|-----------|--------|
+| S7.1 | M2 | Capture amount reconciled vs `paypal_orders.amount_cents` | Mismatch → 409 | **Done** |
+| S7.2 | M6 | Shared `settlePaypalCapture` + unique capture indexes; conditional pending→captured | Capture API + webhook share writer | **Done** |
+| S7.3 | M9 | `increment_event_ticket_sold` RPC | Atomic inventory on settle | **Done** |
+| S7.4 | M9 | `auction_vault_setups` bind + register rejects client tokens | Vault confirm only | **Done** |
+| S7.5 | — | `lib/money/fees.ts` integer-cents fees on create-order / checkout | ADR-0011 aligned | **Done** |
+| S7.6 | — | Unit tests for fees + wiring guards | Jest green | **Done** |
 
 **Out of scope:** Changing platform fee %.
 

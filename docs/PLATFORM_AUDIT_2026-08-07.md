@@ -82,14 +82,14 @@ Several Critical/High issues are **fixed in code** in this PR. Remaining High/Me
 | ID | Status | Summary |
 |----|--------|---------|
 | M1 | **Fixed** | Unpublished event IDOR on `GET /api/events/[id]` — drafts require owner/platform admin |
-| M2 | Open | Capture endpoints unauthenticated; amount not reconciled vs PayPal capture |
+| M2 | **Fixed (Sprint 7)** | Capture amount reconciled vs stored order; mismatch rejected |
 | M3 | **Fixed** | Ticket checkout called `createDonationOrder` with wrong arity (name→currency); now persists `paypal_orders` |
 | M4 | Open | CORS credentials on `/api/*` tied to `NEXT_PUBLIC_APP_URL` — misconfig risk |
 | M5 | Open | Advanced health endpoint exposes process/env fingerprinting |
-| M6 | Open | Dual write race capture-order + webhook → possible double P2P credit |
+| M6 | **Fixed (Sprint 7)** | Shared settle writer + unique `paypal_capture_id` indexes (migration 034) |
 | M7 | Open | `personal_campaigns.total_raised_cents` client-editable — **DB trigger in 033** mitigates when applied |
 | M8 | Open | Legacy `donations` / `paypal_orders` open INSERT — **RLS deny in 033** when applied |
-| M9 | Open | Auction registration accepts arbitrary vault token; quantity_sold non-atomic |
+| M9 | **Fixed (Sprint 7)** | Vault setup binding + reject client tokens; atomic `increment_event_ticket_sold` |
 
 ---
 

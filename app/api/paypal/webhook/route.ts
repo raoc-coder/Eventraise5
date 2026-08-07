@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyWebhookSignature } from '@/lib/paypal'
 import { supabaseAdmin } from '@/lib/supabase'
+import { settlePaypalCapture } from '@/lib/paypal/settle-capture'
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
     const webhookData = JSON.parse(body)
     const eventType = webhookData.event_type
 
-    console.log('PayPal webhook received:', eventType, webhookData)
+    console.log('PayPal webhook received:', eventType)
 
     // Handle different webhook events
     switch (eventType) {
@@ -49,6 +50,7 @@ async function handlePaymentCompleted(webhookData: any) {
   try {
     const captureId = webhookData.resource?.id
     const orderId = webhookData.resource?.supplementary_data?.related_ids?.order_id
+    const capturedAmount = webhookData.resource?.amount?.value
 
     if (!captureId || !orderId) {
       console.error('Missing capture ID or order ID in webhook')
@@ -60,54 +62,16 @@ async function handlePaymentCompleted(webhookData: any) {
       return
     }
 
-    // Update order status
-    const { error: updateError } = await supabaseAdmin
-      .from('paypal_orders')
-      .update({ 
-        status: 'completed',
-        completed_at: new Date().toISOString()
-      })
-      .eq('order_id', orderId)
+    const settled = await settlePaypalCapture({
+      orderId,
+      captureId,
+      capturedAmount,
+      source: 'webhook',
+    })
 
-    if (updateError) {
-      console.error('Failed to update order status:', updateError)
-    }
-
-    // Update donation status if applicable
-    // Note: donation_requests.paypal_order_id stores the INTERNAL id of paypal_orders,
-    // so we must resolve the internal id from the external order_id first.
-    const { data: orderRow } = await supabaseAdmin
-      .from('paypal_orders')
-      .select('id')
-      .eq('order_id', orderId)
-      .single()
-
-    if (orderRow?.id) {
-      const { error: donationError } = await supabaseAdmin
-        .from('donation_requests')
-        .update({ 
-          status: 'succeeded',
-          settlement_status: 'settled'
-        })
-        .eq('paypal_order_id', orderRow.id)
-
-      if (donationError) {
-        console.error('Failed to update donation status:', donationError)
-      }
-    }
-
-    // Update registration status if applicable
-    if (orderRow?.id) {
-      const { error: registrationError } = await supabaseAdmin
-        .from('event_registrations')
-        .update({ 
-          status: 'confirmed'
-        })
-        .eq('paypal_order_id', orderRow.id)
-
-      if (registrationError) {
-        console.error('Failed to update registration status:', registrationError)
-      }
+    if (!settled.ok) {
+      console.error('[webhook] settle failed', settled.error)
+      return
     }
 
     // Auto-create a payout for the related event (idempotent at RPC level)
@@ -120,7 +84,6 @@ async function handlePaymentCompleted(webhookData: any) {
 
       const eventId = orderForEvent?.event_id
       if (eventId) {
-        // Ensure organizer_id exists; if missing, backfill from created_by
         const { data: ev } = await supabaseAdmin
           .from('events')
           .select('id, organizer_id, created_by')
@@ -162,7 +125,6 @@ async function handlePaymentDenied(webhookData: any) {
       return
     }
 
-    // Update order status
     const { error: updateError } = await supabaseAdmin
       .from('paypal_orders')
       .update({ 
@@ -170,6 +132,7 @@ async function handlePaymentDenied(webhookData: any) {
         denied_at: new Date().toISOString()
       })
       .eq('order_id', orderId)
+      .eq('status', 'pending')
 
     if (updateError) {
       console.error('Failed to update order status:', updateError)
@@ -183,9 +146,10 @@ async function handlePaymentDenied(webhookData: any) {
 async function handlePaymentRefunded(webhookData: any) {
   try {
     const orderId = webhookData.resource?.supplementary_data?.related_ids?.order_id
+    const captureId = webhookData.resource?.id
 
-    if (!orderId) {
-      console.error('Missing order ID in webhook')
+    if (!orderId && !captureId) {
+      console.error('Missing order/capture ID in webhook')
       return
     }
 
@@ -194,37 +158,34 @@ async function handlePaymentRefunded(webhookData: any) {
       return
     }
 
-    // Update order status
-    const { error: updateError } = await supabaseAdmin
-      .from('paypal_orders')
-      .update({ 
-        status: 'refunded',
-        refunded_at: new Date().toISOString()
-      })
-      .eq('order_id', orderId)
-
-    if (updateError) {
-      console.error('Failed to update order status:', updateError)
+    if (orderId) {
+      await supabaseAdmin
+        .from('paypal_orders')
+        .update({ 
+          status: 'refunded',
+          refunded_at: new Date().toISOString()
+        })
+        .eq('order_id', orderId)
     }
 
-    // Update donation status
-    const { data: orderRow } = await supabaseAdmin
-      .from('paypal_orders')
-      .select('id')
-      .eq('order_id', orderId)
-      .single()
+    const { data: orderRow } = orderId
+      ? await supabaseAdmin
+          .from('paypal_orders')
+          .select('id')
+          .eq('order_id', orderId)
+          .maybeSingle()
+      : { data: null }
 
     if (orderRow?.id) {
-      const { error: donationError } = await supabaseAdmin
+      await supabaseAdmin
         .from('donation_requests')
-        .update({ 
-          status: 'refunded'
-        })
+        .update({ status: 'refunded' })
         .eq('paypal_order_id', orderRow.id)
-
-      if (donationError) {
-        console.error('Failed to update donation status:', donationError)
-      }
+    } else if (captureId) {
+      await supabaseAdmin
+        .from('donation_requests')
+        .update({ status: 'refunded' })
+        .eq('paypal_capture_id', captureId)
     }
 
   } catch (error) {
