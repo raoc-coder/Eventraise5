@@ -282,4 +282,5 @@ Only if product prioritizes after first gala:
 - **Sprint 6 (2026-08-07):** **Complete in repo** — ADR-0018; no phone→admin elevation; cookie-only admin sessions; Upstash-backed rate limit + middleware; admin Twilio OTP+password wired when `PLATFORM_ADMIN_USE_TWILIO=true`
 - **Sprint 7 (2026-08-07):** **Complete in repo** — `settlePaypalCapture`, amount reconcile, migration `034` (capture uniqueness, atomic tickets, `auction_vault_setups`), integer-cents fees (`lib/money/fees.ts`)
 - **Sprint 8 (2026-08-07):** **Complete in repo** — CORS validation (`audit:cors`), health/advanced gating, stub APIs → 410, authz regression tests, `SECURITY_COMPLIANCE.md` refresh
-- **Phase status:** **Engineering complete** — no open High findings in code. **Ops residual for production hardened claim:** apply migrations **033 + 034**, set `PAYPAL_WEBHOOK_ID`, rotate `PLATFORM_ADMIN_PASSWORD`, optional Upstash env
+- **Vercel Production deploy (2026-08-07):** **Successful** — Phase Audit Hardening code (Sprints 6–8 + critical remediations) live on www
+- **Phase status:** **Engineering complete + prod deployed** — no open High findings in code. **Ops residual for production hardened claim:** apply migrations **033 + 034**, set `PAYPAL_WEBHOOK_ID`, rotate `PLATFORM_ADMIN_PASSWORD`, optional Upstash env
